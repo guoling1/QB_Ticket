@@ -18,8 +18,8 @@
         <log4j.version>1.2.17</log4j.version>
         <httpclient.version>4.3.6</httpclient.version>
 
-        <jetty-maven-plugin.port>8240</jetty-maven-plugin.port>
-        <tomcat-maven-plugin.port>8240</tomcat-maven-plugin.port>
+        <jetty-maven-plugin.port>8250</jetty-maven-plugin.port>
+        <tomcat-maven-plugin.port>8250</tomcat-maven-plugin.port>
     </properties>
 
     <dependencies>
