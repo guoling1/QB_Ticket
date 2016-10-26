@@ -1,0 +1,52 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>快捷支付</title>
+<script type="text/javascript">
+</script>
+<style type="text/css">
+legend{
+	font-size: 12px;
+}
+table{
+	font-size: 12px;
+}
+.headerTxt{
+	padding-left: 50px;
+	text-align: left;
+	font-size: 18px;
+	border-bottom: dotted;
+}
+</style>
+</head>
+<body>
+<table height="100px" width="100%">
+	<tr>
+		<th class="headerTxt">合众支付系统交易模拟测试端</th>
+	</tr>
+</table>
+<fieldset>
+<legend>快捷支付</legend>
+<form name="xxx" action="/authen/fastPay" method="post">
+	<table align="center" width="80%">
+		<tr>
+			<th>验证码：</th>
+			<td><input type="text" name="verifyCode"/></td>
+			
+		</tr>
+		<tr>
+			<td colspan="4" align="center" height="50px">
+				<input type="hidden" name="busCnl" value="WWW"/>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="submit" value="提交">
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="button" value="返回" onclick="javascript:history.go(-1);">
+			</td>
+		</tr>
+	</table>
+</form>
+</fieldset>
+</body>
+</html>

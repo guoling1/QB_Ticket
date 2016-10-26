@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.dao.JkmPacketSendDao" >
+  <resultMap id="BaseResultMap" type="com.jkm.entity.JkmPacketSend" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="packet_type" property="packetType" jdbcType="CHAR" />
+    <result column="packet_count" property="packetCount" jdbcType="INTEGER" />
+    <result column="packet_amount" property="packetAmount" jdbcType="INTEGER" />
+    <result column="descr" property="descr" jdbcType="VARCHAR" />
+    <result column="is_over" property="isOver" jdbcType="CHAR" />
+    <result column="status" property="status" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_id, packet_type, packet_count, packet_amount, descr, is_over, status, create_time,
+    update_time
+  </sql>
+
+  <insert id="insertSelective"  useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.entity.JkmPacketSend" >
+    insert into jkm_packet_send
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="packetType != null" >
+        packet_type,
+      </if>
+      <if test="packetCount != null" >
+        packet_count,
+      </if>
+      <if test="packetAmount != null" >
+        packet_amount,
+      </if>
+      <if test="descr != null" >
+        descr,
+      </if>
+      <if test="isOver != null" >
+        is_over,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="packetType != null" >
+        #{packetType,jdbcType=CHAR},
+      </if>
+      <if test="packetCount != null" >
+        #{packetCount,jdbcType=INTEGER},
+      </if>
+      <if test="packetAmount != null" >
+        #{packetAmount,jdbcType=INTEGER},
+      </if>
+      <if test="descr != null" >
+        #{descr,jdbcType=VARCHAR},
+      </if>
+      <if test="isOver != null" >
+        #{isOver,jdbcType=CHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

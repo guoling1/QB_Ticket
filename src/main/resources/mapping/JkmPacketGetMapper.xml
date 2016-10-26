@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.dao.JkmPacketGetDao" >
+  <resultMap id="BaseResultMap" type="com.jkm.entity.JkmPacketGet" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="send_user_id" property="sendUserId" jdbcType="BIGINT" />
+    <result column="send_id" property="sendId" jdbcType="BIGINT" />
+    <result column="single_amount" property="singleAmount" jdbcType="INTEGER" />
+    <result column="get_user_id" property="getUserId" jdbcType="BIGINT" />
+    <result column="is_get" property="isGet" jdbcType="CHAR" />
+    <result column="state" property="state" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, send_user_id, send_id, single_amount, get_user_id, is_get, state, create_time,
+    update_time
+  </sql>
+  <insert id="insertSelective" parameterType="com.jkm.entity.JkmPacketGet" >
+    insert into jkm_packet_get
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="sendUserId != null" >
+        send_user_id,
+      </if>
+      <if test="sendId != null" >
+        send_id,
+      </if>
+      <if test="singleAmount != null" >
+        single_amount,
+      </if>
+      <if test="getUserId != null" >
+        get_user_id,
+      </if>
+      <if test="isGet != null" >
+        is_get,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="sendUserId != null" >
+        #{sendUserId,jdbcType=BIGINT},
+      </if>
+      <if test="sendId != null" >
+        #{sendId,jdbcType=BIGINT},
+      </if>
+      <if test="singleAmount != null" >
+        #{singleAmount,jdbcType=INTEGER},
+      </if>
+      <if test="getUserId != null" >
+        #{getUserId,jdbcType=BIGINT},
+      </if>
+      <if test="isGet != null" >
+        #{isGet,jdbcType=CHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="selectCountUnGet" parameterType="java.lang.Long" resultType="java.lang.Integer" >
+    select count(1) from jkm_packet_get where send_id = #{sendId,jdbcType=BIGINT} and is_get='0' and state='0'
+  </select>
+  <select id="selectHasCount" parameterType="java.util.Map" resultType="java.lang.Integer" >
+    select count(1) from jkm_packet_get where send_id = #{sendId,jdbcType=BIGINT} and get_user_id=#{getUserId,jdbcType=BIGINT} and is_get='1' and state='0'
+  </select>
+  <select id="selectTopOnePacket" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from jkm_packet_get
+    where is_get='0' and state='0' limit 1
+  </select>
+
+  <update id="updateByPrimaryKey" parameterType="java.util.Map" >
+    update jkm_packet_get set get_user_id = #{getUserId,jdbcType=BIGINT},is_get ='1' where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

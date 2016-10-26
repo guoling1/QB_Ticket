@@ -1,0 +1,75 @@
+package com.jkm.controller.common;
+
+import net.sf.json.JSONObject;
+import org.apache.log4j.Logger;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+/**
+ * 控制层基类
+ */
+public class BaseController {
+    private static Logger logger = Logger.getLogger(BaseController.class);
+    protected HttpServletRequest request;
+    protected HttpServletResponse response;
+    /**
+     * @param binder
+     * @throws Exception
+     */
+    @InitBinder
+    protected void initBinder(final WebDataBinder binder) {
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE);
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
+    }
+
+    /**
+     * 过滤函数
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        this.request = request;
+        this.response = response;
+    }
+
+    /**
+     * 获取参数
+     * @return
+     * @throws IOException
+     */
+    protected JSONObject getRequestJsonParams() throws IOException {
+        if (request == null) {
+            return null;
+        }
+        String line = "";
+        StringBuilder body = new StringBuilder();
+        int counter = 0;
+        InputStream stream;
+        stream = request.getInputStream();
+        //读取POST提交的数据内容
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        while ((line = reader.readLine()) != null) {
+            if(counter > 0){
+                body.append("\r\n");
+            }
+            body.append(line);
+            counter++;
+        }
+        JSONObject jo = JSONObject.fromObject(body.toString());
+        logger.info("请求参数为："+jo.toString());
+        return  jo;
+    }
+
+}
