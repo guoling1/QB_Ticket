@@ -71,3 +71,4 @@ crashlytics-build.properties
 *my.properties
 # /.gitignore
 # /www/mobile/src/main/webapp/node_modules/
+/src/main/webapp/QB_app/node_modules/
