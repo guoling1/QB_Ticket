@@ -2,10 +2,12 @@ package com.jkm.entity.request;
 
 import lombok.Data;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by zhangbin on 2016/10/25.
+ *
+ * 火车车票订票受理接口  -- 请求参数
  */
 @Data
 public class TrainTicketsBookingRequest {
@@ -23,7 +25,7 @@ public class TrainTicketsBookingRequest {
     /**
      * 固定 ： 1 单程
      */
-    private String journeyType;
+    private int journeyType = 1;
 
     /**
      * 车次号。 值如 "G101"
@@ -53,8 +55,10 @@ public class TrainTicketsBookingRequest {
     /**
      * 保险ID，值如 1 当为0时表示不购买保险
      * 当ID不为0时，默认乘客列表中的所有乘客都购买保险
+     *
+     * {@link com.jkm.enums.EnumTrainTicketInsure}
      */
-    private boolean insureID=true;
+    private int insureID;
 
     /**
      *  单个保险价格，值如 20 当为0时表示不购买保险
@@ -64,15 +68,17 @@ public class TrainTicketsBookingRequest {
     /**
      * 是否合并占座和出票通知， 固定： 1
      */
-    private int isMergeNotice=1;
+    private int isMergeNotice = 1;
 
     /**
      * 无票时是否接受无座， 0 接受、 1 不接受
+     *
+     * {@link com.jkm.enums.EnumTrainTicketIsAcceptNoSeat}
      */
-    private String isAcceptNoSeat;
+    private int isAcceptNoSeat;
 
     /**
-     *  联系人姓名
+     *  联系人姓名（ Unicode编码）
      */
     private String contactName;
 
@@ -84,7 +90,48 @@ public class TrainTicketsBookingRequest {
     /**
      * 乘客列表， JSON格式
      */
-    private Map<String ,String> passengers;
+    private List<passenger> passengers;
+
+    @Data
+    public class passenger{
+
+        /**
+         * 乘客类型， 1 为成人 2 为儿童
+         *
+         * {@link com.jkm.enums.EnumPassenger}
+         */
+        private int type;
+
+        /**
+         * 乘车人姓名 例如: "\u5f20\u4e09 "
+         */
+        private String name;
+
+        /**
+         *  证件类型 1 为身份证 2 为护照 3 台湾通行证 4 港澳通行证
+         */
+        private int cardType;
+
+        /**
+         * 证件号码 例如: "610423195608261254"
+         */
+        private String cardNo;
+
+        /**
+         *  出生日 例如： "1990-08-26"
+         */
+        private String birth;
+
+        /**
+         * 座位类型 : 9
+         */
+        private int seatType;
+
+        /**
+         * 座位价格，值如"1403.0"
+         */
+        private String ticketPrice;
+    }
 
 
 }
