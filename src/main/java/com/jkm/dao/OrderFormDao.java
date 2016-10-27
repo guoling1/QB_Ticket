@@ -52,10 +52,10 @@ public interface OrderFormDao {
     /**
      *按流水号查询订单
      *
-     * @param id
+     * @param termTransId
      * @return
      */
-    OrderForm selectByTermTransId(@Param("id") long id);
+    OrderForm selectByTermTransId(@Param("termTransId") String termTransId);
 
 
 }
