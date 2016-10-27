@@ -1,12 +1,13 @@
-package com.jkm.entity.request;
+package com.jkm.service.ys.entity;
 
 import lombok.Data;
 
 /**
- * Created by zhangbin on 2016/10/25.
+ * Created by yuxiang on 2016-10-27.
  */
 @Data
-public class TrainTicketsReturnRequest {
+public class YsRefundTicketRequest {
+
     /**
      * 请求流水号
      */
@@ -21,6 +22,4 @@ public class TrainTicketsReturnRequest {
      * 退票乘车人的乘客ID
      */
     private String passengerID;
-
-
 }
