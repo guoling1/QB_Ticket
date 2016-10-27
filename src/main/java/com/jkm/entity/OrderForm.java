@@ -1,6 +1,10 @@
 package com.jkm.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by yulong.zhang on 2016/10/27.
@@ -12,7 +16,13 @@ import lombok.Data;
  * {@link com.jkm.enums.EnumOrderFormStatus}
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class OrderForm extends BaseEntity {
+
+    /**
+     * 用户id
+     */
+    private long uid;
 
     /**
      * 查询车次时的 queryKey
@@ -20,9 +30,29 @@ public class OrderForm extends BaseEntity {
     private String queryKey;
 
     /**
-     * 请求流水号
+     * 请求流水号(接入商流水号)
      */
     private String termTransId;
+
+    /**
+     * 平台交易流水（YS流水号）
+     */
+    private String transId;
+
+    /**
+     *取票号，值如 "EA12345678"
+     */
+    private String pickNo;
+
+    /**
+     * 实扣保险费
+     */
+    private BigDecimal insuranceFee;
+
+    /**
+     * 实扣技术服务费
+     */
+    private BigDecimal technicalFee;
 
     /**
      * 固定 ： 1 单程
@@ -45,14 +75,14 @@ public class OrderForm extends BaseEntity {
     private String arriveStationCode;
 
     /**
-     * 出发日期，值如 "2016-05-18"
+     * 出发日期，值如 "2016-05-18 07:00"
      */
-    private String departDate;
+    private Date departDateTime;
 
     /**
-     *  出发时间，值如 "07:00"
+     *  到達日期，值如 "2016-05-18 07:00"
      */
-    private String departTime;
+    private Date arriveDateTime;
 
     /**
      * 保险ID，值如 1 当为0时表示不购买保险
@@ -65,7 +95,7 @@ public class OrderForm extends BaseEntity {
     /**
      *  单个保险价格，值如 20 当为0时表示不购买保险
      */
-    private String insurePrice;
+    private BigDecimal insurePrice;
 
     /**
      * 是否合并占座和出票通知， 固定： 1

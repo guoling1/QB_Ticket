@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.dao.OrderFormDetailDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_order_form_detail
+        (order_form_id,
+         passenger_id,
+         passenger_name,
+         passenger_type,
+         card_no,
+         seat_type,
+         seat_name,
+         price,
+         pick_no,
+         journey_type,
+         train_no,
+        depart_station_code,
+        arrive_station_code,
+        depart_date_time,
+        arrive_date_time,
+        status
+            )VALUES(
+         #{orderFormId},
+         #{passengerId},
+         #{passengerName},
+         #{passengerType},
+         #{cardNo},
+         #{seatType},
+         #{seatName},
+         #{price},
+         #{pickNo},
+         #{journeyType},
+         #{trainNo},
+         #{departStationCode},
+         #{arriveStationCode},
+         #{departDateTime},
+         #{arriveDateTime},
+         #{status}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE tb_order_form_detail
+        SET order_form_id = #{orderFormId},
+            passenger_id = #{passengerId},
+            passenger_name = #{passengerName},
+            passenger_type = #{passengerType},
+            card_no = #{cardNo},
+            seat_type = #{seatType},
+            seat_name = #{seatName},
+            price = #{price},
+            pick_no = #{pickNo},
+            journey_type = #{journeyType},
+            train_no = #{trainNo},
+            depart_station_code = #{departStationCode},
+            arrive_station_code = #{arriveStationCode},
+            depart_date_time = #{departDateTime},
+            arrive_date_time = #{arriveDateTime},
+            status = #{status}
+    </update>
+
+    <select id="selectById" resultType="com.jkm.entity.OrderFormDetail">
+        SELECT * FROM tb_order_form_detail where id = #{id}
+    </select>
+</mapper>

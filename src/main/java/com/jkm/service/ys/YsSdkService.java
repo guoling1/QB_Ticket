@@ -1,6 +1,8 @@
 package com.jkm.service.ys;
 
 
+import com.jkm.service.ys.entity.YsRefundTicketRequest;
+import com.jkm.service.ys.entity.YsRefundTicketResponse;
 import com.jkm.service.ys.entity.YsTrainStationQueryRequest;
 import com.jkm.service.ys.entity.YsTrainStationQueryResponse;
 
@@ -10,11 +12,18 @@ import com.jkm.service.ys.entity.YsTrainStationQueryResponse;
 public interface YsSdkService {
 
     /**
-     * 校验用户银行卡
+     * 查询站点信息
      * @param request
      * @return
      */
     YsTrainStationQueryResponse queryTrainStation(final YsTrainStationQueryRequest request);
 
+    /**
+     * 请求ys退票
+     *
+     * @param request
+     * @return
+     */
+    YsRefundTicketResponse refundTicket(final YsRefundTicketRequest request);
 
 }

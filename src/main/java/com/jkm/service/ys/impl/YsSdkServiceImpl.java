@@ -2,6 +2,8 @@ package com.jkm.service.ys.impl;
 
 import com.google.common.base.Preconditions;
 import com.jkm.service.ys.YsSdkService;
+import com.jkm.service.ys.entity.YsRefundTicketRequest;
+import com.jkm.service.ys.entity.YsRefundTicketResponse;
 import com.jkm.service.ys.entity.YsTrainStationQueryRequest;
 import com.jkm.service.ys.entity.YsTrainStationQueryResponse;
 import com.jkm.service.ys.helper.YsSdkConstants;
@@ -60,6 +62,17 @@ public class YsSdkServiceImpl implements YsSdkService {
        return new YsTrainStationQueryResponse();
     }
 
+    /**
+     *  {@inheritDoc}
+     *
+     * @param request
+     * @return
+     */
+    @Override
+    public YsRefundTicketResponse refundTicket(YsRefundTicketRequest request) {
+        return null;
+    }
+
 
     private void addSign(final Map<String, String> requestParamMap) {
         requestParamMap.put(YsSdkSignUtil.SIGN_KEY, YsSdkSignUtil.sign(requestParamMap, YsSdkConstants.SIGN_KEY));
@@ -92,7 +105,7 @@ public class YsSdkServiceImpl implements YsSdkService {
                                final String sn) {
         stopWatch.start();
         try {
-            final String response = this.httpClientFacade.post(YsSdkConstants.SIGN_CONTRACT_NOTIFY_URL, requestParamMap, CHARSET);
+            final String response = this.httpClientFacade.post(YsSdkConstants.SERVICE_URL, requestParamMap, CHARSET);
             stopWatch.stop();
             return response;
         } catch (final Throwable e) {

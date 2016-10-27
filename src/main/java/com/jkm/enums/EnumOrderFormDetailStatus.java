@@ -5,11 +5,9 @@ import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 
 /**
- * Created by yulong.zhang on 2016/10/27.
- *
- * 订单状态
+ * Created by yuxiang on 2016-10-27.
  */
-public enum EnumOrderFormStatus {
+public enum EnumOrderFormDetailStatus {
 
     /**
      * 订单初始化
@@ -41,24 +39,23 @@ public enum EnumOrderFormStatus {
     @Getter
     private String value;
 
-    EnumOrderFormStatus(final int id, final String value) {
+    EnumOrderFormDetailStatus(final int id, final String value) {
         this.id = id;
         this.value = value;
     }
 
-    private static final ImmutableMap<Integer, EnumOrderFormStatus> INIT_MAP;
+    private static final ImmutableMap<Integer, EnumOrderFormDetailStatus> INIT_MAP;
 
     static {
-        final ImmutableMap.Builder<Integer, EnumOrderFormStatus> builder = new ImmutableMap.Builder<>();
-        for (EnumOrderFormStatus status : EnumOrderFormStatus.values()) {
+        final ImmutableMap.Builder<Integer, EnumOrderFormDetailStatus> builder = new ImmutableMap.Builder<>();
+        for (EnumOrderFormDetailStatus status : EnumOrderFormDetailStatus.values()) {
             builder.put(status.getId(), status);
         }
         INIT_MAP = builder.build();
     }
 
-    public static final EnumOrderFormStatus of(final int status) {
+    public static final EnumOrderFormDetailStatus of(final int status) {
         Preconditions.checkState(INIT_MAP.containsKey(status), "unknow enumOrderFormStatus[%s]", status);
         return INIT_MAP.get(status);
     }
-
 }

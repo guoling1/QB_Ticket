@@ -17,6 +17,6 @@ public class YsSdkConstants {
     /**
      * 签约回调url
      */
-    public static final String SIGN_CONTRACT_NOTIFY_URL = "";
+    public static final String SERVICE_URL = "http://113.106.160.201:9800/ysInterfaceServe/";
 
 }

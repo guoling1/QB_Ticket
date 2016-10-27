@@ -9,7 +9,7 @@ import java.util.Map;
  * Created by zhangbin on 2016/10/25.
  */
 @Data
-public class YsTrainStationQueryRequest {
+public class YsTrainStationQueryRequest extends YsSdkRequest{
     /**
      * 请求流水号(接入商流水)
      * 合法字符[a-z A-Z 0-9]

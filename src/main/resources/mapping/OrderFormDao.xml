@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.dao.OrderFormDao">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+      INSERT INTO tb_order_form
+      (
+      uid,
+      query_key,
+      term_trans_id,
+      trans_id, 
+      pick_No,
+      insurance_fee,
+      technical_fee,
+      journey_type,
+      train_no,
+      depart_station_code,
+      arrive_station_code,
+      depart_date_time,
+      arrive_date_time,
+      insure_id,
+      insure_price,
+      is_merge_notice,
+      is_accept_no_seat,
+      contact_name,
+      contact_mobile,
+      status
+      )
+      VALUES
+      (
+      #{uid},
+      #{queryKey},
+      #{termTransId},
+      #{transId},
+      #{pickNo},
+      #{insuranceFee},
+      #{technicalFee},
+      #{journeyType},
+      #{trainNo},
+      #{departStationCode},
+      #{arriveStationCode},
+      #{departDateTime},
+      #{arriveDateTime},
+      #{insureId},
+      #{insurePrice},
+      #{isMergeNotice},
+      #{isAcceptNoSeat},
+      #{contactName},
+      #{contactMobile},
+      #{status}
+      )
+    </insert>
+
+    <update id="update">
+      UPDATE tb_order_form
+      SET
+      uid = #{uid},
+      query_key = #{queryKey},
+      term_trans_id = #{termTransId},
+      trans_id = #{transId},
+      pick_no = #{pickNo},
+      insurance_fee = #{insuranceFee},
+      technical_fee = #{technicalFee},
+      journey_type = #{journeyType},
+      train_no = #{trainNo},
+      depart_station_code = #{departStationCode},
+      arrive_station_code = #{arriveStationCode},
+      depart_date_time = #{departDateTime},
+      arrive_date_time = #{arriveDateTime},
+      insure_id = #{insureId},
+      insure_price = #{insurePrice},
+      is_merge_notice = #{isMergeNotice},
+      is_accept_no_seat = #{isAcceptNoSeat},
+      contact_name = #{contactName},
+      contact_mobile = #{contactMobile},
+      status = #{status}
+    </update>
+
+    <select id="selectById" resultType="com.jkm.entity.OrderForm">
+      SELECT * FROM tb_order_form WHERE id = #{id}
+    </select>
+
+    <select id="selectByIdWithLock" resultType="com.jkm.entity.OrderForm">
+      SELECT * FROM tb_order_form WHERE id = #{id} FOR UPDATE
+    </select>
+
+    <select id="selectByUid" resultType="com.jkm.entity.OrderForm">
+      SELECT * FROM tb_order_form WHERE uid = #{uid}
+    </select>
+
+    <select id="selectByTermTransId" resultType="com.jkm.entity.OrderForm">
+      SELECT * FROM tb_order_form WHERE term_trans_id = #{termTransId}
+    </select>
+
+</mapper>
