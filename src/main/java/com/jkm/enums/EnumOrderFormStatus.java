@@ -34,7 +34,7 @@ public enum EnumOrderFormStatus {
     /**
      * 订单购买失败
      */
-    ORDER_FORM_FAIL(4, "订单购买失败");
+    ORDER_FORM_FAIL(5, "订单购买失败");
 
     @Getter
     private int id;
