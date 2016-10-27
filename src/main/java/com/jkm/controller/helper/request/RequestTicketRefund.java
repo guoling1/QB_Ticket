@@ -7,4 +7,8 @@ import lombok.Data;
  */
 @Data
 public class RequestTicketRefund {
+
+    /**
+     * 退票订单号
+     */
 }

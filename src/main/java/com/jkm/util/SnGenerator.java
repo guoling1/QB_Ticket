@@ -14,12 +14,12 @@ public final class SnGenerator {
 
     /**
      * 生成订单号
-     * XJD + 时间戳＋5位随机数
+     * QBT + 时间戳＋5位随机数
      *
      * @return
      */
     public static String generate() {
-        return "XJD" + DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(5);
+        return "QBT" + DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(5);
     }
 
     /**
