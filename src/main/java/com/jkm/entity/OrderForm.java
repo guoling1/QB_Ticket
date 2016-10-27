@@ -47,12 +47,12 @@ public class OrderForm extends BaseEntity {
     /**
      * 实扣保险费
      */
-    private int insuranceFee;
+    private BigDecimal insuranceFee;
 
     /**
      * 实扣技术服务费
      */
-    private int technicalFee;
+    private BigDecimal technicalFee;
 
     /**
      * 固定 ： 1 单程
@@ -75,14 +75,14 @@ public class OrderForm extends BaseEntity {
     private String arriveStationCode;
 
     /**
-     * 出发日期，值如 "2016-05-18"
+     * 出发日期，值如 "2016-05-18 07:00"
      */
-    private Date departDate;
+    private Date departDateTime;
 
     /**
-     *  出发时间，值如 "07:00"
+     *  到達日期，值如 "2016-05-18 07:00"
      */
-    private String departTime;
+    private Date arriveDateTime;
 
     /**
      * 保险ID，值如 1 当为0时表示不购买保险
