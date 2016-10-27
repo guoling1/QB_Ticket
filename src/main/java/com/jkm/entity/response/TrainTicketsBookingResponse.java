@@ -12,6 +12,8 @@ public class TrainTicketsBookingResponse {
 
     /**
      *  状态: "1004"
+     *
+     *  {@link com.jkm.enums.EnumErrorCode}
      */
     private String status;
 
