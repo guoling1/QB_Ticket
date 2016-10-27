@@ -4,6 +4,8 @@ import com.jkm.controller.helper.ResponseEntityBase;
 import com.jkm.controller.helper.request.RequestTicketRefund;
 import com.jkm.controller.helper.response.ResponseTicketRefund;
 import com.jkm.service.TicketService;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +26,8 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
+
+
     /**
      * 火车车票退票受理
      * @param req
@@ -33,6 +37,7 @@ public class TicketController {
     public ResponseEntityBase<ResponseTicketRefund> delete(@RequestBody final RequestTicketRefund req) {
         final ResponseEntityBase<ResponseTicketRefund> result = new ResponseEntityBase<>();
 
+        Pair<Boolean,String> pair = this.ticketService.refund();
             return result;
 
     }

@@ -10,7 +10,7 @@ import java.util.List;
  * 火车车票订票受理接口  -- 请求参数
  */
 @Data
-public class TrainTicketsBookingRequest {
+public class TrainTicketsBookingRequest extends YsSdkRequest{
 
     /**
      * 查询车次时的 queryKey

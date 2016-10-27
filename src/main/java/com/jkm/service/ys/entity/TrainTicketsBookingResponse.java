@@ -8,7 +8,7 @@ import lombok.Data;
  * 火车车票订票受理接口  -- 响应参数
  */
 @Data
-public class TrainTicketsBookingResponse {
+public class TrainTicketsBookingResponse extends YsSdkResponse{
 
     /**
      *  状态: "1004"
