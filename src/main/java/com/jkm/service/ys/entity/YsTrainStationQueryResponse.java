@@ -10,7 +10,7 @@ import java.util.Map;
  * Created by zhangbin on 2016/10/25.
  */
 @Data
-public class YsTrainStationQueryResponse {
+public class YsTrainStationQueryResponse extends YsSdkResponse{
     /**
      * 响应时间
      *
