@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jkm.dao.ContactFormDao">
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+			INSERT INTO qb_contact_information
+			(
+			user_id,
+			user_name,
+			card_type,
+			card_no,
+			user_phone,
+			user_type
+				)
+			VALUES
+			(
+			#{userId},
+			#{userName},
+			#{cardType},
+			#{cardNo},
+			#{userPhone},
+			#{userType}
+			)
+	</insert>
+	<delete id="delete" parameterType="int">
+		DELETE FROM qb_contact_information WHERE user_id=#{userId}
+	</delete>
+
+	<update id="update">
+		UPDATE qb_contact_information
+		SET
+		user_id=#{userId},
+		user_name=#{userName},
+		card_type=#{cardType},
+		card_no=#{cardNo},
+		user_phone=#{userPhone},
+		user_type=#{userType}
+	</update>
+
+	<select id="selectByUserName" resultMap="com.jkm.entity.ContactForm">
+		SELECT * FROM qb_contact_information WHERE user_name=#{userName}
+	</select>
+</mapper>

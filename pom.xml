@@ -325,6 +325,11 @@
             <version>${jackson.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.aeonbits.owner</groupId>
+            <artifactId>owner</artifactId>
+            <version>1.0.8</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>QB_Ticket</finalName>
