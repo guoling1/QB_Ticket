@@ -2,6 +2,8 @@ package com.jkm.dao;
 
 
 import com.jkm.entity.User;
+import org.springframework.stereotype.Repository;
+
 
 public interface IUserDao {
     int deleteByPrimaryKey(Integer id);
