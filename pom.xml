@@ -18,6 +18,8 @@
         <log4j.version>1.2.17</log4j.version>
         <httpclient.version>4.4.1</httpclient.version>
         <logback.version>1.1.6</logback.version>
+        <jackson.version>2.6.3</jackson.version>
+
         <jetty-maven-plugin.port>8250</jetty-maven-plugin.port>
         <tomcat-maven-plugin.port>8250</tomcat-maven-plugin.port>
     </properties>
@@ -286,6 +288,22 @@
             <groupId>commons-pool</groupId>
             <artifactId>commons-pool</artifactId>
             <version>1.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
 
     </dependencies>
