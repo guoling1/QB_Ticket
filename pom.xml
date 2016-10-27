@@ -14,10 +14,10 @@
         <!-- mybatis版本号 -->
         <mybatis.version>3.2.6</mybatis.version>
         <!-- log4j日志文件管理包版本 -->
-        <slf4j.version>1.7.7</slf4j.version>
+        <slf4j.version>1.7.18</slf4j.version>
         <log4j.version>1.2.17</log4j.version>
-        <httpclient.version>4.3.6</httpclient.version>
-
+        <httpclient.version>4.4.1</httpclient.version>
+        <logback.version>1.1.6</logback.version>
         <jetty-maven-plugin.port>8250</jetty-maven-plugin.port>
         <tomcat-maven-plugin.port>8250</tomcat-maven-plugin.port>
     </properties>
@@ -154,8 +154,28 @@
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
+            <artifactId>jcl-over-slf4j</artifactId>
             <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
         </dependency>
         <!-- log end -->
         <!-- 映入JSON -->
@@ -240,6 +260,34 @@
             <artifactId>xstream</artifactId>
             <version>1.4.8</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>${httpclient.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>${httpclient.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>fluent-hc</artifactId>
+            <version>${httpclient.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-pool</groupId>
+            <artifactId>commons-pool</artifactId>
+            <version>1.6</version>
+        </dependency>
+
     </dependencies>
     <build>
         <finalName>QB_Ticket</finalName>
