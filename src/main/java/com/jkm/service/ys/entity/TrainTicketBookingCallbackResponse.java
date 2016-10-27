@@ -1,4 +1,4 @@
-package com.jkm.entity.request;
+package com.jkm.service.ys.entity;
 
 
 import lombok.Data;
@@ -13,7 +13,7 @@ import java.util.Map;
  * 火车票 回调参数
  */
 @Data
-public class TrainTicketBookingResultsRequest {
+public class TrainTicketBookingCallbackResponse {
     /**
      * 请求流水号（接入商流水号）
      */

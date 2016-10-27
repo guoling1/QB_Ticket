@@ -1,4 +1,4 @@
-package com.jkm.entity.request;
+package com.jkm.service.ys.entity;
 
 import lombok.Data;
 
