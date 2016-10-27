@@ -109,6 +109,8 @@ public class TrainTicketsBookingRequest {
 
         /**
          *  证件类型 1 为身份证 2 为护照 3 台湾通行证 4 港澳通行证
+         *
+         *  {@link com.jkm.enums.EnumCertificatesType}
          */
         private int cardType;
 
@@ -124,6 +126,8 @@ public class TrainTicketsBookingRequest {
 
         /**
          * 座位类型 : 9
+         *
+         * {@link com.jkm.enums.EnumTrainTicketSeatType}
          */
         private int seatType;
 
