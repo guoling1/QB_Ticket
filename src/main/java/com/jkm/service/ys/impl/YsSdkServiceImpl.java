@@ -102,24 +102,6 @@ public class YsSdkServiceImpl implements YsSdkService {
     }
 
 
-    private Map<String, String> analyseResponse(final String responseContent) {
-        try {
-            final Map<String, String> result = new HashMap<>();
-            final String[] pairParams = StringUtils.split(responseContent.replace("{", "").replace("}", ""), ',');
-            for (final String pairParam : pairParams) {
-                final int first = pairParam.indexOf(':');
-                final String key = pairParam.substring(0, first);
-                final String value = pairParam.length() == (first + 1) ? "" :
-                        pairParam.substring(first + 1, pairParam.length());
-                result.put(key, value);
-            }
-            return result;
-        } catch (final Throwable e) {
-            log.error("analyse response error:[{}]", responseContent, e);
-            throw e;
-        }
-    }
-
     private void checkSignIfNeed(final Map<String, String> requestParamMap) {
         if (requestParamMap.containsKey(YsSdkSignUtil.SIGN_KEY)) {
             Preconditions.checkState(YsSdkSignUtil.checkSign(
