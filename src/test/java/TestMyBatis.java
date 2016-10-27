@@ -1,6 +1,10 @@
 import com.alibaba.fastjson.JSON;
+import com.jkm.dao.CommonDao;
+import com.jkm.dao.JkmPacketGetDao;
+import com.jkm.entity.JkmPacketGet;
 import com.jkm.entity.User;
 import com.jkm.service.IUserService;
+import com.jkm.service.JkmPacketGetService;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,9 +20,14 @@ public class TestMyBatis {
     private static Logger logger = Logger.getLogger(TestMyBatis.class);
     @Resource
     private IUserService iUserService;
+    @Resource
+    private JkmPacketGetDao jkmPacketGetDao;
     @Test
     public void test1() {
         User user = iUserService.getUserById(1);
-        logger.info(JSON.toJSONString(user));
+        JkmPacketGet jkmPacketGet = new JkmPacketGet();
+        jkmPacketGet.setState("去");
+        jkmPacketGetDao.insertSelective(jkmPacketGet);
+
     }
 }
