@@ -34,7 +34,7 @@ public class TicketController {
      * @return
      */
     @RequestMapping(value = "/refund", method = RequestMethod.POST)
-    public ResponseEntityBase<ResponseTicketRefund> delete(@RequestBody final RequestTicketRefund req) {
+    public ResponseEntityBase<ResponseTicketRefund> refund(@RequestBody final RequestTicketRefund req) {
         final ResponseEntityBase<ResponseTicketRefund> result = new ResponseEntityBase<>();
 
         Pair<Boolean,String> pair = this.ticketService.refund();
