@@ -1,14 +1,15 @@
 package com.jkm.service.ys.impl;
 
 import com.google.common.base.Preconditions;
+import com.jkm.entity.YsChannelRequestRecord;
+import com.jkm.enums.EnumBusinessType;
+import com.jkm.service.ys.YsSdkRequestRecordService;
 import com.jkm.service.ys.YsSdkService;
-import com.jkm.service.ys.entity.YsRefundTicketRequest;
-import com.jkm.service.ys.entity.YsRefundTicketResponse;
-import com.jkm.service.ys.entity.YsTrainStationQueryRequest;
-import com.jkm.service.ys.entity.YsTrainStationQueryResponse;
+import com.jkm.service.ys.entity.*;
 import com.jkm.service.ys.helper.YsSdkConstants;
 import com.jkm.service.ys.helper.YsSdkSignUtil;
 import com.jkm.service.ys.helper.serialize.YsSdkSerializeUtil;
+import com.jkm.util.JsonUtil;
 import com.jkm.util.http.client.HttpClientFacade;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +31,8 @@ public class YsSdkServiceImpl implements YsSdkService {
 
     @Autowired
     private HttpClientFacade httpClientFacade;
+    @Autowired
+    private YsSdkRequestRecordService ysSdkRequestRecordService;
 
     /**
      * {@inheritDoc}
@@ -40,25 +43,7 @@ public class YsSdkServiceImpl implements YsSdkService {
     @Override
     public YsTrainStationQueryResponse queryTrainStation(YsTrainStationQueryRequest request) {
 
-        final Map<String, String> requestParamMap = YsSdkSerializeUtil.converterObjectToMap(request);
-        addSign(requestParamMap);
-        final StopWatch stopWatch = new StopWatch();
-       /* final String responseContent = requestImpl(requestParamMap, EnumYxtSdkServiceCode.CHECK_BANK_CARD, stopWatch, 0, "", request.getOrderNo());
-        final YxtSdkBindUserCardResponse response = JsonUtil.parseObject(responseContent, YxtSdkBindUserCardResponse.class);
-        this.postHandle(EnumYxtSdkServiceCode.CHECK_BANK_CARD,
-                requestParamMap,
-                EnumPayCompany.Yxt.getName(),
-                0,
-                responseContent,
-                "",
-                request.getOrderNo(),
-                DateFormatUtil.format(new Date(stopWatch.getStartTime()), DateFormatUtil.yyyy_MM_dd_HH_mm_ss),
-                DateFormatUtil.format(new Date(stopWatch.getStartTime() +stopWatch.getTime()), DateFormatUtil.yyyy_MM_dd_HH_mm_ss),
-                stopWatch.getTime(),
-                EnumRequestThirdChannelStatus.REQUEST_SUCCESS.getId()
-        );
-        // this.checkSignIfNeed(requestParamMap);
-        return response;*/
+
        return new YsTrainStationQueryResponse();
     }
 
@@ -70,7 +55,18 @@ public class YsSdkServiceImpl implements YsSdkService {
      */
     @Override
     public YsRefundTicketResponse refundTicket(YsRefundTicketRequest request) {
-        return null;
+        final Map<String, String> requestParamMap = YsSdkSerializeUtil.converterObjectToMap(request);
+        addSign(requestParamMap);
+        final StopWatch stopWatch = new StopWatch();
+        final String responseContent = requestImpl(requestParamMap, EnumBusinessType.REFUND_TICKET_SERVICE, stopWatch, request.getTermTransID());
+        final YsRefundTicketResponse response = JsonUtil.parseObject(responseContent, YsRefundTicketResponse.class);
+        this.postHandle(request.getTermTransID(),
+                EnumBusinessType.REFUND_TICKET_SERVICE.getType(),
+                JsonUtil.toJsonString(requestParamMap),
+                responseContent,
+                stopWatch.getTime()
+        );
+        return response;
     }
 
 
@@ -80,48 +76,46 @@ public class YsSdkServiceImpl implements YsSdkService {
     }
 
 
-/*
 
-    private void postHandle(final String businessType,
-                            final String request,
+    private void postHandle(final String sn,
+                            final String businessType,
+                            final String requestParams,
                             final String returnParams,
-                            final String sn,
-                            final long millisecond,
-                            final int requestStatus) {
-        this.yxtSdkRequestPostProcessor.handle(enumYxtSdkServiceCode, requestParams,
-                paymentCompany, businessId, returnParams, businessOrderNo, sn, requestTime, returnTime,
-                millisecond, requestStatus);
-    }*/
+                            final long millisecond) {
+        final YsChannelRequestRecord record = YsChannelRequestRecord.builder().businessType(businessType).sn(sn).request(requestParams)
+                .response(returnParams).time(millisecond).build();
+        this.ysSdkRequestRecordService.record(record);
+    }
 
 
 
     private String requestImpl(final Map<String, String> requestParamMap,
+                               final EnumBusinessType enumBusinessType,
                                final StopWatch stopWatch,
-                               final long businessId,
-                               final String businessOrderNo,
                                final String sn) {
         stopWatch.start();
         try {
-            final String response = this.httpClientFacade.post(YsSdkConstants.SERVICE_GATEWAY_URL, requestParamMap, CHARSET);
+            final String response = this.httpClientFacade.post(YsSdkConstants.SERVICE_GATEWAY_URL + enumBusinessType.getAddress(), requestParamMap, CHARSET);
             stopWatch.stop();
             return response;
         } catch (final Throwable e) {
+            this.postHandle(sn,enumBusinessType.getType(),JsonUtil.toJsonString(requestParamMap),"error",stopWatch.getTime());
             stopWatch.stop();
             throw e;
         }
     }
 
-    private String requestImpl(final String jsonString,
+    private String requestImpl(final String requestParam,
+                               final EnumBusinessType enumBusinessType,
                                final StopWatch stopWatch,
-                               final long businessId,
-                               final String businessOrderNo,
                                final String sn) {
         stopWatch.start();
         try {
-            final String response = this.httpClientFacade.post(YsSdkConstants.SERVICE_GATEWAY_URL, jsonString);
+            final String response = this.httpClientFacade.post(YsSdkConstants.SERVICE_GATEWAY_URL + enumBusinessType.getAddress(), requestParam);
             stopWatch.stop();
             return response;
         } catch (final Throwable e) {
+            this.postHandle(sn,enumBusinessType.getType(),requestParam,"error",stopWatch.getTime());
             stopWatch.stop();
             throw e;
         }
