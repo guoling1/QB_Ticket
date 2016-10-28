@@ -52,7 +52,7 @@ public class TestOrderFormServiceImpl {
         orderForm.setContactName("于翔");
         orderForm.setContactMobile("18640426296");
         orderForm.setStatus(1);
-        this.orderFormService.add(orderForm);
+//        this.orderFormService.add(orderForm);
     }
 
     @Test
@@ -68,10 +68,10 @@ public class TestOrderFormServiceImpl {
 
     @Test
     public void testSelect() {
-        final Optional<OrderForm> optional = this.orderFormService.selectById(3);
+        final Optional<OrderForm> optional = this.orderFormService.selectById(31);
         System.out.println("selectById = " + JsonUtil.toJsonString(optional.get()));
 
-        final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByIdWithLock(3);
+        final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByIdWithLock(31);
         System.out.println("selectByIdWithLock = " + JsonUtil.toJsonString(orderFormOptional.get()));
 
         final Optional<OrderForm> orderFormOptional1 = this.orderFormService.selectByTermTransId("HCP201610271659123456789");

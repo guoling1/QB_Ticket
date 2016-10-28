@@ -46,7 +46,7 @@ public class TestOrderFormDetailServiceImpl {
             e.printStackTrace();
         }
         orderFormDetail.setStatus(1);
-        this.orderFormDetailService.add(orderFormDetail);
+//        this.orderFormDetailService.add(orderFormDetail);
     }
 
     @Test
