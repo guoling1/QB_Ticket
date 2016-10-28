@@ -1,5 +1,6 @@
 package com.jkm.controller.api;
 
+import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
 import com.jkm.controller.helper.request.RequestBookTicket;
 import com.jkm.controller.helper.request.RequestTicketRefund;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 @RequestMapping("/ticket")
 public class TicketController {
+public class TicketController extends BaseController{
 
     private final Logger logger = Logger.getLogger(TicketController.class);
 
@@ -46,8 +48,15 @@ public class TicketController {
     public ResponseEntityBase<ResponseTicketRefund> refund(@RequestBody final RequestTicketRefund req) {
         final ResponseEntityBase<ResponseTicketRefund> result = new ResponseEntityBase<>();
 
-        Pair<Boolean,String> pair = this.ticketService.refund();
-            return result;
+        try{
+            Pair<Boolean,String> pair = this.ticketService.refund(req.getOrderFormDetailId());
+        }catch(final Throwable throwable){
+
+            result.setCode(-1);
+            result.setMessage("退票失败");
+        }
+
+        return result;
 
     }
 

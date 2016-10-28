@@ -51,7 +51,7 @@ public class YsSdkSignUtil {
             }
         }
         content.deleteCharAt(content.length() - 1);
-        content.append(key);
+        content.append("key=" + key);
         return content.toString();
     }
 

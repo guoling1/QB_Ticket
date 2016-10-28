@@ -20,6 +20,11 @@ public class ContactForm extends BaseEntity {
     private String userName;
 
     /**
+     * 乘客生日
+     */
+    private String birth;
+
+    /**
      * 证件类型
      */
     private int cardType;

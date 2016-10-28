@@ -1,5 +1,6 @@
 package com.jkm.service.ys.entity;
 
+import com.jkm.service.ys.helper.YsSdkConstants;
 import lombok.Data;
 
 /**
@@ -11,13 +12,14 @@ public class YsSdkRequest {
     /**
      *终端号；YS 分配，如“04800001”
      */
-    private String terminalID;
+    private String terminalID = YsSdkConstants.TERMINAL_ID;
     /**
      *企业编号；YS 分配，如“1011
      */
-    private String factoryID;
+    private String factoryID = YsSdkConstants.FACTORY_ID;
     /**
-     *请求时间格式： YYYYMMDDHHMMSS
+     *请求时间
+     * 格式： YYYYMMDDHHMMSS
      */
     private String reqDateTime;
     /**
