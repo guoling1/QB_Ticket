@@ -1,15 +1,15 @@
-package com.jkm.service.ys.entity;
+package com.jkm.controller.helper.request;
 
 import lombok.Data;
 
 /**
- * Created by zhangbin on 2016/10/25.
+ * Created by zhangbin on 2016/10/28.
  */
 @Data
-public class TrainTripsQueryRequest {
+public class RequestTrainTripsQuery {
     /**
-     * 出发站点。车站站点响应的 code 属性
-     * 值如"beijing"
+     * 出发站点。车站站点响应的
+     * code 属性 值如"beijing"
      */
     private String departStationCode;
 

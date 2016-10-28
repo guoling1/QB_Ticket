@@ -16,12 +16,11 @@ public interface YsSdkService {
     YsTrainStationQueryResponse queryTrainStation(final YsTrainStationQueryRequest request);
 
     /**
-     * 发送订票请求
-     *
+     * 查询车次
      * @param request
      * @return
      */
-    YsTrainTicketsBookingResponse bookingTicket(YsTrainTicketsBookingRequest request);
+    YsTrainTripsQueryResponse queryTrainStation(final YsTrainTripsQueryRequest request);
 
     /**
      * 请求ys退票

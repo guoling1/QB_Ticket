@@ -16,10 +16,10 @@ public interface ContactFormDao {
 
     /**
      * 根据乘客userId删除
-     * @param userId
+     * @param id
      * @return
      */
-    int delete(@Param("userId") long userId);
+    int delete(@Param("id") long id);
 
     /**
      * 更新乘客
