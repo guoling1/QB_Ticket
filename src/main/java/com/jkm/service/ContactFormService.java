@@ -1,5 +1,6 @@
 package com.jkm.service;
 
+import com.google.common.base.Optional;
 import com.jkm.entity.ContactForm;
 import org.apache.ibatis.annotations.Param;
 
@@ -30,4 +31,7 @@ public interface ContactFormService {
      */
     List<ContactForm> selectByUserName(@Param("userName") String userName);
 
+    Optional<ContactForm> selectByUid(long uid);
+
+    Optional<ContactForm> selectById(long id);
 }
