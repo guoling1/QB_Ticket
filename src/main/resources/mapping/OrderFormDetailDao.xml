@@ -8,6 +8,7 @@
         passenger_id,
         passenger_name,
         passenger_type,
+        card_type,
         card_no,
         seat_type,
         seat_name,
@@ -21,12 +22,14 @@
         arrive_station_code,
         depart_date_time,
         arrive_date_time,
+        remark,
         status
             )VALUES(
          #{orderFormId},
          #{passengerId},
          #{passengerName},
          #{passengerType},
+         #{cardType},
          #{cardNo},
          #{seatType},
          #{seatName},
@@ -40,6 +43,7 @@
          #{arriveStationCode},
          #{departDateTime},
          #{arriveDateTime},
+         #{remark},
          #{status}
         )
     </insert>
@@ -50,6 +54,7 @@
             passenger_id = #{passengerId},
             passenger_name = #{passengerName},
             passenger_type = #{passengerType},
+            card_type = #{cardType},
             card_no = #{cardNo},
             seat_type = #{seatType},
             seat_name = #{seatName},
@@ -63,10 +68,15 @@
             arrive_station_code = #{arriveStationCode},
             depart_date_time = #{departDateTime},
             arrive_date_time = #{arriveDateTime},
+            remark = #{remark},
             status = #{status}
     </update>
 
     <select id="selectById" resultType="com.jkm.entity.OrderFormDetail">
         SELECT * FROM tb_order_form_detail where id = #{id}
+    </select>
+
+    <select id="selectByOrderFormId" resultType="com.jkm.entity.OrderFormDetail">
+         SELECT * FROM tb_order_form_detail where order_form_id = #{orderFormId}
     </select>
 </mapper>

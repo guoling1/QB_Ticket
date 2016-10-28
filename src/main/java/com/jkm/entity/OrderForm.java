@@ -1,5 +1,6 @@
 package com.jkm.entity;
 
+import com.jkm.enums.EnumOrderFormStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -43,6 +44,11 @@ public class OrderForm extends BaseEntity {
      *取票号，值如 "EA12345678"
      */
     private String pickNo;
+
+    /**
+     * 火车票正常价格
+     */
+    private BigDecimal price;
 
     /**
      * 实扣保险费
@@ -100,12 +106,12 @@ public class OrderForm extends BaseEntity {
      *
      * {@link com.jkm.enums.EnumTrainTicketInsure}
      */
-    private int insureId;
+    private int insureId = 0;
 
     /**
      *  单个保险价格，值如 20 当为0时表示不购买保险
      */
-    private BigDecimal insurePrice;
+    private BigDecimal insurePrice = new BigDecimal("0.00");
 
     /**
      * 是否合并占座和出票通知， 固定： 1
@@ -117,7 +123,7 @@ public class OrderForm extends BaseEntity {
      *
      * {@link com.jkm.enums.EnumTrainTicketIsAcceptNoSeat}
      */
-    private int isAcceptNoSeat;
+    private int isAcceptNoSeat = 1;
 
     /**
      *  联系人姓名
@@ -128,4 +134,18 @@ public class OrderForm extends BaseEntity {
      * 联系人手机
      */
     private String contactMobile;
+
+    /**
+     * 备注
+     */
+    private String remark;
+
+    /**
+     * 客户是否 付款成功
+     *
+     * @return
+     */
+    public boolean isCustomerPaySuccess() {
+        return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId();
+    }
 }

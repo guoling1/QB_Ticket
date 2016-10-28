@@ -1,5 +1,6 @@
 package com.jkm.entity;
 
+import com.jkm.enums.EnumOrderFormDetailStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,6 +14,7 @@ import java.util.Date;
  *
  * tb_order_form_detail
  *
+ * {@link com.jkm.enums.EnumOrderFormDetailStatus}
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -36,6 +38,11 @@ public class OrderFormDetail extends BaseEntity{
      *  乘客类型，1 为成人 2 为儿童
      */
     private int passengerType;
+
+    /**
+     * 证件类型
+     */
+    private int cardType;
 
     /**
      *  证件号码
@@ -103,5 +110,19 @@ public class OrderFormDetail extends BaseEntity{
      * 到达时间
      */
     private Date arriveDateTime;
+
+    /**
+     * 备注
+     */
+    private String remark;
+
+    /**
+     * 是否是初始化状态
+     *
+     * @return
+     */
+    public boolean isTicketInit() {
+        return this.getStatus() == EnumOrderFormDetailStatus.TICKET_INITIALIZATION.getId();
+    }
 
 }

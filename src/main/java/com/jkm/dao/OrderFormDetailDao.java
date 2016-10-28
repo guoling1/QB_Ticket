@@ -3,20 +3,22 @@ package com.jkm.dao;
 import com.jkm.entity.OrderFormDetail;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * Created by yuxiang on 2016-10-27.
  */
 public interface OrderFormDetailDao {
 
     /**
-     * 插入订单
+     * 插入乘客车票订单
      *
      * @param orderFormDetail
      */
     void insert(OrderFormDetail orderFormDetail);
 
     /**
-     * 更新订单
+     * 更新乘客车票订单
      *
      * @param orderFormDetail
      * @return
@@ -24,11 +26,19 @@ public interface OrderFormDetailDao {
     int update(OrderFormDetail orderFormDetail);
 
     /**
-     *按id查询订单
+     *按id查询乘客车票
      *
      * @param id
      * @return
      */
     OrderFormDetail selectById(@Param("id") long id);
+
+    /**
+     * 按订单id查询所有车票
+     *
+     * @param orderFormId
+     * @return
+     */
+    List<OrderFormDetail> selectByOrderFormId(@Param("orderFormId") long orderFormId);
 
 }

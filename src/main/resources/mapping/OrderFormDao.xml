@@ -10,6 +10,7 @@
       term_trans_id,
       trans_id, 
       pick_No,
+      price,
       insurance_fee,
       technical_fee,
       journey_type,
@@ -26,6 +27,7 @@
       is_accept_no_seat,
       contact_name,
       contact_mobile,
+      remark,
       status
       )
       VALUES
@@ -35,6 +37,7 @@
       #{termTransId},
       #{transId},
       #{pickNo},
+      #{price},
       #{insuranceFee},
       #{technicalFee},
       #{journeyType},
@@ -51,6 +54,7 @@
       #{isAcceptNoSeat},
       #{contactName},
       #{contactMobile},
+      #{remark},
       #{status}
       )
     </insert>
@@ -63,6 +67,7 @@
       term_trans_id = #{termTransId},
       trans_id = #{transId},
       pick_no = #{pickNo},
+      price = #{price},
       insurance_fee = #{insuranceFee},
       technical_fee = #{technicalFee},
       journey_type = #{journeyType},
@@ -79,6 +84,7 @@
       is_accept_no_seat = #{isAcceptNoSeat},
       contact_name = #{contactName},
       contact_mobile = #{contactMobile},
+      remark = #{remark},
       status = #{status}
     </update>
 

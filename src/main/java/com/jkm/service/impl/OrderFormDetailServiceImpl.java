@@ -7,6 +7,8 @@ import com.jkm.service.OrderFormDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by yulong.zhang on 2016/10/27.
  */
@@ -46,5 +48,16 @@ public class OrderFormDetailServiceImpl implements OrderFormDetailService {
     @Override
     public Optional<OrderFormDetail> selectById(final long id) {
         return Optional.fromNullable(this.orderFormDetailDao.selectById(id));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderFormId
+     * @return
+     */
+    @Override
+    public List<OrderFormDetail> selectByOrderFormId(final long orderFormId) {
+        return this.orderFormDetailDao.selectByOrderFormId(orderFormId);
     }
 }
