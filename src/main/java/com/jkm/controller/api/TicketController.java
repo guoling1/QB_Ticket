@@ -36,8 +36,15 @@ public class TicketController extends BaseController{
     public ResponseEntityBase<ResponseTicketRefund> refund(@RequestBody final RequestTicketRefund req) {
         final ResponseEntityBase<ResponseTicketRefund> result = new ResponseEntityBase<>();
 
-        Pair<Boolean,String> pair = this.ticketService.refund();
-            return result;
+        try{
+            Pair<Boolean,String> pair = this.ticketService.refund(req.getOrderFormDetailId());
+        }catch(final Throwable throwable){
+
+            result.setCode(-1);
+            result.setMessage("退票失败");
+        }
+
+        return result;
 
     }
 
