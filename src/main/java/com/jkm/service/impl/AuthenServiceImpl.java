@@ -97,43 +97,41 @@ public class AuthenServiceImpl implements AuthenService {
 	private Request100005 createFastPay(AuthenData requestData) {
 		Request100005 authen = new Request100005();
 		RequestHead head = new RequestHead();
-		head.setTrxCode("100005");
-		head.setVersion("01");
-		head.setDataType(Constants.DATA_TYPE_XML);
-		head.setLevel(Constants.LEVEL_0);
+		head.setTrxCode("100005");//固定
+		head.setVersion("01");//固定
+		head.setDataType(Constants.DATA_TYPE_XML);//固定
+		head.setLevel(Constants.LEVEL_0);//固定
 		if ("1".equals(requestData.getStep())) {
 			head.setReqSn(requestData.getReqSn());
 		} else {
 			head.setReqSn(DateUtils.getDateString(new Date(),
 					DateUtils.formate_string_yyyyMMddhhmmss));
 		}
-
 		head.setSignedMsg("signedMsg");
-
 		RequestBody100005 body = new RequestBody100005();
 		RequestDetail100005 detail = new RequestDetail100005();
-		detail.setCRD_TYP(requestData.getCrdTyp());
-		detail.setMERCHANT_ID(requestData.getMercId());
-		detail.setACCOUNT_NAME(requestData.getCapCrdNm());
-		detail.setCARD_NO(requestData.getCrdNo());
-		detail.setCRE_CVN2(requestData.getCvn2());
-		detail.setCRE_VAL_DATE(requestData.getExpireDate());
-		detail.setID(requestData.getIdNo());
-		detail.setID_TYPE(requestData.getIdTyp());
-		detail.setMERCHANT_ID(detail.getMERCHANT_ID());
-		detail.setNOTIFY_URL("");
-		detail.setRET_URL("");
-		detail.setSEND_DT(DateUtils.getDateString(new Date(),
-				DateUtils.formate_string_yyyyMMdd));
+		detail.setMERCHANT_ID("800010000020019");
 		detail.setSEND_TIME(DateUtils.getDateString(new Date(),
 				DateUtils.formate_string_yyyyMMddhhmmss));
-		detail.setSTEP_NO(requestData.getStep());
-		detail.setTEL(requestData.getPhoneNo());
+		detail.setSEND_DT(DateUtils.getDateString(new Date(),
+				DateUtils.formate_string_yyyyMMdd));
+		/**
+		 * 每次必传部分
+		 */
+		detail.setRET_URL(requestData.getRetUrl());
+		detail.setNOTIFY_URL(requestData.getNotifyUrl());
+		detail.setCARD_NO(requestData.getCrdNo());
+		detail.setACCOUNT_NAME(requestData.getCapCrdNm());
 		detail.setAMOUNT(requestData.getAmount());
-
+		detail.setID_TYPE("00");//只支持身份证
+		detail.setID(requestData.getIdNo());//证件号
+		detail.setTEL(requestData.getPhoneNo());
+		detail.setCRE_VAL_DATE("");
+		detail.setCRE_CVN2("");
+		detail.setSTEP_NO(requestData.getStep());
 		if (!"0".equals(requestData.getStep())) {
-			detail.setTOKEN(requestData.getToken());
 			detail.setTEL_CAPTCHA(requestData.getVerifyCode());
+			detail.setTOKEN(requestData.getToken());
 		}
 		body.setTransDetail(detail);
 		authen.setBody(body);
