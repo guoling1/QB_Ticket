@@ -24,7 +24,7 @@
         )
     </insert>
     <delete id="delete" parameterType="int">
-        DELETE FROM qb_contact_information WHERE user_id=#{userId}
+        DELETE FROM qb_contact_information WHERE id=#{id}
     </delete>
 
     <update id="update">
