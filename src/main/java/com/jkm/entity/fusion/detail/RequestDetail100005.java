@@ -8,13 +8,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 @XmlAccessorOrder(XmlAccessOrder.ALPHABETICAL)  
 @XmlAccessorType(XmlAccessType.FIELD)  
-@XmlType(name = "TRANS_DETAIL",propOrder={"CRD_TYP","BUSINESS_CODE","MERCHANT_ID","SEND_TIME","SEND_DT","RET_URL","NOTIFY_URL",
+@XmlType(name = "TRANS_DETAIL",propOrder={"MERCHANT_ID","SEND_TIME","SEND_DT","RET_URL","NOTIFY_URL",
 		"CARD_NO","ACCOUNT_NAME","ID_TYPE","ID","TEL","CRE_VAL_DATE","CRE_CVN2","TEL_CAPTCHA","STEP_NO","TOKEN","AMOUNT"})
 public class RequestDetail100005 {
-	@XmlElement(name = "CRD_TYP")
-	private String CRD_TYP;
-	@XmlElement(name = "BUSINESS_CODE")
-	private String BUSINESS_CODE;
 	@XmlElement(name = "MERCHANT_ID")
 	private String MERCHANT_ID;
 	@XmlElement(name = "SEND_TIME")
@@ -55,13 +51,6 @@ public class RequestDetail100005 {
 		AMOUNT = aMOUNT;
 	}
 
-	public String getBUSINESS_CODE() {
-		return BUSINESS_CODE;
-	}
-
-	public void setBUSINESS_CODE(String bUSINESS_CODE) {
-		BUSINESS_CODE = bUSINESS_CODE;
-	}
 
 	public String getMERCHANT_ID() {
 		return MERCHANT_ID;
@@ -183,13 +172,6 @@ public class RequestDetail100005 {
 		TOKEN = tOKEN;
 	}
 
-	public String getCRD_TYP() {
-		return CRD_TYP;
-	}
-
-	public void setCRD_TYP(String cRD_TYP) {
-		CRD_TYP = cRD_TYP;
-	}
 	
 
 }

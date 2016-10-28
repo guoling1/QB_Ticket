@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorOrder(XmlAccessOrder.ALPHABETICAL)  
 @XmlAccessorType(XmlAccessType.FIELD)  
-@XmlType(name = "INFO", propOrder={"trxCode", "version", "dataType", "level", "userName", "userPass", "reqSn", "signedMsg","mercId"})
+@XmlType(name = "INFO", propOrder={"trxCode", "version", "dataType", "level", "userName", "userPass", "reqSn", "signedMsg"})
 
 public class RequestHead {
 	// 交易码
@@ -41,15 +41,7 @@ public class RequestHead {
 	// 签名信息
 	@XmlElement(name="SIGNED_MSG")
 	private String signedMsg;
-	
-	@XmlElement(name="MERCHANT_ID")
-	private String mercId;
-	public String getMercId() {
-		return mercId;
-	}
-	public void setMercId(String mercId) {
-		this.mercId = mercId;
-	}
+
 	public String getTrxCode() {
 		return trxCode;
 	}

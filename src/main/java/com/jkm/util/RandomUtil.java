@@ -1,11 +1,13 @@
 package com.jkm.util;
 
+import java.text.SimpleDateFormat;
 import java.util.Random;
 
 /**
  * 随机数工具类
  */
 public class RandomUtil {
+    private static SimpleDateFormat formate = new SimpleDateFormat("yyyyMMddHHmmssSSS");
     /**
      * 将n随机分为l份（发随机红包）
      * @param n

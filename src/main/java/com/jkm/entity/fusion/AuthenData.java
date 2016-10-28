@@ -1,60 +1,58 @@
 package com.jkm.entity.fusion;
 
 public class AuthenData {
-	
-	private String phoneNo;
-	
+	/**
+	 * 商户号
+	 */
 	private String mercId;
-	
-	private String mercOrdNo;
-	
-	private String crdNo;
-	
-	private String idNo;
-	
-	private String capCrdNm;
-	
-	private String crdTyp;
-	
-	private String idTyp;
-	
-	private String cvn2;
-	
-	private String expireDate;
-	
-	private String verifyCode;
-	
-	private String step;
-	
-	private String amount;
-	
+	/**
+	 * 交易流水号
+	 */
 	private String reqSn;
-	
+	/**
+	 * 同步通知页面路径
+	 */
+	private String retUrl;
+	/**
+	 * 异步通知页面路径
+	 */
+	private String notifyUrl;
+	/**
+	 * 卡号
+	 */
+	private String crdNo;
+	/**
+	 *银行账户名
+	 */
+	private String capCrdNm;
+	/**
+	 * 金额
+	 */
+	private String amount;
+	/**
+	 * 证件类型
+	 */
+	private String idType;
+	/**
+	 * 证件号
+	 */
+	private String idNo;
+	/**
+	 * 手机号
+	 */
+	private String phoneNo;
+	/**
+	 * 手机验证码
+	 */
+	private String verifyCode;
+	/**
+	 * 执行步骤
+	 */
+	private String step;
+	/**
+	 * 令牌
+	 */
 	private String token;
-
-	public String getPhoneNo() {
-		return phoneNo;
-	}
-
-	public String getCvn2() {
-		return cvn2;
-	}
-
-	public void setCvn2(String cvn2) {
-		this.cvn2 = cvn2;
-	}
-
-	public String getExpireDate() {
-		return expireDate;
-	}
-
-	public void setExpireDate(String expireDate) {
-		this.expireDate = expireDate;
-	}
-
-	public void setPhoneNo(String phoneNo) {
-		this.phoneNo = phoneNo;
-	}
 
 	public String getMercId() {
 		return mercId;
@@ -64,12 +62,28 @@ public class AuthenData {
 		this.mercId = mercId;
 	}
 
-	public String getMercOrdNo() {
-		return mercOrdNo;
+	public String getReqSn() {
+		return reqSn;
 	}
 
-	public void setMercOrdNo(String mercOrdNo) {
-		this.mercOrdNo = mercOrdNo;
+	public void setReqSn(String reqSn) {
+		this.reqSn = reqSn;
+	}
+
+	public String getRetUrl() {
+		return retUrl;
+	}
+
+	public void setRetUrl(String retUrl) {
+		this.retUrl = retUrl;
+	}
+
+	public String getNotifyUrl() {
+		return notifyUrl;
+	}
+
+	public void setNotifyUrl(String notifyUrl) {
+		this.notifyUrl = notifyUrl;
 	}
 
 	public String getCrdNo() {
@@ -80,14 +94,6 @@ public class AuthenData {
 		this.crdNo = crdNo;
 	}
 
-	public String getIdNo() {
-		return idNo;
-	}
-
-	public void setIdNo(String idNo) {
-		this.idNo = idNo;
-	}
-
 	public String getCapCrdNm() {
 		return capCrdNm;
 	}
@@ -96,20 +102,36 @@ public class AuthenData {
 		this.capCrdNm = capCrdNm;
 	}
 
-	public String getCrdTyp() {
-		return crdTyp;
+	public String getAmount() {
+		return amount;
 	}
 
-	public void setCrdTyp(String crdTyp) {
-		this.crdTyp = crdTyp;
+	public void setAmount(String amount) {
+		this.amount = amount;
 	}
 
-	public String getIdTyp() {
-		return idTyp;
+	public String getIdType() {
+		return idType;
 	}
 
-	public void setIdTyp(String idTyp) {
-		this.idTyp = idTyp;
+	public void setIdType(String idType) {
+		this.idType = idType;
+	}
+
+	public String getIdNo() {
+		return idNo;
+	}
+
+	public void setIdNo(String idNo) {
+		this.idNo = idNo;
+	}
+
+	public String getPhoneNo() {
+		return phoneNo;
+	}
+
+	public void setPhoneNo(String phoneNo) {
+		this.phoneNo = phoneNo;
 	}
 
 	public String getVerifyCode() {
@@ -128,22 +150,6 @@ public class AuthenData {
 		this.step = step;
 	}
 
-	public String getAmount() {
-		return amount;
-	}
-
-	public void setAmount(String amount) {
-		this.amount = amount;
-	}
-
-	public String getReqSn() {
-		return reqSn;
-	}
-
-	public void setReqSn(String reqSn) {
-		this.reqSn = reqSn;
-	}
-
 	public String getToken() {
 		return token;
 	}
@@ -151,7 +157,4 @@ public class AuthenData {
 	public void setToken(String token) {
 		this.token = token;
 	}
-	
-	
-
 }
