@@ -1,5 +1,7 @@
 package com.jkm.enums;
 
+import lombok.Getter;
+
 /**
  * Created by yulong.zhang on 2016/10/26.
  *
@@ -48,9 +50,9 @@ public enum EnumTrainTicketSeatType {
     other(20, "其他");
 
 
-
+    @Getter
     private int id;
-
+    @Getter
     private String value;
 
     EnumTrainTicketSeatType(final int id, final String value) {

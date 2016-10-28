@@ -57,7 +57,7 @@ public class TestOrderFormServiceImpl {
 
     @Test
     public void testUpdate() {
-        final Optional<OrderForm> orderFormOptional = this.orderFormService.selectById(3);
+        final Optional<OrderForm> orderFormOptional = this.orderFormService.selectById(31);
         final OrderForm orderForm1 = orderFormOptional.get();
         orderForm1.setTransId("YS201610271709111111");
         orderForm1.setPickNo("QP123456789");

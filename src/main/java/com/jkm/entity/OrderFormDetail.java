@@ -14,7 +14,7 @@ import java.util.Date;
  *
  */
 @Data
-public class OrderFormDetail {
+public class OrderFormDetail extends BaseEntity {
     /**
      * 订单ID
      */
@@ -42,6 +42,8 @@ public class OrderFormDetail {
 
     /**
      * 座位类型
+     *
+     * {@link com.jkm.enums.EnumTrainTicketSeatType}
      */
     private int seatType;
 
@@ -69,6 +71,16 @@ public class OrderFormDetail {
      * 车次号。 值如 "G101"
      */
     private String trainNo;
+
+    /**
+     * 出发站点
+     */
+    private String departStation;
+
+    /**
+     * 目的站点
+     */
+    private String arriveStation;
 
     /**
      * 出发站点Code，值如 "beijingbei"
