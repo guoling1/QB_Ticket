@@ -1,5 +1,6 @@
 package com.jkm.controller.api;
 
+import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
 import com.jkm.controller.helper.request.RequestTicketRefund;
 import com.jkm.controller.helper.response.ResponseTicketRefund;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @RequestMapping("/ticket")
 @Controller
-public class TicketController {
+public class TicketController extends BaseController{
 
     @Autowired
     private TicketService ticketService;

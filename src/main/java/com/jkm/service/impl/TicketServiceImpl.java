@@ -7,10 +7,15 @@ import com.jkm.service.OrderFormService;
 import com.jkm.service.TicketService;
 import com.jkm.service.ys.YsSdkService;
 import com.jkm.service.ys.entity.YsRefundCallbackResponse;
+import com.jkm.service.ys.entity.YsRefundTicketRequest;
+import com.jkm.util.DateFormatUtil;
+import com.jkm.util.SnGenerator;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.AccessType;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 /**
  * Created by yuxiang on 2016-10-27.
@@ -31,6 +36,11 @@ public class TicketServiceImpl implements TicketService{
      */
     @Override
     public Pair<Boolean, String> refund() {
+
+        final YsRefundTicketRequest request = YsRefundTicketRequest.builder().termTransID(SnGenerator.generate()).transID("")
+                .passengerID("").build();
+        request.setReqDateTime(DateFormatUtil.format(new Date(),"yyyyMMddHHmmss"));
+        this.ysSdkService.refundTicket(request);
         return null;
     }
 

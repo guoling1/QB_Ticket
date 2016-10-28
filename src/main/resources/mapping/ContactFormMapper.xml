@@ -6,6 +6,7 @@
 			(
 			user_id,
 			user_name,
+			birth,
 			card_type,
 			card_no,
 			user_phone,
@@ -15,6 +16,7 @@
 			(
 			#{userId},
 			#{userName},
+			#{birth}
 			#{cardType},
 			#{cardNo},
 			#{userPhone},
@@ -30,6 +32,7 @@
 		SET
 		user_id=#{userId},
 		user_name=#{userName},
+		birth=#{birth}
 		card_type=#{cardType},
 		card_no=#{cardNo},
 		user_phone=#{userPhone},
