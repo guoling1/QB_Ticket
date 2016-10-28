@@ -36,7 +36,7 @@
 		user_type=#{userType}
 	</update>
 
-	<select id="selectByUserName" resultMap="com.jkm.entity.ContactForm">
+	<select id="selectByUserName"  resultType="com.jkm.entity.ContactForm">
 		SELECT * FROM qb_contact_information WHERE user_name=#{userName}
 	</select>
 </mapper>

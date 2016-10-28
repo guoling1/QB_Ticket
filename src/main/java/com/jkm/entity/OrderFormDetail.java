@@ -1,6 +1,7 @@
 package com.jkm.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -14,7 +15,8 @@ import java.util.Date;
  *
  */
 @Data
-public class OrderFormDetail extends BaseEntity {
+@EqualsAndHashCode(callSuper = true)
+public class OrderFormDetail extends BaseEntity{
     /**
      * 订单ID
      */
