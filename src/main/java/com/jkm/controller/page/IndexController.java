@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping(value = "")
 public class IndexController extends BaseController {
     /**
-     * 快捷支付页面跳转
+     * 全局首页跳转
      *
      * @return
      */
