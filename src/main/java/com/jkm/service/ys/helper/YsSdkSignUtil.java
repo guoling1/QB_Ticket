@@ -33,10 +33,23 @@ public class YsSdkSignUtil {
     public static String sign(@NonNull final Map<String, String> params,
                               @NonNull final String key) {
         final String signedStr = getSignedStr(params, key);
-        log.debug("签名字符串:{}", signedStr);
+//        log.debug("签名字符串:{}", signedStr);
         return BytesHexConverterUtil.bytesToHexStr(Md5Util.md5Digest(signedStr
                 .getBytes(Charset.forName("utf-8"))));
     }
+
+    /**
+     * 生成签名
+     *
+     * @param needSignStr
+     * @return
+     */
+    public static String sign(@NonNull final String needSignStr) {
+        log.debug("签名字符串:{}", needSignStr);
+        return BytesHexConverterUtil.bytesToHexStr(Md5Util.md5Digest(needSignStr
+                .getBytes(Charset.forName("utf-8"))));
+    }
+
 
     private static String getSignedStr(final Map<String, String> params,
                                        final String key) {
@@ -50,7 +63,6 @@ public class YsSdkSignUtil {
                 content.append('&');
             }
         }
-        content.deleteCharAt(content.length() - 1);
         content.append("key=" + key);
         return content.toString();
     }
@@ -71,6 +83,25 @@ public class YsSdkSignUtil {
             return Objects.equals(expectSign, sign);
         } catch (final Throwable e) {
             log.error("检查签名异常:{}", e.getMessage(), e);
+            return false;
+        }
+    }
+
+    /**
+     * 签名
+     *
+     * @param needSignStr
+     * @param sign
+     * @return
+     */
+    public static boolean checkSign(@NonNull final String needSignStr,
+                                    @NonNull final String sign) {
+        try {
+            final String expectSign = sign(needSignStr);
+//            log.debug("期望签名:{},实际签名:{}", expectSign, sign);
+            return Objects.equals(expectSign, sign);
+        } catch (final Throwable e) {
+//            log.error("检查签名异常:{}", e.getMessage(), e);
             return false;
         }
     }

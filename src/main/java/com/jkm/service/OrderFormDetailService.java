@@ -26,6 +26,16 @@ public interface OrderFormDetailService {
     int update(OrderFormDetail orderFormDetail);
 
     /**
+     * 按订单更新所有乘客车票状态
+     *
+     * @param remark
+     * @param status
+     * @param orderFormId
+     * @return
+     */
+    int updateStatusByOrderFormId(String remark, int status, long orderFormId);
+
+    /**
      *按id查询车票
      *
      * @param id

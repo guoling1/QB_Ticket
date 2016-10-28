@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @Controller
 @RequestMapping("/ticket")
-public class TicketController {
 public class TicketController extends BaseController{
 
     private final Logger logger = Logger.getLogger(TicketController.class);

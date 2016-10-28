@@ -1,15 +1,18 @@
 package com.jkm.service.impl;
 
+import com.google.common.base.Optional;
 import com.jkm.dao.ContactFormDao;
 import com.jkm.entity.ContactForm;
 import com.jkm.service.ContactFormService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * Created by Administrator on 2016/10/28.
  */
+@Service
 public class ContactFormServiceImpl implements ContactFormService {
     @Autowired
     private ContactFormDao contactFormDao;
@@ -54,5 +57,27 @@ public class ContactFormServiceImpl implements ContactFormService {
     @Override
     public List<ContactForm> selectByUserName(final String userName) {
         return (List<ContactForm>) this.contactFormDao.selectByUserName(userName);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public Optional<ContactForm> selectByUid(final long uid) {
+        return Optional.fromNullable(this.contactFormDao.selectByUid(uid));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Optional<ContactForm> selectById(final long id) {
+        return Optional.fromNullable(this.contactFormDao.selectById(id));
     }
 }

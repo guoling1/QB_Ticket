@@ -1,10 +1,7 @@
 package com.jkm.service.ys;
 
 
-import com.jkm.service.ys.entity.YsRefundTicketRequest;
-import com.jkm.service.ys.entity.YsRefundTicketResponse;
-import com.jkm.service.ys.entity.YsTrainStationQueryRequest;
-import com.jkm.service.ys.entity.YsTrainStationQueryResponse;
+import com.jkm.service.ys.entity.*;
 
 /**
  * Created by yulong.zhang on 2016/9/28.
@@ -17,6 +14,14 @@ public interface YsSdkService {
      * @return
      */
     YsTrainStationQueryResponse queryTrainStation(final YsTrainStationQueryRequest request);
+
+    /**
+     * 发送订票请求
+     *
+     * @param request
+     * @return
+     */
+    YsTrainTicketsBookingResponse bookingTicket(YsTrainTicketsBookingRequest request);
 
     /**
      * 请求ys退票

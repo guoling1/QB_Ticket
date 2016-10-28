@@ -10,6 +10,7 @@
         passenger_type,
         card_type,
         card_no,
+        birth,
         seat_type,
         seat_name,
         price,
@@ -30,7 +31,7 @@
          #{passengerName},
          #{passengerType},
          #{cardType},
-         #{cardNo},
+         #{birth},
          #{seatType},
          #{seatName},
          #{price},
@@ -56,6 +57,7 @@
             passenger_type = #{passengerType},
             card_type = #{cardType},
             card_no = #{cardNo},
+            birth = #{birth},
             seat_type = #{seatType},
             seat_name = #{seatName},
             price = #{price},
@@ -70,6 +72,13 @@
             arrive_date_time = #{arriveDateTime},
             remark = #{remark},
             status = #{status}
+        WHERE id = #{id}
+    </update>
+    <update id="updateStatusByOrderFormId">
+        UPDATE tb_order_form_detail
+        SET remark = #{remark},
+            status = #{status}
+        WHERE order_form_id = #{orderFormId}
     </update>
 
     <select id="selectById" resultType="com.jkm.entity.OrderFormDetail">

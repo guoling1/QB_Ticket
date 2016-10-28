@@ -35,5 +35,14 @@ public interface ContactFormDao {
      */
     ContactForm selectByUserName(@Param("userName") String userName);
 
+    /**
+     * 按uid 查询
+     *
+     * @param uid
+     * @return
+     */
+    ContactForm selectByUid(@Param("uid") long uid);
+
+    ContactForm selectById(@Param("id") long id);
 
 }

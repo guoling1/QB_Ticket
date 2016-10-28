@@ -50,6 +50,11 @@ public class OrderFormDetail extends BaseEntity{
     private String cardNo;
 
     /**
+     * 生日
+     */
+    private String birth;
+
+    /**
      * 座位类型
      *
      * {@link com.jkm.enums.EnumTrainTicketSeatType}

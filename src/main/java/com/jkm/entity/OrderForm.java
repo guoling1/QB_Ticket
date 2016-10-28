@@ -91,14 +91,24 @@ public class OrderForm extends BaseEntity {
     private String arriveStationCode;
 
     /**
-     * 出发日期，值如 "2016-05-18 07:00"
+     * 出发日期，值如 "2016-05-18"
      */
-    private Date departDateTime;
+    private Date departDate;
 
     /**
-     *  到達日期，值如 "2016-05-18 07:00"
+     * 出发时间
      */
-    private Date arriveDateTime;
+    private String departTime;
+
+    /**
+     *  到達日期，值如 "2016-05-18"
+     */
+    private Date arriveDate;
+
+    /**
+     * 到达时间
+     */
+    private String arriveTime;
 
     /**
      * 保险ID，值如 1 当为0时表示不购买保险

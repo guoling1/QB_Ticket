@@ -1,5 +1,6 @@
 package com.jkm.service;
 
+import com.google.common.base.Optional;
 import com.jkm.entity.ContactForm;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,7 +19,7 @@ public interface ContactFormService {
      * 根据id
      * 删除乘客
      */
-    int delete(@Param("userId") long userId);
+    int delete(long userId);
 
     /**
      * 更新乘客
@@ -28,6 +29,20 @@ public interface ContactFormService {
     /**
      * 根据姓名查询
      */
-    List<ContactForm> selectByUserName(@Param("userName") String userName);
+    List<ContactForm> selectByUserName(String userName);
+
+    /**
+     * 按uid查询
+     *
+     * @return
+     */
+    Optional<ContactForm> selectByUid(long uid);
+
+    /**
+     * 按id查询
+     *
+     * @return
+     */
+    Optional<ContactForm> selectById(long id);
 
 }

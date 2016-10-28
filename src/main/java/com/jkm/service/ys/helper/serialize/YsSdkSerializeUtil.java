@@ -66,7 +66,6 @@ public class YsSdkSerializeUtil {
     }
 
 
-
     private static Object getFieldValue(final Field field,
                                          final Object target) {
         try {

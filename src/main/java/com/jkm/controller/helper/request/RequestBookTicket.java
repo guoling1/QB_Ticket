@@ -62,14 +62,24 @@ public class RequestBookTicket {
     private String arriveStationCode;
 
     /**
-     * 出发日期，值如 "2016-05-18 07:00"
+     * 出发日期，值如 "2016-05-18"
      */
-    private Date departDateTime;
+    private String departDate;
 
     /**
-     *  到達日期，值如 "2016-05-18 07:00"
+     *  出发时间，值如 "07:00"
      */
-    private Date arriveDateTime;
+    private String departTime;
+
+    /**
+     *  到達日期，值如 "2016-05-18"
+     */
+    private String arriveDate;
+
+    /**
+     *  出发时间，值如 "07:00"
+     */
+    private String arriveTime;
 
     /**
      * 保险ID，值如 1 当为0时表示不购买保险

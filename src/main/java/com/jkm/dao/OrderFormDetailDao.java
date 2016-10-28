@@ -26,6 +26,16 @@ public interface OrderFormDetailDao {
     int update(OrderFormDetail orderFormDetail);
 
     /**
+     * 按订单更新所有车票订单状态
+     *
+     * @param remark
+     * @param status
+     * @param orderFormId
+     * @return
+     */
+    int updateStatusByOrderFormId(@Param("remark") String remark, @Param("status") int status, @Param("orderFormId") long orderFormId);
+
+    /**
      *按id查询乘客车票
      *
      * @param id

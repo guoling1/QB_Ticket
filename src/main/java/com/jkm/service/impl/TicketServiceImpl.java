@@ -10,15 +10,13 @@ import com.jkm.entity.OrderForm;
 import com.jkm.entity.OrderFormDetail;
 import com.jkm.enums.EnumOrderFormDetailStatus;
 import com.jkm.enums.EnumOrderFormStatus;
+import com.jkm.service.ContactFormService;
 import com.jkm.service.OrderFormDetailService;
 import com.jkm.service.OrderFormService;
 import com.jkm.service.TicketService;
 import com.jkm.service.ys.YsSdkService;
-import com.jkm.service.ys.entity.YsRefundCallbackResponse;
-import com.jkm.service.ys.entity.YsTrainTicketsBookingRequest;
+import com.jkm.service.ys.entity.*;
 import org.apache.commons.collections.CollectionUtils;
-import com.jkm.service.ys.entity.YsRefundTicketRequest;
-import com.jkm.service.ys.entity.YsRefundTicketResponse;
 import com.jkm.util.DateFormatUtil;
 import com.jkm.util.SnGenerator;
 import org.apache.commons.lang3.tuple.Pair;
@@ -42,7 +40,8 @@ public class TicketServiceImpl implements TicketService {
     @Autowired
     private OrderFormService orderFormService;
 
-//    private Contrac
+    @Autowired
+    private ContactFormService contactFormService;
 
     @Autowired
     private YsSdkService ysSdkService;
@@ -59,16 +58,17 @@ public class TicketServiceImpl implements TicketService {
         final OrderForm orderForm = new OrderForm();
         orderForm.setUid(requestBookTicket.getUid());
         orderForm.setQueryKey(requestBookTicket.getQueryKey());
-        //TODO
-        orderForm.setTermTransId(requestBookTicket.getTermTransId());
+        orderForm.setTermTransId(SnGenerator.generate());
         orderForm.setTrainNo(requestBookTicket.getTrainNo());
         orderForm.setPrice(requestBookTicket.getPrice());
         orderForm.setDepartStation(requestBookTicket.getDepartStation());
         orderForm.setArriveStation(requestBookTicket.getArriveStation());
         orderForm.setDepartStationCode(requestBookTicket.getDepartStationCode());
         orderForm.setArriveStationCode(requestBookTicket.getArriveStationCode());
-        orderForm.setDepartDateTime(requestBookTicket.getDepartDateTime());
-        orderForm.setArriveDateTime(requestBookTicket.getArriveDateTime());
+        orderForm.setDepartDate(DateFormatUtil.parse(requestBookTicket.getDepartDate(), DateFormatUtil.yyyy_MM_dd));
+        orderForm.setDepartTime(requestBookTicket.getDepartTime());
+        orderForm.setArriveDate(DateFormatUtil.parse(requestBookTicket.getArriveDate(), DateFormatUtil.yyyy_MM_dd));
+        orderForm.setArriveTime(requestBookTicket.getArriveTime());
         orderForm.setContactName(requestBookTicket.getContactName());
         orderForm.setContactMobile(requestBookTicket.getContactMobile());
         orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_INITIALIZATION.getId());
@@ -79,23 +79,21 @@ public class TicketServiceImpl implements TicketService {
         Lists.transform(passengers, new Function<RequestBookTicket.passenger, OrderFormDetail>() {
             @Override
             public OrderFormDetail apply(RequestBookTicket.passenger passenger) {
-                //TODO
-                final ContactForm contactForm = new ContactForm();
-
+                final Optional<ContactForm> contactFormOptional = contactFormService.selectById(passenger.getContractFormId());
+                final ContactForm contactForm = contactFormOptional.get();
                 final OrderFormDetail orderFormDetail = new OrderFormDetail();
                 orderFormDetail.setOrderFormId(orderForm.getId());
                 orderFormDetail.setPassengerName(contactForm.getUserName());
                 orderFormDetail.setPassengerType(contactForm.getUserType());
                 orderFormDetail.setCardType(contactForm.getCardType());
                 orderFormDetail.setCardNo(contactForm.getCardNo());
+                orderFormDetail.setBirth(contactForm.getBirth());
                 orderFormDetail.setSeatType(passenger.getSeatType());
                 orderFormDetail.setTrainNo(orderForm.getTrainNo());
                 orderFormDetail.setDepartStation(orderForm.getDepartStation());
                 orderFormDetail.setArriveStation(orderForm.getArriveStation());
                 orderFormDetail.setDepartStationCode(orderForm.getDepartStationCode());
                 orderFormDetail.setArriveStationCode(orderForm.getArriveStationCode());
-                orderFormDetail.setDepartDateTime(orderForm.getDepartDateTime());
-                orderFormDetail.setArriveDateTime(orderForm.getArriveDateTime());
                 orderFormDetail.setStatus(EnumOrderFormDetailStatus.TICKET_INITIALIZATION.getId());
                 orderFormDetail.setRemark(EnumOrderFormDetailStatus.TICKET_INITIALIZATION.getValue());
                 orderFormDetailService.add(orderFormDetail);
@@ -120,9 +118,7 @@ public class TicketServiceImpl implements TicketService {
         final List<OrderFormDetail> orderFormDetails = this.orderFormDetailService.selectByOrderFormId(orderFormId);
         Preconditions.checkState(!CollectionUtils.isEmpty(orderFormDetails), "该订单[" + orderFormId + "]下对应的车票记录不存在");
         final YsTrainTicketsBookingRequest ysTrainTicketsBookingRequest = new YsTrainTicketsBookingRequest();
-//                .queryKey(orderForm.getQueryKey())
-//                .build();
-        Lists.transform(orderFormDetails, new Function<OrderFormDetail, YsTrainTicketsBookingRequest.passenger>() {
+        final List<YsTrainTicketsBookingRequest.passenger> passengerList = Lists.transform(orderFormDetails, new Function<OrderFormDetail, YsTrainTicketsBookingRequest.passenger>() {
             @Override
             public YsTrainTicketsBookingRequest.passenger apply(OrderFormDetail orderFormDetail) {
                 Preconditions.checkState(orderFormDetail.isTicketInit(),
@@ -133,14 +129,45 @@ public class TicketServiceImpl implements TicketService {
                 passenger.setName(orderFormDetail.getPassengerName());
                 passenger.setCardType(orderFormDetail.getCardType());
                 passenger.setCardNo(orderFormDetail.getCardNo());
-
-                return null;
+                passenger.setBirth(orderFormDetail.getBirth());
+                passenger.setSeatType(orderFormDetail.getSeatType());
+                passenger.setTicketPrice(String.valueOf(orderForm.getPrice().doubleValue()));
+                return passenger;
             }
         });
+        ysTrainTicketsBookingRequest.setQueryKey(orderForm.getQueryKey());
+        ysTrainTicketsBookingRequest.setTermTransID(orderForm.getTermTransId());
+        ysTrainTicketsBookingRequest.setTrainNo(orderForm.getTrainNo());
+        ysTrainTicketsBookingRequest.setDepartStationCode(orderForm.getDepartStationCode());
+        ysTrainTicketsBookingRequest.setArriveStationCode(orderForm.getArriveStationCode());
+        ysTrainTicketsBookingRequest.setDepartDate(DateFormatUtil.format(orderForm.getDepartDate(), "yyyy-MM-dd"));
+        ysTrainTicketsBookingRequest.setDepartTime(orderForm.getDepartTime());
+        ysTrainTicketsBookingRequest.setContactName(orderForm.getContactName());
+        ysTrainTicketsBookingRequest.setContactMobile(orderForm.getContactMobile());
+        ysTrainTicketsBookingRequest.setPassengers(passengerList);
+        orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_REQUESTING.getId());
+        orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_REQUESTING.getValue());
+        //订单设置为请求中
+        this.orderFormService.update(orderForm);
+        final YsTrainTicketsBookingResponse response = this.ysSdkService.bookingTicket(ysTrainTicketsBookingRequest);
+        final String status = response.getStatus();
+        switch (status) {
+            case "1004":
+                orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_REQUEST_SUCCESS.getId());
+                orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_REQUEST_SUCCESS.getValue());
+                this.orderFormService.update(orderForm);
+                return Pair.of(true, "订单请求成功");
+            default:
+                orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_FAIL.getId());
+                orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_FAIL.getValue());
+                this.orderFormService.update(orderForm);
+                this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getValue(),
+                        EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getId(), orderFormId);
+                //TODO
 
-
-
-        return null;
+                //退款
+                return Pair.of(false, "订单请求失败, 购票失败");
+        }
     }
 
     /**

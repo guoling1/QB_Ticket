@@ -42,6 +42,19 @@ public class OrderFormDetailServiceImpl implements OrderFormDetailService {
     /**
      * {@inheritDoc}
      *
+     * @param remark
+     * @param status
+     * @param orderFormId
+     * @return
+     */
+    @Override
+    public int updateStatusByOrderFormId(final String remark, final int status, final long orderFormId) {
+        return this.orderFormDetailDao.updateStatusByOrderFormId(remark, status, orderFormId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param id
      * @return
      */
