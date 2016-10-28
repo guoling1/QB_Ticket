@@ -1,8 +1,13 @@
 package com.jkm.service.impl;
 
+import com.jkm.entity.OrderForm;
+import com.jkm.entity.OrderFormDetail;
 import com.jkm.service.TicketService;
+import com.jkm.service.ys.YsSdkService;
 import com.jkm.service.ys.entity.YsRefundCallbackResponse;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.AccessType;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,7 +16,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class TicketServiceImpl implements TicketService{
 
-
+    @Autowired
+    private OrderFormDetail orderFormDetail;
+    @Autowired
+    private OrderForm orderForm;
+    @Autowired
+    private YsSdkService ysSdkService;
     /**
      * {@inheritDoc}
      *
