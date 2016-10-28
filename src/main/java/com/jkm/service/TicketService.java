@@ -14,7 +14,7 @@ public interface TicketService {
      *  退票接口
      * @return
      */
-    Pair<Boolean,String> refund();
+    Pair<Boolean,String> refund(long id);
 
     /**
      * 处理退票回调的异步通知

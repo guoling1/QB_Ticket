@@ -8,6 +8,7 @@ import com.jkm.service.TicketService;
 import com.jkm.service.ys.YsSdkService;
 import com.jkm.service.ys.entity.YsRefundCallbackResponse;
 import com.jkm.service.ys.entity.YsRefundTicketRequest;
+import com.jkm.service.ys.entity.YsRefundTicketResponse;
 import com.jkm.util.DateFormatUtil;
 import com.jkm.util.SnGenerator;
 import org.apache.commons.lang3.tuple.Pair;
@@ -35,12 +36,15 @@ public class TicketServiceImpl implements TicketService{
      * @return
      */
     @Override
-    public Pair<Boolean, String> refund() {
-
+    public Pair<Boolean, String> refund(final long id) {
+        
         final YsRefundTicketRequest request = YsRefundTicketRequest.builder().termTransID(SnGenerator.generate()).transID("")
                 .passengerID("").build();
         request.setReqDateTime(DateFormatUtil.format(new Date(),"yyyyMMddHHmmss"));
-        this.ysSdkService.refundTicket(request);
+        final YsRefundTicketResponse response = this.ysSdkService.refundTicket(request);
+        if(response.getStatus().equals("0000")){
+            return Pair.of(true , "退票请求成功");
+        }
         return null;
     }
 

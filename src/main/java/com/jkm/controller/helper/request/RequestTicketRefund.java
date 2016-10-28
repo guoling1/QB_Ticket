@@ -9,7 +9,7 @@ import lombok.Data;
 public class RequestTicketRefund {
 
     /**
-     * 乘客ID
+     * 个人订单ID
      */
-    private String passengerId;
+    private long orderFormDetailId;
 }

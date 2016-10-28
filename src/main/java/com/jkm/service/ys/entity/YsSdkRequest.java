@@ -1,15 +1,12 @@
 package com.jkm.service.ys.entity;
 
 import com.jkm.service.ys.helper.YsSdkConstants;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 
 /**
  * Created by yuxiang on 2016-10-27.
  */
 @Data
-@Builder
 public class YsSdkRequest {
 
     /**
