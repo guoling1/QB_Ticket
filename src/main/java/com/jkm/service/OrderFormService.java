@@ -2,7 +2,6 @@ package com.jkm.service;
 
 import com.google.common.base.Optional;
 import com.jkm.entity.OrderForm;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -32,7 +31,7 @@ public interface OrderFormService {
      * @param id
      * @return
      */
-    Optional<OrderForm> selectById(@Param("id") long id);
+    Optional<OrderForm> selectById(long id);
 
     /**
      *按id查询订单
@@ -40,7 +39,7 @@ public interface OrderFormService {
      * @param id
      * @return
      */
-    Optional<OrderForm> selectByIdWithLock(@Param("id") long id);
+    Optional<OrderForm> selectByIdWithLock(long id);
 
     /**
      * 按用户id查询订单
@@ -48,7 +47,7 @@ public interface OrderFormService {
      * @param uid
      * @return
      */
-    List<OrderForm> selectByUid(@Param("uid") long uid);
+    List<OrderForm> selectByUid(long uid);
 
     /**
      *按流水号查询订单
@@ -56,6 +55,6 @@ public interface OrderFormService {
      * @param termTransId
      * @return
      */
-    Optional<OrderForm> selectByTermTransId(@Param("termTransId") String termTransId);
+    Optional<OrderForm> selectByTermTransId(String termTransId);
 
 }

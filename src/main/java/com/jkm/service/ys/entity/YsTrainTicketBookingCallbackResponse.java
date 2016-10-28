@@ -13,7 +13,7 @@ import java.util.Map;
  * 火车票 回调参数
  */
 @Data
-public class TrainTicketBookingCallbackResponse extends YsSdkResponse{
+public class YsTrainTicketBookingCallbackResponse extends YsSdkResponse{
     /**
      * 请求流水号（接入商流水号）
      */

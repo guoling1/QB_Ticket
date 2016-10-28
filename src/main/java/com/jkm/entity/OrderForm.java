@@ -65,6 +65,16 @@ public class OrderForm extends BaseEntity {
     private String trainNo;
 
     /**
+     * 出发站点
+     */
+    private String departStation;
+
+    /**
+     * 目的站点
+     */
+    private String arriveStation;
+
+    /**
      * 出发站点Code，值如 "beijingbei"
      */
     private String departStationCode;
