@@ -1,6 +1,10 @@
 package com.jkm.entity.fusion;
 
 public class AuthenData {
+	/**
+	 * 交易流水号
+	 */
+	private String reqSn;
 	
 	private String phoneNo;
 	
@@ -13,7 +17,7 @@ public class AuthenData {
 	private String idNo;
 	
 	private String capCrdNm;
-	
+
 	private String crdTyp;
 	
 	private String idTyp;
@@ -28,7 +32,7 @@ public class AuthenData {
 	
 	private String amount;
 	
-	private String reqSn;
+
 	
 	private String token;
 
