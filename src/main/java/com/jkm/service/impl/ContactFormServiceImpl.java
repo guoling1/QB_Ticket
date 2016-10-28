@@ -4,12 +4,14 @@ import com.jkm.dao.ContactFormDao;
 import com.jkm.entity.ContactForm;
 import com.jkm.service.ContactFormService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * Created by Administrator on 2016/10/28.
  */
+@Service
 public class ContactFormServiceImpl implements ContactFormService {
     @Autowired
     private ContactFormDao contactFormDao;
