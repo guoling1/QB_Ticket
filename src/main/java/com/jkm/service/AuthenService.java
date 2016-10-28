@@ -1,7 +1,6 @@
 package com.jkm.service;
 
 import com.jkm.entity.fusion.AuthenData;
-import com.jkm.entity.fusion.FastQueryData;
 import com.jkm.entity.fusion.SingleRefundData;
 
 
@@ -24,11 +23,5 @@ public interface AuthenService {
 	 */
 	public Map<String, Object> singlRefund(SingleRefundData requestData);
 
-	/**
-	 * 快捷支付查询
-	 * @param requestData
-	 * @return
-	 */
-	public Map<String, Object> fastPayQuery(FastQueryData requestData);
 
 }

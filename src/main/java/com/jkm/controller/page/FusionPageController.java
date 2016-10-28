@@ -16,9 +16,10 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "/authenPage")
 public class FusionPageController extends BaseController {
+    private final Logger logger = LoggerFactory.getLogger(FusionPageController.class);
+
     @Autowired
     private AuthenService authenService;
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * 快捷支付页面跳转
@@ -27,9 +28,9 @@ public class FusionPageController extends BaseController {
      */
     @RequestMapping(value = "/fastPayPage", method = RequestMethod.GET)
     public String fastPayPage() {
-        logger.error("", request);
         return "fusion/fastPayPage.jsp";
     }
+
     /**
      * 鉴权获取验证码
      *
