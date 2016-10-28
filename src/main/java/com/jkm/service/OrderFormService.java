@@ -47,7 +47,7 @@ public interface OrderFormService {
      * @param uid
      * @return
      */
-    List<OrderForm> selectByUid(long uid);
+    List<OrderForm> selectByUid(String uid);
 
     /**
      *按流水号查询订单

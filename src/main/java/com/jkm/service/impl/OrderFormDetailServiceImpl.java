@@ -52,6 +52,7 @@ public class OrderFormDetailServiceImpl implements OrderFormDetailService {
         return this.orderFormDetailDao.updateStatusByOrderFormId(remark, status, orderFormId);
     }
 
+
     /**
      * {@inheritDoc}
      *
@@ -72,5 +73,17 @@ public class OrderFormDetailServiceImpl implements OrderFormDetailService {
     @Override
     public List<OrderFormDetail> selectByOrderFormId(final long orderFormId) {
         return this.orderFormDetailDao.selectByOrderFormId(orderFormId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param cardNo
+     * @param passengerType
+     * @return
+     */
+    @Override
+    public Optional<OrderFormDetail> selectByCardNoAndPassengerType(final String cardNo, final int passengerType) {
+        return Optional.fromNullable(this.orderFormDetailDao.selectByCardNoAndPassengerType(cardNo, passengerType));
     }
 }

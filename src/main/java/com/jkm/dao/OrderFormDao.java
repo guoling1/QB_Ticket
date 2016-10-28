@@ -47,7 +47,7 @@ public interface OrderFormDao {
      * @param uid
      * @return
      */
-    List<OrderForm> selectByUid(@Param("uid") long uid);
+    List<OrderForm> selectByUid(@Param("uid") String uid);
 
     /**
      *按流水号查询订单

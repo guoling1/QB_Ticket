@@ -171,6 +171,68 @@ public class TicketServiceImpl implements TicketService {
     }
 
     /**
+     * 处理订票回调
+     *
+     * @param response
+     * @return
+     */
+    @Override
+    public Pair<Boolean, String> handleBookTicketCallbackResponse(final YsTrainTicketBookingCallbackResponse response) {
+
+        final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByTermTransId(response.getTermTransID());
+        Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + response.getTermTransID() + "]不存在");
+        final OrderForm orderForm = orderFormOptional.get();
+        Preconditions.checkState(orderForm.isRequestSuccess(), "订单[" + response.getTermTransID() + "]状态不正确");
+        final Optional<OrderForm> orderFormOptional1 = this.orderFormService.selectByIdWithLock(orderForm.getId());
+        final OrderForm orderForm1 = orderFormOptional1.get();
+        //TODO
+        //根据什么来判断，订票成功
+
+        //成功
+        orderForm1.setTransId(response.getTransID());
+        orderForm1.setPickNo(response.getPickNo());
+        orderForm1.setInsurePrice(response.getInsuranceFee());
+        orderForm1.setTechnicalFee(response.getTechnicalFee());
+        orderForm1.setStatus(EnumOrderFormStatus.ORDER_FORM_SUCCESS.getId());
+        orderForm1.setRemark(EnumOrderFormStatus.ORDER_FORM_SUCCESS.getValue());
+        this.orderFormService.update(orderForm1);
+        final List<YsTrainTicketBookingCallbackResponse.passenger> passengers = response.getPassengers();
+        Preconditions.checkState(CollectionUtils.isEmpty(passengers), "乘客列表为空");
+        Lists.transform(passengers, new Function<YsTrainTicketBookingCallbackResponse.passenger, Object>() {
+            @Override
+            public Object apply(YsTrainTicketBookingCallbackResponse.passenger passenger) {
+                final Optional<OrderFormDetail> orderFormDetailOptional =
+                        orderFormDetailService.selectByCardNoAndPassengerType(passenger.getCardNo(), passenger.getType());
+
+                Preconditions.checkState(orderFormDetailOptional.isPresent(), "乘客[" + passenger.getCardNo() + "]不存在");
+                final OrderFormDetail orderFormDetail = orderFormDetailOptional.get();
+                Preconditions.checkState(orderFormDetail.isTicketInit(),
+                        "订单[" + orderForm.getId() + "] 对应的单个乘客车票订单[" + orderFormDetail.getId() + "]状态不正确");
+                orderFormDetail.setPassengerId(passenger.getId());
+                orderFormDetail.setSeatName(passenger.getSeatName());
+                orderFormDetail.setPrice(passenger.getPrice());
+                orderFormDetail.setPickNo(response.getPickNo());
+                orderFormDetail.setDepartDateTime(response.getDepartDateTime());
+                orderFormDetail.setArriveDateTime(response.getArriveDateTime());
+                orderFormDetail.setStatus(EnumOrderFormDetailStatus.TICKET_BUY_SUCCESS.getId());
+                orderFormDetail.setRemark(EnumOrderFormDetailStatus.TICKET_BUY_SUCCESS.getValue());
+                orderFormDetailService.update(orderFormDetail);
+                return null;
+            }
+        });
+
+        //失败 -- 退款
+        orderForm1.setStatus(EnumOrderFormStatus.ORDER_FORM_FAIL.getId());
+        orderForm1.setRemark(EnumOrderFormStatus.ORDER_FORM_FAIL.getValue());
+        this.orderFormService.update(orderForm1);
+
+        this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getValue(),
+                EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getId(), orderForm.getId());
+
+        return null;
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @return

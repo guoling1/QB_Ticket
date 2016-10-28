@@ -82,10 +82,14 @@
     </update>
 
     <select id="selectById" resultType="com.jkm.entity.OrderFormDetail">
-        SELECT * FROM tb_order_form_detail where id = #{id}
+        SELECT * FROM tb_order_form_detail WHERE id = #{id}
     </select>
 
     <select id="selectByOrderFormId" resultType="com.jkm.entity.OrderFormDetail">
-         SELECT * FROM tb_order_form_detail where order_form_id = #{orderFormId}
+         SELECT * FROM tb_order_form_detail WHERE order_form_id = #{orderFormId}
+    </select>
+
+    <select id="selectByCardNoAndPassengerType" resultType="com.jkm.entity.OrderFormDetail">
+         SELECT * FROM tb_order_form_detail WHERE card_no = #{cardNo} AND passenger_type = #{passengerType}
     </select>
 </mapper>

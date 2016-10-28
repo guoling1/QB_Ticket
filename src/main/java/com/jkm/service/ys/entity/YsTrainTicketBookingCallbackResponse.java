@@ -1,8 +1,11 @@
 package com.jkm.service.ys.entity;
 
 
+import com.jkm.service.ys.helper.YsSdkConstants;
+import com.jkm.util.DateFormatUtil;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +16,7 @@ import java.util.Map;
  * 火车票 回调参数
  */
 @Data
-public class YsTrainTicketBookingCallbackResponse extends YsSdkResponse{
+public class YsTrainTicketBookingCallbackResponse extends YsSdkResponse {
     /**
      * 请求流水号（接入商流水号）
      */
@@ -57,12 +60,12 @@ public class YsTrainTicketBookingCallbackResponse extends YsSdkResponse{
     /**
      * 实扣保险费
      */
-    private int insuranceFee;
+    private BigDecimal insuranceFee;
 
     /**
      * 实扣技术服务费
      */
-    private int technicalFee;
+    private BigDecimal technicalFee;
 
     /**
      * 出票乘客列表， JSON格式，
@@ -109,6 +112,22 @@ public class YsTrainTicketBookingCallbackResponse extends YsSdkResponse{
         /**
          * 座位价格，值如"1403.00"
          */
-        private String price;
+        private BigDecimal price;
+    }
+
+//    terminalID=04800001&factoryID=1011&reqDateTime=20151028162422
+//            & termTransID=123 & transID =456&key=000000
+    public boolean isSignCorrect() {
+
+        return true;
+    }
+
+    public String getSignStr() {
+        return new StringBuilder().append("terminalID").append("=").append(this.getTermTransID())
+                .append("&").append("factoryID").append("=").append(YsSdkConstants.FACTORY_ID)
+                .append("&").append("reqDateTime").append("=").append(DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss))
+                .append("&").append("termTransID").append("=").append(this.getTermTransID())
+                .append("&").append("transID").append("=").append("")
+                .append("&").append("key").append("=").append(YsSdkConstants.SIGN_KEY).toString();
     }
 }

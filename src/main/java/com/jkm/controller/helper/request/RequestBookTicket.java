@@ -19,7 +19,7 @@ public class RequestBookTicket {
     /**
      * 用户id
      */
-    private long uid;
+    private String uid;
 
     /**
      * 查询车次时的 queryKey

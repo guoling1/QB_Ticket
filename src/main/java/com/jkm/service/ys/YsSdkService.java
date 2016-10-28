@@ -31,4 +31,10 @@ public interface YsSdkService {
      */
     YsRefundTicketResponse refundTicket(final YsRefundTicketRequest request);
 
+    /**
+     * 记录订票回调
+     *
+     * @param callbackResponse
+     */
+    void recordBookTicketCallbackParams(YsTrainTicketBookingCallbackResponse callbackResponse);
 }

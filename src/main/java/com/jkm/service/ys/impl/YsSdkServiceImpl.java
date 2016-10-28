@@ -94,6 +94,21 @@ public class YsSdkServiceImpl implements YsSdkService {
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param callbackResponse
+     */
+    @Override
+    public void recordBookTicketCallbackParams(final YsTrainTicketBookingCallbackResponse callbackResponse) {
+        this.postHandle(callbackResponse.getTermTransID(),
+                EnumBusinessType.BOOK_TICKET_CALL_BACK.getType(),
+                JsonUtil.toJsonString(callbackResponse),
+                "",
+                0
+        );
+    }
+
 
     private void addSign(final Map<String, String> requestParamMap) {
         requestParamMap.put(YsSdkSignUtil.SIGN_KEY, YsSdkSignUtil.sign(requestParamMap, YsSdkConstants.SIGN_KEY));

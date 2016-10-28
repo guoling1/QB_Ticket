@@ -3,6 +3,7 @@ package com.jkm.controller.api.ys;
 import com.jkm.service.TicketService;
 import com.jkm.service.ys.YsSdkService;
 import com.jkm.service.ys.entity.YsRefundCallbackResponse;
+import com.jkm.service.ys.entity.YsTrainTicketBookingCallbackResponse;
 import com.jkm.util.ResponseWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by yuxiang on 2016-10-27.
@@ -27,6 +29,35 @@ public class YsCallBackController {
     private YsSdkService ysSdkService;
     @Autowired
     private TicketService ticketService;
+
+    /**
+     * 处理退票结果推送
+     *
+     * @return
+     */
+    @RequestMapping(value = "/bookTicket", method = RequestMethod.POST)
+    public void handleBookTicketCallBackMsg(final HttpServletRequest request,
+                                        final HttpServletResponse response,
+                                        final YsTrainTicketBookingCallbackResponse callbackResponse) throws IOException {
+        final Map parameterMap = request.getParameterMap();
+        if (log.isDebugEnabled()) {
+            final Set keySet = parameterMap.keySet();
+            for (final Object key : keySet) {
+                log.debug("request param[{}]:{}", key, parameterMap.get(key));
+            }
+        }
+        final boolean signCorrect = callbackResponse.isSignCorrect();
+        log.info("收到充值异步通知:[{}],签名结果[{}]", callbackResponse, signCorrect);
+        this.ysSdkService.recordBookTicketCallbackParams(callbackResponse);
+        if (signCorrect) {
+            this.ticketService.handleBookTicketCallbackResponse(callbackResponse);
+            ResponseWriter.writeTxtResponse(response, "success");
+            log.info("还款处理结束！！ 已经发送[success]");
+        } else {
+            log.error("#####receive repay notify content sign check error,request[{}]", request.getParameterMap());
+            ResponseWriter.writeTxtResponse(response, "签名失败。");
+        }
+    }
 
     /**
      * 处理退票结果推送
