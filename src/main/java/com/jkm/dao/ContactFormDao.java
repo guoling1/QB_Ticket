@@ -43,6 +43,12 @@ public interface ContactFormDao {
      */
     ContactForm selectByUid(@Param("uid") long uid);
 
+    /**
+     * 按id 查询
+     *
+     * @param id
+     * @return
+     */
     ContactForm selectById(@Param("id") long id);
 
 }
