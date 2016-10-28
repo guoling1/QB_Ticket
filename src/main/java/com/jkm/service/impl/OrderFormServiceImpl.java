@@ -69,7 +69,7 @@ public class OrderFormServiceImpl implements OrderFormService {
      * @return
      */
     @Override
-    public List<OrderForm> selectByUid(final long uid) {
+    public List<OrderForm> selectByUid(final String uid) {
         return this.orderFormDao.selectByUid(uid);
     }
 

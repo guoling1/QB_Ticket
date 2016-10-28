@@ -146,13 +146,13 @@ public class YsTrainTicketsBookingRequest extends YsSdkRequest{
      *
      * @return
      */
-    public String getSignStr() {
-        return new StringBuilder().append("terminalID").append("=").append(this.getTermTransID())
-                .append("&").append("factoryID").append("=").append(this.getFactoryID())
-                .append("&").append("reqDateTime").append("=").append(DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss))
-                .append("&").append("termTransID").append("=").append(this.getTermTransID())
-                .append("&").append("queryKey").append("=").append(this.getQueryKey())
-                .append("&").append("key").append("=").append(YsSdkConstants.SIGN_KEY).toString();
+    public String getSignStr() { return new StringBuilder().append("terminalID").append("=").append(this.getTermTransID())
+            .append("&").append("factoryID").append("=").append(this.getFactoryID())
+            .append("&").append("reqDateTime").append("=").append(DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss))
+            .append("&").append("termTransID").append("=").append(this.getTermTransID())
+            .append("&").append("queryKey").append("=").append(this.getQueryKey())
+            .append("&").append("key").append("=").append(YsSdkConstants.SIGN_KEY).toString();
+
     }
 
 }

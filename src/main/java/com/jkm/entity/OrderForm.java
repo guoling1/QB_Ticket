@@ -23,7 +23,7 @@ public class OrderForm extends BaseEntity {
     /**
      * 用户id
      */
-    private long uid;
+    private String uid;
 
     /**
      * 查询车次时的 queryKey
@@ -157,5 +157,14 @@ public class OrderForm extends BaseEntity {
      */
     public boolean isCustomerPaySuccess() {
         return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId();
+    }
+
+    /**
+     * 是否是订单请求成功状态
+     *
+     * @return
+     */
+    public boolean isRequestSuccess() {
+        return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_REQUEST_SUCCESS.getId();
     }
 }

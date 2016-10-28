@@ -51,4 +51,12 @@ public interface OrderFormDetailDao {
      */
     List<OrderFormDetail> selectByOrderFormId(@Param("orderFormId") long orderFormId);
 
+    /**
+     * 按证件号和乘客类型查询
+     *
+     * @param cardNo
+     * @param passengerType
+     * @return
+     */
+    OrderFormDetail selectByCardNoAndPassengerType(@Param("cardNo") String cardNo, @Param("passengerType") int passengerType);
 }

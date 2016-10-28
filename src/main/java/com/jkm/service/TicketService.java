@@ -2,6 +2,7 @@ package com.jkm.service;
 
 import com.jkm.controller.helper.request.RequestBookTicket;
 import com.jkm.service.ys.entity.YsRefundCallbackResponse;
+import com.jkm.service.ys.entity.YsTrainTicketBookingCallbackResponse;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,13 @@ public interface TicketService {
      * @return
      */
     Pair<Boolean, String> requestBookTicket(long orderFormId);
+
+    /**
+     * 订票步骤四： 回调，确定是否订票成功
+     *
+     * @return
+     */
+    Pair<Boolean, String> handleBookTicketCallbackResponse(YsTrainTicketBookingCallbackResponse response);
 
     /**
      *  退票接口

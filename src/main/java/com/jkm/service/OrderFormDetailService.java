@@ -26,7 +26,7 @@ public interface OrderFormDetailService {
     int update(OrderFormDetail orderFormDetail);
 
     /**
-     * 按订单更新所有乘客车票状态
+     * 按订单id更新所有乘客车票状态
      *
      * @param remark
      * @param status
@@ -49,4 +49,13 @@ public interface OrderFormDetailService {
      * @return
      */
     List<OrderFormDetail> selectByOrderFormId(long orderFormId);
+
+    /**
+     * 按证件号和乘客类型查询
+     *
+     * @param cardNo
+     * @param passengerType
+     * @return
+     */
+    Optional<OrderFormDetail> selectByCardNoAndPassengerType(String cardNo, int passengerType);
 }
