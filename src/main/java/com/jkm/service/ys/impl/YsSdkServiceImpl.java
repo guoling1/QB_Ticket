@@ -81,22 +81,19 @@ public class YsSdkServiceImpl implements YsSdkService {
 
 
 /*
-    private void postHandle(final EnumYxtSdkServiceCode enumYxtSdkServiceCode,
-                            final Map<String, String> requestParams,
-                            final String paymentCompany,
-                            final long businessId,
+
+    private void postHandle(final String businessType,
+                            final String request,
                             final String returnParams,
-                            final String businessOrderNo,
                             final String sn,
-                            final String requestTime,
-                            final String returnTime,
                             final long millisecond,
                             final int requestStatus) {
         this.yxtSdkRequestPostProcessor.handle(enumYxtSdkServiceCode, requestParams,
                 paymentCompany, businessId, returnParams, businessOrderNo, sn, requestTime, returnTime,
                 millisecond, requestStatus);
-    }
-*/
+    }*/
+
+
 
     private String requestImpl(final Map<String, String> requestParamMap,
                                final StopWatch stopWatch,
@@ -105,7 +102,7 @@ public class YsSdkServiceImpl implements YsSdkService {
                                final String sn) {
         stopWatch.start();
         try {
-            final String response = this.httpClientFacade.post(YsSdkConstants.SERVICE_URL, requestParamMap, CHARSET);
+            final String response = this.httpClientFacade.post(YsSdkConstants.SERVICE_GATEWAY_URL, requestParamMap, CHARSET);
             stopWatch.stop();
             return response;
         } catch (final Throwable e) {
@@ -114,6 +111,21 @@ public class YsSdkServiceImpl implements YsSdkService {
         }
     }
 
+    private String requestImpl(final String jsonString,
+                               final StopWatch stopWatch,
+                               final long businessId,
+                               final String businessOrderNo,
+                               final String sn) {
+        stopWatch.start();
+        try {
+            final String response = this.httpClientFacade.post(YsSdkConstants.SERVICE_GATEWAY_URL, jsonString);
+            stopWatch.stop();
+            return response;
+        } catch (final Throwable e) {
+            stopWatch.stop();
+            throw e;
+        }
+    }
 
     private void checkSignIfNeed(final Map<String, String> requestParamMap) {
         if (requestParamMap.containsKey(YsSdkSignUtil.SIGN_KEY)) {
