@@ -2,6 +2,7 @@ package com.jkm.enums;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+
 import lombok.Getter;
 
 /**
@@ -9,6 +10,7 @@ import lombok.Getter;
  *
  * 订单状态
  */
+
 public enum EnumOrderFormStatus {
 
     /**
