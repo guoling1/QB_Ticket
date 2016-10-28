@@ -19,24 +19,34 @@ public enum EnumOrderFormStatus {
     ORDER_FORM_INITIALIZATION(1, "订单初始化"),
 
     /**
+     * 客户付款成功
+     */
+    ORDER_FORM_CUSTOMER_PAY_SUCCESS(2, "客户付款成功"),
+
+    /**
      * 订单请求中
      */
-    ORDER_FORM_REQUESTING(2, "订单请求中"),
+    ORDER_FORM_REQUESTING(3, "订单请求中"),
 
     /**
      * 订单请求成功
      */
-    ORDER_FORM_REQUEST_SUCCESS(3, "订单请求成功"),
+    ORDER_FORM_REQUEST_SUCCESS(4, "订单请求成功"),
 
     /**
      * 订单购买成功
      */
-    ORDER_FORM_SUCCESS(4, "订单购买成功"),
+    ORDER_FORM_SUCCESS(5, "订单购买成功"),
 
     /**
      * 订单购买失败
      */
-    ORDER_FORM_FAIL(5, "订单购买失败");
+    ORDER_FORM_FAIL(6, "订单购买失败"),
+
+    /**
+     * 订单购买失败
+     */
+    ORDER_FORM_HAVE_BEEN_RETURN_TICKET(7, "订单已经退票");
 
     @Getter
     private int id;

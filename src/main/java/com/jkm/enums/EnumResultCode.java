@@ -9,7 +9,7 @@ package com.jkm.enums;
  * 务已受理；其它代码都表示订单状态为失败。
  * 为了不造成损失， 超时与未知（未收到返回） 的交易请先当成功处理。
  */
-public enum EnumErrorCode {
+public enum EnumResultCode {
 
 
     SUCCESS("0000", "成功"),
@@ -105,7 +105,7 @@ public enum EnumErrorCode {
     private String msg;
 
 
-    EnumErrorCode(final String code, final String msg) {
+    EnumResultCode(final String code, final String msg) {
         this.code = code;
         this.msg = msg;
     }

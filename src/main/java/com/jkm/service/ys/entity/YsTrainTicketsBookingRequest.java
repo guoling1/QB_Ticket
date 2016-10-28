@@ -1,7 +1,10 @@
 package com.jkm.service.ys.entity;
 
+import com.jkm.service.ys.helper.YsSdkConstants;
+import com.jkm.util.DateFormatUtil;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -58,12 +61,12 @@ public class YsTrainTicketsBookingRequest extends YsSdkRequest{
      *
      * {@link com.jkm.enums.EnumTrainTicketInsure}
      */
-    private int insureID;
+    private int insureID = 0;
 
     /**
      *  单个保险价格，值如 20 当为0时表示不购买保险
      */
-    private String insurePrice;
+    private String insurePrice = "0";
 
     /**
      * 是否合并占座和出票通知， 固定： 1
@@ -75,7 +78,7 @@ public class YsTrainTicketsBookingRequest extends YsSdkRequest{
      *
      * {@link com.jkm.enums.EnumTrainTicketIsAcceptNoSeat}
      */
-    private int isAcceptNoSeat;
+    private int isAcceptNoSeat = 1;
 
     /**
      *  联系人姓名（ Unicode编码）
@@ -91,6 +94,7 @@ public class YsTrainTicketsBookingRequest extends YsSdkRequest{
      * 乘客列表， JSON格式
      */
     private List<passenger> passengers;
+
 
     @Data
     public class passenger{
@@ -137,5 +141,18 @@ public class YsTrainTicketsBookingRequest extends YsSdkRequest{
         private String ticketPrice;
     }
 
+    /**
+     * 获得订票签名字符串
+     *
+     * @return
+     */
+    public String getSignStr() {
+        return new StringBuilder().append("terminalID").append("=").append(this.getTermTransID())
+                .append("&").append("factoryID").append("=").append(this.getFactoryID())
+                .append("&").append("reqDateTime").append("=").append(DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss))
+                .append("&").append("termTransID").append("=").append(this.getTermTransID())
+                .append("&").append("queryKey").append("=").append(this.getQueryKey())
+                .append("&").append("key").append("=").append(YsSdkConstants.SIGN_KEY).toString();
+    }
 
 }

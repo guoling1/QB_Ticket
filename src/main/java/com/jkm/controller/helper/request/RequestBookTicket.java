@@ -1,24 +1,20 @@
-package com.jkm.entity;
+package com.jkm.controller.helper.request;
 
-import com.jkm.enums.EnumOrderFormStatus;
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
- * Created by yulong.zhang on 2016/10/27.
+ * Created by yulong.zhang on 2016/10/28.
  *
- * 订单
- *
- * tb_order_form
- *
- * {@link com.jkm.enums.EnumOrderFormStatus}
+ * 订票请求参数
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class OrderForm extends BaseEntity {
+@Builder
+public class RequestBookTicket {
 
     /**
      * 用户id
@@ -36,34 +32,9 @@ public class OrderForm extends BaseEntity {
     private String termTransId;
 
     /**
-     * 平台交易流水（YS流水号）
-     */
-    private String transId;
-
-    /**
-     *取票号，值如 "EA12345678"
-     */
-    private String pickNo;
-
-    /**
-     * 火车票正常价格
-     */
-    private BigDecimal price;
-
-    /**
-     * 实扣保险费
-     */
-    private BigDecimal insuranceFee;
-
-    /**
-     * 实扣技术服务费
-     */
-    private BigDecimal technicalFee;
-
-    /**
      * 固定 ： 1 单程
      */
-    private int journeyType = 1;
+//    private int journeyType = 1;
 
     /**
      * 车次号。 值如 "G101"
@@ -93,20 +64,20 @@ public class OrderForm extends BaseEntity {
     /**
      * 出发日期，值如 "2016-05-18"
      */
-    private Date departDate;
+    private String departDate;
 
     /**
-     * 出发时间
+     *  出发时间，值如 "07:00"
      */
     private String departTime;
 
     /**
      *  到達日期，值如 "2016-05-18"
      */
-    private Date arriveDate;
+    private String arriveDate;
 
     /**
-     * 到达时间
+     *  出发时间，值如 "07:00"
      */
     private String arriveTime;
 
@@ -116,24 +87,24 @@ public class OrderForm extends BaseEntity {
      *
      * {@link com.jkm.enums.EnumTrainTicketInsure}
      */
-    private int insureId = 0;
+    private int insureId;
 
     /**
      *  单个保险价格，值如 20 当为0时表示不购买保险
      */
-    private BigDecimal insurePrice = new BigDecimal("0.00");
+    private BigDecimal insurePrice;
 
     /**
      * 是否合并占座和出票通知， 固定： 1
      */
-    private int isMergeNotice = 1;
+//    private int isMergeNotice = 1;
 
     /**
      * 无票时是否接受无座， 0 接受、 1 不接受
      *
      * {@link com.jkm.enums.EnumTrainTicketIsAcceptNoSeat}
      */
-    private int isAcceptNoSeat = 1;
+    private int isAcceptNoSeat;
 
     /**
      *  联系人姓名
@@ -146,16 +117,34 @@ public class OrderForm extends BaseEntity {
     private String contactMobile;
 
     /**
-     * 备注
+     * 票价
      */
-    private String remark;
+    private BigDecimal price;
 
     /**
-     * 客户是否 付款成功
-     *
-     * @return
+     * 乘客列表， JSON格式
      */
-    public boolean isCustomerPaySuccess() {
-        return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId();
+    private List<passenger> passengers;
+
+    @Data
+    public class passenger{
+
+        /**
+         * 联系人id
+         */
+        private long contractFormId;
+
+        /**
+         * 座位类型 : 9
+         *
+         * {@link com.jkm.enums.EnumTrainTicketSeatType}
+         */
+        private int seatType;
+
+        /**
+         * 座位价格，值如"1403.0"
+         */
+        private BigDecimal ticketPrice;
     }
+
 }

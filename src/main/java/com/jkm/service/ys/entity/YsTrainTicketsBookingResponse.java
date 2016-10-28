@@ -1,5 +1,6 @@
 package com.jkm.service.ys.entity;
 
+import com.jkm.service.ys.helper.YsSdkConstants;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -27,4 +28,13 @@ public class YsTrainTicketsBookingResponse extends YsSdkResponse{
      */
     private String transID;
 
+    public String getSignStr() {
+        return new StringBuilder()
+                .append("status").append("=").append(this.getStatus())
+                .append("&").append("msg").append("=").append(this.getMsg())
+                .append("&").append("srvDateTime").append("=").append(this.getSrvDateTime())
+                .append("&").append("termTransID").append("=").append(this.getTermTransID())
+                .append("&").append("key").append("=").append(YsSdkConstants.SIGN_KEY)
+                .toString();
+    }
 }

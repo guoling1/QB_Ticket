@@ -24,7 +24,7 @@
         )
     </insert>
     <delete id="delete" parameterType="int">
-        DELETE FROM qb_contact_information WHERE user_id=#{userId}
+        DELETE FROM qb_contact_information WHERE id=#{id}
     </delete>
 
     <update id="update">
@@ -41,5 +41,13 @@
 
     <select id="selectByUserName"  resultType="com.jkm.entity.ContactForm">
         SELECT * FROM qb_contact_information WHERE user_name=#{userName}
+    </select>
+
+    <select id="selectByUid" resultType="com.jkm.entity.ContactForm">
+        SELECT * FROM qb_contact_information WHERE uid = #{uid}
+    </select>
+
+    <select id="selectById" resultType="com.jkm.entity.ContactForm">
+        SELECT * FROM qb_contact_information WHERE id = #{id}
     </select>
 </mapper>

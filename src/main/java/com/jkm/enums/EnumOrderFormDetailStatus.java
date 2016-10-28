@@ -10,29 +10,39 @@ import lombok.Getter;
 public enum EnumOrderFormDetailStatus {
 
     /**
-     * 订单初始化
+     * 票初始化
      */
-    ORDER_FORM_INITIALIZATION(1, "订单初始化"),
+    TICKET_INITIALIZATION(1, "票初始化"),
 
     /**
-     * 订单请求中
+     * 出票成功
      */
-    ORDER_FORM_REQUESTING(2, "订单请求中"),
+    TICKET_BUY_SUCCESS(2, "出票成功"),
 
     /**
-     * 订单请求成功
+     * 出票失败
      */
-    ORDER_FORM_REQUEST_SUCCESS(3, "订单请求成功"),
+    TICKET_BUY_FAIL(3, "出票失败"),
 
     /**
-     * 订单购买成功
+     * 退票请求中
      */
-    ORDER_FORM_SUCCESS(4, "订单购买成功"),
+    TICKET_RETURN_REQUESTING(4, "退票中"),
 
     /**
-     * 订单购买失败
+     * 退票请求成功
      */
-    ORDER_FORM_FAIL(5, "订单购买失败");
+    TICKET_RETURN_REQUEST_SUCCESS(5, "退票请求成功"),
+
+    /**
+     * 退票成功
+     */
+    TICKET_RETURN_SUCCESS(6, "退票成功"),
+
+    /**
+     * 退票失败
+     */
+    TICKET_RETURN_FAIL(7, "退票失败");
 
     @Getter
     private int id;
