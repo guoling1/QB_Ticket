@@ -53,10 +53,6 @@ public class AuthenData {
 	 * 令牌
 	 */
 	private String token;
-	/**
-	 * 关联商户订单号
-	 */
-	private long relateId;
 
 	public String getMercId() {
 		return mercId;
@@ -162,11 +158,4 @@ public class AuthenData {
 		this.token = token;
 	}
 
-	public long getRelateId() {
-		return relateId;
-	}
-
-	public void setRelateId(long relateId) {
-		this.relateId = relateId;
-	}
 }

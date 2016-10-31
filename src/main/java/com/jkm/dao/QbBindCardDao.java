@@ -1,12 +1,8 @@
 package com.jkm.dao;
 
-import com.jkm.entity.JkmPacketGet;
-import com.jkm.entity.OrderForm;
 import com.jkm.entity.QbBindCard;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 
 public interface QbBindCardDao {

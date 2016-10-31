@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.*;
 
 @XmlAccessorOrder(XmlAccessOrder.ALPHABETICAL)
 @XmlAccessorType(XmlAccessType.FIELD)  
-@XmlType(name = "SINGLEREFUND_DETAIL",propOrder={"ORG_SN","ORG_DATE","REFUND_AMOUNT","ORG_AMOUNT","MERCHANT_ID","REFUND_ORD_NO","ORD_DATE",
+@XmlType(name = "TRANS_DETAIL",propOrder={"ORG_SN","ORG_DATE","REFUND_AMOUNT","ORG_AMOUNT","MERCHANT_ID","REFUND_ORD_NO","ORD_DATE",
 		"REFUND_REASON","TRANS_TYPE"})
 public class RequestDetail100003 {
 	@XmlElement(name = "ORG_SN")
