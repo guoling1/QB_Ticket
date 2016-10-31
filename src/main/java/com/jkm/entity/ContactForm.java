@@ -41,6 +41,8 @@ public class ContactForm extends BaseEntity {
 
     /**
      * 旅客类型
+     *
+     * {@link com.jkm.enums.EnumPassenger}
      */
     private int userType;
 

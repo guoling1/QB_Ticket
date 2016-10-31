@@ -41,5 +41,12 @@ public interface Constants {
 	 * 单笔退款地址
 	 */
 	public static final String  SINGLE_REFUND_URL = "http://122.112.2.132:11111/gateway/refund/singleRefund";
-	
+	/**
+	 * 银行卡鉴权
+	 */
+	public static final String  CARD_AUTH = "http://122.112.2.132:11111/gateway/auth/cardAuth";
+	/**
+	 * 商户号
+	 */
+	public static final String  MERC_ID = "800010000020019";
 }
