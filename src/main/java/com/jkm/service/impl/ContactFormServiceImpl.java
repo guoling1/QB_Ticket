@@ -30,12 +30,12 @@ public class ContactFormServiceImpl implements ContactFormService {
 
     /**
      *
-     * @param userId
+     * @param id
      * @return
      */
     @Override
-    public int delete(final long userId) {
-        return this.contactFormDao.delete(userId);
+    public int delete(final long id) {
+        return this.contactFormDao.delete(id);
     }
 
     /**

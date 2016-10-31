@@ -19,7 +19,7 @@ public interface ContactFormService {
      * 根据id
      * 删除乘客
      */
-    int delete(long userId);
+    int delete(@Param("id") long id);
 
     /**
      * 更新乘客
@@ -29,20 +29,9 @@ public interface ContactFormService {
     /**
      * 根据姓名查询
      */
-    List<ContactForm> selectByUserName(String userName);
+    List<ContactForm> selectByUserName(@Param("userName") String userName);
 
-    /**
-     * 按uid查询
-     *
-     * @return
-     */
     Optional<ContactForm> selectByUid(long uid);
 
-    /**
-     * 按id查询
-     *
-     * @return
-     */
     Optional<ContactForm> selectById(long id);
-
 }

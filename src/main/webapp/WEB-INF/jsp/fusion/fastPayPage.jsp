@@ -34,21 +34,14 @@ table {
 		<form name="xxx" action="/authenPage/fastPayVerifyCode" method="post">
 			<table align="center" width="80%">
 				<tr>
-					<th>商户号：</th>
-					<td><input type="text" name="mercId" /></td>
 					<th>手机号：</th>
 					<td><input type="text" name="phoneNo" /></td>
-					<th>卡号：</th>
-					<td><input type="text" name="crdNo" /></td>
-					<th>证件类型:</th>
-					<td><select name="idTyp">
-							<option value="00">身份证</option>
-							<option value="1">护照</option>
-					</select></td>
+					<th>身份证号：</th>
+					<td><input type="text" name="idNo" /></td>
 				</tr>
 				<tr>
-					<th>证件号：</th>
-					<td><input type="text" name="idNo" /></td>
+					<th>卡号：</th>
+					<td><input type="text" name="crdNo" /></td>
 					<th>资金卡户名：</th>
 					<td><input type="text" name="capCrdNm" /></td>
 					<th>金额：</th>

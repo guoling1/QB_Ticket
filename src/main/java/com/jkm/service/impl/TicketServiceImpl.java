@@ -158,26 +158,27 @@ public class TicketServiceImpl implements TicketService {
         orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_REQUESTING.getId());
         orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_REQUESTING.getValue());
         //订单设置为请求中
-        this.orderFormService.update(orderForm);
-        final YsTrainTicketsBookingResponse response = this.ysSdkService.bookingTicket(ysTrainTicketsBookingRequest);
-        final String status = response.getStatus();
-        switch (status) {
-            case "1004":
-                orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_REQUEST_SUCCESS.getId());
-                orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_REQUEST_SUCCESS.getValue());
-                this.orderFormService.update(orderForm);
-                return Pair.of(true, "订单请求成功");
-            default:
-                orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_FAIL.getId());
-                orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_FAIL.getValue());
-                this.orderFormService.update(orderForm);
-                this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getValue(),
-                        EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getId(), orderFormId);
-                //TODO
-
-                //退款
-                return Pair.of(false, "订单请求失败, 购票失败");
-        }
+//        this.orderFormService.update(orderForm);
+//        final YsTrainTicketsBookingResponse response = this.ysSdkService.bookingTicket(ysTrainTicketsBookingRequest);
+//        final String status = response.getStatus();
+//        switch (status) {
+//            case "1004":
+//                orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_REQUEST_SUCCESS.getId());
+//                orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_REQUEST_SUCCESS.getValue());
+//                this.orderFormService.update(orderForm);
+//                return Pair.of(true, "订单请求成功");
+//            default:
+//                orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_FAIL.getId());
+//                orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_FAIL.getValue());
+//                this.orderFormService.update(orderForm);
+//                this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getValue(),
+//                        EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getId(), orderFormId);
+//                //TODO
+//
+//                //退款
+//                return Pair.of(false, "订单请求失败, 购票失败");
+//        }
+        return null;
     }
 
     /**

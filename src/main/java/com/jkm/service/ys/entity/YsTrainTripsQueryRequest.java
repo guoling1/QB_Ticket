@@ -1,11 +1,13 @@
 package com.jkm.service.ys.entity;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
  * Created by zhangbin on 2016/10/25.
  */
 @Data
+@Builder
 public class YsTrainTripsQueryRequest {
     /**
      * 出发站点。车站站点响应的 code 属性

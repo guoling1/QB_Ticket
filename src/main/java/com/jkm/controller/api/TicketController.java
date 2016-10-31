@@ -2,39 +2,52 @@ package com.jkm.controller.api;
 
 import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
-import com.jkm.controller.helper.request.RequestBookTicket;
 import com.jkm.controller.helper.request.RequestTicketRefund;
-import com.jkm.controller.helper.response.ResponseBookTicket;
+import com.jkm.controller.helper.request.RequestTrainTripsQuery;
 import com.jkm.controller.helper.response.ResponseTicketRefund;
+import com.jkm.controller.helper.response.ResponseTrainTripsQuery;
 import com.jkm.service.TicketService;
+import com.jkm.service.TrainTripsQueryService;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.List;
+
 
 /**
  * Created by yuxiang on 2016-10-27.
  */
-@Controller
 @RequestMapping("/ticket")
+@Controller
 public class TicketController extends BaseController{
-
-    private final Logger logger = Logger.getLogger(TicketController.class);
 
     @Autowired
     private TicketService ticketService;
 
+    @Autowired
+    private TrainTripsQueryService trainTripsQueryService;
 
-    @RequestMapping(value = "/bookTicket", method = RequestMethod.POST)
-    public ResponseEntityBase<ResponseBookTicket> bookTicket(final RequestBookTicket requestBookTicket) {
-        final ResponseEntityBase<ResponseBookTicket> result = new ResponseEntityBase<>();
-        logger.info("订票初始化，生成订单 -- start");
-        this.ticketService.bookTicket(requestBookTicket);
-        logger.info("订票初始化，生成订单 -- end");
+
+    /**
+     * 火车车次查询
+     *
+     */
+
+
+
+    @RequestMapping(value = "/select", method =RequestMethod.POST)
+    public ResponseEntityBase<ResponseTrainTripsQuery> select(@RequestBody final List<RequestTrainTripsQuery> requestTrainTripsQueries){
+        final ResponseEntityBase<ResponseTrainTripsQuery> result = new ResponseEntityBase<>();
+        try {
+            List<RequestTrainTripsQuery> list = this.trainTripsQueryService.select(requestTrainTripsQueries);
+        }catch(final Throwable throwable){
+            result.setCode(-1);
+            result.setMessage("查询失败");
+        }
         return result;
     }
 
