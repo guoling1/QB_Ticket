@@ -1,6 +1,6 @@
 package com.jkm.entity.fusion.body;
 
-import com.jkm.entity.fusion.detail.RequestDetail100003;
+import com.jkm.entity.fusion.detail.RequestDetail100004;
 
 import javax.xml.bind.annotation.*;
 
@@ -8,16 +8,16 @@ import javax.xml.bind.annotation.*;
 @XmlAccessorOrder(XmlAccessOrder.ALPHABETICAL)
 @XmlAccessorType(XmlAccessType.FIELD)  
 @XmlType(name = "BODY",propOrder={"transDetail"})
-public class RequestBody100003 {
+public class RequestBody100004 {
 	
 	@XmlElement(name="TRANS_DETAIL")
-	private RequestDetail100003 transDetail;
+	private RequestDetail100004 transDetail;
 
-	public RequestDetail100003 getTransDetail() {
+	public RequestDetail100004 getTransDetail() {
 		return transDetail;
 	}
 
-	public void setTransDetail(RequestDetail100003 transDetail) {
+	public void setTransDetail(RequestDetail100004 transDetail) {
 		this.transDetail = transDetail;
 	}
 }
