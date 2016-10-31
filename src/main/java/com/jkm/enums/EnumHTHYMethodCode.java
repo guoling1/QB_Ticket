@@ -15,14 +15,14 @@ public enum EnumHTHYMethodCode {
     private int id;
 
     @Getter
-    private String value;
+    private String code;
 
     @Getter
     private String name;
 
-    EnumHTHYMethodCode(final int id, final String value, final String name) {
+    EnumHTHYMethodCode(final int id, final String code, final String name) {
         this.id = id;
-        this.value = value;
+        this.code = code;
         this.name = name;
     }
 }
