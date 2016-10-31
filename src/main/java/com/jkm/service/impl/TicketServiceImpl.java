@@ -10,6 +10,7 @@ import com.jkm.entity.OrderForm;
 import com.jkm.entity.OrderFormDetail;
 import com.jkm.enums.EnumOrderFormDetailStatus;
 import com.jkm.enums.EnumOrderFormStatus;
+import com.jkm.enums.EnumPassenger;
 import com.jkm.service.ContactFormService;
 import com.jkm.service.OrderFormDetailService;
 import com.jkm.service.OrderFormService;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import java.util.Date;
@@ -74,6 +76,7 @@ public class TicketServiceImpl implements TicketService {
         orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_INITIALIZATION.getId());
         orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_INITIALIZATION.getValue());
         this.orderFormService.add(orderForm);
+        final BigDecimal totalPrice = new BigDecimal("0.00");
         final List<RequestBookTicket.passenger> passengers = requestBookTicket.getPassengers();
         Preconditions.checkState(!passengers.isEmpty(), "乘客不可以为空");
         Lists.transform(passengers, new Function<RequestBookTicket.passenger, OrderFormDetail>() {
@@ -82,6 +85,11 @@ public class TicketServiceImpl implements TicketService {
                 final Optional<ContactForm> contactFormOptional = contactFormService.selectById(passenger.getContractFormId());
                 final ContactForm contactForm = contactFormOptional.get();
                 final OrderFormDetail orderFormDetail = new OrderFormDetail();
+                if (EnumPassenger.CHILDREN.getId() == contactForm.getUserType()) {
+                    totalPrice.add(orderForm.getPrice().divide(new BigDecimal("2"), 2, BigDecimal.ROUND_HALF_UP));
+                } else if (EnumPassenger.ADULT.getId() == contactForm.getUserType()) {
+                    totalPrice.add(orderForm.getPrice());
+                }
                 orderFormDetail.setOrderFormId(orderForm.getId());
                 orderFormDetail.setPassengerName(contactForm.getUserName());
                 orderFormDetail.setPassengerType(contactForm.getUserType());
@@ -100,6 +108,8 @@ public class TicketServiceImpl implements TicketService {
                 return orderFormDetail;
             }
         });
+        orderForm.setTotalPrice(totalPrice);
+        this.orderFormService.update(orderForm);
     }
 
     /**

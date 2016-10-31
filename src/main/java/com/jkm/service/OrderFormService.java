@@ -57,4 +57,12 @@ public interface OrderFormService {
      */
     Optional<OrderForm> selectByTermTransId(String termTransId);
 
+    /**
+     *按合众交易流水号查询订单
+     *
+     * @param reqSn
+     * @return
+     */
+    Optional<OrderForm> selectByReqSn(String reqSn);
+
 }
