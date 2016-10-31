@@ -23,8 +23,6 @@ public class CanCheckSignResponse {
     public boolean isSignCorrect() {
         final Map<String, String> stringStringMap =
                 YsSdkSerializeUtil.converterObjectToMap(this);
-        final String signKey = YsSdkConstants.SIGN_KEY;
-        final String qwe = getSign();
         return YsSdkSignUtil.checkSign(stringStringMap,
                 YsSdkConstants.SIGN_KEY, getSign());
     }

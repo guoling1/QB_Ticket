@@ -6,6 +6,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.jkm.controller.helper.request.RequestBookTicket;
 import com.jkm.entity.ContactForm;
+import com.google.common.base.Preconditions;
 import com.jkm.entity.OrderForm;
 import com.jkm.entity.OrderFormDetail;
 import com.jkm.enums.EnumOrderFormDetailStatus;
@@ -47,6 +48,8 @@ public class TicketServiceImpl implements TicketService {
 
     @Autowired
     private YsSdkService ysSdkService;
+
+
 
     /**
      * {@inheritDoc}
@@ -249,16 +252,23 @@ public class TicketServiceImpl implements TicketService {
      * @return
      */
     @Override
-    public Pair<Boolean, String> refund(final long id) {
-
-        final YsRefundTicketRequest request = YsRefundTicketRequest.builder().termTransID(SnGenerator.generate()).transID("")
-                .passengerID("").build();
+    public Pair<Boolean, String> refund(final long orderFormDetailId) {
+        final Optional<OrderFormDetail> orderFormDetailOptional = this.orderFormDetailService.selectById(orderFormDetailId);
+        Preconditions.checkArgument(orderFormDetailOptional.isPresent() , "订单不存在");
+        final OrderFormDetail orderFormDetail = orderFormDetailOptional.get();
+        final Optional<OrderForm> orderFormOptional = this.orderFormService.selectById(orderFormDetail.getOrderFormId());
+        Preconditions.checkArgument(orderFormOptional.isPresent() , "请求订单不存在");
+        final OrderForm orderForm = orderFormOptional.get();
+        final YsRefundTicketRequest request = YsRefundTicketRequest.builder().termTransID(SnGenerator.generate()).transID(orderForm.getTransId())
+                .passengerID(orderFormDetail.getPassengerId()).build();
         request.setReqDateTime(DateFormatUtil.format(new Date(),"yyyyMMddHHmmss"));
+
         final YsRefundTicketResponse response = this.ysSdkService.refundTicket(request);
-        if(response.getStatus().equals("0000")){
+        if(response.getStatus().equals("1004")){
             return Pair.of(true , "退票请求成功");
+        }else {
+            return Pair.of(false, "退票请求失败");
         }
-        return null;
     }
 
     /**
@@ -268,6 +278,14 @@ public class TicketServiceImpl implements TicketService {
      */
     @Override
     public void handleRefundCallbackMsg(YsRefundCallbackResponse response) {
-
+        //退款成功, 修改小订单状态 , 退款给客户
+        switch (response.getRefundType()){
+            case "1":
+                return;
+            case "2":
+                return;
+            default:
+                return;
+        }
     }
 }
