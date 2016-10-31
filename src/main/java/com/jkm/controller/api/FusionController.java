@@ -3,6 +3,7 @@ package com.jkm.controller.api;
 import com.jkm.controller.common.BaseController;
 import com.jkm.entity.QbBindCard;
 import com.jkm.entity.fusion.AuthenData;
+import com.jkm.entity.fusion.SingleRefundData;
 import com.jkm.service.AuthenService;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
@@ -72,13 +73,38 @@ public class FusionController extends BaseController {
             result.put("message", "支付成功");
             result.put("data",map);
             result.put("code", "200");
+            //此处修改订单状态和更改流水号
         } else {
             result.put("message", map.get("retMsg").toString());
             result.put("code", "401");
+            //不做任何处理
         }
         return  result;
     }
 
+    /**
+     * 单笔退款
+     *
+     * @param requestData
+     * @return
+     */
+    @RequestMapping(value = "/singlRefund", method = RequestMethod.POST)
+    public JSONObject singlRefund() {
+        JSONObject result = new JSONObject();
+        SingleRefundData singleRefundData = new SingleRefundData();
+        Map<String, Object> map = authenService.singlRefund(singleRefundData);
+        if ("true".equals(map.get("retCode").toString())) {
+            result.put("message", "支付成功");
+            result.put("data",map);
+            result.put("code", "200");
+            //此处修改订单状态和更改流水号
+        } else {
+            result.put("message", map.get("retMsg").toString());
+            result.put("code", "401");
+            //不做任何处理
+        }
+        return  result;
+    }
     /**
      * 绑定银行卡
      * @param requestData
