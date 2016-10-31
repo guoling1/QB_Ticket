@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 public enum EnumHTHYMethodCode {
 
-    SUBMIT_ORDER_FORM(1, "火车票订单提交接口");
+    SUBMIT_ORDER_FORM(1, "train_order", "火车票订单提交接口");
 
     @Getter
     private int id;
@@ -17,8 +17,12 @@ public enum EnumHTHYMethodCode {
     @Getter
     private String value;
 
-    EnumHTHYMethodCode(final int id, final String value) {
+    @Getter
+    private String name;
+
+    EnumHTHYMethodCode(final int id, final String value, final String name) {
         this.id = id;
         this.value = value;
+        this.name = name;
     }
 }
