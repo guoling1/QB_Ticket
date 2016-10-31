@@ -58,7 +58,7 @@ public class TicketServiceImpl implements TicketService {
      */
     @Override
     @Transactional
-    public void bookTicket(final RequestBookTicket requestBookTicket) {
+    public long bookTicket(final RequestBookTicket requestBookTicket) {
 
         final OrderForm orderForm = new OrderForm();
         orderForm.setUid(requestBookTicket.getUid());
@@ -113,6 +113,7 @@ public class TicketServiceImpl implements TicketService {
         });
         orderForm.setTotalPrice(totalPrice);
         this.orderFormService.update(orderForm);
+        return orderForm.getId();
     }
 
     /**

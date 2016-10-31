@@ -42,6 +42,14 @@ public interface OrderFormService {
     Optional<OrderForm> selectByIdWithLock(long id);
 
     /**
+     * 按订单ids查询订单
+     *
+     * @param ids
+     * @return
+     */
+    List<OrderForm> selectByIds(List<Long> ids);
+
+    /**
      * 按用户id查询订单
      *
      * @param uid

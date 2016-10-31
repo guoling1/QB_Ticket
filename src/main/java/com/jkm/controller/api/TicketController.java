@@ -2,8 +2,10 @@ package com.jkm.controller.api;
 
 import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
+import com.jkm.controller.helper.request.RequestBookTicket;
 import com.jkm.controller.helper.request.RequestTicketRefund;
 import com.jkm.controller.helper.request.RequestTrainTripsQuery;
+import com.jkm.controller.helper.response.ResponseBookTicket;
 import com.jkm.controller.helper.response.ResponseTicketRefund;
 import com.jkm.controller.helper.response.ResponseTrainTripsQuery;
 import com.jkm.service.TicketService;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -37,9 +40,6 @@ public class TicketController extends BaseController{
      * 火车车次查询
      *
      */
-
-
-
     @RequestMapping(value = "/select", method =RequestMethod.POST)
     public ResponseEntityBase<ResponseTrainTripsQuery> select(@RequestBody final List<RequestTrainTripsQuery> requestTrainTripsQueries){
         final ResponseEntityBase<ResponseTrainTripsQuery> result = new ResponseEntityBase<>();
@@ -50,6 +50,23 @@ public class TicketController extends BaseController{
             result.setMessage("查询失败");
         }
         return result;
+    }
+
+    /**
+     * 火车车票订票 - 生成订单
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/bookTicket", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntityBase<ResponseBookTicket> bookTicket(final RequestBookTicket request) {
+        final ResponseEntityBase<ResponseBookTicket> results = new ResponseEntityBase<>();
+        final long orderFormId = this.ticketService.bookTicket(request);
+        final ResponseBookTicket responseBookTicket = new ResponseBookTicket();
+        responseBookTicket.setOrerFormId(orderFormId);
+        results.setData(responseBookTicket);
+        return results;
     }
 
     /**

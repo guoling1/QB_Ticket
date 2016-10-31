@@ -109,6 +109,14 @@
       SELECT * FROM tb_order_form WHERE id = #{id} FOR UPDATE
     </select>
 
+   <select id="selectByIds" resultType="com.jkm.entity.OrderForm">
+      SELECT * FROM tb_order_form
+      WHERE id IN
+      <foreach collection="ids" index="index" item="item" open="(" close=")" separator=",">
+        #{item}
+      </foreach>
+   </select>
+
     <select id="selectByUid" resultType="com.jkm.entity.OrderForm">
       SELECT * FROM tb_order_form WHERE uid = #{uid}
     </select>

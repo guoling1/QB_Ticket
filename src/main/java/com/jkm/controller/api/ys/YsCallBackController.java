@@ -28,7 +28,7 @@ import java.util.Set;
 @Controller
 @RequestMapping("/callback/ys")
 public class YsCallBackController {
-    private static Logger log = org.apache.log4j.Logger.getLogger(YsCallBackController.class);
+    private static Logger log = Logger.getLogger(YsCallBackController.class);
 
     @Autowired
     private YsSdkService ysSdkService;
@@ -36,7 +36,7 @@ public class YsCallBackController {
     private TicketService ticketService;
 
     /**
-     * 处理退票结果推送
+     * 订票 回调处理
      *
      * @return
      */
@@ -48,18 +48,18 @@ public class YsCallBackController {
         if (log.isDebugEnabled()) {
             final Set keySet = parameterMap.keySet();
             for (final Object key : keySet) {
-              //  log.debug("request param[{}]:{}", key, parameterMap.get(key));
+                log.debug("request param[" + key + "]:" + parameterMap.get(key));
             }
         }
         final boolean signCorrect = callbackResponse.isSignCorrect();
-       // log.info("收到充值异步通知:[{}],签名结果[{}]", callbackResponse, signCorrect);
+        log.info("收到订票异步通知:[" + callbackResponse + "],签名结果[" + signCorrect + "]");
         this.ysSdkService.recordBookTicketCallbackParams(callbackResponse);
         if (signCorrect) {
             this.ticketService.handleBookTicketCallbackResponse(callbackResponse);
             ResponseWriter.writeTxtResponse(response, "success");
-            log.info("还款处理结束！！ 已经发送[success]");
+            log.info("订票处理结束！！ 已经发送[success]");
         } else {
-            //log.error("#####receive repay notify content sign check error,request[{}]", request.getParameterMap());
+            log.error("#####receive repay notify content sign check error,request[" + request.getParameterMap() + "]");
             ResponseWriter.writeTxtResponse(response, "签名失败。");
         }
     }

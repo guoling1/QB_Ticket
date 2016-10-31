@@ -17,7 +17,7 @@ public interface TicketService {
      *
      * @return
      */
-    void bookTicket(RequestBookTicket requestBookTicket);
+    long bookTicket(RequestBookTicket requestBookTicket);
 
     /**
      * 订票步骤三：(步骤二 客户付款后)，发送订票请求
