@@ -159,8 +159,8 @@ public class TicketServiceImpl implements TicketService {
         ysTrainTicketsBookingRequest.setContactName(orderForm.getContactName());
         ysTrainTicketsBookingRequest.setContactMobile(orderForm.getContactMobile());
         ysTrainTicketsBookingRequest.setPassengers(passengerList);
-        orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_REQUESTING.getId());
-        orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_REQUESTING.getValue());
+        orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUESTING.getId());
+        orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUESTING.getValue());
         //订单设置为请求中
 //        this.orderFormService.update(orderForm);
 //        final YsTrainTicketsBookingResponse response = this.ysSdkService.bookingTicket(ysTrainTicketsBookingRequest);
@@ -208,8 +208,8 @@ public class TicketServiceImpl implements TicketService {
         orderForm1.setPickNo(response.getPickNo());
         orderForm1.setInsurePrice(response.getInsuranceFee());
         orderForm1.setTechnicalFee(response.getTechnicalFee());
-        orderForm1.setStatus(EnumOrderFormStatus.ORDER_FORM_SUCCESS.getId());
-        orderForm1.setRemark(EnumOrderFormStatus.ORDER_FORM_SUCCESS.getValue());
+        orderForm1.setStatus(EnumOrderFormStatus.ORDER_FORM_TICKET_SUCCESS.getId());
+        orderForm1.setRemark(EnumOrderFormStatus.ORDER_FORM_TICKET_SUCCESS.getValue());
         this.orderFormService.update(orderForm1);
         final List<YsTrainTicketBookingCallbackResponse.passenger> passengers = response.getPassengers();
         Preconditions.checkState(CollectionUtils.isEmpty(passengers), "乘客列表为空");
@@ -237,8 +237,8 @@ public class TicketServiceImpl implements TicketService {
         });
 
         //失败 -- 退款
-        orderForm1.setStatus(EnumOrderFormStatus.ORDER_FORM_FAIL.getId());
-        orderForm1.setRemark(EnumOrderFormStatus.ORDER_FORM_FAIL.getValue());
+        orderForm1.setStatus(EnumOrderFormStatus.ORDER_FORM_TICKET_FAIL.getId());
+        orderForm1.setRemark(EnumOrderFormStatus.ORDER_FORM_TICKET_FAIL.getValue());
         this.orderFormService.update(orderForm1);
 
         this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getValue(),
