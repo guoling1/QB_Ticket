@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.jkm.service.ys.helper.serialize.annotation.YsSdkAnnotationSupporter;
 import com.jkm.service.ys.helper.serialize.annotation.YsSdkSerializeNoInclude;
+import com.jkm.service.ys.helper.serialize.annotation.YsSdkSerializeNoNull;
 import com.jkm.service.ys.helper.serialize.converter.ConverterLookUp;
 import com.jkm.service.ys.helper.serialize.converter.DefaultConverterLookUp;
 import com.jkm.service.ys.helper.serialize.converter.YsSdkSerializeConverter;
@@ -57,8 +58,7 @@ public class YsSdkSerializeUtil {
                 if (null != value) {
                     result.put(key, value);
                 } else {
-//                    Preconditions.checkState(!field.isAnnotationPresent(YxtSdkSerializeNoNull.class),
-//                            "field[%s] could not be null", field.getName());
+                    Preconditions.checkState(!field.isAnnotationPresent(YsSdkSerializeNoNull.class), "field[%s] could not be null", field.getName());
                 }
             }
         }

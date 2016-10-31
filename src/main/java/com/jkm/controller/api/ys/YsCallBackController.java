@@ -1,11 +1,15 @@
 package com.jkm.controller.api.ys;
 
+import com.jkm.entity.YsChannelRequestRecord;
+import com.jkm.enums.EnumBusinessType;
 import com.jkm.service.TicketService;
+import com.jkm.service.ys.YsSdkRequestRecordService;
 import com.jkm.service.ys.YsSdkService;
 import com.jkm.service.ys.entity.YsRefundCallbackResponse;
+import com.jkm.util.JsonUtil;
 import com.jkm.service.ys.entity.YsTrainTicketBookingCallbackResponse;
 import com.jkm.util.ResponseWriter;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,10 +25,11 @@ import java.util.Set;
 /**
  * Created by yuxiang on 2016-10-27.
  */
-@Slf4j
 @Controller
 @RequestMapping("/callback/ys")
 public class YsCallBackController {
+    private static Logger log = org.apache.log4j.Logger.getLogger(YsCallBackController.class);
+
     @Autowired
     private YsSdkService ysSdkService;
     @Autowired
@@ -43,22 +48,24 @@ public class YsCallBackController {
         if (log.isDebugEnabled()) {
             final Set keySet = parameterMap.keySet();
             for (final Object key : keySet) {
-                log.debug("request param[{}]:{}", key, parameterMap.get(key));
+              //  log.debug("request param[{}]:{}", key, parameterMap.get(key));
             }
         }
         final boolean signCorrect = callbackResponse.isSignCorrect();
-        log.info("收到充值异步通知:[{}],签名结果[{}]", callbackResponse, signCorrect);
+       // log.info("收到充值异步通知:[{}],签名结果[{}]", callbackResponse, signCorrect);
         this.ysSdkService.recordBookTicketCallbackParams(callbackResponse);
         if (signCorrect) {
             this.ticketService.handleBookTicketCallbackResponse(callbackResponse);
             ResponseWriter.writeTxtResponse(response, "success");
             log.info("还款处理结束！！ 已经发送[success]");
         } else {
-            log.error("#####receive repay notify content sign check error,request[{}]", request.getParameterMap());
+            //log.error("#####receive repay notify content sign check error,request[{}]", request.getParameterMap());
             ResponseWriter.writeTxtResponse(response, "签名失败。");
         }
     }
 
+    @Autowired
+    private YsSdkRequestRecordService ysSdkRequestRecordService;
     /**
      * 处理退票结果推送
      *
@@ -71,19 +78,29 @@ public class YsCallBackController {
         final Map parameterMap = request.getParameterMap();
         if (log.isDebugEnabled()) {
             for (final Object key : parameterMap.keySet()) {
-                log.debug("request param[{}]:{}", key, parameterMap.get(key));
+                log.debug("request param["+ key +"]:" + parameterMap.get(key));
             }
         }
 
-        log.info("收到ys退票的异步通知:{},签名结果", response, response.isSignCorrect());
-        //this.ysSdkService.recordRefundCallBackParams(response);
+        log.info("收到ys退票的异步通知:"+ response + "签名结果:" + response.isSignCorrect());
+        //记录回调请求
+        this.postHandle(response.getTermTransID(), EnumBusinessType.REFUND_TICKET_CALL_BACK.getType(), JsonUtil.toJsonString(response),"",0l);
         if (response.isSignCorrect()) {
             this.ticketService.handleRefundCallbackMsg(response);
-            ResponseWriter.writeTxtResponse(httpServletResponse, "success");
+            ResponseWriter.writeTxtResponse(httpServletResponse, "SUCCESS");
         } else {
-            log.error("######收到一个yxt代发异步通知 sign check error,request[{}]", request.getParameterMap());
+            log.error("######收到一个yxt代发异步通知 sign check error,request[" + request.getParameterMap() + "]" );
         }
-        ResponseWriter.writeTxtResponse(httpServletResponse, "success");
+        ResponseWriter.writeTxtResponse(httpServletResponse, "SUCCESS");
     }
 
+    private void postHandle(final String sn,
+                            final String businessType,
+                            final String requestParams,
+                            final String returnParams,
+                            final long millisecond) {
+        final YsChannelRequestRecord record = YsChannelRequestRecord.builder().businessType(businessType).sn(sn).request(requestParams)
+                .response(returnParams).time(millisecond).build();
+        this.ysSdkRequestRecordService.record(record);
+    }
 }
