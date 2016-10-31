@@ -1,5 +1,7 @@
 package com.jkm.service.impl;
 
+import com.jkm.dao.QbBindCardDao;
+import com.jkm.entity.QbBindCard;
 import com.jkm.entity.fusion.*;
 import com.jkm.entity.fusion.body.RequestBody100003;
 import com.jkm.entity.fusion.body.RequestBody100005;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,6 +30,8 @@ public class AuthenServiceImpl implements AuthenService {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private SignatureService signatureService;
+	@Autowired
+	private QbBindCardDao qbBindCardDao;
 
 	/**
 	 * 快捷支付
@@ -202,7 +207,6 @@ public class AuthenServiceImpl implements AuthenService {
 		}
 		return ret;
 	}
-
 	private Request100003 createSingleRefund(SingleRefundData requestData) {
 		Request100003 singleRefund = new Request100003();
 		RequestHead head = new RequestHead();
@@ -211,7 +215,7 @@ public class AuthenServiceImpl implements AuthenService {
 		head.setDataType(Constants.DATA_TYPE_XML);
 		head.setLevel(Constants.LEVEL_0);
 		head.setReqSn(DateUtils.getDateString(new Date(),
-					DateUtils.formate_string_yyyyMMddhhmmss));
+				DateUtils.formate_string_yyyyMMddhhmmss));
 		head.setSignedMsg("signedMsg");
 
 		RequestBody100003 body = new RequestBody100003();
@@ -231,6 +235,38 @@ public class AuthenServiceImpl implements AuthenService {
 		singleRefund.setInfo(head);
 		return singleRefund;
 	}
+
+	/**
+	 * 绑定银行卡
+	 * @param qbBindCard
+	 * @return
+	 */
+	@Override
+	public long bindCard(QbBindCard qbBindCard) {
+		return qbBindCardDao.insert(qbBindCard);
+	}
+
+	/**
+	 * 删除银行卡
+	 * @param id
+	 */
+	@Override
+	public void deleteCard(long id) {
+		qbBindCardDao.delete(id);
+	}
+
+	/**
+	 * 银行卡列表
+	 * @param uid
+	 * @return
+	 */
+	@Override
+	public List<QbBindCard> cardList(String uid) {
+		List<QbBindCard> cardList = qbBindCardDao.select(uid);
+		return cardList;
+	}
+
+
 
 
 }
