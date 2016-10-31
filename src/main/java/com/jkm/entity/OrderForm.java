@@ -175,6 +175,6 @@ public class OrderForm extends BaseEntity {
      * @return
      */
     public boolean isRequestSuccess() {
-        return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_REQUEST_SUCCESS.getId();
+        return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUEST_SUCCESS.getId();
     }
 }
