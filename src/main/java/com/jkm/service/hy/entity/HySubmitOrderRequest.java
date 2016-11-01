@@ -1,6 +1,6 @@
-package com.jkm.service.hthy.entity;
+package com.jkm.service.hy.entity;
 
-import com.jkm.service.hthy.helper.serialize.annotation.HTHYSdkSerializeAlias;
+import com.jkm.service.hy.helper.serialize.annotation.HySdkSerializeAlias;
 import lombok.Data;
 
 import java.util.List;
@@ -11,12 +11,12 @@ import java.util.List;
  * 订单提交 -- 请求参数
  */
 @Data
-public class HTHYSubmitOrderRequest extends HTHYRequest {
+public class HySubmitOrderRequest extends HySdkRequest {
 
     /**
      * 我方订单号
      */
-    @HTHYSdkSerializeAlias(name = "orderid")
+    @HySdkSerializeAlias(name = "orderid")
     private String orderId;
 
     /**
@@ -27,49 +27,49 @@ public class HTHYSubmitOrderRequest extends HTHYRequest {
     /**
      * 出发站简码
      */
-    @HTHYSdkSerializeAlias(name = "from_station_code")
+    @HySdkSerializeAlias(name = "from_station_code")
     private String fromStationCode;
 
     /**
      * 出发站名称
      */
-    @HTHYSdkSerializeAlias(name = "from_station_name")
+    @HySdkSerializeAlias(name = "from_station_name")
     private String fromStationName;
 
     /**
      * 到达站简码
      */
-    @HTHYSdkSerializeAlias(name = "to_station_code")
+    @HySdkSerializeAlias(name = "to_station_code")
     private String toStationCode;
 
     /**
      * 到达站名称
      */
-    @HTHYSdkSerializeAlias(name = "to_station_name")
+    @HySdkSerializeAlias(name = "to_station_name")
     private String toStationName;
 
     /**
      * 乘车日期
      */
-    @HTHYSdkSerializeAlias(name = "train_date")
+    @HySdkSerializeAlias(name = "train_date")
     private String trainDate;
 
     /**
      * 回到url
      */
-    @HTHYSdkSerializeAlias(name = "callbackurl")
+    @HySdkSerializeAlias(name = "callbackurl")
     private String callbackUrl;
 
     /**
      * 12306用户名
      */
-    @HTHYSdkSerializeAlias(name = "loginusername")
+    @HySdkSerializeAlias(name = "loginusername")
     private String loginUserName;
 
     /**
      * 12306密码
      */
-    @HTHYSdkSerializeAlias(name = "loginuserpassword")
+    @HySdkSerializeAlias(name = "loginuserpassword")
     private String loginUserPassword;
 
     /**
@@ -91,25 +91,25 @@ public class HTHYSubmitOrderRequest extends HTHYRequest {
         /**
          * 乘客的顺序号
          */
-        @HTHYSdkSerializeAlias(name = "passengerid")
+        @HySdkSerializeAlias(name = "passengerid")
         private int passengerId;
 
         /**
          * 票号（此票在本订单中的唯一标识）
          */
-        @HTHYSdkSerializeAlias(name = "ticket_no")
+        @HySdkSerializeAlias(name = "ticket_no")
         private String ticketNo;
 
         /**
          * 乘客姓名
          */
-        @HTHYSdkSerializeAlias(name = "passengername")
+        @HySdkSerializeAlias(name = "passengername")
         private String passengerName;
 
         /**
          * 乘客证件号码
          */
-        @HTHYSdkSerializeAlias(name = "passportseno")
+        @HySdkSerializeAlias(name = "passportseno")
         private String passportSeNo;
 
         /**
@@ -117,7 +117,7 @@ public class HTHYSubmitOrderRequest extends HTHYRequest {
          *
          * {@link com.jkm.enums.EnumCertificatesType}
          */
-        @HTHYSdkSerializeAlias(name = "passporttypeseid")
+        @HySdkSerializeAlias(name = "passporttypeseid")
         private String passportTypeSeId;
 
         /**
@@ -125,7 +125,7 @@ public class HTHYSubmitOrderRequest extends HTHYRequest {
          *
          * {@link com.jkm.enums.EnumCertificatesType}
          */
-        @HTHYSdkSerializeAlias(name = "passporttypeseidname")
+        @HySdkSerializeAlias(name = "passporttypeseidname")
         private String passportTypeSeIdName;
 
         /**
@@ -140,7 +140,7 @@ public class HTHYSubmitOrderRequest extends HTHYRequest {
          *
          * {@link com.jkm.enums.EnumTrainTicketType}
          */
-        @HTHYSdkSerializeAlias(name = "piaotypename")
+        @HySdkSerializeAlias(name = "piaotypename")
         private String piaoTypeName;
 
         /**
@@ -152,7 +152,7 @@ public class HTHYSubmitOrderRequest extends HTHYRequest {
          *
          * {@link com.jkm.enums.EnumTrainTicketSeatType}
          */
-        @HTHYSdkSerializeAlias(name = "zwcode")
+        @HySdkSerializeAlias(name = "zwcode")
         private String zwCode;
 
         /**
@@ -160,7 +160,7 @@ public class HTHYSubmitOrderRequest extends HTHYRequest {
          *
          * {@link com.jkm.enums.EnumTrainTicketSeatType}
          */
-        @HTHYSdkSerializeAlias(name = "zwname")
+        @HySdkSerializeAlias(name = "zwname")
         private String zwName;
 
         /**
