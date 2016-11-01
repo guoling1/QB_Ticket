@@ -9,8 +9,11 @@ Vue.use(VueRouter);
 // !* 更棒的是,采用按需加载的方式
 import App from './App';
 // 应用 火车票 流程组件
-const ticketMenu = r => require.ensure([], () => r(require('./components/ticket/Menu')), 'group-ticket');
-const ticketMain = r => require.ensure([], () => r(require('./components/ticket/Main')), 'group-ticket');
+const ticketMainMenu = r => require.ensure([], () => r(require('./components/ticket/MainMenu')), 'group-ticket');
+const ticketReserve = r => require.ensure([], () => r(require('./components/ticket/Reserve')), 'group-ticket');
+const ticketOrder = r => require.ensure([], () => r(require('./components/ticket/Order')), 'group-ticket');
+const ticketChooseMenu = r => require.ensure([], () => r(require('./components/ticket/ChooseMenu')), 'group-ticket');
+const ticketTrain = r => require.ensure([], () => r(require('./components/ticket/Train')), 'group-ticket');
 // 支付 组件 紧密关联账户组件,注意留下接口,方便修改
 // 按需加载 1,组件单独打包
 // const payMenu = resolve => require(['./components/pay/Menu'], resolve);
@@ -30,18 +33,35 @@ const routes = [
   },
   {
     path: '/ticket',
-    redirect: '/ticket/menu/main',
+    redirect: '/ticket/main-menu/reserve',
     component: App,
     children: [
       {
-        path: 'menu',
-        redirect: '/ticket/menu/main',
-        component: ticketMenu,
+        path: 'main-menu',
+        redirect: '/ticket/main-menu/reserve',
+        component: ticketMainMenu,
         children: [
           {
-            path: 'main',
-            name: 'ticketReservation',
-            component: ticketMain
+            path: 'reserve',
+            name: 'ticketReserve',
+            component: ticketReserve
+          },
+          {
+            path: 'order',
+            name: 'ticketOrder',
+            component: ticketOrder
+          }
+        ]
+      },
+      {
+        path: 'choose-menu',
+        redirect: '/ticket/choose-menu/train',
+        component: ticketChooseMenu,
+        children: [
+          {
+            path: 'train',
+            name: 'ticketTrain',
+            component: ticketTrain
           }
         ]
       }
@@ -75,6 +95,11 @@ const router = new VueRouter({
   scrollBehavior (to, from, savedPosition) {
     // return 期望滚动到哪个的位置
   }
+});
+
+// 添加路由变化监听
+router.beforeEach((to, from, next) => {
+  next();
 });
 
 // 4. 创建和挂载根实例。
