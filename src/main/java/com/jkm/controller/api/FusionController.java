@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class FusionController extends BaseController {
      * @param requestData
      * @return
      */
+    @ResponseBody
     @RequestMapping(value = "/getVerifyCode", method = RequestMethod.POST)
     public JSONObject getVerifyCode(@ModelAttribute("requestData") AuthenData requestData) {
         JSONObject result = new JSONObject();
@@ -85,6 +87,7 @@ public class FusionController extends BaseController {
      * @param requestData
      * @return
      */
+    @ResponseBody
     @RequestMapping(value = "/fastPay", method = RequestMethod.POST)
     public ModelAndView fastPay(@ModelAttribute("requestData") AuthenData requestData) {
         JSONObject result = new JSONObject();
@@ -115,6 +118,7 @@ public class FusionController extends BaseController {
      * @param requestData
      * @return
      */
+    @ResponseBody
     @RequestMapping(value = "/singlRefund", method = RequestMethod.POST)
     public JSONObject singlRefund(@ModelAttribute("requestData") SingleRefundData requestData) {
         JSONObject result = new JSONObject();
@@ -140,6 +144,7 @@ public class FusionController extends BaseController {
      * @param requestData
      * @return
      */
+    @ResponseBody
     @RequestMapping(value = "/bindCard", method = RequestMethod.POST)
     public JSONObject QbBindCard(@ModelAttribute("requestData") QbBindCard requestData) {
         JSONObject result = new JSONObject();
@@ -167,6 +172,7 @@ public class FusionController extends BaseController {
      * @param requestData
      * @return
      */
+    @ResponseBody
     @RequestMapping(value = "/deleteCard", method = RequestMethod.POST)
     public JSONObject deleteCard(@ModelAttribute("requestData") QbBindCard requestData) {
         JSONObject result = new JSONObject();
@@ -182,6 +188,7 @@ public class FusionController extends BaseController {
      * @param requestData
      * @return
      */
+    @ResponseBody
     @RequestMapping(value = "/cardList", method = RequestMethod.POST)
     public JSONObject cardList(@ModelAttribute("requestData") QbBindCard requestData) {
         JSONObject result = new JSONObject();

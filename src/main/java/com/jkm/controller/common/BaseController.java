@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Locale;
 
 /**
@@ -70,6 +71,46 @@ public class BaseController {
         JSONObject jo = JSONObject.fromObject(body.toString());
         logger.info("请求参数为："+jo.toString());
         return  jo;
+    }
+
+    /**
+     * 成功返回
+     * @param erroString
+     * @throws IOException
+     */
+    public void returnFailJson(String erroString) throws IOException {
+        JSONObject jObject=new JSONObject();
+        jObject.put("result",false);
+        jObject.put("data","");
+        jObject.put("message",erroString);
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/json;charset=UTF-8");
+        response.setHeader("cache-control", "max-age=7200");
+        response.setHeader("pragma", "no-cache");
+        response.setDateHeader("expires", 0L);
+        response.getWriter().write(jObject.toString());
+        response.getWriter().flush();
+        response.getWriter().close();
+    }
+
+    /**
+     * 失败返回
+     * @param successResult
+     * @throws IOException
+     */
+    public void returnSuccessJson(String successResult) throws IOException {
+        JSONObject jObject=new JSONObject();
+        jObject.put("result", true);
+        jObject.put("data", successResult);
+        jObject.put("message", "调用成功");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/json;charset=UTF-8");
+        response.setHeader("cache-control", "max-age=7200");
+        response.setHeader("pragma", "no-cache");
+        response.setDateHeader("expires", 0L);
+        response.getWriter().write(jObject.toString());
+        response.getWriter().flush();
+        response.getWriter().close();
     }
 
 }
