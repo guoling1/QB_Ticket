@@ -16,7 +16,7 @@ public class HySdkResponse {
     /**
      *状态编码
      */
-    private String code;
+    private int code;
 
     /**
      *提示信息
