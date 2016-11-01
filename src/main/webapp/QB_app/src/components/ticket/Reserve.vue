@@ -1,11 +1,6 @@
 <template lang="html">
-  <div class="menu flex-box-column flexBox">
-    <router-view></router-view>
-
-    <div class="bottom">
-      <div class="btn">车票预定</div>
-      <div class="btn">我的订单</div>
-    </div>
+  <div class="main">
+    <router-link to="/ticket/choose-menu/train">立即预定</router-link>
   </div>
 </template>
 
@@ -31,19 +26,10 @@
     width: @width;
   }
 
-  .menu {
-    .flexItem(1, 100%);
-  }
-
-  .bottom {
+  .main {
     width: 100%;
-    height: 50px;
-    .btn {
-      float: left;
-      width: 50%;
-      height: 50px;
-      line-height: 50px;
-      text-align: center;
-    }
+    height: 100%;
+    overflow: hidden;
+    .flexItem(1, 100%);
   }
 </style>
