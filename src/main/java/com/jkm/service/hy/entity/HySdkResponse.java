@@ -8,5 +8,19 @@ import lombok.Data;
 @Data
 public class HySdkResponse {
 
+    /**
+     *true:成功，false:失败
+     */
+    private String success;
+
+    /**
+     *状态编码
+     */
+    private String code;
+
+    /**
+     *提示信息
+     */
+    private String msg;
 
 }
