@@ -9,53 +9,62 @@ import lombok.Getter;
  */
 public enum EnumTrainTicketSeatType {
 
-    NO_SEAT(1, "无座"),
+    /**
+     * 无座
+     */
+    NO_SEAT("0", "无座"),
 
-    HARD_SEAT(2, "硬座"),
+    /**
+     * 硬座
+     */
+    HARD_SEAT("1", "硬座"),
 
-    SOFT_SEAT(3, "软座"),
+    /**
+     * 软座
+     */
+    SOFT_SEAT("2", "软座"),
 
-    SECOND_CLASS_SEAT(4, "二等座"),
+    /**
+     * 硬卧
+     */
+    HARD_SLEEPER("3", "硬卧"),
 
-    FIRST_CLASS_SEAT(5, "一等座"),
+    /**
+     * 软卧
+     */
+    SOFT_SLEEPER("4", "软卧"),
 
-    SECOND_CLASS_SOFT_SEAT(6, "二等软座"),
+    /**
+     * 高级软卧
+     */
+    HIGH_GRADE_SOFT_SLEEPER("6", "高级软卧"),
 
-    FIRST_CLASS_SOFT_SEAT(7, "一等软座"),
+    /**
+     * 二等座
+     */
+    SECOND_CLASS_SEAT("O", "二等座"),
 
-    SPECIAL_CLASS_SEAT(8, "特等座"),
+    /**
+     * 一等座
+     */
+    FIRST_CLASS_SEAT("M", "一等座"),
 
-    BUSINESS_SEAT(9, "商务座"),
+    /**
+     * 特等座
+     */
+    SPECIAL_CLASS_SEAT("P", "特等座"),
 
-    HARD_SLEEPER_UPPER(10, "硬卧上铺"),
-
-    HARD_SLEEPER_MIDDLE(11, "硬卧中铺"),
-
-    HARD_SLEEPER_LOWER(12, "硬卧下铺"),
-
-    SOFT_SLEEPER_LOWER(13, "软卧下铺"),
-
-    SOFT_SLEEPER_UPPER(14, "软卧上铺"),
-
-    HIGH_GRADE_SOFT_SLEEPER(15, "高级软卧"),
-
-    MOVE_SLEEPER_UPPER(16, "动卧上铺"),
-
-    MOVE_SLEEPER_LOWER(17, "动卧下铺"),
-
-    HIGH_GRADE_MOVE_SLEEPER_UPPER(18, "高级动卧上铺"),
-
-    HIGH_GRADE_MOVE_SLEEPER_LOWER(19, "高级动卧下铺"),
-
-    other(20, "其他");
-
+    /**
+     * 商务座
+     */
+    BUSINESS_SEAT("9", "商务座");
 
     @Getter
-    private int id;
+    private String id;
     @Getter
     private String value;
 
-    EnumTrainTicketSeatType(final int id, final String value) {
+    EnumTrainTicketSeatType(final String id, final String value) {
         this.id = id;
         this.value = value;
     }

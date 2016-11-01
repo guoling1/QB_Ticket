@@ -19,6 +19,10 @@ public class HTHYRequest {
 
     /**
      * 操作功能
+     *
+     * {@link com.jkm.enums.EnumHTHYMethodCode}
+     *
+     *  对应枚举中 code
      */
     private String method;
 
