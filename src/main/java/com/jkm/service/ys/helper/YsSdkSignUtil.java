@@ -3,7 +3,7 @@ package com.jkm.service.ys.helper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.jkm.util.BytesHexConverterUtil;
-import com.jkm.util.Md5Util;
+import com.jkm.util.MD5Util;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
@@ -33,7 +33,7 @@ public class YsSdkSignUtil {
                               @NonNull final String key) {
         final String signedStr = getSignedStr(params, key);
         log.debug("签名字符串:" + signedStr);
-        return BytesHexConverterUtil.bytesToHexStr(Md5Util.md5Digest(signedStr
+        return BytesHexConverterUtil.bytesToHexStr(MD5Util.md5Digest(signedStr
                 .getBytes(Charset.forName("utf-8"))));
     }
 
@@ -45,7 +45,7 @@ public class YsSdkSignUtil {
      */
     public static String sign(@NonNull final String needSignStr) {
         log.debug("签名字符串:{" + needSignStr + "}");
-        return BytesHexConverterUtil.bytesToHexStr(Md5Util.md5Digest(needSignStr
+        return BytesHexConverterUtil.bytesToHexStr(MD5Util.md5Digest(needSignStr
                 .getBytes(Charset.forName("utf-8"))));
     }
 

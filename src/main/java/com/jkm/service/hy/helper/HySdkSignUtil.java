@@ -2,7 +2,7 @@ package com.jkm.service.hy.helper;
 
 
 import com.jkm.util.BytesHexConverterUtil;
-import com.jkm.util.Md5Util;
+import com.jkm.util.MD5Util;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
@@ -31,7 +31,7 @@ public class HySdkSignUtil {
                               @NonNull final String key) {
         final String signedStr = getSignedStr(method, reqTime, key);
         log.debug("签名字符串:" + signedStr);
-        return BytesHexConverterUtil.bytesToHexStr(Md5Util.md5Digest(signedStr
+        return BytesHexConverterUtil.bytesToHexStr(MD5Util.md5Digest(signedStr
                 .getBytes(Charset.forName("utf-8"))));
     }
 
@@ -44,7 +44,7 @@ public class HySdkSignUtil {
      */
     public static String sign(@NonNull final String needSignStr) {
         log.debug("签名字符串:{" + needSignStr + "}");
-        return BytesHexConverterUtil.bytesToHexStr(Md5Util.md5Digest(needSignStr
+        return BytesHexConverterUtil.bytesToHexStr(MD5Util.md5Digest(needSignStr
                 .getBytes(Charset.forName("utf-8"))));
     }
 
@@ -52,7 +52,7 @@ public class HySdkSignUtil {
     private static String getSignedStr(final String method, final String reqTime,
                                        final String key) {
        final String content = HySdkConstans.PARTNERID + method + reqTime +
-               BytesHexConverterUtil.bytesToHexStr(Md5Util.md5Digest(HySdkConstans.SIGN_KEY.getBytes(Charset.forName("utf-8"))));
+               BytesHexConverterUtil.bytesToHexStr(MD5Util.md5Digest(HySdkConstans.SIGN_KEY.getBytes(Charset.forName("utf-8"))));
         return content;
     }
 
