@@ -1,5 +1,6 @@
 package com.jkm.service.hy.entity;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jkm.service.hy.helper.serialize.annotation.HySdkSerializeAlias;
 import lombok.Data;
 
@@ -23,4 +24,14 @@ public class HySubmitOrderResponse extends HySdkResponse {
     @HySdkSerializeAlias(name = "orderid")
     private String orderId;
 
+
+//    public HySubmitOrderResponse converterStringToResponse(final String responseString) {
+//        final JSONObject responseObject = JSONObject.parseObject(responseString);
+//        final HySubmitOrderResponse hySubmitOrderResponse = new HySubmitOrderResponse();
+//        hySubmitOrderResponse.setCode(responseObject.getIntValue("code"));
+//        hySubmitOrderResponse.setMsg(responseObject.getString("msg"));
+//        hySubmitOrderResponse.setSuccess(responseObject.getString("success"));
+//
+//        return hySubmitOrderResponse;
+//    }
 }
