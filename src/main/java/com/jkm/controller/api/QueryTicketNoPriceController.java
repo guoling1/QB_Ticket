@@ -2,6 +2,7 @@ package com.jkm.controller.api;
 
 import com.jkm.controller.common.BaseController;
 import com.jkm.service.hy.helper.HySdkConstans;
+import com.jkm.util.HttpClientUtil;
 import com.jkm.util.HttpMethod;
 import com.jkm.util.MD5Util;
 import net.sf.json.JSONObject;
@@ -46,7 +47,7 @@ public class QueryTicketNoPriceController extends BaseController {
         jsonObject.put("purpose_codes", purpose_codes);
         jsonObject.put("to_station", to_station);
 
-        responseJson = HttpMethod.httpClient(jsonObject, "http://searchtrain.hangtian123.net/trainSearch/query");
+        responseJson = HttpClientUtil.sendPost(jsonObject, "http://searchtrain.hangtian123.net/trainSearch");
         return responseJson;
     }
 }
