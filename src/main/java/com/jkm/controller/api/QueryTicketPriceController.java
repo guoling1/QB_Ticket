@@ -2,7 +2,7 @@ package com.jkm.controller.api;
 
 import com.jkm.controller.common.BaseController;
 import com.jkm.service.hy.helper.HySdkConstans;
-import com.jkm.util.HttpClientUtil;
+import com.jkm.util.HttpMethod;
 import com.jkm.util.MD5Util;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
@@ -17,7 +17,7 @@ import java.util.Date;
  * Created by zhangbin on 2016/11/1.
  */
 @Controller
-@RequestMapping(value = "/queryTicketNoPrice")
+@RequestMapping(value = "/queryTicketPrice")
 public class QueryTicketPriceController extends BaseController {
 
     @ResponseBody
@@ -34,6 +34,7 @@ public class QueryTicketPriceController extends BaseController {
         String partnerid = requestJson.getString("partnerid");
         String purpose_codes = requestJson.getString("purpose_codes");
         String to_station = requestJson.getString("to_station");
+        String needdistance = requestJson.getString("needdistance");
 
         JSONObject jsonObject = new JSONObject();
         String sign = MD5Util.MD5(partnerid + method + reqtime + MD5Util.MD5(HySdkConstans.SIGN_KEY));
@@ -45,8 +46,9 @@ public class QueryTicketPriceController extends BaseController {
         jsonObject.put("partnerid", partnerid);
         jsonObject.put("purpose_codes", purpose_codes);
         jsonObject.put("to_station", to_station);
+        jsonObject.put("needdistance",needdistance);
 
-        responseJson = HttpClientUtil.sendPost(jsonObject, "http://searchtrain.hangtian123.net/trainSearch");
+        responseJson = HttpMethod.httpClient(jsonObject, "http://searchtrain.hangtian123.net/trainSearch");
         return responseJson;
     }
 }
