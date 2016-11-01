@@ -1,6 +1,8 @@
 package com.jkm.service.hy.impl;
 
 import com.jkm.service.hy.HySdkService;
+import com.jkm.service.hy.entity.HyReturnTicketRequest;
+import com.jkm.service.hy.entity.HyReturnTicketResponse;
 import org.springframework.stereotype.Service;
 
 /**
@@ -8,4 +10,16 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class HySdkServiceImpl implements HySdkService{
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param request
+     * @return
+     */
+    @Override
+    public HyReturnTicketResponse returnTicket(HyReturnTicketRequest request) {
+        return null;
+    }
 }
