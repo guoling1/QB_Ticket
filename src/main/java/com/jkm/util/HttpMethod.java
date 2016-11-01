@@ -1,7 +1,6 @@
 package com.jkm.util;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import net.sf.json.JSONObject;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
@@ -18,7 +17,7 @@ public class HttpMethod {
     public static JSONObject httpClient(JSONObject jsonObject, String url) {
         CCSHttpClient httpClient = new CCSHttpClient(false, 10000L);
         PostMethod postMethod = new PostMethod(url);
-        postMethod.addParameter("jsonStr", jsonObject.toJSONString());
+        postMethod.addParameter("jsonStr", jsonObject.toString());
         postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET, "utf-8");
         BufferedReader reader = null;
         StringBuffer stringBuffer = new StringBuffer();
@@ -35,6 +34,6 @@ public class HttpMethod {
         }
         String ts = stringBuffer.toString();
         System.out.println(ts);
-        return JSON.parseObject(ts);
+        return JSONObject.fromObject(ts);
     }
 }
