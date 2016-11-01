@@ -41,6 +41,11 @@ public class OrderForm extends BaseEntity {
     private String transId;
 
     /**
+     * 合众交易流水号
+     */
+    private String reqSn;
+
+    /**
      *取票号，值如 "EA12345678"
      */
     private String pickNo;
@@ -49,6 +54,11 @@ public class OrderForm extends BaseEntity {
      * 火车票正常价格
      */
     private BigDecimal price;
+
+    /**
+     * 订单总价格
+     */
+    private BigDecimal totalPrice;
 
     /**
      * 实扣保险费
@@ -165,6 +175,6 @@ public class OrderForm extends BaseEntity {
      * @return
      */
     public boolean isRequestSuccess() {
-        return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_REQUEST_SUCCESS.getId();
+        return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUEST_SUCCESS.getId();
     }
 }

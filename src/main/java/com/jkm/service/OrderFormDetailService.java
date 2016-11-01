@@ -51,6 +51,13 @@ public interface OrderFormDetailService {
     List<OrderFormDetail> selectByOrderFormId(long orderFormId);
 
     /**
+     * 按订单ids查询所有车票
+     *
+     * @return
+     */
+    List<OrderFormDetail> selectByOrderFormIds(List<Long> orderFormIds);
+
+    /**
      * 按证件号和乘客类型查询
      *
      * @param cardNo

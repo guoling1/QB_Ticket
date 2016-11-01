@@ -17,7 +17,7 @@ public interface TicketService {
      *
      * @return
      */
-    void bookTicket(RequestBookTicket requestBookTicket);
+    long bookTicket(RequestBookTicket requestBookTicket);
 
     /**
      * 订票步骤三：(步骤二 客户付款后)，发送订票请求
@@ -37,7 +37,7 @@ public interface TicketService {
      *  退票接口
      * @return
      */
-    Pair<Boolean,String> refund(long id);
+    Pair<Boolean,String> refund(long orderFormDetailId);
 
     /**
      * 处理退票回调的异步通知

@@ -89,7 +89,16 @@
          SELECT * FROM tb_order_form_detail WHERE order_form_id = #{orderFormId}
     </select>
 
+    <select id="selectByOrderFormIds" resultType="com.jkm.entity.OrderFormDetail">
+         SELECT * FROM tb_order_form_detail
+         WHERE order_form_id IN
+         <foreach collection="orderFormIds" index="index" item="item" open="(" separator="," close=")">
+             #{item}
+         </foreach>
+    </select>
+
     <select id="selectByCardNoAndPassengerType" resultType="com.jkm.entity.OrderFormDetail">
          SELECT * FROM tb_order_form_detail WHERE card_no = #{cardNo} AND passenger_type = #{passengerType}
     </select>
+
 </mapper>

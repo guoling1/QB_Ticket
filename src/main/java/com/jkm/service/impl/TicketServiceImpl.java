@@ -6,10 +6,12 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.jkm.controller.helper.request.RequestBookTicket;
 import com.jkm.entity.ContactForm;
+import com.google.common.base.Preconditions;
 import com.jkm.entity.OrderForm;
 import com.jkm.entity.OrderFormDetail;
 import com.jkm.enums.EnumOrderFormDetailStatus;
 import com.jkm.enums.EnumOrderFormStatus;
+import com.jkm.enums.EnumPassenger;
 import com.jkm.service.ContactFormService;
 import com.jkm.service.OrderFormDetailService;
 import com.jkm.service.OrderFormService;
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import java.util.Date;
@@ -46,6 +49,8 @@ public class TicketServiceImpl implements TicketService {
     @Autowired
     private YsSdkService ysSdkService;
 
+
+
     /**
      * {@inheritDoc}
      *
@@ -53,7 +58,7 @@ public class TicketServiceImpl implements TicketService {
      */
     @Override
     @Transactional
-    public void bookTicket(final RequestBookTicket requestBookTicket) {
+    public long bookTicket(final RequestBookTicket requestBookTicket) {
 
         final OrderForm orderForm = new OrderForm();
         orderForm.setUid(requestBookTicket.getUid());
@@ -74,6 +79,7 @@ public class TicketServiceImpl implements TicketService {
         orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_INITIALIZATION.getId());
         orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_INITIALIZATION.getValue());
         this.orderFormService.add(orderForm);
+        final BigDecimal totalPrice = new BigDecimal("0.00");
         final List<RequestBookTicket.passenger> passengers = requestBookTicket.getPassengers();
         Preconditions.checkState(!passengers.isEmpty(), "乘客不可以为空");
         Lists.transform(passengers, new Function<RequestBookTicket.passenger, OrderFormDetail>() {
@@ -82,6 +88,11 @@ public class TicketServiceImpl implements TicketService {
                 final Optional<ContactForm> contactFormOptional = contactFormService.selectById(passenger.getContractFormId());
                 final ContactForm contactForm = contactFormOptional.get();
                 final OrderFormDetail orderFormDetail = new OrderFormDetail();
+                if (EnumPassenger.CHILDREN.getId() == contactForm.getUserType()) {
+                    totalPrice.add(orderForm.getPrice().divide(new BigDecimal("2"), 2, BigDecimal.ROUND_HALF_UP));
+                } else if (EnumPassenger.ADULT.getId() == contactForm.getUserType()) {
+                    totalPrice.add(orderForm.getPrice());
+                }
                 orderFormDetail.setOrderFormId(orderForm.getId());
                 orderFormDetail.setPassengerName(contactForm.getUserName());
                 orderFormDetail.setPassengerType(contactForm.getUserType());
@@ -100,6 +111,9 @@ public class TicketServiceImpl implements TicketService {
                 return orderFormDetail;
             }
         });
+        orderForm.setTotalPrice(totalPrice);
+        this.orderFormService.update(orderForm);
+        return orderForm.getId();
     }
 
     /**
@@ -145,8 +159,8 @@ public class TicketServiceImpl implements TicketService {
         ysTrainTicketsBookingRequest.setContactName(orderForm.getContactName());
         ysTrainTicketsBookingRequest.setContactMobile(orderForm.getContactMobile());
         ysTrainTicketsBookingRequest.setPassengers(passengerList);
-        orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_REQUESTING.getId());
-        orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_REQUESTING.getValue());
+        orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUESTING.getId());
+        orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUESTING.getValue());
         //订单设置为请求中
 //        this.orderFormService.update(orderForm);
 //        final YsTrainTicketsBookingResponse response = this.ysSdkService.bookingTicket(ysTrainTicketsBookingRequest);
@@ -194,8 +208,8 @@ public class TicketServiceImpl implements TicketService {
         orderForm1.setPickNo(response.getPickNo());
         orderForm1.setInsurePrice(response.getInsuranceFee());
         orderForm1.setTechnicalFee(response.getTechnicalFee());
-        orderForm1.setStatus(EnumOrderFormStatus.ORDER_FORM_SUCCESS.getId());
-        orderForm1.setRemark(EnumOrderFormStatus.ORDER_FORM_SUCCESS.getValue());
+        orderForm1.setStatus(EnumOrderFormStatus.ORDER_FORM_TICKET_SUCCESS.getId());
+        orderForm1.setRemark(EnumOrderFormStatus.ORDER_FORM_TICKET_SUCCESS.getValue());
         this.orderFormService.update(orderForm1);
         final List<YsTrainTicketBookingCallbackResponse.passenger> passengers = response.getPassengers();
         Preconditions.checkState(CollectionUtils.isEmpty(passengers), "乘客列表为空");
@@ -223,8 +237,8 @@ public class TicketServiceImpl implements TicketService {
         });
 
         //失败 -- 退款
-        orderForm1.setStatus(EnumOrderFormStatus.ORDER_FORM_FAIL.getId());
-        orderForm1.setRemark(EnumOrderFormStatus.ORDER_FORM_FAIL.getValue());
+        orderForm1.setStatus(EnumOrderFormStatus.ORDER_FORM_TICKET_FAIL.getId());
+        orderForm1.setRemark(EnumOrderFormStatus.ORDER_FORM_TICKET_FAIL.getValue());
         this.orderFormService.update(orderForm1);
 
         this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getValue(),
@@ -239,16 +253,23 @@ public class TicketServiceImpl implements TicketService {
      * @return
      */
     @Override
-    public Pair<Boolean, String> refund(final long id) {
-
-        final YsRefundTicketRequest request = YsRefundTicketRequest.builder().termTransID(SnGenerator.generate()).transID("")
-                .passengerID("").build();
+    public Pair<Boolean, String> refund(final long orderFormDetailId) {
+        final Optional<OrderFormDetail> orderFormDetailOptional = this.orderFormDetailService.selectById(orderFormDetailId);
+        Preconditions.checkArgument(orderFormDetailOptional.isPresent() , "订单不存在");
+        final OrderFormDetail orderFormDetail = orderFormDetailOptional.get();
+        final Optional<OrderForm> orderFormOptional = this.orderFormService.selectById(orderFormDetail.getOrderFormId());
+        Preconditions.checkArgument(orderFormOptional.isPresent() , "请求订单不存在");
+        final OrderForm orderForm = orderFormOptional.get();
+        final YsRefundTicketRequest request = YsRefundTicketRequest.builder().termTransID(SnGenerator.generate()).transID(orderForm.getTransId())
+                .passengerID(orderFormDetail.getPassengerId()).build();
         request.setReqDateTime(DateFormatUtil.format(new Date(),"yyyyMMddHHmmss"));
+
         final YsRefundTicketResponse response = this.ysSdkService.refundTicket(request);
-        if(response.getStatus().equals("0000")){
+        if(response.getStatus().equals("1004")){
             return Pair.of(true , "退票请求成功");
+        }else {
+            return Pair.of(false, "退票请求失败");
         }
-        return null;
     }
 
     /**
@@ -258,6 +279,14 @@ public class TicketServiceImpl implements TicketService {
      */
     @Override
     public void handleRefundCallbackMsg(YsRefundCallbackResponse response) {
-
+        //退款成功, 修改小订单状态 , 退款给客户
+        switch (response.getRefundType()){
+            case "1":
+                return;
+            case "2":
+                return;
+            default:
+                return;
+        }
     }
 }

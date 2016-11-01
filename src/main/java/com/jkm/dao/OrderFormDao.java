@@ -42,6 +42,14 @@ public interface OrderFormDao {
     OrderForm selectByIdWithLock(@Param("id") long id);
 
     /**
+     * 按订单ids查询订单
+     *
+     * @param ids
+     * @return
+     */
+    List<OrderForm> selectByIds(@Param("ids") List<Long> ids);
+
+    /**
      * 按用户id查询订单
      *
      * @param uid
@@ -50,7 +58,7 @@ public interface OrderFormDao {
     List<OrderForm> selectByUid(@Param("uid") String uid);
 
     /**
-     *按流水号查询订单
+     * 按YS流水号查询订单
      *
      * @param termTransId
      * @return
@@ -58,4 +66,11 @@ public interface OrderFormDao {
     OrderForm selectByTermTransId(@Param("termTransId") String termTransId);
 
 
+    /**
+     * 按合众交易流水号流水号查询订单
+     *
+     * @param reqSn
+     * @return
+     */
+    OrderForm selectByReqSn(@Param("reqSn") String reqSn);
 }

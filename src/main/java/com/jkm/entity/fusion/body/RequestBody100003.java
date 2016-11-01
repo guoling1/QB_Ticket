@@ -7,18 +7,18 @@ import javax.xml.bind.annotation.*;
 
 @XmlAccessorOrder(XmlAccessOrder.ALPHABETICAL)
 @XmlAccessorType(XmlAccessType.FIELD)  
-@XmlType(name = "BODY",propOrder={"singlerefundDetail"})
+@XmlType(name = "BODY",propOrder={"transDetail"})
 public class RequestBody100003 {
 	
-	@XmlElement(name="SINGLEREFUND_DETAIL")
-	private RequestDetail100003 singlerefundDetail;
+	@XmlElement(name="TRANS_DETAIL")
+	private RequestDetail100003 transDetail;
 
-	public RequestDetail100003 getSinglerefundDetail() {
-		return singlerefundDetail;
+	public RequestDetail100003 getTransDetail() {
+		return transDetail;
 	}
 
-	public void setSinglerefundDetail(RequestDetail100003 singlerefundDetail) {
-		this.singlerefundDetail = singlerefundDetail;
+	public void setTransDetail(RequestDetail100003 transDetail) {
+		this.transDetail = transDetail;
 	}
 }
 

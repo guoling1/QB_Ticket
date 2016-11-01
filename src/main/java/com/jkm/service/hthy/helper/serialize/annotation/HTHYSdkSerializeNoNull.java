@@ -1,4 +1,4 @@
-package com.jkm.service.ys.helper.serialize.annotation;
+package com.jkm.service.hthy.helper.serialize.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface YxtSdkSerializeNoNull {
+public @interface HTHYSdkSerializeNoNull {
 }

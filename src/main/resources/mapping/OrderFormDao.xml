@@ -8,9 +8,11 @@
       uid,
       query_key,
       term_trans_id,
-      trans_id, 
+      trans_id,
+      req_sn,
       pick_No,
       price,
+      total_price,
       insurance_fee,
       technical_fee,
       journey_type,
@@ -38,8 +40,10 @@
       #{queryKey},
       #{termTransId},
       #{transId},
+      #{reqSn},
       #{pickNo},
       #{price},
+      #{totalPrice},
       #{insuranceFee},
       #{technicalFee},
       #{journeyType},
@@ -70,8 +74,10 @@
         query_key = #{queryKey},
         term_trans_id = #{termTransId},
         trans_id = #{transId},
+        req_sn = #{reqSn},
         pick_no = #{pickNo},
         price = #{price},
+        total_price = #{totalPrice},
         insurance_fee = #{insuranceFee},
         technical_fee = #{technicalFee},
         journey_type = #{journeyType},
@@ -103,6 +109,14 @@
       SELECT * FROM tb_order_form WHERE id = #{id} FOR UPDATE
     </select>
 
+   <select id="selectByIds" resultType="com.jkm.entity.OrderForm">
+      SELECT * FROM tb_order_form
+      WHERE id IN
+      <foreach collection="ids" index="index" item="item" open="(" close=")" separator=",">
+        #{item}
+      </foreach>
+   </select>
+
     <select id="selectByUid" resultType="com.jkm.entity.OrderForm">
       SELECT * FROM tb_order_form WHERE uid = #{uid}
     </select>
@@ -110,5 +124,9 @@
     <select id="selectByTermTransId" resultType="com.jkm.entity.OrderForm">
       SELECT * FROM tb_order_form WHERE term_trans_id = #{termTransId}
     </select>
+
+  <select id="selectByReqSn" resultType="com.jkm.entity.OrderForm">
+    SELECT * FROM tb_order_form WHERE req_sn = #{reqSn}
+  </select>
 
 </mapper>

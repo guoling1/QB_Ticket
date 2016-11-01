@@ -52,6 +52,14 @@ public interface OrderFormDetailDao {
     List<OrderFormDetail> selectByOrderFormId(@Param("orderFormId") long orderFormId);
 
     /**
+     * 按订单id查询所有车票
+     *
+     * @param orderFormIds
+     * @return
+     */
+    List<OrderFormDetail> selectByOrderFormIds(@Param("orderFormIds") List<Long> orderFormIds);
+
+    /**
      * 按证件号和乘客类型查询
      *
      * @param cardNo

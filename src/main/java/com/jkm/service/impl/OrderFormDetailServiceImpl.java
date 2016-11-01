@@ -2,11 +2,14 @@ package com.jkm.service.impl;
 
 import com.google.common.base.Optional;
 import com.jkm.dao.OrderFormDetailDao;
+import com.jkm.entity.OrderForm;
 import com.jkm.entity.OrderFormDetail;
 import com.jkm.service.OrderFormDetailService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -73,6 +76,20 @@ public class OrderFormDetailServiceImpl implements OrderFormDetailService {
     @Override
     public List<OrderFormDetail> selectByOrderFormId(final long orderFormId) {
         return this.orderFormDetailDao.selectByOrderFormId(orderFormId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderFormIds
+     * @return
+     */
+    @Override
+    public List<OrderFormDetail> selectByOrderFormIds(final List<Long> orderFormIds) {
+        if (CollectionUtils.isEmpty(orderFormIds)) {
+            return Collections.emptyList();
+        }
+        return this.orderFormDetailDao.selectByOrderFormIds(orderFormIds);
     }
 
     /**

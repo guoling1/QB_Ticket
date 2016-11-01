@@ -42,6 +42,14 @@ public interface OrderFormService {
     Optional<OrderForm> selectByIdWithLock(long id);
 
     /**
+     * 按订单ids查询订单
+     *
+     * @param ids
+     * @return
+     */
+    List<OrderForm> selectByIds(List<Long> ids);
+
+    /**
      * 按用户id查询订单
      *
      * @param uid
@@ -56,5 +64,13 @@ public interface OrderFormService {
      * @return
      */
     Optional<OrderForm> selectByTermTransId(String termTransId);
+
+    /**
+     *按合众交易流水号查询订单
+     *
+     * @param reqSn
+     * @return
+     */
+    Optional<OrderForm> selectByReqSn(String reqSn);
 
 }

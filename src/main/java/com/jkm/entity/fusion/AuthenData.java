@@ -157,4 +157,5 @@ public class AuthenData {
 	public void setToken(String token) {
 		this.token = token;
 	}
+
 }

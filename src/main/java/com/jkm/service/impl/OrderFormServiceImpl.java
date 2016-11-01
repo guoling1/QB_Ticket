@@ -4,9 +4,11 @@ import com.google.common.base.Optional;
 import com.jkm.dao.OrderFormDao;
 import com.jkm.entity.OrderForm;
 import com.jkm.service.OrderFormService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -65,6 +67,20 @@ public class OrderFormServiceImpl implements OrderFormService {
     /**
      * {@inheritDoc}
      *
+     * @param ids
+     * @return
+     */
+    @Override
+    public List<OrderForm> selectByIds(final List<Long> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return Collections.emptyList();
+        }
+        return this.orderFormDao.selectByIds(ids);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param uid
      * @return
      */
@@ -82,5 +98,16 @@ public class OrderFormServiceImpl implements OrderFormService {
     @Override
     public Optional<OrderForm> selectByTermTransId(final String termTransId) {
         return Optional.fromNullable(this.orderFormDao.selectByTermTransId(termTransId));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param reqSn
+     * @return
+     */
+    @Override
+    public Optional<OrderForm> selectByReqSn(final String reqSn) {
+        return Optional.fromNullable(this.orderFormDao.selectByReqSn(reqSn));
     }
 }

@@ -6,7 +6,6 @@ import com.jkm.util.BytesHexConverterUtil;
 import com.jkm.util.Md5Util;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.Charset;
 import java.util.Collections;
@@ -18,8 +17,8 @@ import java.util.Objects;
  *  Created by yuxiang on 2016-09-28.
  */
 @UtilityClass
-@Slf4j
 public class YsSdkSignUtil {
+    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(YsSdkSignUtil.class);
 
     public static final String SIGN_KEY = "sign";
 
@@ -33,7 +32,7 @@ public class YsSdkSignUtil {
     public static String sign(@NonNull final Map<String, String> params,
                               @NonNull final String key) {
         final String signedStr = getSignedStr(params, key);
-//        log.debug("签名字符串:{}", signedStr);
+        log.debug("签名字符串:" + signedStr);
         return BytesHexConverterUtil.bytesToHexStr(Md5Util.md5Digest(signedStr
                 .getBytes(Charset.forName("utf-8"))));
     }
@@ -45,7 +44,7 @@ public class YsSdkSignUtil {
      * @return
      */
     public static String sign(@NonNull final String needSignStr) {
-        log.debug("签名字符串:{}", needSignStr);
+        log.debug("签名字符串:{" + needSignStr + "}");
         return BytesHexConverterUtil.bytesToHexStr(Md5Util.md5Digest(needSignStr
                 .getBytes(Charset.forName("utf-8"))));
     }
@@ -79,10 +78,10 @@ public class YsSdkSignUtil {
                                     @NonNull final String sign) {
         try {
             final String expectSign = sign(params, key);
-            log.debug("期望签名:{},实际签名:{}", expectSign, sign);
+            log.debug("期望签名:"+ expectSign + "实际签名:" + sign);
             return Objects.equals(expectSign, sign);
         } catch (final Throwable e) {
-            log.error("检查签名异常:{}", e.getMessage(), e);
+            log.error("检查签名异常:"+ e.getMessage() + e);
             return false;
         }
     }
