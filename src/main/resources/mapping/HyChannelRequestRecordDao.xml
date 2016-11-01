@@ -3,7 +3,7 @@
 <mapper namespace="com.jkm.dao.HyChannelRequestRecordDao">
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_hfb_channel_request_record
-        (orderid,
+        (order_id,
         method,
         ret_code,
         request,
@@ -12,7 +12,7 @@
         time,
         status
         )VALUES(
-        #{orderid},
+        #{orderId},
         #{method},
         #{retCode},
         #{request},

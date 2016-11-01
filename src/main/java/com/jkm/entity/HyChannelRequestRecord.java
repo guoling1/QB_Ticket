@@ -17,7 +17,7 @@ public class HyChannelRequestRecord extends BaseEntity{
     /**
      * 使用方订单号
      */
-    private String orderid;
+    private String orderId;
     /**
      * 业务类型
      */

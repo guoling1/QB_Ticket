@@ -7,4 +7,6 @@ import lombok.Data;
  */
 @Data
 public class HyReturnTicketRequest extends HySdkRequest {
+
+    private String orderId;
 }
