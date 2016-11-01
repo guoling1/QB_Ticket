@@ -3,7 +3,6 @@ package com.jkm.controller.api;
 import com.jkm.controller.common.BaseController;
 import com.jkm.service.hy.helper.HySdkConstans;
 import com.jkm.util.HttpClientUtil;
-import com.jkm.util.HttpMethod;
 import com.jkm.util.MD5Util;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
@@ -19,7 +18,7 @@ import java.util.Date;
  */
 @Controller
 @RequestMapping(value = "/queryTicketNoPrice")
-public class QueryTicketNoPriceController extends BaseController {
+public class QueryTicketPriceController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/query", method = RequestMethod.POST)
