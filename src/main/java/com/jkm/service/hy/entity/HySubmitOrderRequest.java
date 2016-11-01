@@ -6,6 +6,7 @@ import com.jkm.service.hy.helper.serialize.annotation.HySdkSerializeListNeedConv
 import com.jkm.service.hy.helper.serialize.annotation.HySdkSerializeNoInclude;
 import com.jkm.util.JsonUtil;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.Map;
  * 订单提交 -- 请求参数
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class HySubmitOrderRequest extends HySdkRequest {
 
     /**

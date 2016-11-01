@@ -11,24 +11,24 @@
 <script lang="babel">
   // 根节点一级路由,负责维护顶部title
   const routeTitle = {
-    'ticketReservation': '车票预定'
+    'ticketReserve': '车票预定',
+    'ticketOrder': '我的订单'
   };
   export default {
     name: 'title',
-    beforeRouteEnter (to, from, next) {
-      next(function (vm) {
-        // 通过'vm'访问组件实例,再组件实例初始化后调用
-        vm.$data.title = routeTitle[to.name];
-      });
-    },
     data: function () {
       return {
-        title: ''
+        title: routeTitle[this.$route.name]
+      }
+    },
+    watch: {
+      $route: function (val) {
+        this.$data.title = routeTitle[val.name];
       }
     },
     methods: {
       back: function (event) {
-        console.log(2);
+        console.log('返回');
       }
     }
   }
