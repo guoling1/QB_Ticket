@@ -25,7 +25,7 @@ public class HyChannelRequestRecord extends BaseEntity{
     /**
      * 返回码
      */
-    private String retCode;
+    private int retCode;
     /**
      * 请求参数
      */

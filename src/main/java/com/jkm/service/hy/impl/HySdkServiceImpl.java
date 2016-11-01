@@ -59,14 +59,14 @@ public class HySdkServiceImpl implements HySdkService{
 
     private void addSign(final HyReturnTicketRequest request) {
         request.setSign(HySdkSignUtil.sign(request.getMethod(),
-                request.getReqTime(), YsSdkConstants.SIGN_KEY));
+                request.getReqTime(), HySdkConstans.SIGN_KEY));
     }
 
 
 
     private void postHandle(final String orderId,
                             final String method,
-                            final String retCode,
+                            final int retCode,
                             final String requestParams,
                             final String returnParams,
                             final long millisecond) {
@@ -85,7 +85,7 @@ public class HySdkServiceImpl implements HySdkService{
             stopWatch.stop();
             return response;
         } catch (final Throwable e) {
-            this.postHandle(orderId, method ,"",requestParams,"error",stopWatch.getTime());
+            this.postHandle(orderId, method ,0,requestParams,"error",stopWatch.getTime());
             stopWatch.stop();
             throw e;
         }

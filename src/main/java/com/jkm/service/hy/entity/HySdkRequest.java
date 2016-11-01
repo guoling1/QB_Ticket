@@ -1,5 +1,6 @@
 package com.jkm.service.hy.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jkm.service.hy.helper.serialize.annotation.HySdkSerializeAlias;
 import lombok.Data;
 
@@ -13,6 +14,7 @@ public class HySdkRequest {
      * 账号
      */
     @HySdkSerializeAlias(name = "partnerid")
+    @JsonProperty("partnerid")
     private String partnerId;
 
     /**
@@ -28,6 +30,7 @@ public class HySdkRequest {
      * 请求时间 （yyyyMMddHHmmss）
      */
     @HySdkSerializeAlias(name = "reqtime")
+    @JsonProperty("reqtime")
     private String reqTime;
 
     /**

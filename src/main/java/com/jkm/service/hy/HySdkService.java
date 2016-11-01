@@ -12,6 +12,6 @@ public interface HySdkService {
     /**
      * 线上退票
      */
-    public HyReturnTicketResponse returnTicket(final HyReturnTicketRequest request);
+    HyReturnTicketResponse returnTicket(final HyReturnTicketRequest request);
 
 }
