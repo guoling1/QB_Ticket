@@ -1,6 +1,9 @@
 package com.jkm.util;
 
+import com.google.common.base.Throwables;
+
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class MD5Util {
     /**
@@ -34,5 +37,24 @@ public class MD5Util {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 加密md5
+     *
+     * @param bytes
+     * @return
+     */
+    public static byte[] md5Digest(final byte[] bytes) {
+        try {
+            final MessageDigest digest = getMd5MessageDigest();
+            return digest.digest(bytes);
+        } catch (Exception e) {
+            throw Throwables.propagate(e);
+        }
+    }
+
+    private static MessageDigest getMd5MessageDigest() throws NoSuchAlgorithmException {
+        return MessageDigest.getInstance("MD5");
     }
 }
