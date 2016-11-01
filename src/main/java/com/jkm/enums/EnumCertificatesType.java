@@ -7,20 +7,22 @@ package com.jkm.enums;
  */
 public enum EnumCertificatesType {
 
-    ID_CARD(1, "身份证"),
+    SECOND_ID_CARD("1", "二代身份证"),
 
-    PASSPORT(2, "护照"),
+    first_ID_CARD("2", "一代身份证"),
 
-    TAIWAN_PASS(3, "台湾通行证"),
+    HONGKONG_AND_MACAO_PASS("C", "港澳通行证"),
 
-    HONGKONG_AND_MACAO_PASS(4, "港澳通行证");
+    TAIWAN_PASS("G", "台湾通行证"),
+
+    PASSPORT("B", "护照");
 
 
-    private int id;
+    private String id;
 
     private String value;
 
-    EnumCertificatesType(final int id, final String value) {
+    EnumCertificatesType(final String id, final String value) {
         this.id = id;
         this.value = value;
     }
