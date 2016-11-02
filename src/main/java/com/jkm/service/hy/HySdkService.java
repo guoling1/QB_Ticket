@@ -1,9 +1,13 @@
 package com.jkm.service.hy;
 
+import com.jkm.service.hy.entity.*;
+import com.jkm.entity.OrderForm;
 import com.jkm.service.hy.entity.HyReturnTicketRequest;
 import com.jkm.service.hy.entity.HyReturnTicketResponse;
 import com.jkm.service.hy.entity.HySubmitOrderRequest;
 import com.jkm.service.hy.entity.HySubmitOrderResponse;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 /**
  * Created by yuxiang on 2016-11-01.
@@ -11,16 +15,50 @@ import com.jkm.service.hy.entity.HySubmitOrderResponse;
 public interface HySdkService {
 
     /**
-     * 提交订单
+     * 订单提交
      *
-     * @param request
+     * @param orderform
+     * @param passengers
      * @return
      */
-    HySubmitOrderResponse submitOrder(HySubmitOrderRequest request);
+    JSONObject submitOrderImpl(OrderForm orderform, JSONArray passengers);
+
+    /**
+     * 确认出票
+     *
+     * @param orderId
+     * @param transactionId
+     * @return
+     */
+    JSONObject confirmTrainTicket(String orderId, String transactionId);
+
+    /**
+     * 取消订单
+     *
+     * @param orderId
+     * @param transactionId
+     * @return
+     */
+    JSONObject cancelOrder(String orderId, String transactionId);
 
     /**
      * 线上退票
      */
     HyReturnTicketResponse returnTicket(final HyReturnTicketRequest request);
+
+    /**
+     * 提交保险单
+     */
+    HyPostPolicyOrderResponse postPolicyOrder(final HyPostPolicyOrderRequest request);
+
+    /**
+     * 撤消保险订单
+     */
+    HyCancelPolicyOrderResponse cancelPolicyOrder(final HyCancelPolicyOrderRequest request);
+
+    /**
+     * 查询投保单状态
+     */
+    HyQueryPolicyOrderResponse queryPolicyOrder(final HyQueryPolicyOrderRequest request);
 
 }

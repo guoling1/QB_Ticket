@@ -8,18 +8,16 @@ import com.jkm.controller.helper.request.RequestBookTicket;
 import com.jkm.entity.ContactForm;
 import com.jkm.entity.OrderForm;
 import com.jkm.entity.OrderFormDetail;
-import com.jkm.enums.EnumHTHYMethodCode;
 import com.jkm.enums.EnumOrderFormDetailStatus;
 import com.jkm.enums.EnumOrderFormStatus;
 import com.jkm.service.ContactFormService;
 import com.jkm.service.OrderFormDetailService;
 import com.jkm.service.OrderFormService;
 import com.jkm.service.TicketService;
-import com.jkm.service.hy.helper.HySdkConstans;
+import com.jkm.service.hy.entity.HyRefundCallbackResponse;
 import com.jkm.service.ys.YsSdkService;
+import com.jkm.service.hy.HySdkService;
 import com.jkm.service.ys.entity.*;
-import com.jkm.util.HttpMethod;
-import com.jkm.util.MD5Util;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
@@ -32,7 +30,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Date;
 
@@ -54,7 +51,7 @@ public class TicketServiceImpl implements TicketService {
     private ContactFormService contactFormService;
 
     @Autowired
-    private YsSdkService ysSdkService;
+    private HySdkService hySdkService;
 
 
 
@@ -119,7 +116,7 @@ public class TicketServiceImpl implements TicketService {
             }
         });
 
-        final JSONObject jsonObject = this.submitOrderImpl(orderForm, passengerJsonArray);
+        final JSONObject jsonObject = this.hySdkService.submitOrderImpl(orderForm, passengerJsonArray);
         final String code = jsonObject.getString("code");
         final boolean success = jsonObject.getBoolean("success");
         if (success && ("802".equals(code) || "905".equals(code))) {
@@ -200,7 +197,7 @@ public class TicketServiceImpl implements TicketService {
 
 
         //请求第三方
-        final JSONObject jsonObject = this.confirmTrainTicket(orderForm.getOrderId(), orderForm.getOutOrderId());
+        final JSONObject jsonObject = this.hySdkService.confirmTrainTicket(orderForm.getOrderId(), orderForm.getOutOrderId());
         final String code = jsonObject.getString("code");
         final boolean success = jsonObject.getBoolean("success");
         if (success && "100".equals(code)) {
@@ -263,10 +260,23 @@ public class TicketServiceImpl implements TicketService {
      */
     @Override
     public Pair<Boolean, String> cancelOrder(final long orderFormId) {
+        final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByIdWithLock(orderFormId);
+        Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + orderFormId + "]不存在");
+        final OrderForm orderForm = orderFormOptional.get();
+        Preconditions.checkState(orderForm.isCanCancelOrder(), "订单[" + orderFormId + "]状态不正确");
 
-
-
-        return null;
+        final JSONObject jsonObject = this.hySdkService.cancelOrder(orderForm.getOrderId(), orderForm.getOutOrderId());
+        final String code = jsonObject.getString("code");
+        final boolean success = jsonObject.getBoolean("success");
+        if (success && "100".equals(code)) {
+            orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CANCEL.getId());
+            orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_CANCEL.getValue());
+            this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_ORDER_CANCEL.getValue(),
+                    EnumOrderFormDetailStatus.TICKET_ORDER_CANCEL.getId(), orderForm.getId());
+            return Pair.of(true, "订单取消成功");
+        }
+        log.error(jsonObject.getString("msg"));
+        return Pair.of(false, jsonObject.getString("msg"));
     }
 
     /**
@@ -278,6 +288,8 @@ public class TicketServiceImpl implements TicketService {
     public Pair<Boolean, String> refund(final long orderFormDetailId) {
         final Optional<OrderFormDetail> orderFormDetailOptional = this.orderFormDetailService.selectById(orderFormDetailId);
         Preconditions.checkArgument(orderFormDetailOptional.isPresent() , "订单不存在");
+        // 判断 申请时间距离发车时间不到2小时或已经超过发出时间时，不可退票
+
         final OrderFormDetail orderFormDetail = orderFormDetailOptional.get();
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectById(orderFormDetail.getOrderFormId());
         Preconditions.checkArgument(orderFormOptional.isPresent() , "请求订单不存在");
@@ -286,12 +298,13 @@ public class TicketServiceImpl implements TicketService {
                 .passengerID("").build();
         request.setReqDateTime(DateFormatUtil.format(new Date(),"yyyyMMddHHmmss"));
 
-        final YsRefundTicketResponse response = this.ysSdkService.refundTicket(request);
-        if(response.getStatus().equals("1004")){
-            return Pair.of(true , "退票请求成功");
-        }else {
-            return Pair.of(false, "退票请求失败");
-        }
+//        final YsRefundTicketResponse response = this.hySdkService.refundTicket(request);
+//        if(response.getStatus().equals("1004")){
+//            return Pair.of(true , "退票请求成功");
+//        }else {
+//            return Pair.of(false, "退票请求失败");
+//        }
+        return null;
     }
 
     /**
@@ -300,9 +313,9 @@ public class TicketServiceImpl implements TicketService {
      * @param response
      */
     @Override
-    public void handleRefundCallbackMsg(YsRefundCallbackResponse response) {
+    public void handleRefundCallbackMsg(HyRefundCallbackResponse response) {
         //退款成功, 修改小订单状态 , 退款给客户
-        switch (response.getRefundType()){
+        switch (""){
             case "1":
                 return;
             case "2":
@@ -312,101 +325,4 @@ public class TicketServiceImpl implements TicketService {
         }
     }
 
-
-    /**
-     * 订单提交
-     *
-     * @param orderform
-     * @param passengers
-     * @return
-     */
-    private JSONObject submitOrderImpl(final OrderForm orderform, final JSONArray passengers) {
-        JSONObject jsonObject = new JSONObject();
-        String reqtime = this.getCurrentDateString();
-        try {
-            jsonObject.put("sign", this.getSign(EnumHTHYMethodCode.SUBMIT_ORDER_FORM.getCode(), reqtime));
-            jsonObject.put("partnerid", HySdkConstans.PARTNERID);
-            jsonObject.put("passengers", passengers);
-            jsonObject.put("method", EnumHTHYMethodCode.SUBMIT_ORDER_FORM.getCode());
-            jsonObject.put("is_accept_standing", false);
-            jsonObject.put("to_station_code", orderform.getToStationCode());
-            jsonObject.put("train_date", orderform.getTrainDate());
-            jsonObject.put("callbackurl", HySdkConstans.SUBMIT_TICKET_NOTIFY_URL);
-            jsonObject.put("reqtime", reqtime);
-            jsonObject.put("from_station_name", orderform.getFromStationName());
-            jsonObject.put("checi", orderform.getCheci());
-            jsonObject.put("orderid", orderform.getOrderId());
-            jsonObject.put("from_station_code", orderform.getFromStationCode());
-            jsonObject.put("to_station_name", orderform.getToStationCode());
-            jsonObject.put("LoginUserName", orderform.getLoginUserName());
-            jsonObject.put("LoginUserPassword", orderform.getLoginUserPassword());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return HttpMethod.httpClient(jsonObject, HySdkConstans.SERVICE_GATEWAY_URL);
-    }
-
-    /**
-     * 确认出票
-     *
-     * @param orderid
-     * @param transactionid
-     * @return
-     */
-    private JSONObject confirmTrainTicket(String orderid, String transactionid) {
-        JSONObject jsonObject = new JSONObject();
-        String reqtime = this.getCurrentDateString();
-        try {
-            jsonObject.put("sign", this.getSign(EnumHTHYMethodCode.CONFIRM_ORDER_FORM.getCode(), reqtime));
-            jsonObject.put("partnerid", HySdkConstans.PARTNERID);
-            jsonObject.put("method", EnumHTHYMethodCode.CONFIRM_ORDER_FORM.getCode());
-            jsonObject.put("orderid", orderid);
-            jsonObject.put("reqtime", reqtime);
-            jsonObject.put("transactionid", transactionid);
-            jsonObject.put("reqtime", reqtime);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return HttpMethod.httpClient(jsonObject, HySdkConstans.SERVICE_GATEWAY_URL);
-    }
-
-    /**
-     * 取消订单
-     *
-     * @param orderid
-     * @param transactionid
-     * @return
-     */
-    private JSONObject cancelOrder(String orderid, String transactionid) {
-        JSONObject jsonObject = new JSONObject();
-        String reqtime = this.getCurrentDateString();
-        try {
-            jsonObject.put("sign", this.getSign(EnumHTHYMethodCode.CANCEL_ORDER_FORM.getCode(), reqtime));
-            jsonObject.put("partnerid", HySdkConstans.PARTNERID);
-            jsonObject.put("method", EnumHTHYMethodCode.CANCEL_ORDER_FORM.getCode());
-            jsonObject.put("orderid", orderid);
-            jsonObject.put("transactionid", transactionid);
-            jsonObject.put("reqtime", reqtime);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return HttpMethod.httpClient(jsonObject, HySdkConstans.SERVICE_GATEWAY_URL);
-    }
-
-    private String getSign(final String method, final String reqtime) {
-
-        try {
-            return MD5Util.MD5(HySdkConstans.PARTNERID + method
-                    + reqtime + MD5Util.MD5(HySdkConstans.SIGN_KEY));
-        } catch (final Exception e) {
-            log.info(e);
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    private String getCurrentDateString() {
-        SimpleDateFormat date = new SimpleDateFormat("yyyyMMddHHmmss");
-        return date.format(new Date());
-    }
 }

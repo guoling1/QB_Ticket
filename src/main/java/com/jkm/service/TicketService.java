@@ -1,6 +1,7 @@
 package com.jkm.service;
 
 import com.jkm.controller.helper.request.RequestBookTicket;
+import com.jkm.service.hy.entity.HyRefundCallbackResponse;
 import com.jkm.service.ys.entity.YsRefundCallbackResponse;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.tuple.Pair;
@@ -60,6 +61,6 @@ public interface TicketService {
      *
      * @param response
      */
-     void handleRefundCallbackMsg(YsRefundCallbackResponse response);
+     void handleRefundCallbackMsg(HyRefundCallbackResponse response);
 
 }

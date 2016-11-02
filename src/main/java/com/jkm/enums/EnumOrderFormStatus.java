@@ -44,29 +44,39 @@ public enum EnumOrderFormStatus {
     ORDER_FORM_CUSTOMER_PAY_SUCCESS(5, "客户付款成功"),
 
     /**
+     * 客户付款失败
+     */
+    ORDER_FORM_CUSTOMER_PAY_FAIL(6, "客户付款成功"),
+
+    /**
      * 确认出票请求失败
      */
-    ORDER_FORM_CONFIRM_TICKET_REQUEST_FAIL(6, "确认出票请求失败"),
+    ORDER_FORM_CONFIRM_TICKET_REQUEST_FAIL(7, "确认出票请求失败"),
 
     /**
      * 确认出票请求成功
      */
-    ORDER_FORM_CONFIRM_TICKET_REQUEST_SUCCESS(7, "确认出票请求成功"),
+    ORDER_FORM_CONFIRM_TICKET_REQUEST_SUCCESS(8, "确认出票请求成功"),
 
     /**
      * 出票成功
      */
-    ORDER_FORM_TICKET_SUCCESS(8, "出票成功"),
+    ORDER_FORM_TICKET_SUCCESS(9, "出票成功"),
 
     /**
      * 出票失败
      */
-    ORDER_FORM_TICKET_FAIL(9, "出票失败"),
+    ORDER_FORM_TICKET_FAIL(10, "出票失败"),
 
     /**
      * 订单已经退票
      */
-    ORDER_FORM_HAVE_BEEN_RETURN_TICKET(10, "订单已经退票");
+    ORDER_FORM_HAVE_BEEN_RETURN_TICKET(11, "订单已经退票"),
+
+    /**
+     * 订单取消
+     */
+    ORDER_FORM_CANCEL(12, "订单取消");
 
     @Getter
     private int id;

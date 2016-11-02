@@ -11,7 +11,7 @@ public class HySdkResponse {
     /**
      *true:成功，false:失败
      */
-    private String success;
+    private boolean success;
 
     /**
      *状态编码
