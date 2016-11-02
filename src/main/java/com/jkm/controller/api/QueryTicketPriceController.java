@@ -49,6 +49,7 @@ public class QueryTicketPriceController extends BaseController {
         jsonObject.put("needdistance",needdistance);
 
         responseJson = HttpMethod.httpClient(jsonObject, "http://searchtrain.hangtian123.net/trainSearch");
+
         return responseJson;
     }
 }
