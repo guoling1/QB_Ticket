@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.dao.ContactInfoDao">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_contact_info
+        (
+        app_id,
+        uid,
+        birthday,
+        sex,
+        identy,
+        tel,
+        identy_type,
+        country,
+        check_status,
+        email,
+        address,
+        name,
+        person_type,
+        is_user_self,
+        province_name,
+        province_code,
+        school_code,
+        school_name,
+        student_no,
+        school_system,
+        preference_from_station_name,
+        preference_from_station_code,
+        preference_to_station_name,
+        preference_to_station_code,
+        enter_year,
+        login_user_name,
+        login_user_password,
+        status
+        ) VALUES
+        (
+        #{appId},
+        #{uid},
+        #{birthday},
+        #{sex},
+        #{identy},
+        #{tel},
+        #{identyType},
+        #{country},
+        #{checkStatus},
+        #{email},
+        #{address},
+        #{name},
+        #{personType},
+        #{isUserSelf},
+        #{provinceName},
+        #{provinceCode},
+        #{schoolCode},
+        #{schoolName},
+        #{studentNo},
+        #{schoolSystem},
+        #{preferenceFromStationName},
+        #{preferenceFromStationCode},
+        #{preferenceToStationName},
+        #{preferenceToStationCode},
+        #{enterYear},
+        #{loginUserName},
+        #{loginUserPassword},
+        #{status}
+        );
+    </insert>
+
+    <update id="update">
+        UPDATE tb_contact_info
+        SET
+        app_id = #{appId},
+        uid = #{uid},
+        birthda = #{birthday},
+        sex = #{sex},
+        identy = #{identy},
+        tel = #{tel},
+        identy_type = #{identyType},
+        country = #{country},
+        check_status = #{checkStatus},
+        email = #{email},
+        address = #{address},
+        name = #{name},
+        person_type = #{personType},
+        is_user_self = #{isUserSelf},
+        province_name = #{provinceName},
+        province_code = #{provinceCode},
+        school_code = #{schoolCode},
+        school_name = #{schoolName},
+        student_no = #{studentNo},
+        school_system = #{schoolSystem},
+        preference_from_station_name = #{preferenceFromStationName},
+        preference_from_station_code = #{preferenceFromStationCode},
+        preference_to_station_name = #{preferenceToStationName},
+        preference_to_station_code = #{preferenceToStationCode},
+        enter_year = #{enterYear},
+        login_user_name = #{loginUserName},
+        login_user_password = #{loginUserPassword},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultType="com.jkm.entity.TbContactInfo">
+        SELECT * FROM tb_contact_info WHERE id = #{id}
+    </select>
+
+    <select id="selectByUid" resultType="com.jkm.entity.TbContactInfo">
+        SELECT * FROM tb_contact_info WHERE uid = #{uid}
+    </select>
+
+</mapper>

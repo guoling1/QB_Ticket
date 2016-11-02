@@ -4,7 +4,6 @@ import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
 import com.jkm.controller.helper.request.RequestContactForm;
 import com.jkm.controller.helper.response.ResponseContactForm;
-import com.jkm.service.ContactFormService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/contactForm")
 @Controller
 public class ContactFormController extends BaseController {
-    @Autowired
-    private ContactFormService contactFormService;
 
     /**
      * 添加乘客

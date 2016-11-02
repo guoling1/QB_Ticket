@@ -31,4 +31,14 @@ public class TbContactInfo extends BaseEntity{
     private String preferenceToStationName;
     private String preferenceToStationCode;
     private String enterYear;
+
+    /**
+     * 12306用户名
+     */
+    private String loginUserName;
+
+    /**
+     * 12306密码
+     */
+    private String loginUserPassword;
 }

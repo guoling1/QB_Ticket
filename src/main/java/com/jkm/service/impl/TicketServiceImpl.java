@@ -8,14 +8,15 @@ import com.jkm.controller.helper.request.RequestSubmitOrder;
 import com.jkm.entity.ContactForm;
 import com.jkm.entity.OrderForm;
 import com.jkm.entity.OrderFormDetail;
+import com.jkm.entity.TbContactInfo;
+import com.jkm.enums.EnumCertificatesType;
 import com.jkm.enums.EnumOrderFormDetailStatus;
 import com.jkm.enums.EnumOrderFormStatus;
-import com.jkm.service.ContactFormService;
+import com.jkm.service.ContactInfoService;
 import com.jkm.service.OrderFormDetailService;
 import com.jkm.service.OrderFormService;
 import com.jkm.service.TicketService;
 import com.jkm.service.hy.entity.HyRefundCallbackResponse;
-import com.jkm.service.ys.YsSdkService;
 import com.jkm.service.hy.HySdkService;
 import com.jkm.service.ys.entity.*;
 import net.sf.json.JSONArray;
@@ -49,7 +50,7 @@ public class TicketServiceImpl implements TicketService {
     private OrderFormService orderFormService;
 
     @Autowired
-    private ContactFormService contactFormService;
+    private ContactInfoService contactInfoService;
 
     @Autowired
     private HySdkService hySdkService;
@@ -66,8 +67,8 @@ public class TicketServiceImpl implements TicketService {
     public Triple<Boolean, String, Long> submitOrder(final RequestSubmitOrder requestSubmitOrder) {
         log.info("开始创建订单！！");
         final OrderForm orderForm = new OrderForm();
-        final Optional<ContactForm> contactFormOptional = this.contactFormService.selectByUid(requestSubmitOrder.getUid());
-        Preconditions.checkState(contactFormOptional.isPresent(), "订票人uid[" + requestSubmitOrder.getUid() + "]不村在");
+        final Optional<TbContactInfo> contactFormOptional = this.contactInfoService.selectByUid(requestSubmitOrder.getUid());
+        Preconditions.checkState(contactFormOptional.isPresent(), "订票人uid[" + requestSubmitOrder.getUid() + "]不存在");
         orderForm.setUid(requestSubmitOrder.getUid());
         orderForm.setPrice(requestSubmitOrder.getPrice());
         orderForm.setFromStationName(requestSubmitOrder.getFromStationName());
@@ -82,9 +83,8 @@ public class TicketServiceImpl implements TicketService {
         orderForm.setEndTime(requestSubmitOrder.getEndTime());
         orderForm.setRunTime(requestSubmitOrder.getRunTime());
         orderForm.setCheci(requestSubmitOrder.getCheci());
-        //TODO
-        orderForm.setLoginUserName(contactFormOptional.get().getUserName());
-        orderForm.setLoginUserPassword(contactFormOptional.get().getUserName());
+        orderForm.setLoginUserName(contactFormOptional.get().getLoginUserName());
+        orderForm.setLoginUserPassword(contactFormOptional.get().getLoginUserPassword());
         orderForm.setOrderId(SnGenerator.generate());
         orderForm.setTrainDate(DateFormatUtil.parse(requestSubmitOrder.getTrainDate(), DateFormatUtil.yyyy_MM_dd));
         orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_INITIALIZATION.getId());
@@ -96,24 +96,23 @@ public class TicketServiceImpl implements TicketService {
         Lists.transform(passengerList, new Function<RequestSubmitOrder.Passenger, OrderFormDetail>() {
             @Override
             public OrderFormDetail apply(RequestSubmitOrder.Passenger passenger) {
-                final Optional<ContactForm> contactFormOptional1 = contactFormService.selectById(passenger.getId());
-                Preconditions.checkState(contactFormOptional1.isPresent(), "乘客不村在");
-                final ContactForm contactForm = contactFormOptional1.get();
+                final Optional<TbContactInfo> contactInfoOptional1 = contactInfoService.selectById(passenger.getId());
+                Preconditions.checkState(contactInfoOptional1.isPresent(), "乘客不村在");
+                final TbContactInfo contactInfo = contactInfoOptional1.get();
                 final OrderFormDetail orderFormDetail = new OrderFormDetail();
                 final JSONObject passengerJsonObject = new JSONObject();
                 orderFormDetail.setOrderFormId(orderForm.getId());
-                orderFormDetail.setPassengerId(contactForm.getId());
+                orderFormDetail.setPassengerId(contactInfo.getId());
                 orderFormDetail.setPrice(requestSubmitOrder.getPrice());
                 orderFormDetail.setCheci(orderForm.getCheci());
                 orderFormDetail.setPiaoType(passenger.getPiaoType());
                 orderFormDetail.setStatus(EnumOrderFormDetailStatus.TICKET_INITIALIZATION.getId());
                 orderFormDetail.setRemark(EnumOrderFormDetailStatus.TICKET_INITIALIZATION.getValue());
                 orderFormDetailService.add(orderFormDetail);
-                //TODO
-                passengerJsonObject.put("passengersename", "");
-                passengerJsonObject.put("passportseno", "");
-                passengerJsonObject.put("passporttypeseid", "");
-                passengerJsonObject.put("passporttypeseidname", "");
+                passengerJsonObject.put("passengersename", contactInfo.getName());
+                passengerJsonObject.put("passportseno", contactInfo.getIdenty());
+                passengerJsonObject.put("passporttypeseid", contactInfo.getIdentyType());
+                passengerJsonObject.put("passporttypeseidname", EnumCertificatesType.of(contactInfo.getIdentyType()));
                 passengerJsonObject.put("zwcode", orderForm.getZwCode());
                 passengerJsonObject.put("zwname", orderForm.getZwName());
                 passengerJsonObject.put("piaotype", orderFormDetail.getPiaoType());
