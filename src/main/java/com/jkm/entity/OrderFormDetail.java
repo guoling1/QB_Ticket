@@ -30,6 +30,30 @@ public class OrderFormDetail extends BaseEntity{
     private long passengerId;
 
     /**
+     * 乘客名字
+     */
+    private String passengerName;
+
+    /**
+     * 乘客证件号码
+     */
+    private String passportSeNo;
+
+    /**
+     * 乘客证件类型id
+     *
+     * {@link com.jkm.enums.EnumCertificatesType}
+     */
+    private String passportTypeSeId;
+
+    /**
+     * 乘客证件类型名称
+     *
+     * {@link com.jkm.enums.EnumCertificatesType}
+     */
+    private String passportTypeSeName;
+
+    /**
      * 车票的票号
      */
     private String ticketNo;

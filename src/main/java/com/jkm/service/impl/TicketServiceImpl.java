@@ -9,6 +9,7 @@ import com.jkm.entity.ContactForm;
 import com.jkm.entity.OrderForm;
 import com.jkm.entity.OrderFormDetail;
 import com.jkm.entity.TbContactInfo;
+import com.jkm.enums.EnumBuyTicketPackageType;
 import com.jkm.enums.EnumCertificatesType;
 import com.jkm.enums.EnumOrderFormDetailStatus;
 import com.jkm.enums.EnumOrderFormStatus;
@@ -71,6 +72,8 @@ public class TicketServiceImpl implements TicketService {
         Preconditions.checkState(contactFormOptional.isPresent(), "订票人uid[" + requestSubmitOrder.getUid() + "]不存在");
         orderForm.setUid(requestSubmitOrder.getUid());
         orderForm.setPrice(requestSubmitOrder.getPrice());
+        orderForm.setBuyTicketPackageId(requestSubmitOrder.getBuyTicketPackageId());
+        orderForm.setBuyTicketPackagePrice(new BigDecimal(EnumBuyTicketPackageType.of(requestSubmitOrder.getBuyTicketPackageId()).getPrice()));
         orderForm.setFromStationName(requestSubmitOrder.getFromStationName());
         orderForm.setFromStationCode(requestSubmitOrder.getFromStationCode());
         orderForm.setToStationName(requestSubmitOrder.getToStationName());
@@ -103,6 +106,10 @@ public class TicketServiceImpl implements TicketService {
                 final JSONObject passengerJsonObject = new JSONObject();
                 orderFormDetail.setOrderFormId(orderForm.getId());
                 orderFormDetail.setPassengerId(contactInfo.getId());
+                orderFormDetail.setPassengerName(contactInfo.getName());
+                orderFormDetail.setPassportSeNo(contactInfo.getIdenty());
+                orderFormDetail.setPassportTypeSeId(contactInfo.getIdentyType());
+                orderFormDetail.setPassportTypeSeName(EnumCertificatesType.of(contactInfo.getIdentyType()).getValue());
                 orderFormDetail.setPrice(requestSubmitOrder.getPrice());
                 orderFormDetail.setCheci(orderForm.getCheci());
                 orderFormDetail.setPiaoType(passenger.getPiaoType());
@@ -150,6 +157,7 @@ public class TicketServiceImpl implements TicketService {
      * @return
      */
     @Override
+    @Transactional
     public void handleSubmitOrderCallbackResponse(final JSONObject jsonObject) {
         log.info("订单提交-回调处理中");
         final String orderId = jsonObject.getString("orderId");
@@ -164,7 +172,8 @@ public class TicketServiceImpl implements TicketService {
         final OrderForm orderForm = orderFormOptional1.get();
         if (success && orderSuccess) {
             log.info("订单回调处理成功---占座成功");
-            orderForm.setTotalPrice(new BigDecimal(jsonObject.getString("orderamount")));
+            orderForm.setTicketTotalPrice(new BigDecimal(jsonObject.getString("orderamount")));
+            orderForm.setTotalPrice(orderForm.getTicketTotalPrice().add(orderForm.getBuyTicketPackagePrice()).add(orderForm.getGrabTicketPackagePrice()));
             orderForm.setOutOrderId(jsonObject.getString("transactionid"));
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getValue());
@@ -201,6 +210,7 @@ public class TicketServiceImpl implements TicketService {
      * @return
      */
     @Override
+    @Transactional
     public Pair<Boolean, String> confirmOrder(final long orderFormId) {
         log.info("订单[" + orderFormId + "]--确认订单请求中");
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByIdWithLock(orderFormId);
@@ -237,6 +247,7 @@ public class TicketServiceImpl implements TicketService {
      * @param jsonObject
      */
     @Override
+    @Transactional
     public void handleConfirmOrderCallbackResponse(final JSONObject jsonObject) {
         log.info("确认订单--回调函数处理中");
         final String orderId = jsonObject.getString("orderId");
@@ -274,6 +285,7 @@ public class TicketServiceImpl implements TicketService {
      * @return
      */
     @Override
+    @Transactional
     public Pair<Boolean, String> cancelOrder(final long orderFormId) {
         log.info("订单[" + orderFormId + "]取消中！！");
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByIdWithLock(orderFormId);

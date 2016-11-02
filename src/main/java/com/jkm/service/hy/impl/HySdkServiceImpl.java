@@ -142,6 +142,38 @@ public class HySdkServiceImpl implements HySdkService{
         return resultJsonObject;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderId
+     * @param transactionId
+     * @return
+     */
+    @Override
+    public JSONObject QueryOrder(final String orderId, final String transactionId) {
+        JSONObject jsonObject = new JSONObject();
+        String reqTime = this.getCurrentDateString();
+        try {
+            jsonObject.put("sign", this.getSign(EnumHTHYMethodCode.QUERY_ORDER_FORM.getCode(), reqTime));
+            jsonObject.put("partnerid", HySdkConstans.PARTNERID);
+            jsonObject.put("method", EnumHTHYMethodCode.QUERY_ORDER_FORM.getCode());
+            jsonObject.put("orderid", orderId);
+            jsonObject.put("transactionid", transactionId);
+            jsonObject.put("reqtime", reqTime);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        final StopWatch stopWatch = new StopWatch();
+        final JSONObject resultJsonObject = HttpMethod.httpClient(jsonObject, HySdkConstans.SERVICE_GATEWAY_URL);
+        this.postHandle(orderId,
+                EnumHTHYMethodCode.QUERY_ORDER_FORM.getCode(),
+                resultJsonObject.getInt("code"),
+                jsonObject.toString(),
+                resultJsonObject.toString(),
+                stopWatch.getTime());
+        return resultJsonObject;
+    }
+
 
     /**
      * {@inheritDoc}

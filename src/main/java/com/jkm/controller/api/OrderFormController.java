@@ -63,11 +63,10 @@ public class OrderFormController extends BaseController {
             }
         });
         final List<OrderFormDetail> orderFormDetails = this.orderFormDetailService.selectByOrderFormIds(orderFormIds);
-        final Map<Long, TbContactInfo> contactInfoMap = this.getTbContactInfoMap(orderFormDetails);
         final List<ResponseQueryOrderForm> orderFormList = Lists.transform(orderForms, new Function<OrderForm, ResponseQueryOrderForm>() {
             @Override
             public ResponseQueryOrderForm apply(OrderForm orderForm) {
-                return getResponse(orderForm, orderFormDetails, contactInfoMap);
+                return getResponse(orderForm, orderFormDetails);
             }
         });
         results.setData(orderFormList.toArray());
@@ -81,28 +80,26 @@ public class OrderFormController extends BaseController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "queryMyOrder")
+    @RequestMapping(value = "queryById")
     @ResponseBody
     public ResponseEntityBase<ResponseQueryOrderForm> queryById(final RequestQueryOrderForm request) {
         final ResponseEntityBase<ResponseQueryOrderForm> results = new ResponseEntityBase<>();
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectById(request.getOrderFormId());
         final OrderForm orderForm = orderFormOptional.get();
         final List<OrderFormDetail> orderFormDetails = this.orderFormDetailService.selectByOrderFormId(request.getOrderFormId());
-        final Map<Long, TbContactInfo> contactInfoMap = this.getTbContactInfoMap(orderFormDetails);
-        results.setData(this.getResponse(orderForm, orderFormDetails, contactInfoMap));
+        results.setData(this.getResponse(orderForm, orderFormDetails));
         return results;
     }
 
 
-    private ResponseQueryOrderForm getResponse(final OrderForm orderForm, final List<OrderFormDetail> orderFormDetails,
-                                               final Map<Long, TbContactInfo> contactInfoMap) {
+    private ResponseQueryOrderForm getResponse(final OrderForm orderForm, final List<OrderFormDetail> orderFormDetails) {
         final ResponseQueryOrderForm responseQueryOrderForm = new ResponseQueryOrderForm();
         final ArrayList<ResponseQueryOrderForm.passenger> passengers = new ArrayList<>();
         responseQueryOrderForm.setPassengers(passengers);
         responseQueryOrderForm.setOrderFormId(orderForm.getId());
         responseQueryOrderForm.setUid(orderForm.getUid());
         responseQueryOrderForm.setPrice(orderForm.getPrice());
-        responseQueryOrderForm.setTotalPrice(orderForm.getTotalPrice());
+        responseQueryOrderForm.setTicketTotalPrice(orderForm.getTicketTotalPrice());
         responseQueryOrderForm.setFromStationName(orderForm.getFromStationName());
         responseQueryOrderForm.setFromStationCode(orderForm.getFromStationCode());
         responseQueryOrderForm.setToStationName(orderForm.getToStationName());
@@ -121,9 +118,8 @@ public class OrderFormController extends BaseController {
             final OrderFormDetail next = iterator.next();
             if (orderForm.getId() == next.getOrderFormId()) {
                 final ResponseQueryOrderForm.passenger passenger = responseQueryOrderForm.new passenger();
-                final TbContactInfo contactInfo = contactInfoMap.get(next.getPassengerId());
-                passenger.setName(contactInfo.getName());
-                passenger.setCardNo(contactInfo.getIdenty());
+                passenger.setName(next.getPassengerName());
+                passenger.setPassportSeNo(next.getPassportSeNo());
                 passenger.setPiaoType(next.getPiaoType());
                 passenger.setPiaoTypeName(EnumTrainTicketType.of(next.getPiaoType()).getValue());
                 passenger.setCxin(next.getCxin());
@@ -133,23 +129,5 @@ public class OrderFormController extends BaseController {
             }
         }
         return responseQueryOrderForm;
-    }
-
-
-    private Map<Long, TbContactInfo> getTbContactInfoMap(List<OrderFormDetail> orderFormDetails) {
-
-        final List<Long> contactInfoIds = Lists.transform(orderFormDetails, new Function<OrderFormDetail, Long>() {
-            @Override
-            public Long apply(OrderFormDetail orderFormDetail) {
-                return orderFormDetail.getPassengerId();
-            }
-        });
-        final List<TbContactInfo> tbContactInfos = this.contactInfoService.selectByIds(contactInfoIds);
-        return Maps.uniqueIndex(tbContactInfos, new Function<TbContactInfo, Long>() {
-            @Override
-            public Long apply(TbContactInfo contactInfo) {
-                return contactInfo.getId();
-            }
-        });
     }
 }

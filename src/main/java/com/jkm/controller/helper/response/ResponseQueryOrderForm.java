@@ -25,14 +25,14 @@ public class ResponseQueryOrderForm {
     private String uid;
 
     /**
-     * 火车票正常价格
+     * 单张火车票正常价格
      */
     private BigDecimal price;
 
     /**
-     * 订单总价格
+     * 火车票总价格价格
      */
-    private BigDecimal totalPrice;
+    private BigDecimal ticketTotalPrice;
 
     /**
      * 出发站名称
@@ -116,9 +116,9 @@ public class ResponseQueryOrderForm {
         private String name;
 
         /**
-         * 身份证号
+         * 证件号
          */
-        private String cardNo;
+        private String passportSeNo;
 
         /**
          *  票类型

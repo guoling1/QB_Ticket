@@ -6,6 +6,10 @@
         (
         order_form_id,
         passenger_id,
+        passenger_name,
+        passport_se_no,
+        passport_type_se_id,
+        passport_type_se_name,
         piao_type,
         ticket_no,
         checi,
@@ -17,6 +21,10 @@
        (
        #{orderFormId},
        #{passengerId},
+       #{passengerName},
+       #{passportSeNo},
+       #{passportTypeSeId},
+       #{passportTypeSeName},
        #{piaoType},
        #{ticketNo},
        #{checi},
@@ -32,6 +40,10 @@
         SET
         order_form_id = #{orderFormId},
         passenger_id = #{passengerId},
+        passenger_name = #{passengerName},
+        passport_se_no = #{passportSeNo},
+        passport_type_se_id = #{passportTypeSeId},
+        passport_type_se_name = #{passportTypeSeName},
         piao_type = #{piaoType},
         ticket_no = #{ticketNo},
         checi = #{checi},

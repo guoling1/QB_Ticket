@@ -26,14 +26,40 @@ public class OrderForm extends BaseEntity {
     private String uid;
 
     /**
-     * 车票价格
+     * 单张车票价格
      */
     private BigDecimal price;
+
+    /**
+     * 火车票的总价格
+     */
+    private BigDecimal ticketTotalPrice;
 
     /**
      * 订单总价格
      */
     private BigDecimal totalPrice;
+
+    /**
+     * 出票套餐价格
+     */
+    private BigDecimal buyTicketPackagePrice;
+
+    /**
+     * 抢票套餐价格
+     */
+    private BigDecimal grabTicketPackagePrice;
+
+    /**
+     * 出票套餐id
+     */
+    private int buyTicketPackageId;
+
+    /**
+     * 抢票套餐id
+     */
+    private int grabTicketPackageId;
+
 
     /**
      * 出发站名称
