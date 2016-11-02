@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jkm.dao.UserInfoDao">
+
+	<!-- 通用查询结果列-->
+	<sql id="Base_Column_List">
+		 id,	uid,	app_id,	account,  status,	create_time,	update_time
+	</sql>
+
+	<!-- 查询（根据主键ID查询） -->
+	<select id="selectByPrimaryKey" resultType="com.jkm.entity.UserInfo" parameterType="java.lang.Long">
+		 SELECT
+		 <include refid="Base_Column_List" />
+		 FROM tb_user_info
+		 WHERE id = #{id}
+	</select>
+
+	<!--删除：根据主键ID删除-->
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		 DELETE FROM tb_user_info
+		 WHERE id = #{id}
+	</delete>
+
+	<!-- 添加 -->
+	<insert id="insert" parameterType="com.jkm.entity.UserInfo">
+		 INSERT INTO tb_user_info
+ 		(uid,app_id,account,pwd,status)
+		 VALUES 
+ 		(#{uid},#{appId},#{account},#{pwd},#{status})
+	</insert>
+
+	<!-- 添加 （匹配有值的字段）-->
+	<insert id="insertSelective" parameterType="com.jkm.entity.UserInfo">
+		 INSERT INTO tb_user_info
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="uid != null">
+				 uid,
+			</if>
+			<if test="appId != null">
+				 app_id,
+			</if>
+			<if test="account != null">
+				 account,
+			</if>
+			<if test="pwd != null">
+				 pwd,
+			</if>
+			<if test="status != null">
+				 status,
+			</if>
+
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="uid!=null">
+				 #{uid},
+			</if>
+			<if test="appId!=null">
+				 #{appId},
+			</if>
+			<if test="account!=null">
+				 #{account},
+			</if>
+			<if test="pwd!=null">
+				 #{pwd},
+			</if>
+			<if test="status!=null">
+				 #{status},
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 修 改-->
+	<update id="updateByPrimaryKeySelective" parameterType="com.jkm.entity.UserInfo">
+		 UPDATE tb_user_info
+ 		 <set> 
+			<if test="uid != null">
+				 uid = #{uid},
+			</if>
+			<if test="appId != null">
+				 app_id = #{appId},
+			</if>
+			<if test="account != null">
+				 account = #{account},
+			</if>
+			<if test="pwd != null">
+				 pwd = #{pwd},
+			</if>
+			<if test="status != null">
+				 status = #{status},
+			</if>
+ 		 </set>
+		 WHERE id = #{id}
+	</update>
+
+	<!-- 修 改-->
+	<update id="updateByPrimaryKey" parameterType="com.jkm.entity.UserInfo">
+		 UPDATE tb_user_info
+		 SET 
+			 uid = #{uid},
+			 app_id = #{appId},
+			 account = #{account},
+			 pwd = #{pwd},
+			 status = #{status}
+		 WHERE id = #{id}
+	</update>
+
+</mapper>

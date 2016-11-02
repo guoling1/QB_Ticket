@@ -58,7 +58,7 @@ public class AuthenServiceImpl implements AuthenService {
 			String Base64 = GZipUtil.gzipString(xml);
 			// 通讯使用HTTPS进行通讯
 			logger.debug("****************xml通讯使用HTTPS进行通讯*********************");
-			String response1 = HttpUtils.sendPostMessage(Base64, Constants.FASTPAY_URL,
+			String response1 = HttpUtils.sendPostMessage(Base64, HzSdkConstans.FASTPAY_URL,
 					Constants.transfer_charset);
 			// 解压解密返回信息
 			String response2 = null;
@@ -169,7 +169,7 @@ public class AuthenServiceImpl implements AuthenService {
 			String Base64 = GZipUtil.gzipString(xml);
 			// 通讯使用HTTPS进行通讯
 			logger.debug("****************xml通讯使用HTTPS进行通讯*********************");
-			String response1 = HttpUtils.sendPostMessage(Base64, Constants.SINGLE_REFUND_URL,
+			String response1 = HttpUtils.sendPostMessage(Base64, HzSdkConstans.SINGLE_REFUND_URL,
 					Constants.transfer_charset);
 			// 解压解密返回信息
 			String response2 = null;
@@ -262,7 +262,7 @@ public class AuthenServiceImpl implements AuthenService {
 			String Base64 = GZipUtil.gzipString(xml);
 			// 通讯使用HTTPS进行通讯
 			logger.debug("****************xml通讯使用HTTPS进行通讯*********************");
-			String response1 = HttpUtils.sendPostMessage(Base64, Constants.CARD_AUTH,
+			String response1 = HttpUtils.sendPostMessage(Base64, HzSdkConstans.CARD_AUTH,
 					Constants.transfer_charset);
 			// 解压解密返回信息
 			String response2 = null;
@@ -316,7 +316,7 @@ public class AuthenServiceImpl implements AuthenService {
 
 		RequestBody100004 body = new RequestBody100004();
 		RequestDetail100004 detail = new RequestDetail100004();
-		detail.setMERCHANT_ID(Constants.MERC_ID);
+		detail.setMERCHANT_ID(HzSdkConstans.MERC_ID);
 		detail.setSEND_TIME(DateUtils.getDateString(new Date(),
 				DateUtils.formate_string_yyyyMMddhhmmss));
 		detail.setSEND_DT(DateUtils.getDateString(new Date(),
