@@ -52,6 +52,11 @@ public class OrderFormDetail extends BaseEntity{
     private String piaoType;
 
     /**
+     * 几车厢几号
+     */
+    private String cxin;
+
+    /**
      * 备注
      */
     private String remark;

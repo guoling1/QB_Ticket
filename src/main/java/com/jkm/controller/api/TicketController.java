@@ -61,7 +61,7 @@ public class TicketController extends BaseController{
      * @param request
      * @return
      */
-    @RequestMapping(value = "/submitTicket", method = RequestMethod.POST)
+    @RequestMapping(value = "/submitOrder", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntityBase<ResponseSubmitOrder> submitTicket(final RequestSubmitOrder request) {
         final ResponseEntityBase<ResponseSubmitOrder> results = new ResponseEntityBase<>();

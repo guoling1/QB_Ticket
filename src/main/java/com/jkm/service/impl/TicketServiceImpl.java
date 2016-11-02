@@ -179,6 +179,7 @@ public class TicketServiceImpl implements TicketService {
                 final OrderFormDetail orderFormDetail = orderFormDetailOptional.get();
                 Preconditions.checkState(orderFormDetail.isTicketInit(), "乘客的票的记录[" + orderFormDetail.getId() + "]状态不正确");
                 orderFormDetail.setTicketNo(passengersJo.getString("ticket_no"));
+                orderFormDetail.setCxin(passengersJo.getString("cxin"));
                 this.orderFormDetailService.update(orderFormDetail);
             }
             //TODO

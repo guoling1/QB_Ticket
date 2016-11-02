@@ -104,8 +104,15 @@
         SELECT * FROM tb_contact_info WHERE id = #{id}
     </select>
 
+    <select id="selectByIds" resultType="com.jkm.entity.TbContactInfo">
+         SELECT * FROM tb_contact_info
+         WHERE id IN
+         <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+             #{item}
+         </foreach>
+    </select>
+
     <select id="selectByUid" resultType="com.jkm.entity.TbContactInfo">
         SELECT * FROM tb_contact_info WHERE uid = #{uid}
     </select>
-
 </mapper>

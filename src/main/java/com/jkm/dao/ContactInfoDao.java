@@ -3,6 +3,8 @@ package com.jkm.dao;
 import com.jkm.entity.TbContactInfo;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * Created by yulong.zhang on 2016/11/2.
  */
@@ -30,6 +32,14 @@ public interface ContactInfoDao {
      * @return
      */
     TbContactInfo selectById(@Param("id") long id);
+
+    /**
+     * 按ids
+     *
+     * @param ids
+     * @return
+     */
+    List<TbContactInfo> selectByIds(@Param("ids") List<Long> ids);
 
     /**
      * 按id
