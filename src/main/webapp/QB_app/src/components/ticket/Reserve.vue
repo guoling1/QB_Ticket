@@ -10,14 +10,14 @@
           <div class="right">到达城市</div>
         </div>
         <div class="side write">
-          <div class="left">北京</div>
+          <div class="left" @click="station">北京</div>
           <img class="middle" src="../../assets/exchange.png">
 
-          <div class="right">上海</div>
+          <div class="right" @click="station">上海</div>
         </div>
       </div>
-      <div class="time">
-        <div class="show">12月20日 周六</div>
+      <div class="time" @click="time('dateONE')">
+        <div class="show">{{dateONE}}</div>
       </div>
       <div class="option">
         <div class="show">只看高铁/动车</div>
@@ -25,17 +25,13 @@
           <div class="btn"></div>
         </div>
       </div>
-      <div class="submit">查询</div>
+      <router-link class="submit" to="/ticket/train-menu/train">查询</router-link>
       <ul class="history">
         <li>查询历史</li>
         <li>清空</li>
       </ul>
     </div>
-
-
-    <div @click="open">调用时间选择组件</div>
     <datetime></datetime>
-    <router-link to="/ticket/train-menu/train">立即预定</router-link>
   </div>
 </template>
 
@@ -46,14 +42,25 @@
     components: {
       Datetime
     },
-    data () {
+    data: function () {
       return {
         msg: 'Welcome to Your Vue.js App'
       }
     },
     methods: {
-      open: function () {
-        this.$store.commit('TIME_CTRL', true);
+      time: function (name) {
+        this.$store.commit('TIME_OPEN', {
+          name: name,
+          ctrl: true
+        });
+      },
+      station: function () {
+        this.$store.commit('STATION_CTRL', true);
+      }
+    },
+    computed: {
+      dateONE () {
+        return this.$store.state.date.scope.dateONE.time;
       }
     }
   }
@@ -162,6 +169,7 @@
   }
 
   .submit {
+    display: block;
     width: 100%;
     height: 47px;
     line-height: 47px;

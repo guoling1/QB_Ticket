@@ -1,10 +1,11 @@
 <template lang="html">
   <transition name="fade">
-    <div class="main" v-if="show">
+    <div v-if="show" class="main">
       这是时间选择的组件
-      <div @click.stop="close">取消时间选择组件</div>
+      <div @click="close">取消时间选择组件</div>
     </div>
   </transition>
+
 </template>
 
 <script lang="babel">
@@ -12,20 +13,17 @@
     name: 'Datetime',
     data () {
       return {
-        datetime: '今天'
+        msg: 'Welcome to Your Vue.js App'
       }
     },
     methods: {
       close: function () {
-        this.$store.commit('TIME_CLOSE', {
-          ctrl: false,
-          time: '12月30日 周几?'
-        });
+        this.$store.commit('TIME_CTRL', false);
       }
     },
     computed: {
       show () {
-        return this.$store.state.date.ctrl
+        return this.$store.state.date.openCtrl
       }
     }
   }
