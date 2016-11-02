@@ -1,5 +1,6 @@
 <template lang="html">
   <div class="main">
+    <div v-search-station></div>
     <div @click="dateShow=true">调用时间选择组件</div>
     <datetime v-bind:show="dateShow"></datetime>
     <router-link to="/ticket/train-menu/train">立即预定</router-link>
