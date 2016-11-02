@@ -2,6 +2,8 @@ package com.jkm.service.hy.impl;
 
 
 import com.jkm.entity.HyChannelRequestRecord;
+import com.jkm.entity.OrderForm;
+import com.jkm.enums.EnumHTHYMethodCode;
 import com.jkm.service.hy.HySdkRequestRecordService;
 import com.jkm.service.hy.HySdkService;
 import com.jkm.service.hy.entity.*;
@@ -13,11 +15,15 @@ import com.jkm.util.HttpMethod;
 import com.jkm.util.JsonUtil;
 import com.jkm.util.MD5Util;
 import com.jkm.util.http.client.HttpClientFacade;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.time.StopWatch;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 
@@ -26,6 +32,9 @@ import java.util.Map;
  */
 @Service
 public class HySdkServiceImpl implements HySdkService{
+
+    private Logger log = Logger.getLogger(HySdkServiceImpl.class);
+
     @Autowired
     private HttpClientFacade httpClientFacade;
     @Autowired
@@ -35,26 +44,106 @@ public class HySdkServiceImpl implements HySdkService{
     /**
      * {@inheritDoc}
      *
-     * @param request
+     * @param orderform
+     * @param passengers
      * @return
      */
-    @Override
-    public HySubmitOrderResponse submitOrder(final HySubmitOrderRequest request) {
-        addSign(request);
-        final Map<String, String> resultMap = request.converterToMap();
-        final JSONObject jsonObject = JSONObject.fromObject(resultMap);
+    public JSONObject submitOrderImpl(final OrderForm orderform, final JSONArray passengers) {
+        JSONObject jsonObject = new JSONObject();
+        String reqTime = this.getCurrentDateString();
+        try {
+            jsonObject.put("sign", this.getSign(EnumHTHYMethodCode.SUBMIT_ORDER_FORM.getCode(), reqTime));
+            jsonObject.put("partnerid", HySdkConstans.PARTNERID);
+            jsonObject.put("passengers", passengers);
+            jsonObject.put("method", EnumHTHYMethodCode.SUBMIT_ORDER_FORM.getCode());
+            jsonObject.put("is_accept_standing", false);
+            jsonObject.put("to_station_code", orderform.getToStationCode());
+            jsonObject.put("train_date", orderform.getTrainDate());
+            jsonObject.put("callbackurl", HySdkConstans.SUBMIT_TICKET_NOTIFY_URL);
+            jsonObject.put("reqtime", reqTime);
+            jsonObject.put("from_station_name", orderform.getFromStationName());
+            jsonObject.put("checi", orderform.getCheci());
+            jsonObject.put("orderid", orderform.getOrderId());
+            jsonObject.put("from_station_code", orderform.getFromStationCode());
+            jsonObject.put("to_station_name", orderform.getToStationCode());
+            jsonObject.put("LoginUserName", orderform.getLoginUserName());
+            jsonObject.put("LoginUserPassword", orderform.getLoginUserPassword());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         final StopWatch stopWatch = new StopWatch();
-
-
-        final HySubmitOrderResponse response = new HySubmitOrderResponse();
-        this.postHandle(request.getOrderId(),
-                request.getMethod(),
-                response.getCode(),
-                resultMap.toString(),
-                response.toString(),
+        final JSONObject resultJsonObject = HttpMethod.httpClient(jsonObject, HySdkConstans.SERVICE_GATEWAY_URL);
+        this.postHandle(orderform.getOrderId(),
+                EnumHTHYMethodCode.SUBMIT_ORDER_FORM.getCode(),
+                resultJsonObject.getInt("code"),
+                jsonObject.toString(),
+                resultJsonObject.toString(),
                 stopWatch.getTime());
-        return null;
+        return resultJsonObject;
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderId
+     * @param transactionId
+     * @return
+     */
+    public JSONObject confirmTrainTicket(final String orderId, final String transactionId) {
+        JSONObject jsonObject = new JSONObject();
+        String reqTime = this.getCurrentDateString();
+        try {
+            jsonObject.put("sign", this.getSign(EnumHTHYMethodCode.CONFIRM_ORDER_FORM.getCode(), reqTime));
+            jsonObject.put("partnerid", HySdkConstans.PARTNERID);
+            jsonObject.put("method", EnumHTHYMethodCode.CONFIRM_ORDER_FORM.getCode());
+            jsonObject.put("orderid", orderId);
+            jsonObject.put("reqtime", reqTime);
+            jsonObject.put("transactionid", transactionId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        final StopWatch stopWatch = new StopWatch();
+        final JSONObject resultJsonObject = HttpMethod.httpClient(jsonObject, HySdkConstans.SERVICE_GATEWAY_URL);
+        this.postHandle(orderId,
+                EnumHTHYMethodCode.CONFIRM_ORDER_FORM.getCode(),
+                resultJsonObject.getInt("code"),
+                jsonObject.toString(),
+                resultJsonObject.toString(),
+                stopWatch.getTime());
+        return resultJsonObject;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderId
+     * @param transactionId
+     * @return
+     */
+    public JSONObject cancelOrder(final String orderId, final String transactionId) {
+        JSONObject jsonObject = new JSONObject();
+        String reqTime = this.getCurrentDateString();
+        try {
+            jsonObject.put("sign", this.getSign(EnumHTHYMethodCode.CANCEL_ORDER_FORM.getCode(), reqTime));
+            jsonObject.put("partnerid", HySdkConstans.PARTNERID);
+            jsonObject.put("method", EnumHTHYMethodCode.CANCEL_ORDER_FORM.getCode());
+            jsonObject.put("orderid", orderId);
+            jsonObject.put("transactionid", transactionId);
+            jsonObject.put("reqtime", reqTime);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        final StopWatch stopWatch = new StopWatch();
+        final JSONObject resultJsonObject = HttpMethod.httpClient(jsonObject, HySdkConstans.SERVICE_GATEWAY_URL);
+        this.postHandle(orderId,
+                EnumHTHYMethodCode.CANCEL_ORDER_FORM.getCode(),
+                resultJsonObject.getInt("code"),
+                jsonObject.toString(),
+                resultJsonObject.toString(),
+                stopWatch.getTime());
+        return resultJsonObject;
+    }
+
 
     /**
      * {@inheritDoc}
@@ -131,5 +220,22 @@ public class HySdkServiceImpl implements HySdkService{
             stopWatch.stop();
             throw e;
         }
+    }
+
+    private String getSign(final String method, final String reqtime) {
+
+        try {
+            return MD5Util.MD5(HySdkConstans.PARTNERID + method
+                    + reqtime + MD5Util.MD5(HySdkConstans.SIGN_KEY));
+        } catch (final Exception e) {
+            log.info(e);
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    private String getCurrentDateString() {
+        SimpleDateFormat date = new SimpleDateFormat("yyyyMMddHHmmss");
+        return date.format(new Date());
     }
 }

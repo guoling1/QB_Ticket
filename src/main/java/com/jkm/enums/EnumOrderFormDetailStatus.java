@@ -42,7 +42,12 @@ public enum EnumOrderFormDetailStatus {
     /**
      * 退票失败
      */
-    TICKET_RETURN_FAIL(7, "退票失败");
+    TICKET_RETURN_FAIL(7, "退票失败"),
+
+    /**
+     * 订单取消
+     */
+    TICKET_ORDER_CANCEL(8, "订单取消");
 
     @Getter
     private int id;

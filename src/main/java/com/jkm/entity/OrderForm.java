@@ -125,4 +125,14 @@ public class OrderForm extends BaseEntity {
     public boolean confirmTicketRequestSuccess() {
         return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUEST_SUCCESS.getId();
     }
+    /**
+     * 订单是否是  可以取消订单
+     *
+     * @return
+     */
+    public boolean isCanCancelOrder() {
+        return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId()
+                || this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId()
+                || this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId();
+    }
 }
