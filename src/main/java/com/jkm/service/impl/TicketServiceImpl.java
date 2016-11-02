@@ -107,7 +107,7 @@ public class TicketServiceImpl implements TicketService {
                 orderFormDetail.setStatus(EnumOrderFormDetailStatus.TICKET_INITIALIZATION.getId());
                 orderFormDetail.setRemark(EnumOrderFormDetailStatus.TICKET_INITIALIZATION.getValue());
                 orderFormDetailService.add(orderFormDetail);
-
+                //TODO
                 passengerJsonObject.put("passengersename", "");
                 passengerJsonObject.put("passportseno", "");
                 passengerJsonObject.put("passporttypeseid", "");
