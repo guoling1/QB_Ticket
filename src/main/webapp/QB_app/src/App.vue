@@ -10,25 +10,27 @@
 
 <script lang="babel">
   // 根节点一级路由,负责维护顶部title
-  const routeTitle = {
-    'ticketReserve': '车票预定',
-    'ticketOrder': '我的订单'
-  };
   export default {
     name: 'title',
     data: function () {
       return {
-        title: routeTitle[this.$route.name]
+        title: this.$store.commit('TITLE_CHANGE', this.$route.name)
       }
     },
     watch: {
+      // 监听路由变化 触发title变更
       $route: function (val) {
-        this.$data.title = routeTitle[val.name];
+        this.$store.commit('TITLE_CHANGE', val.name);
       }
     },
     methods: {
       back: function (event) {
         console.log('返回');
+      }
+    },
+    computed: {
+      title () {
+        return this.$store.state.title.title
       }
     }
   }

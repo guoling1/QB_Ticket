@@ -1,13 +1,17 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
-const station_names = require('./station_name');
+// 使用 vuex
+import store from './store'
+// 使用 vue-resource
+import VueResource from 'vue-resource';
+Vue.use(VueResource);
 
 // 定义全局指令
 // 全局火车站搜索指令
 Vue.directive('search-station', {
   inserted: function (el) {
     // 车站信息解析
+    const station_names = require('./station_name');
     const stationList = {};
     for (let i = 0; i < station_names.split('@').length; i++) {
       let parsing_middleware = station_names.split('@')[i].split('|');
@@ -56,7 +60,7 @@ Vue.directive('search-station', {
   }
 });
 
-// 0. 如果使用模块化机制编程， 要调用 Vue.use(VueRouter)
+// 使用路由 vue-router
 Vue.use(VueRouter);
 
 // 1. 定义（路由）组件。
@@ -161,5 +165,6 @@ router.beforeEach((to, from, next) => {
 // 记得要通过 router 配置参数注入路由，
 // 从而让整个应用都有路由功能
 const app = new Vue({
+  store,
   router
 }).$mount('#app');
