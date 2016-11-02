@@ -53,16 +53,16 @@ public class TicketController extends BaseController{
     }
 
     /**
-     * 火车车票订票 - 生成订单
+     * 火车车票订票 - 提交订单
      *
      * @param request
      * @return
      */
-    @RequestMapping(value = "/bookTicket", method = RequestMethod.POST)
+    @RequestMapping(value = "/submitTicket", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntityBase<ResponseBookTicket> bookTicket(final RequestBookTicket request) {
+    public ResponseEntityBase<ResponseBookTicket> submitTicket(final RequestBookTicket request) {
         final ResponseEntityBase<ResponseBookTicket> results = new ResponseEntityBase<>();
-        final long orderFormId = this.ticketService.bookTicket(request);
+        final long orderFormId = this.ticketService.submitOrder(request);
         final ResponseBookTicket responseBookTicket = new ResponseBookTicket();
         responseBookTicket.setOrerFormId(orderFormId);
         results.setData(responseBookTicket);

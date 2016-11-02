@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.dao.PolicyOrderDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+        INSERT INTO tb_policy_order
+        (order_form_detail_id, ins_product_no, flight_date, flight_number, serial_no,
+        contract_name, contract_type, gender, card_type, card_no, birthday, phone,
+        policy_no, print_no, apply_no, status)
+        VALUES(
+        #{orderFormDetailId},#{insProductNo},#{flightDate},#{flightNumber},#{serialNo},
+        #{contractName},#{contractType},#{gender},#{cardType}, #{cardNo}, #{birthday},
+        #{phone}, #{policyNo}, #{printNo}, #{applyNo}, #{status}
+        )
+    </insert>
+    <update id="updateStatusById">
+        UPDATE tb_policy_order
+        SET status = #{status} WHERE id = #{id}
+    </update>
+</mapper>

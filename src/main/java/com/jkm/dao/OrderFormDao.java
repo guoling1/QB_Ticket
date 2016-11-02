@@ -58,12 +58,12 @@ public interface OrderFormDao {
     List<OrderForm> selectByUid(@Param("uid") String uid);
 
     /**
-     * 按YS流水号查询订单
+     * 按流水号查询订单
      *
-     * @param termTransId
+     * @param orderId
      * @return
      */
-    OrderForm selectByTermTransId(@Param("termTransId") String termTransId);
+    OrderForm selectByOrderId(@Param("orderId") String orderId);
 
 
     /**

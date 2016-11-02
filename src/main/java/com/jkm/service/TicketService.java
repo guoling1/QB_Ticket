@@ -1,10 +1,10 @@
 package com.jkm.service;
 
 import com.jkm.controller.helper.request.RequestBookTicket;
+import com.jkm.service.hy.entity.HyRefundCallbackResponse;
 import com.jkm.service.ys.entity.YsRefundCallbackResponse;
-import com.jkm.service.ys.entity.YsTrainTicketBookingCallbackResponse;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.stereotype.Service;
 
 /**
  * Created by yuxiang on 2016-10-27.
@@ -13,25 +13,42 @@ public interface TicketService {
 
 
     /**
-     * 订票步骤一：初始化 票（保存）
+     * 订单提交
      *
      * @return
      */
-    long bookTicket(RequestBookTicket requestBookTicket);
+    long submitOrder(RequestBookTicket requestBookTicket);
+
 
     /**
-     * 订票步骤三：(步骤二 客户付款后)，发送订票请求
+     * 订单提交--回调函数
      *
      * @return
      */
-    Pair<Boolean, String> requestBookTicket(long orderFormId);
+    void handleSubmitOrderCallbackResponse(JSONObject jsonObject);
 
     /**
-     * 订票步骤四： 回调，确定是否订票成功
+     * 确认出票
      *
+     * @param orderFormId
      * @return
      */
-    Pair<Boolean, String> handleBookTicketCallbackResponse(YsTrainTicketBookingCallbackResponse response);
+    Pair<Boolean, String> confirmOrder(long orderFormId);
+
+    /**
+     * 确认出票--回调函数
+     *
+     * @param jsonObject
+     */
+    void handleConfirmOrderCallbackResponse(JSONObject jsonObject);
+
+    /**
+     * 取消订单
+     *
+     * @param orderFormId
+     * @return
+     */
+    Pair<Boolean, String> cancelOrder(long orderFormId);
 
     /**
      *  退票接口
@@ -44,7 +61,6 @@ public interface TicketService {
      *
      * @param response
      */
-     void handleRefundCallbackMsg(YsRefundCallbackResponse response);
-
+     void handleRefundCallbackMsg(HyRefundCallbackResponse response);
 
 }

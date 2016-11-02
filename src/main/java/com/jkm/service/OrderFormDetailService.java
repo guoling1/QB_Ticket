@@ -58,11 +58,12 @@ public interface OrderFormDetailService {
     List<OrderFormDetail> selectByOrderFormIds(List<Long> orderFormIds);
 
     /**
-     * 按证件号和乘客类型查询
+     * 按订单号和乘客id,票类型
      *
-     * @param cardNo
-     * @param passengerType
+     * @param orderId
+     * @param passengerId
+     * @param piaoType
      * @return
      */
-    Optional<OrderFormDetail> selectByCardNoAndPassengerType(String cardNo, int passengerType);
+    Optional<OrderFormDetail> selectByOrderFormIdAndPassengerIdAndPiaoType(String orderId, int passengerId, String piaoType);
 }

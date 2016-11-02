@@ -26,32 +26,7 @@ public class OrderForm extends BaseEntity {
     private String uid;
 
     /**
-     * 查询车次时的 queryKey
-     */
-    private String queryKey;
-
-    /**
-     * 请求流水号(接入商流水号)
-     */
-    private String termTransId;
-
-    /**
-     * 平台交易流水（YS流水号）
-     */
-    private String transId;
-
-    /**
-     * 合众交易流水号
-     */
-    private String reqSn;
-
-    /**
-     *取票号，值如 "EA12345678"
-     */
-    private String pickNo;
-
-    /**
-     * 火车票正常价格
+     * 车票价格
      */
     private BigDecimal price;
 
@@ -61,99 +36,63 @@ public class OrderForm extends BaseEntity {
     private BigDecimal totalPrice;
 
     /**
-     * 实扣保险费
+     * 出发站名称
      */
-    private BigDecimal insuranceFee;
+    private String fromStationName;
 
     /**
-     * 实扣技术服务费
+     * 出发站简码
      */
-    private BigDecimal technicalFee;
+    private String fromStationCode;
 
     /**
-     * 固定 ： 1 单程
+     * 到达站名称
      */
-    private int journeyType = 1;
+    private String toStationName;
 
     /**
-     * 车次号。 值如 "G101"
+     * 到达站简码
      */
-    private String trainNo;
+    private String toStationCode;
 
     /**
-     * 出发站点
+     * 车次
      */
-    private String departStation;
+    private String checi;
 
     /**
-     * 目的站点
-     */
-    private String arriveStation;
-
-    /**
-     * 出发站点Code，值如 "beijingbei"
-     */
-    private String departStationCode;
-
-    /**
-     * 目的站点Code，值如 "nanjingnan"
-     */
-    private String arriveStationCode;
-
-    /**
-     * 出发日期，值如 "2016-05-18"
-     */
-    private Date departDate;
-
-    /**
-     * 出发时间
-     */
-    private String departTime;
-
-    /**
-     *  到達日期，值如 "2016-05-18"
-     */
-    private Date arriveDate;
-
-    /**
-     * 到达时间
-     */
-    private String arriveTime;
-
-    /**
-     * 保险ID，值如 1 当为0时表示不购买保险
-     * 当ID不为0时，默认乘客列表中的所有乘客都购买保险
+     * 12306用户名
      *
-     * {@link com.jkm.enums.EnumTrainTicketInsure}
+     * 当此订单为托管时有此字段
      */
-    private int insureId = 0;
+    private String loginUserName;
 
     /**
-     *  单个保险价格，值如 20 当为0时表示不购买保险
-     */
-    private BigDecimal insurePrice = new BigDecimal("0.00");
-
-    /**
-     * 是否合并占座和出票通知， 固定： 1
-     */
-    private int isMergeNotice = 1;
-
-    /**
-     * 无票时是否接受无座， 0 接受、 1 不接受
+     * 12306密码
      *
-     * {@link com.jkm.enums.EnumTrainTicketIsAcceptNoSeat}
+     * 当此订单为托管时有此字段
      */
-    private int isAcceptNoSeat = 1;
+    private String loginUserPassword;
 
     /**
-     *  联系人姓名
+     * 商户订单号
      */
-    private String contactName;
+    private String orderId;
 
     /**
-     * 联系人手机
+     * 空铁订单号
      */
-    private String contactMobile;
+    private String outOrderId;
+
+    /**
+     * 发车日期 (yyyyMMdd)
+     */
+    private Date trainDate;
+
+    /**
+     * 取票单号（电子单号）
+     */
+    private String orderNumber;
 
     /**
      * 备注
@@ -170,11 +109,30 @@ public class OrderForm extends BaseEntity {
     }
 
     /**
-     * 是否是订单请求成功状态
+     * 订单是否是占座请求中
      *
      * @return
      */
-    public boolean isRequestSuccess() {
+    public boolean isRequestOccupySeatRequesting() {
+        return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_REQUESTING.getId();
+    }
+
+    /**
+     * 订单是否是  确认出票请求成功
+     *
+     * @return
+     */
+    public boolean confirmTicketRequestSuccess() {
         return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUEST_SUCCESS.getId();
+    }
+    /**
+     * 订单是否是  可以取消订单
+     *
+     * @return
+     */
+    public boolean isCanCancelOrder() {
+        return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId()
+                || this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId()
+                || this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId();
     }
 }

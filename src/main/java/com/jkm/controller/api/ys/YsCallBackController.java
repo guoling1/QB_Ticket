@@ -55,7 +55,7 @@ public class YsCallBackController {
         log.info("收到订票异步通知:[" + callbackResponse + "],签名结果[" + signCorrect + "]");
         this.ysSdkService.recordBookTicketCallbackParams(callbackResponse);
         if (signCorrect) {
-            this.ticketService.handleBookTicketCallbackResponse(callbackResponse);
+//            this.ticketService.handleBookTicketCallbackResponse(callbackResponse);
             ResponseWriter.writeTxtResponse(response, "success");
             log.info("订票处理结束！！ 已经发送[success]");
         } else {
@@ -86,7 +86,7 @@ public class YsCallBackController {
         //记录回调请求
         this.postHandle(response.getTermTransID(), EnumBusinessType.REFUND_TICKET_CALL_BACK.getType(), JsonUtil.toJsonString(response),"",0l);
         if (response.isSignCorrect()) {
-            this.ticketService.handleRefundCallbackMsg(response);
+           // this.ticketService.handleRefundCallbackMsg(response);
             ResponseWriter.writeTxtResponse(httpServletResponse, "SUCCESS");
         } else {
             log.error("######收到一个yxt代发异步通知 sign check error,request[" + request.getParameterMap() + "]" );

@@ -60,10 +60,10 @@ public interface OrderFormService {
     /**
      *按流水号查询订单
      *
-     * @param termTransId
+     * @param orderId
      * @return
      */
-    Optional<OrderForm> selectByTermTransId(String termTransId);
+    Optional<OrderForm> selectByOrderId(String orderId);
 
     /**
      *按合众交易流水号查询订单

@@ -60,11 +60,12 @@ public interface OrderFormDetailDao {
     List<OrderFormDetail> selectByOrderFormIds(@Param("orderFormIds") List<Long> orderFormIds);
 
     /**
-     * 按证件号和乘客类型查询
+     * 按订单号和乘客id,票类型
      *
-     * @param cardNo
-     * @param passengerType
+     * @param orderId
+     * @param passengerId
+     * @param piaoType
      * @return
      */
-    OrderFormDetail selectByCardNoAndPassengerType(@Param("cardNo") String cardNo, @Param("passengerType") int passengerType);
+    OrderFormDetail selectByOrderFormIdAndPassengerIdAndPiaoType(@Param("orderId") String orderId, @Param("passengerId") int passengerId, @Param("piaoType") String piaoType);
 }

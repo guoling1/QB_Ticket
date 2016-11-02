@@ -10,7 +10,13 @@ import lombok.Getter;
 public enum EnumHTHYMethodCode {
 
     SUBMIT_ORDER_FORM(1, "train_order", "火车票订单提交"),
-    RETURN_TICKET(2, "return_ticket", "线上退票");
+
+    CONFIRM_ORDER_FORM(2, "train_confirm", "确认出票"),
+
+    CANCEL_ORDER_FORM(2, "train_cancel", "取消订单"),
+
+    RETURN_TICKET(3, "return_ticket", "线上退票");
+
     @Getter
     private int id;
 
