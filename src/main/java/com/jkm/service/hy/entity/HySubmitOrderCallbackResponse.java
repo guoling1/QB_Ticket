@@ -1,11 +1,15 @@
 package com.jkm.service.hy.entity;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.jkm.service.hy.helper.serialize.HySdkSerializeUtil;
 import com.jkm.service.hy.helper.serialize.annotation.HySdkSerializeAlias;
 import com.jkm.service.hy.helper.serialize.annotation.HySdkSerializeListNeedConverter;
 import com.jkm.service.hy.helper.serialize.annotation.HySdkSerializeNoInclude;
 import com.jkm.service.hy.helper.serialize.annotation.HySdkSerializeNoNull;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -133,10 +137,10 @@ public class HySubmitOrderCallbackResponse {
      * 乘客列表
      */
     @HySdkSerializeListNeedConverter
-    private List<passenger> passengers;
+    private List<Passenger> passengers;
 
     @Data
-    public class passenger{
+    public class Passenger{
         /**
          * 0：正常 1：待审核 2：未通过（占座结果回调才有）
          */
@@ -152,5 +156,29 @@ public class HySubmitOrderCallbackResponse {
          * 坐席编号
          */
         private String cxin;
+
+        /**
+         * 票号
+         */
+        @HySdkSerializeAlias(name = "ticket_no")
+        private String ticketNo;
+    }
+
+    public HySubmitOrderCallbackResponse converterJsonObjectToResponse(final JSONObject jsonObject) {
+        final HySubmitOrderCallbackResponse hySubmitOrderCallbackResponse = new HySubmitOrderCallbackResponse();
+        HySdkSerializeUtil.convertJsonObjectToResponse(jsonObject, hySubmitOrderCallbackResponse);
+        final JSONArray passengers = jsonObject.getJSONArray("passengers");
+        final List<Passenger> passengerList = new ArrayList<>(passengers.size());
+        for (int i = 0; i < passengers.size(); i++) {
+            final JSONObject jo = passengers.getJSONObject(i);
+            final Passenger passenger = new Passenger();
+            passenger.setPassengerId(jo.getIntValue("passengerid"));
+            passenger.setReason(jo.getIntValue("reason"));
+            passenger.setCxin(jo.getString("cxin"));
+            passenger.setTicketNo(jo.getString("ticket_no"));
+            passengerList.add(passenger);
+        }
+        hySubmitOrderCallbackResponse.setPassengers(passengerList);
+        return hySubmitOrderCallbackResponse;
     }
 }

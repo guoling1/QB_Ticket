@@ -4,98 +4,61 @@
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
       INSERT INTO tb_order_form
-      (
-      uid,
-      query_key,
-      term_trans_id,
-      trans_id,
-      req_sn,
-      pick_No,
+      (uid,
+      order_id,
+      out_order_id,
+      order_number,
+      train_date,
       price,
       total_price,
-      insurance_fee,
-      technical_fee,
-      journey_type,
-      train_no,
-      depart_station,
-      arrive_station,
-      depart_station_code,
-      arrive_station_code,
-      depart_date,
-      depart_time,
-      arrive_date,
-      arrive_time,
-      insure_id,
-      insure_price,
-      is_merge_notice,
-      is_accept_no_seat,
-      contact_name,
-      contact_mobile,
+      from_station_name,
+      from_station_code,
+      to_station_name,
+      to_station_code,
+      checi,
+      login_user_name,
+      login_user_password,
       remark,
       status
       )
       VALUES
       (
       #{uid},
-      #{queryKey},
-      #{termTransId},
-      #{transId},
-      #{reqSn},
-      #{pickNo},
+      #{orderId},
+      #{outOrderId},
+      #{orderNumber},
+      #{trainDate},
       #{price},
       #{totalPrice},
-      #{insuranceFee},
-      #{technicalFee},
-      #{journeyType},
-      #{trainNo},
-      #{departStation},
-      #{arriveStation},
-      #{departStationCode},
-      #{arriveStationCode},
-      #{departDate},
-      #{departTime},
-      #{arriveDate},
-      #{arriveTime},
-      #{insureId},
-      #{insurePrice},
-      #{isMergeNotice},
-      #{isAcceptNoSeat},
-      #{contactName},
-      #{contactMobile},
+      #{fromStationName},
+      #{fromStationCode},
+      #{toStationName},
+      #{toStationCode},
+      #{checi},
+      #{loginUserName},
+      #{loginUserPassword},
       #{remark},
       #{status}
-      )
+      );
     </insert>
 
     <update id="update">
       UPDATE tb_order_form
       SET
         uid = #{uid},
-        query_key = #{queryKey},
-        term_trans_id = #{termTransId},
-        trans_id = #{transId},
-        req_sn = #{reqSn},
-        pick_no = #{pickNo},
+        order_id = #{orderId},
+        out_order_id = #{outOrderId},
+        order_number = #{orderNumber},
+        train_date = #{trainDate},
         price = #{price},
         total_price = #{totalPrice},
-        insurance_fee = #{insuranceFee},
-        technical_fee = #{technicalFee},
-        journey_type = #{journeyType},
-        train_no = #{trainNo},
-        depart_station = #{departStation},
-        arrive_station = #{arriveStation},
-        depart_station_code = #{departStationCode},
-        arrive_station_code = #{arriveStationCode},
-        depart_date = #{departDate},
-        depart_time = #{departTime},
-        arrive_date = #{arriveDate},
-        arrive_time = #{arriveTime},
-        insure_id = #{insureId},
-        insure_price = #{insurePrice},
-        is_merge_notice = #{isMergeNotice},
-        is_accept_no_seat = #{isAcceptNoSeat},
-        contact_name = #{contactName},
-        contact_mobile = #{contactMobile},
+        from_station_name = #{fromStationName},
+        from_station_code = #{fromStationCode},
+        to_station_name = #{toStationName},
+        to_station_code = #{toStationCode},
+        checi = #{checi},
+        login_user_name = #{loginUserName},
+        login_user_password = #{loginUserPassword},
         remark = #{remark},
         status = #{status}
       WHERE id = #{id}
@@ -121,8 +84,8 @@
       SELECT * FROM tb_order_form WHERE uid = #{uid}
     </select>
 
-    <select id="selectByTermTransId" resultType="com.jkm.entity.OrderForm">
-      SELECT * FROM tb_order_form WHERE term_trans_id = #{termTransId}
+    <select id="selectByOrderId" resultType="com.jkm.entity.OrderForm">
+      SELECT * FROM tb_order_form WHERE order_id = #{orderId}
     </select>
 
   <select id="selectByReqSn" resultType="com.jkm.entity.OrderForm">

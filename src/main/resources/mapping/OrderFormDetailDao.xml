@@ -2,76 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.dao.OrderFormDetailDao">
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO tb_order_form_detail
+       INSERT INTO tb_order_form_detail
         (
         order_form_id,
         passenger_id,
-        passenger_name,
-        passenger_type,
-        card_type,
-        card_no,
-        birth,
-        seat_type,
-        seat_name,
+        piao_type,
+        ticket_no,
+        checi,
         price,
-        pick_no,
-        journey_type,
-        train_no,
-        depart_station,
-        arrive_station,
-        depart_station_code,
-        arrive_station_code,
-        depart_date_time,
-        arrive_date_time,
-        remark,
         status
-            )VALUES(
-         #{orderFormId},
-         #{passengerId},
-         #{passengerName},
-         #{passengerType},
-         #{cardType},
-         #{birth},
-         #{seatType},
-         #{seatName},
-         #{price},
-         #{pickNo},
-         #{journeyType},
-         #{trainNo},
-         #{departStation},
-         #{arriveStation},
-         #{departStationCode},
-         #{arriveStationCode},
-         #{departDateTime},
-         #{arriveDateTime},
-         #{remark},
-         #{status}
         )
+       VALUES
+       (
+       #{orderFormId},
+       #{passengerId},
+       #{piaoType},
+       #{ticketNo},
+       #{checi},
+       #{price}
+       #{status}
+       );
+
     </insert>
 
     <update id="update">
         UPDATE tb_order_form_detail
-        SET order_form_id = #{orderFormId},
-            passenger_id = #{passengerId},
-            passenger_name = #{passengerName},
-            passenger_type = #{passengerType},
-            card_type = #{cardType},
-            card_no = #{cardNo},
-            birth = #{birth},
-            seat_type = #{seatType},
-            seat_name = #{seatName},
-            price = #{price},
-            pick_no = #{pickNo},
-            journey_type = #{journeyType},
-            train_no = #{trainNo},
-            depart_station = #{departStation},
-            arrive_station = #{arriveStation},
-            depart_station_code = #{departStationCode},
-            arrive_station_code = #{arriveStationCode},
-            depart_date_time = #{departDateTime},
-            arrive_date_time = #{arriveDateTime},
-            remark = #{remark},
-            status = #{status}
+        SET
+        order_form_id = #{orderFormId},
+        passenger_id = #{passengerId},
+        piao_type = #{piaoType},
+        ticket_no = #{ticketNo},
+        checi = #{checi},
+        price = #{price},
+        status = #{status}
         WHERE id = #{id}
     </update>
     <update id="updateStatusByOrderFormId">
@@ -90,15 +53,15 @@
     </select>
 
     <select id="selectByOrderFormIds" resultType="com.jkm.entity.OrderFormDetail">
-         SELECT * FROM tb_order_form_detail
-         WHERE order_form_id IN
-         <foreach collection="orderFormIds" index="index" item="item" open="(" separator="," close=")">
-             #{item}
-         </foreach>
+        SELECT * FROM tb_order_form_detail
+        WHERE order_form_id IN
+        <foreach collection="orderFormIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
     </select>
 
-    <select id="selectByCardNoAndPassengerType" resultType="com.jkm.entity.OrderFormDetail">
-         SELECT * FROM tb_order_form_detail WHERE card_no = #{cardNo} AND passenger_type = #{passengerType}
+    <select id="selectByOrderFormIdAndPassengerIdAndPiaoType" resultType="com.jkm.entity.OrderFormDetail">
+        SELECT * FROM tb_order_form_detail WHERE order_form_id = #{orderFormId} AND passenger_id = #{passengerId} AND piao_type = #{piaoType}
     </select>
 
 </mapper>

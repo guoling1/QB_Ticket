@@ -4,9 +4,11 @@ import com.google.common.base.Optional;
 import com.jkm.dao.ContactFormDao;
 import com.jkm.entity.ContactForm;
 import com.jkm.service.ContactFormService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,21 +35,21 @@ public class ContactFormServiceImpl implements ContactFormService {
      * @param id
      * @return
      */
-    @Override
-    public int delete(final long id) {
-        return this.contactFormDao.delete(id);
-    }
+//    @Override
+//    public int delete(final long id) {
+//        return this.contactFormDao.delete(id);
+////    }
 
     /**
      *
      * @param contactForm
      * @return
      */
-    @Override
-    public int updata(final ContactForm contactForm) {
-
-        return this.contactFormDao.update(contactForm);
-    }
+//    @Override
+//    public int updata(final ContactForm contactForm) {
+//
+//        return this.contactFormDao.update(contactForm);
+//    }
 
     /**
      *
@@ -66,7 +68,7 @@ public class ContactFormServiceImpl implements ContactFormService {
      * @return
      */
     @Override
-    public Optional<ContactForm> selectByUid(final long uid) {
+    public Optional<ContactForm> selectByUid(final String uid) {
         return Optional.fromNullable(this.contactFormDao.selectByUid(uid));
     }
 
@@ -79,5 +81,19 @@ public class ContactFormServiceImpl implements ContactFormService {
     @Override
     public Optional<ContactForm> selectById(final long id) {
         return Optional.fromNullable(this.contactFormDao.selectById(id));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public List<ContactForm> selectByIds(final List<Long> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return Collections.emptyList();
+        }
+        return this.contactFormDao.selectByIds(ids);
     }
 }

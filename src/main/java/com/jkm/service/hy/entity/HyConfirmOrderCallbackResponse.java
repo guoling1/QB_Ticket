@@ -31,12 +31,13 @@ public class HyConfirmOrderCallbackResponse {
      * 请求时间
      */
     @HySdkSerializeAlias(name = "reqtime")
+//    @HySdkSerializeProperty(datePattern = "yyyyMMddHHmmss")
     private String reqTime;
 
     /**
      * 是否出票成功（Y/N）
      */
-    @HySdkSerializeAlias(name = "isSuccess")
+    @HySdkSerializeAlias(name = "issuccess")
     private String isSuccess;
 
     private String code;

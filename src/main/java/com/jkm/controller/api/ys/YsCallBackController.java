@@ -55,7 +55,7 @@ public class YsCallBackController {
         log.info("收到订票异步通知:[" + callbackResponse + "],签名结果[" + signCorrect + "]");
         this.ysSdkService.recordBookTicketCallbackParams(callbackResponse);
         if (signCorrect) {
-            this.ticketService.handleBookTicketCallbackResponse(callbackResponse);
+//            this.ticketService.handleBookTicketCallbackResponse(callbackResponse);
             ResponseWriter.writeTxtResponse(response, "success");
             log.info("订票处理结束！！ 已经发送[success]");
         } else {

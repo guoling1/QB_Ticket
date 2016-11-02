@@ -1,12 +1,16 @@
 package com.jkm.service.hy.entity;
 
+import com.jkm.service.hy.helper.serialize.HySdkSerializeUtil;
 import com.jkm.service.hy.helper.serialize.annotation.HySdkSerializeAlias;
 import com.jkm.service.hy.helper.serialize.annotation.HySdkSerializeListNeedConverter;
 import com.jkm.service.hy.helper.serialize.annotation.HySdkSerializeNoInclude;
+import com.jkm.util.JsonUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yulong.zhang on 2016/10/31.
@@ -92,13 +96,13 @@ public class HySubmitOrderRequest extends HySdkRequest {
      * 乘客集合
      */
     @HySdkSerializeListNeedConverter
-    private List<passenger> passengers;
+    private List<Passenger> passengers;
 
     /**
      * 乘客
      */
     @Data
-    public class passenger {
+    public class Passenger {
 
         /**
          * 乘客姓名
@@ -173,5 +177,16 @@ public class HySubmitOrderRequest extends HySdkRequest {
          * 传空字符串
          */
         private String cxin = "";
+    }
+
+    public Map<String, String> converterToMap() {
+        final Map<String, String> result = HySdkSerializeUtil.converterSdkRequestToMap(this);
+        final List<Passenger> passengerList = this.getPassengers();
+        final List<Map<String, String>> passengerMapList = new ArrayList<>(passengerList.size());
+        for (Passenger passenger : passengerList) {
+            passengerMapList.add(HySdkSerializeUtil.converterObjectToMap(passenger));
+        }
+        result.put("passengers", JsonUtil.toJsonString(passengerMapList));
+        return result;
     }
 }
