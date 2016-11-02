@@ -30,8 +30,6 @@
         preference_to_station_name,
         preference_to_station_code,
         enter_year,
-        login_user_name,
-        login_user_password,
         status
         ) VALUES
         (
@@ -60,8 +58,6 @@
         #{preferenceToStationName},
         #{preferenceToStationCode},
         #{enterYear},
-        #{loginUserName},
-        #{loginUserPassword},
         #{status}
         );
     </insert>
@@ -94,8 +90,6 @@
         preference_to_station_name = #{preferenceToStationName},
         preference_to_station_code = #{preferenceToStationCode},
         enter_year = #{enterYear},
-        login_user_name = #{loginUserName},
-        login_user_password = #{loginUserPassword},
         status = #{status}
         WHERE id = #{id}
     </update>

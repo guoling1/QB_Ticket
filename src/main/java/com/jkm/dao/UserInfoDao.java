@@ -7,6 +7,12 @@ import org.apache.ibatis.annotations.Param;
 public interface UserInfoDao {
     /**
      *
+     * 查询（根据Uid和Appid查询）
+     *
+     **/
+    UserInfo selectByUidAndAppid (UserInfo record );
+    /**
+     *
      * 查询（根据主键ID查询）
      *
      **/

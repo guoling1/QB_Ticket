@@ -12,7 +12,23 @@ public class UserBankCardSupporter {
      */
     private UserBankCardSupporter() {
     }
+    /**
+     * 解密密码信息
+     *
+     * @return 银行卡号信息明文
+     */
+    static public String decryptPwd(final String pwd) {
+        return AESUtil.decrypt(pwd, BankConstants.getConfig().userBankCardKey());
+    }
 
+    /**
+     * 加密密码信息
+     *
+     * @return 银行卡号信息密文
+     */
+    static public String encryptPwd(final String pwd) {
+        return AESUtil.encrypt(pwd, BankConstants.getConfig().userBankCardKey());
+    }
     /**
      * 解密银行卡记录加密的银行卡号信息
      *

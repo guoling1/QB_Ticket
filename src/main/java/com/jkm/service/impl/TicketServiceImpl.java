@@ -86,8 +86,8 @@ public class TicketServiceImpl implements TicketService {
         orderForm.setEndTime(requestSubmitOrder.getEndTime());
         orderForm.setRunTime(requestSubmitOrder.getRunTime());
         orderForm.setCheci(requestSubmitOrder.getCheci());
-        orderForm.setLoginUserName(contactFormOptional.get().getLoginUserName());
-        orderForm.setLoginUserPassword(contactFormOptional.get().getLoginUserPassword());
+//        orderForm.setLoginUserName(contactFormOptional.get().getLoginUserName());
+//        orderForm.setLoginUserPassword(contactFormOptional.get().getLoginUserPassword());
         orderForm.setOrderId(SnGenerator.generate());
         orderForm.setTrainDate(DateFormatUtil.parse(requestSubmitOrder.getTrainDate(), DateFormatUtil.yyyy_MM_dd));
         orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_INITIALIZATION.getId());
