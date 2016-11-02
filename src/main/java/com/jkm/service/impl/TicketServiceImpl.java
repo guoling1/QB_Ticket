@@ -103,8 +103,7 @@ public class TicketServiceImpl implements TicketService {
                 orderFormDetail.setPassengerId(contactForm.getId());
                 orderFormDetail.setPrice(requestSubmitOrder.getPrice());
                 orderFormDetail.setCheci(orderForm.getCheci());
-                //TODO
-//                orderFormDetail.setPiaoType(contactForm.getp);
+                orderFormDetail.setPiaoType(passenger.getPiaoType());
                 orderFormDetail.setStatus(EnumOrderFormDetailStatus.TICKET_INITIALIZATION.getId());
                 orderFormDetail.setRemark(EnumOrderFormDetailStatus.TICKET_INITIALIZATION.getValue());
                 orderFormDetailService.add(orderFormDetail);
@@ -113,9 +112,9 @@ public class TicketServiceImpl implements TicketService {
                 passengerJsonObject.put("passportseno", "");
                 passengerJsonObject.put("passporttypeseid", "");
                 passengerJsonObject.put("passporttypeseidname", "");
-                passengerJsonObject.put("zwcode", "");
-                passengerJsonObject.put("zwname", "");
-                passengerJsonObject.put("piaotype", "");
+                passengerJsonObject.put("zwcode", orderForm.getZwCode());
+                passengerJsonObject.put("zwname", orderForm.getZwName());
+                passengerJsonObject.put("piaotype", orderFormDetail.getPiaoType());
                 passengerJsonObject.put("cxin", "");
                 passengerJsonArray.add(passengerJsonObject);
                 return null;
