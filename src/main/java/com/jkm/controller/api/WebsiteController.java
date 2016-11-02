@@ -97,4 +97,26 @@ public class WebsiteController extends BaseController {
         responseJson.put("data",tempData);
         return responseJson;
     }
+
+    /**
+     * 增加和修改金开门网站常用联系人接口
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/saveOrUpdateOfJkm", method = RequestMethod.POST)
+    public JSONObject saveOrUpdateOfJkm() throws Exception {
+        JSONObject responseJson = new JSONObject();
+        JSONObject requestJson = super.getRequestJsonParams();
+        String data = requestJson.getString("data");
+        String accountversion = requestJson.getString("accountversion");
+        data = DESUtil.encrypt(data);
+        JSONObject jo = new JSONObject();
+        jo.put("data",data);
+        jo.put("accountversion",accountversion);
+        responseJson = HttpClientUtil.sendPost(jo,"http://trainorder.ws.hangtian123.com/trainAccount/contact/saveOrUpdate");
+        String tempData = DESUtil.decrypt(responseJson.getString("data"));
+        responseJson.put("data",tempData);
+        return responseJson;
+    }
 }

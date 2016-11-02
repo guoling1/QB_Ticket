@@ -346,6 +346,8 @@ public class AuthenServiceImpl implements AuthenService {
 //		cardAuthData.setPhoneNo(qbBindCard.getPhone());
 //		Map<String, Object> map = cardAuth(cardAuthData);
 //		if(map.get("retCode")==true){
+		qbBindCard.setCardNo(UserBankCardSupporter.encryptCardNo(qbBindCard.getCardNo()));
+		qbBindCard.setCardId(UserBankCardSupporter.encryptCardId(qbBindCard.getCardId()));
 		qbBindCard.setStatus(0);
 		return qbBindCardDao.insert(qbBindCard);
 //		}else{
