@@ -95,6 +95,41 @@ public class OrderForm extends BaseEntity {
     private String orderNumber;
 
     /**
+     * 坐席code
+     */
+    private String zwCode;
+
+    /**
+     * 坐席code
+     */
+    private String zwName;
+
+    /**
+     * 发车日期
+     */
+    private String startDate;
+
+    /**
+     * 到达日期
+     */
+    private String endDate;
+
+    /**
+     * 发车时间
+     */
+    private String startTime;
+
+    /**
+     * 到达时间
+     */
+    private String endTime;
+
+    /**
+     * 历时
+     */
+    private String runTime;
+
+    /**
      * 备注
      */
     private String remark;

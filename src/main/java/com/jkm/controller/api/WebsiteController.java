@@ -3,7 +3,6 @@ package com.jkm.controller.api;
 import com.jkm.controller.common.BaseController;
 import com.jkm.util.DESUtil;
 import com.jkm.util.HttpClientUtil;
-import com.jkm.util.HttpMethod;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,7 +50,9 @@ public class WebsiteController extends BaseController {
         JSONObject jo = new JSONObject();
         jo.put("data",data);
         jo.put("accountversion",accountversion);
-        responseJson = HttpMethod.httpClient(jo,"http://trainorder.ws.hangtian123.com/cn_interface/trainAccount/contact/query");
+        responseJson = HttpClientUtil.sendPost(jo,"http://trainorder.ws.hangtian123.com/cn_interface/trainAccount/contact/query");
+        String tempData = DESUtil.decrypt(responseJson.getString("data"));
+        responseJson.put("data",tempData);
         return responseJson;
     }
     /**
@@ -70,7 +71,9 @@ public class WebsiteController extends BaseController {
         JSONObject jo = new JSONObject();
         jo.put("data",data);
         jo.put("accountversion",accountversion);
-        responseJson = HttpMethod.httpClient(jo,"http://trainorder.ws.hangtian123.com/trainAccount/contact/saveOrUpdate");
+        responseJson = HttpClientUtil.sendPost(jo,"http://trainorder.ws.hangtian123.com/trainAccount/contact/saveOrUpdate");
+        String tempData = DESUtil.decrypt(responseJson.getString("data"));
+        responseJson.put("data",tempData);
         return responseJson;
     }
     /**
@@ -89,7 +92,31 @@ public class WebsiteController extends BaseController {
         JSONObject jo = new JSONObject();
         jo.put("data",data);
         jo.put("accountversion",accountversion);
-        responseJson = HttpMethod.httpClient(jo,"http://trainorder.ws.hangtian123.com/trainAccount/contact/delete");
+        responseJson = HttpClientUtil.sendPost(jo,"http://trainorder.ws.hangtian123.com/trainAccount/contact/delete");
+        String tempData = DESUtil.decrypt(responseJson.getString("data"));
+        responseJson.put("data",tempData);
+        return responseJson;
+    }
+
+    /**
+     * 增加和修改金开门网站常用联系人接口
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/saveOrUpdateOfJkm", method = RequestMethod.POST)
+    public JSONObject saveOrUpdateOfJkm() throws Exception {
+        JSONObject responseJson = new JSONObject();
+        JSONObject requestJson = super.getRequestJsonParams();
+        String data = requestJson.getString("data");
+        String accountversion = requestJson.getString("accountversion");
+        data = DESUtil.encrypt(data);
+        JSONObject jo = new JSONObject();
+        jo.put("data",data);
+        jo.put("accountversion",accountversion);
+        responseJson = HttpClientUtil.sendPost(jo,"http://trainorder.ws.hangtian123.com/trainAccount/contact/saveOrUpdate");
+        String tempData = DESUtil.decrypt(responseJson.getString("data"));
+        responseJson.put("data",tempData);
         return responseJson;
     }
 }

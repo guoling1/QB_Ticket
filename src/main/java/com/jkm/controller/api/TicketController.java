@@ -2,15 +2,18 @@ package com.jkm.controller.api;
 
 import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
-import com.jkm.controller.helper.request.RequestBookTicket;
+import com.jkm.controller.helper.request.RequestSubmitOrder;
+import com.jkm.controller.helper.request.RequestCancelOrder;
 import com.jkm.controller.helper.request.RequestTicketRefund;
 import com.jkm.controller.helper.request.RequestTrainTripsQuery;
-import com.jkm.controller.helper.response.ResponseBookTicket;
+import com.jkm.controller.helper.response.ResponseSubmitOrder;
+import com.jkm.controller.helper.response.ResponseCancelOrder;
 import com.jkm.controller.helper.response.ResponseTicketRefund;
 import com.jkm.controller.helper.response.ResponseTrainTripsQuery;
 import com.jkm.service.TicketService;
 import com.jkm.service.TrainTripsQueryService;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -60,12 +63,40 @@ public class TicketController extends BaseController{
      */
     @RequestMapping(value = "/submitTicket", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntityBase<ResponseBookTicket> submitTicket(final RequestBookTicket request) {
-        final ResponseEntityBase<ResponseBookTicket> results = new ResponseEntityBase<>();
-        final long orderFormId = this.ticketService.submitOrder(request);
-        final ResponseBookTicket responseBookTicket = new ResponseBookTicket();
-        responseBookTicket.setOrerFormId(orderFormId);
+    public ResponseEntityBase<ResponseSubmitOrder> submitTicket(final RequestSubmitOrder request) {
+        final ResponseEntityBase<ResponseSubmitOrder> results = new ResponseEntityBase<>();
+        final Triple<Boolean, String, Long> submitOrderResult = this.ticketService.submitOrder(request);
+        final ResponseSubmitOrder responseBookTicket = new ResponseSubmitOrder();
+        if (submitOrderResult.getLeft()) {
+            responseBookTicket.setOrderFormId(submitOrderResult.getRight());
+            responseBookTicket.setMsg(submitOrderResult.getMiddle());
+        } else {
+            results.setCode(-1);
+            results.setMessage("fail");
+            responseBookTicket.setMsg(submitOrderResult.getMiddle());
+        }
         results.setData(responseBookTicket);
+        return results;
+    }
+
+    /**
+     * 取消订单
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/cancelOrder", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntityBase<ResponseCancelOrder> cancelOrder(final RequestCancelOrder request) {
+        final ResponseEntityBase<ResponseCancelOrder> results = new ResponseEntityBase<>();
+        final Pair<Boolean, String> cancelOrderResult = this.ticketService.cancelOrder(request.getOrderFormId());
+        final ResponseCancelOrder responseCancelOrder = new ResponseCancelOrder();
+        if (!cancelOrderResult.getLeft()) {
+            results.setCode(-1);
+            results.setMessage("fail");
+        }
+        responseCancelOrder.setMsg(cancelOrderResult.getRight());
+        results.setData(responseCancelOrder);
         return results;
     }
 

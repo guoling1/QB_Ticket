@@ -8,10 +8,15 @@ import lombok.Data;
  * 订票出参
  */
 @Data
-public class ResponseBookTicket {
+public class ResponseSubmitOrder {
 
     /**
      * 订单id
      */
-    private long orerFormId;
+    private long orderFormId;
+
+    /**
+     * 提示内容
+     */
+    private String msg;
 }
