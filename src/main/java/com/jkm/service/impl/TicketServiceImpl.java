@@ -4,7 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.jkm.controller.helper.request.RequestBookTicket;
+import com.jkm.controller.helper.request.RequestSubmitOrder;
 import com.jkm.entity.ContactForm;
 import com.jkm.entity.OrderForm;
 import com.jkm.entity.OrderFormDetail;
@@ -22,6 +22,7 @@ import org.apache.commons.collections.CollectionUtils;
 import com.jkm.util.DateFormatUtil;
 import com.jkm.util.SnGenerator;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,32 +61,39 @@ public class TicketServiceImpl implements TicketService {
      */
     @Override
     @Transactional
-    public long submitOrder(final RequestBookTicket requestBookTicket) {
-
+    public Triple<Boolean, String, Long> submitOrder(final RequestSubmitOrder requestSubmitOrder) {
+        log.info("开始创建订单！！");
         final OrderForm orderForm = new OrderForm();
-        final Optional<ContactForm> contactFormOptional = this.contactFormService.selectByUid(requestBookTicket.getUid());
-        Preconditions.checkState(contactFormOptional.isPresent(), "订票人uid[" + requestBookTicket.getUid() + "]不村在");
-        orderForm.setUid(requestBookTicket.getUid());
-        orderForm.setPrice(requestBookTicket.getPrice());
-        orderForm.setFromStationName(requestBookTicket.getFromStationName());
-        orderForm.setFromStationCode(requestBookTicket.getFromStationCode());
-        orderForm.setToStationName(requestBookTicket.getToStationName());
-        orderForm.setToStationCode(requestBookTicket.getToStationCode());
-        orderForm.setCheci(requestBookTicket.getCheci());
+        final Optional<ContactForm> contactFormOptional = this.contactFormService.selectByUid(requestSubmitOrder.getUid());
+        Preconditions.checkState(contactFormOptional.isPresent(), "订票人uid[" + requestSubmitOrder.getUid() + "]不村在");
+        orderForm.setUid(requestSubmitOrder.getUid());
+        orderForm.setPrice(requestSubmitOrder.getPrice());
+        orderForm.setFromStationName(requestSubmitOrder.getFromStationName());
+        orderForm.setFromStationCode(requestSubmitOrder.getFromStationCode());
+        orderForm.setToStationName(requestSubmitOrder.getToStationName());
+        orderForm.setToStationCode(requestSubmitOrder.getToStationCode());
+        orderForm.setZwCode(requestSubmitOrder.getZwCode());
+        orderForm.setZwName(requestSubmitOrder.getZwName());
+        orderForm.setStartDate(requestSubmitOrder.getStartDate());
+        orderForm.setEndDate(requestSubmitOrder.getEndDate());
+        orderForm.setStartTime(requestSubmitOrder.getStartTime());
+        orderForm.setEndTime(requestSubmitOrder.getEndTime());
+        orderForm.setRunTime(requestSubmitOrder.getRunTime());
+        orderForm.setCheci(requestSubmitOrder.getCheci());
         //TODO
         orderForm.setLoginUserName(contactFormOptional.get().getUserName());
         orderForm.setLoginUserPassword(contactFormOptional.get().getUserName());
         orderForm.setOrderId(SnGenerator.generate());
-        orderForm.setTrainDate(DateFormatUtil.parse(requestBookTicket.getTrainDate(), DateFormatUtil.yyyy_MM_dd));
+        orderForm.setTrainDate(DateFormatUtil.parse(requestSubmitOrder.getTrainDate(), DateFormatUtil.yyyy_MM_dd));
         orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_INITIALIZATION.getId());
         orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_INITIALIZATION.getValue());
         this.orderFormService.add(orderForm);
-        final List<RequestBookTicket.Passenger> passengerList = requestBookTicket.getPassengers();
+        final List<RequestSubmitOrder.Passenger> passengerList = requestSubmitOrder.getPassengers();
         Preconditions.checkState(CollectionUtils.isEmpty(passengerList), "乘客列表为空");
         final JSONArray passengerJsonArray = new JSONArray();
-        Lists.transform(passengerList, new Function<RequestBookTicket.Passenger, OrderFormDetail>() {
+        Lists.transform(passengerList, new Function<RequestSubmitOrder.Passenger, OrderFormDetail>() {
             @Override
-            public OrderFormDetail apply(RequestBookTicket.Passenger passenger) {
+            public OrderFormDetail apply(RequestSubmitOrder.Passenger passenger) {
                 final Optional<ContactForm> contactFormOptional1 = contactFormService.selectById(passenger.getId());
                 Preconditions.checkState(contactFormOptional1.isPresent(), "乘客不村在");
                 final ContactForm contactForm = contactFormOptional1.get();
@@ -93,7 +101,7 @@ public class TicketServiceImpl implements TicketService {
                 final JSONObject passengerJsonObject = new JSONObject();
                 orderFormDetail.setOrderFormId(orderForm.getId());
                 orderFormDetail.setPassengerId(contactForm.getId());
-                orderFormDetail.setPrice(requestBookTicket.getPrice());
+                orderFormDetail.setPrice(requestSubmitOrder.getPrice());
                 orderFormDetail.setCheci(orderForm.getCheci());
                 //TODO
 //                orderFormDetail.setPiaoType(contactForm.getp);
@@ -113,22 +121,25 @@ public class TicketServiceImpl implements TicketService {
                 return null;
             }
         });
-
+        log.info("发送订单提交请求！！");
         final JSONObject jsonObject = this.hySdkService.submitOrderImpl(orderForm, passengerJsonArray);
         final String code = jsonObject.getString("code");
         final boolean success = jsonObject.getBoolean("success");
         if (success && ("802".equals(code) || "905".equals(code))) {
+            log.info("订单提交受理成功(占座成功)--等待回调！！！");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_REQUESTING.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_REQUESTING.getValue());
             this.orderFormService.update(orderForm);
+            return Triple.of(true, jsonObject.getString("msg"), orderForm.getId());
         } else {
+            log.error("占座失败");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_FAIL.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_FAIL.getValue());
             this.orderFormService.update(orderForm);
             this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getValue(),
                     EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getId(), orderForm.getId());
+            return Triple.of(false, jsonObject.getString("msg"), 0L);
         }
-        return orderForm.getId();
     }
 
 
@@ -140,9 +151,10 @@ public class TicketServiceImpl implements TicketService {
      */
     @Override
     public void handleSubmitOrderCallbackResponse(final JSONObject jsonObject) {
+        log.info("订单提交-回调处理中");
         final String orderId = jsonObject.getString("orderId");
         final boolean success = jsonObject.getBoolean("success");
-        final boolean ordersuccess = jsonObject.getBoolean("ordersuccess");
+        final boolean orderSuccess = jsonObject.getBoolean("ordersuccess");
         final JSONArray passengers = jsonObject.getJSONArray("passengers");
         Preconditions.checkState(!passengers.isEmpty(), "乘客列表为空了");
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByOrderId(orderId);
@@ -150,7 +162,8 @@ public class TicketServiceImpl implements TicketService {
         Preconditions.checkState(orderFormOptional.get().isRequestOccupySeatRequesting(), "订单[" + orderId + "]状态不正确");
         final Optional<OrderForm> orderFormOptional1 = this.orderFormService.selectByIdWithLock(orderFormOptional.get().getId());
         final OrderForm orderForm = orderFormOptional1.get();
-        if (success && ordersuccess) {
+        if (success && orderSuccess) {
+            log.info("订单回调处理成功---占座成功");
             orderForm.setTotalPrice(new BigDecimal(jsonObject.getString("orderamount")));
             orderForm.setOutOrderId(jsonObject.getString("transactionid"));
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId());
@@ -171,6 +184,7 @@ public class TicketServiceImpl implements TicketService {
             //TODO
             //调用支付接口
         } else {
+            log.info("订单回调处理成功---占座失败");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_FAIL.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_FAIL.getValue());
             this.orderFormService.update(orderForm);
@@ -187,33 +201,32 @@ public class TicketServiceImpl implements TicketService {
      */
     @Override
     public Pair<Boolean, String> confirmOrder(final long orderFormId) {
-
+        log.info("订单[" + orderFormId + "]--确认订单请求中");
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByIdWithLock(orderFormId);
         Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + orderFormId + "]不存在");
         final OrderForm orderForm = orderFormOptional.get();
         Preconditions.checkState(orderForm.isCustomerPaySuccess(), "订单[" + orderFormId + "]状态不正确");
 
-
-        //请求第三方
         final JSONObject jsonObject = this.hySdkService.confirmTrainTicket(orderForm.getOrderId(), orderForm.getOutOrderId());
         final String code = jsonObject.getString("code");
         final boolean success = jsonObject.getBoolean("success");
         if (success && "100".equals(code)) {
+            log.info("订单[" + orderFormId + "]--确认订单请求受理成功");
             orderForm.setOrderNumber(jsonObject.getString("ordernumber"));
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUEST_SUCCESS.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUEST_SUCCESS.getValue());
             this.orderFormService.update(orderForm);
-            return Pair.of(true, "确认出票请求成功");
+            return Pair.of(true, jsonObject.getString("msg"));
         } else {
+            log.info("订单[" + orderFormId + "]--确认订单受理失败");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUEST_FAIL.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUEST_FAIL.getValue());
             this.orderFormService.update(orderForm);
             this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getValue(),
                     EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getId(), orderForm.getId());
-
             //TODO
             //退款
-            return Pair.of(false, "确认出票请求失败");
+            return Pair.of(false, jsonObject.getString("msg"));
         }
     }
 
@@ -224,6 +237,7 @@ public class TicketServiceImpl implements TicketService {
      */
     @Override
     public void handleConfirmOrderCallbackResponse(final JSONObject jsonObject) {
+        log.info("确认订单--回调函数处理中");
         final String orderId = jsonObject.getString("orderId");
         final String isSuccess = jsonObject.getString("isSuccess");
         final String code = jsonObject.getString("code");
@@ -233,12 +247,14 @@ public class TicketServiceImpl implements TicketService {
         final Optional<OrderForm> orderFormOptional1 = this.orderFormService.selectByIdWithLock(orderFormOptional.get().getId());
         final OrderForm orderForm = orderFormOptional1.get();
         if ("Y".equals(isSuccess) && "100".equals(code)) {
+            log.info("确认订单回调函数--出票成功");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_TICKET_SUCCESS.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_TICKET_SUCCESS.getValue());
             this.orderFormService.update(orderForm);
             this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_BUY_SUCCESS.getValue(),
                     EnumOrderFormDetailStatus.TICKET_BUY_SUCCESS.getId(), orderForm.getId());
         } else {
+            log.info("确认订单回调函数--出票失败");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_TICKET_FAIL.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_TICKET_FAIL.getValue());
             this.orderFormService.update(orderForm);
@@ -258,6 +274,7 @@ public class TicketServiceImpl implements TicketService {
      */
     @Override
     public Pair<Boolean, String> cancelOrder(final long orderFormId) {
+        log.info("订单[" + orderFormId + "]取消中！！");
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByIdWithLock(orderFormId);
         Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + orderFormId + "]不存在");
         final OrderForm orderForm = orderFormOptional.get();
@@ -267,13 +284,14 @@ public class TicketServiceImpl implements TicketService {
         final String code = jsonObject.getString("code");
         final boolean success = jsonObject.getBoolean("success");
         if (success && "100".equals(code)) {
+            log.info("订单[" + orderFormId + "]取消成功！！");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CANCEL.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_CANCEL.getValue());
             this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_ORDER_CANCEL.getValue(),
                     EnumOrderFormDetailStatus.TICKET_ORDER_CANCEL.getId(), orderForm.getId());
-            return Pair.of(true, "订单取消成功");
+            return Pair.of(true, jsonObject.getString("msg"));
         }
-        log.error(jsonObject.getString("msg"));
+        log.error("订单[" + orderFormId + "]取消失败，原因：[" + jsonObject.getString("msg") + "]");
         return Pair.of(false, jsonObject.getString("msg"));
     }
 

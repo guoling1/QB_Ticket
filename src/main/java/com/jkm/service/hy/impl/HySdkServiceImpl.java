@@ -12,7 +12,6 @@ import com.jkm.service.hy.entity.HyReturnTicketResponse;
 import com.jkm.service.hy.helper.HySdkConstans;
 import com.jkm.service.hy.helper.HySdkSignUtil;
 import com.jkm.util.HttpMethod;
-import com.jkm.util.JsonUtil;
 import com.jkm.util.MD5Util;
 import com.jkm.util.http.client.HttpClientFacade;
 import net.sf.json.JSONArray;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 
 
 /**

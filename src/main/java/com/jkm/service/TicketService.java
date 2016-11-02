@@ -1,9 +1,10 @@
 package com.jkm.service;
 
-import com.jkm.controller.helper.request.RequestBookTicket;
+import com.jkm.controller.helper.request.RequestSubmitOrder;
 import com.jkm.service.ys.entity.YsRefundCallbackResponse;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 /**
  * Created by yuxiang on 2016-10-27.
@@ -16,7 +17,7 @@ public interface TicketService {
      *
      * @return
      */
-    long submitOrder(RequestBookTicket requestBookTicket);
+    Triple<Boolean, String, Long> submitOrder(RequestSubmitOrder requestSubmitOrder);
 
 
     /**
