@@ -1,5 +1,7 @@
 package com.jkm.util;
 
+import net.sf.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,7 +22,7 @@ public class HttpClientUtil {
      * @param postUrl
      * @return
      */
-    public static String sendPost(String postData, String postUrl) {
+    public static JSONObject sendPost(JSONObject postData, String postUrl) {
         System.out.println(postData);
 
         OutputStreamWriter out = null;
@@ -36,9 +38,9 @@ public class HttpClientUtil {
             conn.setDoOutput(true);
             conn.setConnectTimeout(5000);
             conn.setReadTimeout(5000);
-            conn.setRequestProperty("Content-Length", "" + postData.length());
+            conn.setRequestProperty("Content-Length", "" + postData.toString().length());
             out = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
-            out.write(postData);
+            out.write(postData.toString());
             out.flush();
             out.close();
 
@@ -74,7 +76,7 @@ public class HttpClientUtil {
                     e.printStackTrace();
                 }
         }
-        return result.toString().trim();
+        return JSONObject.fromObject(result.toString().trim());
     }
 
     /**

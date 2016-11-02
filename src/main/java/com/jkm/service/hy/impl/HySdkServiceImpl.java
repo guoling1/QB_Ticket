@@ -1,25 +1,23 @@
 package com.jkm.service.hy.impl;
 
-import com.jkm.dao.HyChannelRequestRecordDao;
+
 import com.jkm.entity.HyChannelRequestRecord;
-import com.jkm.entity.YsChannelRequestRecord;
-import com.jkm.enums.EnumBusinessType;
 import com.jkm.service.hy.HySdkRequestRecordService;
 import com.jkm.service.hy.HySdkService;
 import com.jkm.service.hy.entity.*;
+import com.jkm.service.hy.entity.HyReturnTicketRequest;
+import com.jkm.service.hy.entity.HyReturnTicketResponse;
 import com.jkm.service.hy.helper.HySdkConstans;
 import com.jkm.service.hy.helper.HySdkSignUtil;
-import com.jkm.service.ys.entity.YsRefundTicketResponse;
-import com.jkm.service.ys.helper.YsSdkConstants;
-import com.jkm.service.ys.helper.YsSdkSignUtil;
+import com.jkm.util.HttpMethod;
 import com.jkm.util.JsonUtil;
+import com.jkm.util.MD5Util;
 import com.jkm.util.http.client.HttpClientFacade;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 
 /**
  * Created by yuxiang on 2016-11-01.
@@ -64,17 +62,37 @@ public class HySdkServiceImpl implements HySdkService{
      */
     @Override
     public HyReturnTicketResponse returnTicket(final HyReturnTicketRequest request) {
-        addSign(request);
+        JSONObject jsonObject = null;
+        try {
+            String sign = MD5Util.MD5(request.getPartnerId() + request.getMethod() + request.getReqTime() + MD5Util.MD5(HySdkConstans.SIGN_KEY));
+            jsonObject = new JSONObject();
+            jsonObject.put("sign", sign);
+            jsonObject.put("partnerid", request.getPartnerId());
+            jsonObject.put("method", request.getMethod());
+            jsonObject.put("callbackurl", HySdkConstans.REFUND_TICKET_NOTIFY_URL);
+            jsonObject.put("reqtime", request.getReqTime());
+            jsonObject.put("orderid", request.getOrderId());
+            jsonObject.put("LoginUserName", request.getLoginUserName());
+            jsonObject.put("LoginUserPassword", request.getLoginUserPassword());
+            jsonObject.put("tickets", request.getTickets());
+            jsonObject.put("ordernumber", request.getOrderNumber());
+            jsonObject.put("transactionid", request.getTransactionId());
+            jsonObject.put("reqtoken", request.getReqToken());
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        JSONObject json = new JSONObject();
         final StopWatch stopWatch = new StopWatch();
-        final String requestParams = JsonUtil.toJsonString(request);
-        final String responseContent = requestImpl(requestParams, HySdkConstans.SERVICE_GATEWAY_URL,
-                request.getOrderId(), request.getMethod(), stopWatch);
-        final HyReturnTicketResponse response = JsonUtil.parseObject(responseContent, HyReturnTicketResponse.class);
+        json = HttpMethod.httpClient(jsonObject, HySdkConstans.SERVICE_GATEWAY_URL);
+        final Object obj = JSONObject.toBean(json, HyReturnTicketResponse.class);
+        final HyReturnTicketResponse response = (HyReturnTicketResponse)obj;
         this.postHandle(request.getOrderId(),
                         request.getMethod(),
                         response.getCode(),
-                        requestParams,
-                        responseContent,
+                        json.toString(),
+                        response.toString(),
                         stopWatch.getTime());
         return response;
     }

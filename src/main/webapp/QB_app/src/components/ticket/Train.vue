@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="main">
-    <router-link to="/ticket/choose-menu/train">北京到上海</router-link>
+    <router-link to="/ticket/train-menu/train">北京到上海</router-link>
   </div>
 </template>
 

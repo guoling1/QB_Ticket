@@ -1,6 +1,8 @@
 <template lang="html">
   <div class="main">
-    <router-link to="/ticket/choose-menu/train">立即预定</router-link>
+    <div v-search-station></div>
+
+    <router-link to="/ticket/train-menu/train">立即预定</router-link>
   </div>
 </template>
 
