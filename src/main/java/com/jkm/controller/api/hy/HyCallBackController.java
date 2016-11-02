@@ -1,13 +1,14 @@
 package com.jkm.controller.api.hy;
 
-import com.jkm.controller.common.BaseController;
-import com.jkm.enums.EnumHTHYMethodCode;
+import com.jkm.entity.HyChannelRequestRecord;
 import com.jkm.service.TicketService;
-import com.jkm.service.hy.entity.HySubmitOrderCallbackResponse;
-import com.jkm.service.hy.helper.HySdkConstans;
-import com.jkm.service.ys.entity.YsTrainTicketBookingCallbackResponse;
-import com.jkm.util.MD5Util;
+import com.jkm.service.hy.HySdkRequestRecordService;
+import com.jkm.service.hy.HySdkService;
+import com.jkm.service.hy.entity.HyRefundCallbackResponse;
 import com.jkm.util.ResponseWriter;
+import com.jkm.controller.common.BaseController;
+import com.jkm.service.hy.helper.HySdkConstans;
+import com.jkm.util.MD5Util;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,49 @@ public class HyCallBackController extends BaseController {
     private static Logger log = Logger.getLogger(HyCallBackController.class);
 
     @Autowired
+    private HySdkService hySdkService;
+    @Autowired
     private TicketService ticketService;
+    @Autowired
+    private HySdkRequestRecordService hySdkRequestRecordService;
+
+    /**
+     * 处理线上线下退票结果推送
+     *
+     * @return
+     */
+    @RequestMapping(value = "/refund/ticket", method = RequestMethod.POST)
+    public void handleRefundCallBackMsg(final HttpServletRequest request,
+                                        final HttpServletResponse httpServletResponse,
+                                        final HyRefundCallbackResponse response) throws Exception {
+        final Map parameterMap = request.getParameterMap();
+        if (log.isDebugEnabled()) {
+            for (final Object key : parameterMap.keySet()) {
+                log.debug("request param[" + key + "]:" + parameterMap.get(key));
+            }
+        }
+
+        log.info("收到hy退票的异步通知:" + response + "签名结果:" + response.isSignCorrect());
+        //记录回调请求
+        this.postHandle("", "线上线下退票结果推送", 0, response.toString(), "", 0);
+        if (response.isSignCorrect()) {
+            this.ticketService.handleRefundCallbackMsg(response);
+            ResponseWriter.writeTxtResponse(httpServletResponse, "SUCCESS");
+        } else {
+            log.error("######收到一个hy代发异步通知 sign check error,request[" + request.getParameterMap() + "]");
+        }
+        ResponseWriter.writeTxtResponse(httpServletResponse, "success");
+
+    }
+        private void postHandle(final String orderId,
+                                final String method,
+                                final int retCode,
+                                final String requestParams,
+                                final String returnParams,
+                                final long millisecond) {
+            final HyChannelRequestRecord record = HyChannelRequestRecord.builder().orderId(orderId).method(method).retCode(retCode).request(requestParams).response(returnParams).time(millisecond).build();
+            this.hySdkRequestRecordService.record(record);
+    }
 
     /**
      * 提交订单回调

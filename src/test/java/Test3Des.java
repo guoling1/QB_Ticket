@@ -20,16 +20,16 @@ import java.util.Date;
  * Created by yuxiang on 2016-10-31.
  */
 
-//@RunWith(SpringJUnit4ClassRunner.class)
+//RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(locations = {"classpath:spring-mybatis.xml","classpath:spring-mvc.xml"})
 public class Test3Des {
 
-  /* @Autowired
+   @Autowired
     private HySdkService hySdkService;
 
     @Test
     public void test(){
-        PassengerInfo passengerInfo = new PassengerInfo();
+        /*PassengerInfo passengerInfo = new PassengerInfo();
         passengerInfo.setTicketNo("E2610890401070051");
         passengerInfo.setPassengerName("王二");
         passengerInfo.setPassportTypeseId(1);
@@ -52,7 +52,7 @@ public class Test3Des {
 
 
         final HyReturnTicketResponse hyReturnTicketResponse = this.hySdkService.returnTicket(request);
-
-    }*/
+*/
+    }
 }
 

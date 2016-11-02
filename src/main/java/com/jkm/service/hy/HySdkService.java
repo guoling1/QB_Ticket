@@ -1,5 +1,6 @@
 package com.jkm.service.hy;
 
+import com.jkm.service.hy.entity.*;
 import com.jkm.entity.OrderForm;
 import com.jkm.service.hy.entity.HyReturnTicketRequest;
 import com.jkm.service.hy.entity.HyReturnTicketResponse;
@@ -44,5 +45,20 @@ public interface HySdkService {
      * 线上退票
      */
     HyReturnTicketResponse returnTicket(final HyReturnTicketRequest request);
+
+    /**
+     * 提交保险单
+     */
+    HyPostPolicyOrderResponse postPolicyOrder(final HyPostPolicyOrderRequest request);
+
+    /**
+     * 撤消保险订单
+     */
+    HyCancelPolicyOrderResponse cancelPolicyOrder(final HyCancelPolicyOrderRequest request);
+
+    /**
+     * 查询投保单状态
+     */
+    HyQueryPolicyOrderResponse queryPolicyOrder(final HyQueryPolicyOrderRequest request);
 
 }

@@ -174,9 +174,8 @@ public class HySdkServiceImpl implements HySdkService{
         catch (Exception e) {
             e.printStackTrace();
         }
-        JSONObject json = new JSONObject();
         final StopWatch stopWatch = new StopWatch();
-        json = HttpMethod.httpClient(jsonObject, HySdkConstans.SERVICE_GATEWAY_URL);
+        final JSONObject json = requestImpl(jsonObject, HySdkConstans.SERVICE_GATEWAY_URL, request.getOrderId(), request.getMethod(), stopWatch);
         final Object obj = JSONObject.toBean(json, HyReturnTicketResponse.class);
         final HyReturnTicketResponse response = (HyReturnTicketResponse)obj;
         this.postHandle(request.getOrderId(),
@@ -188,11 +187,40 @@ public class HySdkServiceImpl implements HySdkService{
         return response;
     }
 
-    private void addSign(final HySdkRequest request) {
-        request.setSign(HySdkSignUtil.sign(request.getMethod(),
-                request.getReqTime(), HySdkConstans.SIGN_KEY));
+/////////////////////******************火车票保险业务******************////////////////////////////////
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param request
+     * @return
+     */
+    @Override
+    public HyPostPolicyOrderResponse postPolicyOrder(HyPostPolicyOrderRequest request) {
+        return null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param request
+     * @return
+     */
+    @Override
+    public HyCancelPolicyOrderResponse cancelPolicyOrder(HyCancelPolicyOrderRequest request) {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param request
+     * @return
+     */
+    @Override
+    public HyQueryPolicyOrderResponse queryPolicyOrder(HyQueryPolicyOrderRequest request) {
+        return null;
+    }
 
 
     private void postHandle(final String orderId,
@@ -205,18 +233,18 @@ public class HySdkServiceImpl implements HySdkService{
         this.hySdkRequestRecordService.record(record);
     }
 
-    private String requestImpl(final String requestParams,
+    private JSONObject requestImpl(final JSONObject jsonObject,
                                final String requestUrl,
                                final String orderId,
                                final String method,
                                final StopWatch stopWatch) {
         stopWatch.start();
         try {
-            final String response = this.httpClientFacade.post(requestUrl, requestParams);
+           final JSONObject json = HttpMethod.httpClient(jsonObject, requestUrl);
             stopWatch.stop();
-            return response;
+            return json;
         } catch (final Throwable e) {
-            this.postHandle(orderId, method ,0,requestParams,"error",stopWatch.getTime());
+            this.postHandle(orderId, method ,0,jsonObject.toString(),"error",stopWatch.getTime());
             stopWatch.stop();
             throw e;
         }
