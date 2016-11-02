@@ -60,25 +60,25 @@ public class OrderFormController extends BaseController {
                 responseQueryMyOrderForm.setUid(orderForm.getUid());
                 responseQueryMyOrderForm.setPrice(orderForm.getPrice());
                 responseQueryMyOrderForm.setTotalPrice(orderForm.getTotalPrice());
-                responseQueryMyOrderForm.setTrainNo(orderForm.getTrainNo());
-                responseQueryMyOrderForm.setDepartStation(orderForm.getDepartStation());
-                responseQueryMyOrderForm.setArriveStation(orderForm.getArriveStation());
-                responseQueryMyOrderForm.setDepartDate(orderForm.getDepartDate());
-                responseQueryMyOrderForm.setArriveDate(orderForm.getArriveDate());
-                responseQueryMyOrderForm.setDepartTime(orderForm.getDepartTime());
-                responseQueryMyOrderForm.setArriveTime(orderForm.getArriveTime());
-                responseQueryMyOrderForm.setContactName(orderForm.getContactName());
-                responseQueryMyOrderForm.setContactMobile(orderForm.getContactMobile());
+//                responseQueryMyOrderForm.setTrainNo(orderForm.getTrainNo());
+//                responseQueryMyOrderForm.setDepartStation(orderForm.getDepartStation());
+//                responseQueryMyOrderForm.setArriveStation(orderForm.getArriveStation());
+//                responseQueryMyOrderForm.setDepartDate(orderForm.getDepartDate());
+//                responseQueryMyOrderForm.setArriveDate(orderForm.getArriveDate());
+//                responseQueryMyOrderForm.setDepartTime(orderForm.getDepartTime());
+//                responseQueryMyOrderForm.setArriveTime(orderForm.getArriveTime());
+//                responseQueryMyOrderForm.setContactName(orderForm.getContactName());
+//                responseQueryMyOrderForm.setContactMobile(orderForm.getContactMobile());
                 responseQueryMyOrderForm.setStatus(orderForm.getStatus());
                 final Iterator<OrderFormDetail> iterator = orderFormDetails.iterator();
                 while (iterator.hasNext()) {
                     final OrderFormDetail next = iterator.next();
                     if (orderForm.getId() == next.getOrderFormId()) {
                         final ResponseQueryMyOrderForm.passenger passenger = responseQueryMyOrderForm.new passenger();
-                        passenger.setPassengerName(next.getPassengerName());
-                        passenger.setPassengerType(next.getPassengerType());
-                        passenger.setSeatType(next.getSeatType());
-                        passenger.setSeatName(next.getSeatName());
+//                        passenger.setPassengerName(next.getPassengerName());
+//                        passenger.setPassengerType(next.getPassengerType());
+//                        passenger.setSeatType(next.getSeatType());
+//                        passenger.setSeatName(next.getSeatName());
                         passenger.setPrice(next.getPrice());
                         passengers.add(passenger);
                         iterator.remove();

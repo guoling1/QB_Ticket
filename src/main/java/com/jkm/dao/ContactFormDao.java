@@ -3,6 +3,8 @@ package com.jkm.dao;
 import com.jkm.entity.ContactForm;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * Created by zhangbin on 2016/10/27.
  */
@@ -19,14 +21,14 @@ public interface ContactFormDao {
      * @param id
      * @return
      */
-    int delete(@Param("id") long id);
+//    int delete(@Param("id") long id);
 
     /**
      * 更新乘客
      * @param contactForm
      * @return
      */
-    int update(ContactForm contactForm);
+//    int update(ContactForm contactForm);
 
     /**
      * 根据乘客姓名查询
@@ -41,7 +43,7 @@ public interface ContactFormDao {
      * @param uid
      * @return
      */
-    ContactForm selectByUid(@Param("uid") long uid);
+    ContactForm selectByUid(@Param("uid") String uid);
 
     /**
      * 按id 查询
@@ -51,4 +53,11 @@ public interface ContactFormDao {
      */
     ContactForm selectById(@Param("id") long id);
 
+    /**
+     * 按ids 查询
+     *
+     * @param ids
+     * @return
+     */
+    List<ContactForm> selectByIds(@Param("ids") List<Long> ids);
 }

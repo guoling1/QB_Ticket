@@ -156,6 +156,12 @@ public class HySubmitOrderCallbackResponse {
          * 坐席编号
          */
         private String cxin;
+
+        /**
+         * 票号
+         */
+        @HySdkSerializeAlias(name = "ticket_no")
+        private String ticketNo;
     }
 
     public HySubmitOrderCallbackResponse converterJsonObjectToResponse(final JSONObject jsonObject) {
@@ -169,6 +175,7 @@ public class HySubmitOrderCallbackResponse {
             passenger.setPassengerId(jo.getIntValue("passengerid"));
             passenger.setReason(jo.getIntValue("reason"));
             passenger.setCxin(jo.getString("cxin"));
+            passenger.setTicketNo(jo.getString("ticket_no"));
             passengerList.add(passenger);
         }
         hySubmitOrderCallbackResponse.setPassengers(passengerList);

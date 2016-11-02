@@ -92,12 +92,12 @@ public class OrderFormServiceImpl implements OrderFormService {
     /**
      * {@inheritDoc}
      *
-     * @param termTransId
+     * @param orderId
      * @return
      */
     @Override
-    public Optional<OrderForm> selectByTermTransId(final String termTransId) {
-        return Optional.fromNullable(this.orderFormDao.selectByTermTransId(termTransId));
+    public Optional<OrderForm> selectByOrderId(final String orderId) {
+        return Optional.fromNullable(this.orderFormDao.selectByOrderId(orderId));
     }
 
     /**

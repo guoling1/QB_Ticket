@@ -6,9 +6,7 @@ import com.jkm.entity.YsChannelRequestRecord;
 import com.jkm.enums.EnumBusinessType;
 import com.jkm.service.hy.HySdkRequestRecordService;
 import com.jkm.service.hy.HySdkService;
-import com.jkm.service.hy.entity.HyReturnTicketRequest;
-import com.jkm.service.hy.entity.HyReturnTicketResponse;
-import com.jkm.service.hy.entity.HySdkRequest;
+import com.jkm.service.hy.entity.*;
 import com.jkm.service.hy.helper.HySdkConstans;
 import com.jkm.service.hy.helper.HySdkSignUtil;
 import com.jkm.service.ys.entity.YsRefundTicketResponse;
@@ -16,6 +14,7 @@ import com.jkm.service.ys.helper.YsSdkConstants;
 import com.jkm.service.ys.helper.YsSdkSignUtil;
 import com.jkm.util.JsonUtil;
 import com.jkm.util.http.client.HttpClientFacade;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +32,29 @@ public class HySdkServiceImpl implements HySdkService{
     private HySdkRequestRecordService hySdkRequestRecordService;
 
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param request
+     * @return
+     */
+    @Override
+    public HySubmitOrderResponse submitOrder(final HySubmitOrderRequest request) {
+        addSign(request);
+        final Map<String, String> resultMap = request.converterToMap();
+        final JSONObject jsonObject = JSONObject.fromObject(resultMap);
+        final StopWatch stopWatch = new StopWatch();
+
+
+        final HySubmitOrderResponse response = new HySubmitOrderResponse();
+        this.postHandle(request.getOrderId(),
+                request.getMethod(),
+                response.getCode(),
+                resultMap.toString(),
+                response.toString(),
+                stopWatch.getTime());
+        return null;
+    }
 
     /**
      * {@inheritDoc}
@@ -57,7 +79,7 @@ public class HySdkServiceImpl implements HySdkService{
         return response;
     }
 
-    private void addSign(final HyReturnTicketRequest request) {
+    private void addSign(final HySdkRequest request) {
         request.setSign(HySdkSignUtil.sign(request.getMethod(),
                 request.getReqTime(), HySdkConstans.SIGN_KEY));
     }

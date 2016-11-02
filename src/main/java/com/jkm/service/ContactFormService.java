@@ -19,19 +19,39 @@ public interface ContactFormService {
      * 根据id
      * 删除乘客
      */
-    int delete(@Param("id") long id);
+//    int delete(@Param("id") long id);
 
     /**
      * 更新乘客
      */
-    int updata(ContactForm contactForm);
+//    int updata(ContactForm contactForm);/
 
     /**
      * 根据姓名查询
      */
     List<ContactForm> selectByUserName(@Param("userName") String userName);
 
-    Optional<ContactForm> selectByUid(long uid);
+    /**
+     * 按uid查询
+     *
+     * @param uid
+     * @return
+     */
+    Optional<ContactForm> selectByUid(String uid);
 
+    /**
+     * 按id 查询
+     *
+     * @param id
+     * @return
+     */
     Optional<ContactForm> selectById(long id);
+
+    /**
+     * 按ids 查询
+     *
+     * @param ids
+     * @return
+     */
+    List<ContactForm> selectByIds(List<Long> ids);
 }
