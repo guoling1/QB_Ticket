@@ -50,6 +50,7 @@
       background-size: 9px 14px;
       float: left;
       padding: 5px;
+      position: absolute;
     }
     h1 {
       font-size: 18px;

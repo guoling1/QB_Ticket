@@ -11,20 +11,19 @@
 <script lang="babel">
   export default {
     name: 'Datetime',
-    props: ['show'],
     data () {
       return {
         msg: 'Welcome to Your Vue.js App'
       }
     },
-    watch: {
-      $emit: function () {
-
+    methods: {
+      close: function () {
+        this.$store.commit('TIME_CTRL', false);
       }
     },
     computed: {
-      close: function () {
-        this.show = false;
+      show () {
+        return this.$store.state.date.openCtrl
       }
     }
   }
