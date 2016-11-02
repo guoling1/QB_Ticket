@@ -14,6 +14,8 @@ import com.jkm.service.ContactFormService;
 import com.jkm.service.OrderFormDetailService;
 import com.jkm.service.OrderFormService;
 import com.jkm.service.TicketService;
+import com.jkm.service.hy.entity.HyRefundCallbackResponse;
+import com.jkm.service.ys.YsSdkService;
 import com.jkm.service.hy.HySdkService;
 import com.jkm.service.ys.entity.*;
 import net.sf.json.JSONArray;
@@ -303,6 +305,8 @@ public class TicketServiceImpl implements TicketService {
     public Pair<Boolean, String> refund(final long orderFormDetailId) {
         final Optional<OrderFormDetail> orderFormDetailOptional = this.orderFormDetailService.selectById(orderFormDetailId);
         Preconditions.checkArgument(orderFormDetailOptional.isPresent() , "订单不存在");
+        // 判断 申请时间距离发车时间不到2小时或已经超过发出时间时，不可退票
+
         final OrderFormDetail orderFormDetail = orderFormDetailOptional.get();
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectById(orderFormDetail.getOrderFormId());
         Preconditions.checkArgument(orderFormOptional.isPresent() , "请求订单不存在");
@@ -326,9 +330,9 @@ public class TicketServiceImpl implements TicketService {
      * @param response
      */
     @Override
-    public void handleRefundCallbackMsg(YsRefundCallbackResponse response) {
+    public void handleRefundCallbackMsg(HyRefundCallbackResponse response) {
         //退款成功, 修改小订单状态 , 退款给客户
-        switch (response.getRefundType()){
+        switch (""){
             case "1":
                 return;
             case "2":

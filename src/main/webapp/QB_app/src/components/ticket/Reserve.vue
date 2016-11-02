@@ -1,17 +1,22 @@
 <template lang="html">
   <div class="main">
-    <div v-search-station></div>
-
+    <div @click="dateShow=true">调用时间选择组件</div>
+    <datetime v-bind:show="dateShow"></datetime>
     <router-link to="/ticket/train-menu/train">立即预定</router-link>
   </div>
 </template>
 
 <script lang="babel">
+  import Datetime from './Datetime.vue';
   export default {
     name: 'menu',
+    components: {
+      Datetime
+    },
     data () {
       return {
-        msg: 'Welcome to Your Vue.js App'
+        msg: 'Welcome to Your Vue.js App',
+        dateShow: false
       }
     }
   }

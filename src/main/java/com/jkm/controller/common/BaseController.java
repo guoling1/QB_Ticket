@@ -60,7 +60,7 @@ public class BaseController {
         InputStream stream;
         stream = request.getInputStream();
         //读取POST提交的数据内容
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream,"utf-8"));
         while ((line = reader.readLine()) != null) {
             if(counter > 0){
                 body.append("\r\n");

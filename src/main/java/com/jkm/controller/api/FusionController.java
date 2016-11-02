@@ -148,13 +148,13 @@ public class FusionController extends BaseController {
     @RequestMapping(value = "/bindCard", method = RequestMethod.POST)
     public JSONObject QbBindCard(@ModelAttribute("requestData") QbBindCard requestData) {
         JSONObject result = new JSONObject();
-//        requestData.setUid("1");
-//        requestData.setCardNo("6228481698729890079");
-//        requestData.setAccountName("张三");
-//        requestData.setCardType("00");
-//        requestData.setCardId("511702197701193532");
-//        requestData.setPhone("13146716739");
-//        requestData.setStatus(0);
+        requestData.setUid("1");
+        requestData.setCardNo("6228481698729890079");
+        requestData.setAccountName("张三");
+        requestData.setCardType("00");
+        requestData.setCardId("511702197701193532");
+        requestData.setPhone("13146716739");
+        requestData.setStatus(0);
         long backId = authenService.bindCard(requestData);
         if(backId>0){
             result.put("message", "新增成功");
