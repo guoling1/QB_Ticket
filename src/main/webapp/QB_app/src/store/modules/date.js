@@ -3,12 +3,26 @@
  */
 
 const state = {
-  openCtrl: false
+  ctrl: false,
+  scope: {
+    dateONE: {
+      time: '12月20日 周六'
+    },
+    dateTWO: {
+      time: '12月20日 周六'
+    }
+  },
+  now: ''
 };
 
 const mutations = {
-  TIME_CTRL (state, n) {
-    state.openCtrl = n;
+  TIME_OPEN (state, obj) {
+    state.now = obj.name;
+    state.ctrl = obj.ctrl;
+  },
+  TIME_CLOSE (state, obj) {
+    state.ctrl = obj.ctrl;
+    state.scope[state.now].time = obj.time;
   }
 };
 

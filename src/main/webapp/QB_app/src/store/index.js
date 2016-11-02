@@ -8,6 +8,7 @@ import Vuex from 'vuex'
 //import * as getters from './getters'
 import title from './modules/title'
 import date from './modules/date'
+import station from './modules/station'
 
 Vue.use(Vuex);
 
@@ -16,6 +17,7 @@ export default new Vuex.Store({
   //getters,
   modules: {
     title,
-    date
+    date,
+    station
   }
 })
