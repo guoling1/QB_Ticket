@@ -119,4 +119,25 @@ public class WebsiteController extends BaseController {
         responseJson.put("data",tempData);
         return responseJson;
     }
+
+    /**
+     * 添加12306账号
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/addWebSite", method = RequestMethod.POST)
+    public JSONObject addWebSite() throws Exception {
+        JSONObject responseJson = new JSONObject();
+        JSONObject requestJson = super.getRequestJsonParams();
+
+        String data = requestJson.getString("data");
+        String accountversion = requestJson.getString("accountversion");
+        data = DESUtil.encrypt(data);
+        JSONObject jo = new JSONObject();
+        jo.put("data",data);
+        jo.put("accountversion",accountversion);
+        responseJson = HttpClientUtil.sendPost(jo,"http://trainorder.ws.hangtian123.com/cn_interface/trainAccount/validate");
+        return responseJson;
+    }
 }
