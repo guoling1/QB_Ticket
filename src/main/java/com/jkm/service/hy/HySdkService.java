@@ -44,21 +44,21 @@ public interface HySdkService {
     /**
      * 线上退票
      */
-    HyReturnTicketResponse returnTicket(final HyReturnTicketRequest request);
+    HyReturnTicketResponse returnTicket(final HyReturnTicketRequest request, final JSONArray tickets);
 
     /**
      * 提交保险单
      */
-    HyPostPolicyOrderResponse postPolicyOrder(final HyPostPolicyOrderRequest request);
+    JSONObject postPolicyOrder(final HyPostPolicyOrderRequest request);
 
     /**
      * 撤消保险订单
      */
-    HyCancelPolicyOrderResponse cancelPolicyOrder(final HyCancelPolicyOrderRequest request);
+    JSONObject cancelPolicyOrder(final HyCancelPolicyOrderRequest request);
 
     /**
      * 查询投保单状态
      */
-    HyQueryPolicyOrderResponse queryPolicyOrder(final HyQueryPolicyOrderRequest request);
+    JSONObject queryPolicyOrder(final HyQueryPolicyOrderRequest request);
 
 }

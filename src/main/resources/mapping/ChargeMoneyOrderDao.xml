@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.dao.ChargeMoneyOrderDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_charge_money_order
+        (order_form_id, total_amount, buy_ticket_package, grab_ticket_package
+        )VALUES(
+        #{orderFormId}, #{totalAmount}, #{buyTicketPackage}, #{grabTicketPackage}
+        )
+    </insert>
+</mapper>

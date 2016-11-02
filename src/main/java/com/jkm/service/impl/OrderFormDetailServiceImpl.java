@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.jkm.dao.OrderFormDetailDao;
 import com.jkm.entity.OrderForm;
 import com.jkm.entity.OrderFormDetail;
+import com.jkm.enums.EnumOrderFormDetailStatus;
 import com.jkm.service.OrderFormDetailService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,5 +106,14 @@ public class OrderFormDetailServiceImpl implements OrderFormDetailService {
                                                                                   final int passengerId, final String piaoType) {
         return Optional.fromNullable(
                 this.orderFormDetailDao.selectByOrderFormIdAndPassengerIdAndPiaoType(orderId, passengerId, piaoType));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     */
+    @Override
+    public void updateStatusById(long id , EnumOrderFormDetailStatus status) {
+        this.orderFormDetailDao.updateStatusById(id , status.getId());
     }
 }

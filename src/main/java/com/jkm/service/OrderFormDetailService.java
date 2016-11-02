@@ -2,6 +2,7 @@ package com.jkm.service;
 
 import com.google.common.base.Optional;
 import com.jkm.entity.OrderFormDetail;
+import com.jkm.enums.EnumOrderFormDetailStatus;
 
 import java.util.List;
 
@@ -66,4 +67,9 @@ public interface OrderFormDetailService {
      * @return
      */
     Optional<OrderFormDetail> selectByOrderFormIdAndPassengerIdAndPiaoType(String orderId, int passengerId, String piaoType);
+
+    /**
+     * 根新状态
+     */
+    void updateStatusById(long id , EnumOrderFormDetailStatus status);
 }

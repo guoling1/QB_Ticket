@@ -59,8 +59,8 @@ public interface TicketService {
     /**
      * 处理退票回调的异步通知
      *
-     * @param response
+     * @param jsonObject
      */
-     void handleRefundCallbackMsg(HyRefundCallbackResponse response);
+     void handleRefundCallbackMsg(JSONObject jsonObject);
 
 }

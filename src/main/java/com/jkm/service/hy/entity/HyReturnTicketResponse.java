@@ -2,11 +2,13 @@ package com.jkm.service.hy.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Created by yuxiang on 2016-11-01.
  */
 @Data
+@EqualsAndHashCode(callSuper=true)
 public class HyReturnTicketResponse extends HySdkResponse{
 
     /**
