@@ -19,7 +19,7 @@ public class TbContactInfo extends BaseEntity{
      */
     private String birthday;
     /**
-     * 性别（0男1女）
+     * 性别{@link com.jkm.enums.EnumSex}
      */
     private Integer sex;
     /**
@@ -31,7 +31,7 @@ public class TbContactInfo extends BaseEntity{
      */
     private String tel;
     /**
-     * 证件类型
+     * 证件类型{@link com.jkm.enums.EnumCertificatesType}
      */
     private String identyType;
     /**
@@ -39,7 +39,7 @@ public class TbContactInfo extends BaseEntity{
      */
     private String country;
     /**
-     * 审核是否通过（0.正常 1.待审核 2.未通过）
+     * 审核是否通过{@link com.jkm.enums.EnumAddUserStatus}
      */
     private Integer checkStatus;
     /**
@@ -55,7 +55,7 @@ public class TbContactInfo extends BaseEntity{
      */
     private String name;
     /**
-     * 车票类型（1.成人票 2.儿童票 3.学生票 4.残军票）
+     * 车票类型{@link com.jkm.enums.EnumTrainTicketType}
      */
     private Integer personType;
     /**

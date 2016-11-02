@@ -3,6 +3,7 @@ package com.jkm.controller.api;
 import com.jkm.controller.common.BaseController;
 import com.jkm.util.DESUtil;
 import com.jkm.util.HttpClientUtil;
+import com.jkm.util.HttpMethod;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +32,7 @@ public class WebsiteController extends BaseController {
         JSONObject jo = new JSONObject();
         jo.put("data",data);
         jo.put("accountversion",accountversion);
-        responseJson = HttpClientUtil.sendPost(jo,"http://trainorder.ws.hangtian123.com/cn_interface/trainAccount/validate");
+        responseJson = HttpMethod.httpClient(jo,"http://trainorder.ws.hangtian123.com/cn_interface/trainAccount/validate");
         return responseJson;
     }
     /**
