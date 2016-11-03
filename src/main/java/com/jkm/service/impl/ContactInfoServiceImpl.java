@@ -4,8 +4,12 @@ import com.google.common.base.Optional;
 import com.jkm.dao.ContactInfoDao;
 import com.jkm.entity.TbContactInfo;
 import com.jkm.service.ContactInfoService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by yulong.zhang on 2016/11/2.
@@ -15,6 +19,12 @@ public class ContactInfoServiceImpl implements ContactInfoService {
 
     @Autowired
     private ContactInfoDao contactInfoDao;
+
+
+    @Override
+    public TbContactInfo findByUidAndIdenty(TbContactInfo contactInfo) {
+        return contactInfoDao.findByUidAndIdenty(contactInfo);
+    }
 
     /**
      * {@inheritDoc}
@@ -46,6 +56,20 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     @Override
     public Optional<TbContactInfo> selectById(final long id) {
         return Optional.fromNullable(this.contactInfoDao.selectById(id));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public List<TbContactInfo> selectByIds(final List<Long> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return Collections.emptyList();
+        }
+        return this.contactInfoDao.selectByIds(ids);
     }
 
     /**

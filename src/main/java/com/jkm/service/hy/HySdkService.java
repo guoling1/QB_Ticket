@@ -42,6 +42,15 @@ public interface HySdkService {
     JSONObject cancelOrder(String orderId, String transactionId);
 
     /**
+     * 查询订单
+     *
+     * @param orderId
+     * @param transactionId
+     * @return
+     */
+    JSONObject QueryOrder(String orderId, String transactionId);
+
+    /**
      * 线上退票
      */
     HyReturnTicketResponse returnTicket(final HyReturnTicketRequest request, final JSONArray tickets);

@@ -1,14 +1,16 @@
 package com.jkm.controller.api;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
-import com.jkm.controller.helper.request.RequestQueryMyOrderForm;
-import com.jkm.controller.helper.response.ResponseQueryMyOrderForm;
+import com.jkm.controller.helper.request.RequestQueryOrderForm;
+import com.jkm.controller.helper.response.ResponseQueryOrderForm;
 import com.jkm.entity.OrderForm;
 import com.jkm.entity.OrderFormDetail;
+import com.jkm.enums.EnumTrainTicketType;
+import com.jkm.service.ContactInfoService;
 import com.jkm.service.OrderFormDetailService;
 import com.jkm.service.OrderFormService;
 import org.apache.commons.collections.CollectionUtils;
@@ -24,7 +26,7 @@ import java.util.*;
  * Created by yulong.zhang on 2016/10/31.
  */
 @Controller
-@RequestMapping(value = "/orderForm")
+@RequestMapping(value = "/order")
 public class OrderFormController extends BaseController {
     private static Logger log = Logger.getLogger(OrderFormController.class);
 
@@ -34,9 +36,15 @@ public class OrderFormController extends BaseController {
     @Autowired
     private OrderFormDetailService orderFormDetailService;
 
-    @RequestMapping(value = "query")
+    /**
+     * 查询我的订单
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "queryMyOrder")
     @ResponseBody
-    public ResponseEntityBase<Object[]> QueryMyOrderForm(final RequestQueryMyOrderForm request) {
+    public ResponseEntityBase<Object[]> queryMyOrderForm(final RequestQueryOrderForm request) {
         final ResponseEntityBase<Object[]> results = new ResponseEntityBase<>();
         final List<OrderForm> orderForms = this.orderFormService.selectByUid(request.getUid());
         if (CollectionUtils.isEmpty(orderForms)) {
@@ -50,45 +58,71 @@ public class OrderFormController extends BaseController {
             }
         });
         final List<OrderFormDetail> orderFormDetails = this.orderFormDetailService.selectByOrderFormIds(orderFormIds);
-        final List<ResponseQueryMyOrderForm> orderFormList = Lists.transform(orderForms, new Function<OrderForm, ResponseQueryMyOrderForm>() {
+        final List<ResponseQueryOrderForm> orderFormList = Lists.transform(orderForms, new Function<OrderForm, ResponseQueryOrderForm>() {
             @Override
-            public ResponseQueryMyOrderForm apply(OrderForm orderForm) {
-                final ResponseQueryMyOrderForm responseQueryMyOrderForm = new ResponseQueryMyOrderForm();
-                final ArrayList<ResponseQueryMyOrderForm.passenger> passengers = new ArrayList<>();
-                responseQueryMyOrderForm.setPassengers(passengers);
-                responseQueryMyOrderForm.setOrderFormId(orderForm.getId());
-                responseQueryMyOrderForm.setUid(orderForm.getUid());
-                responseQueryMyOrderForm.setPrice(orderForm.getPrice());
-                responseQueryMyOrderForm.setTotalPrice(orderForm.getTotalPrice());
-//                responseQueryMyOrderForm.setTrainNo(orderForm.getTrainNo());
-//                responseQueryMyOrderForm.setDepartStation(orderForm.getDepartStation());
-//                responseQueryMyOrderForm.setArriveStation(orderForm.getArriveStation());
-//                responseQueryMyOrderForm.setDepartDate(orderForm.getDepartDate());
-//                responseQueryMyOrderForm.setArriveDate(orderForm.getArriveDate());
-//                responseQueryMyOrderForm.setDepartTime(orderForm.getDepartTime());
-//                responseQueryMyOrderForm.setArriveTime(orderForm.getArriveTime());
-//                responseQueryMyOrderForm.setContactName(orderForm.getContactName());
-//                responseQueryMyOrderForm.setContactMobile(orderForm.getContactMobile());
-                responseQueryMyOrderForm.setStatus(orderForm.getStatus());
-                final Iterator<OrderFormDetail> iterator = orderFormDetails.iterator();
-                while (iterator.hasNext()) {
-                    final OrderFormDetail next = iterator.next();
-                    if (orderForm.getId() == next.getOrderFormId()) {
-                        final ResponseQueryMyOrderForm.passenger passenger = responseQueryMyOrderForm.new passenger();
-//                        passenger.setPassengerName(next.getPassengerName());
-//                        passenger.setPassengerType(next.getPassengerType());
-//                        passenger.setSeatType(next.getSeatType());
-//                        passenger.setSeatName(next.getSeatName());
-                        passenger.setPrice(next.getPrice());
-                        passengers.add(passenger);
-                        iterator.remove();
-                    }
-                }
-                return responseQueryMyOrderForm;
+            public ResponseQueryOrderForm apply(OrderForm orderForm) {
+                return getResponse(orderForm, orderFormDetails);
             }
         });
         results.setData(orderFormList.toArray());
         return results;
     }
 
+
+    /**
+     * 按id查询订单
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "queryById")
+    @ResponseBody
+    public ResponseEntityBase<ResponseQueryOrderForm> queryById(final RequestQueryOrderForm request) {
+        final ResponseEntityBase<ResponseQueryOrderForm> results = new ResponseEntityBase<>();
+        final Optional<OrderForm> orderFormOptional = this.orderFormService.selectById(request.getOrderFormId());
+        final OrderForm orderForm = orderFormOptional.get();
+        final List<OrderFormDetail> orderFormDetails = this.orderFormDetailService.selectByOrderFormId(request.getOrderFormId());
+        results.setData(this.getResponse(orderForm, orderFormDetails));
+        return results;
+    }
+
+
+    private ResponseQueryOrderForm getResponse(final OrderForm orderForm, final List<OrderFormDetail> orderFormDetails) {
+        final ResponseQueryOrderForm responseQueryOrderForm = new ResponseQueryOrderForm();
+        final ArrayList<ResponseQueryOrderForm.passenger> passengers = new ArrayList<>();
+        responseQueryOrderForm.setPassengers(passengers);
+        responseQueryOrderForm.setOrderFormId(orderForm.getId());
+        responseQueryOrderForm.setUid(orderForm.getUid());
+        responseQueryOrderForm.setPrice(orderForm.getPrice());
+        responseQueryOrderForm.setTicketTotalPrice(orderForm.getTicketTotalPrice());
+        responseQueryOrderForm.setFromStationName(orderForm.getFromStationName());
+        responseQueryOrderForm.setFromStationCode(orderForm.getFromStationCode());
+        responseQueryOrderForm.setToStationName(orderForm.getToStationName());
+        responseQueryOrderForm.setToStationCode(orderForm.getToStationCode());
+        responseQueryOrderForm.setCheci(orderForm.getCheci());
+        responseQueryOrderForm.setZwCode(orderForm.getZwCode());
+        responseQueryOrderForm.setZwName(orderForm.getZwName());
+        responseQueryOrderForm.setStartDate(orderForm.getStartDate());
+        responseQueryOrderForm.setEndDate(orderForm.getEndDate());
+        responseQueryOrderForm.setStartTime(orderForm.getStartTime());
+        responseQueryOrderForm.setEndTime(orderForm.getEndTime());
+        responseQueryOrderForm.setRunTime(orderForm.getRunTime());
+        responseQueryOrderForm.setStatus(orderForm.getStatus());
+        final Iterator<OrderFormDetail> iterator = orderFormDetails.iterator();
+        while (iterator.hasNext()) {
+            final OrderFormDetail next = iterator.next();
+            if (orderForm.getId() == next.getOrderFormId()) {
+                final ResponseQueryOrderForm.passenger passenger = responseQueryOrderForm.new passenger();
+                passenger.setName(next.getPassengerName());
+                passenger.setPassportSeNo(next.getPassportSeNo());
+                passenger.setPiaoType(next.getPiaoType());
+                passenger.setPiaoTypeName(EnumTrainTicketType.of(next.getPiaoType()).getValue());
+                passenger.setCxin(next.getCxin());
+                passenger.setPrice(next.getPrice());
+                passengers.add(passenger);
+                iterator.remove();
+            }
+        }
+        return responseQueryOrderForm;
+    }
 }

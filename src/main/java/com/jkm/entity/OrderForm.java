@@ -26,14 +26,50 @@ public class OrderForm extends BaseEntity {
     private String uid;
 
     /**
-     * 车票价格
+     * 订票人手机号
+     */
+    private String mobile;
+
+    /**
+     * 支付流水号
+     */
+    private String paymentSn;
+
+    /**
+     * 单张车票价格
      */
     private BigDecimal price;
+
+    /**
+     * 火车票的总价格
+     */
+    private BigDecimal ticketTotalPrice;
 
     /**
      * 订单总价格
      */
     private BigDecimal totalPrice;
+
+    /**
+     * 出票套餐金额
+     */
+    private BigDecimal buyTicketPackagePrice;
+
+    /**
+     * 抢票套餐金额
+     */
+    private BigDecimal grabTicketPackagePrice;
+
+    /**
+     * 出票套餐id
+     */
+    private int buyTicketPackageId;
+
+    /**
+     * 抢票套餐id
+     */
+    private int grabTicketPackageId;
+
 
     /**
      * 出发站名称
@@ -166,8 +202,18 @@ public class OrderForm extends BaseEntity {
      * @return
      */
     public boolean isCanCancelOrder() {
-        return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId()
+        return  this.getStatus() == EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId()
                 || this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId()
                 || this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId();
+    }
+
+    /**
+     * 订单是否是  占座成功或者失败状态
+     *
+     * @return
+     */
+    public boolean isOccupySuccessOrFail() {
+        return  this.getStatus() == EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId()
+                || this.getStatus() == EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_FAIL.getId();
     }
 }

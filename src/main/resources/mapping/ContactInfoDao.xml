@@ -5,7 +5,6 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_contact_info
         (
-        app_id,
         uid,
         birthday,
         sex,
@@ -33,7 +32,6 @@
         status
         ) VALUES
         (
-        #{appId},
         #{uid},
         #{birthday},
         #{sex},
@@ -65,7 +63,6 @@
     <update id="update">
         UPDATE tb_contact_info
         SET
-        app_id = #{appId},
         uid = #{uid},
         birthda = #{birthday},
         sex = #{sex},
@@ -98,8 +95,19 @@
         SELECT * FROM tb_contact_info WHERE id = #{id}
     </select>
 
+    <select id="findByUidAndIdenty" resultType="com.jkm.entity.TbContactInfo">
+        SELECT * FROM tb_contact_info WHERE uid = #{uid} and identy=#{identy}
+    </select>
+
+    <select id="selectByIds" resultType="com.jkm.entity.TbContactInfo">
+         SELECT * FROM tb_contact_info
+         WHERE id IN
+         <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+             #{item}
+         </foreach>
+    </select>
+
     <select id="selectByUid" resultType="com.jkm.entity.TbContactInfo">
         SELECT * FROM tb_contact_info WHERE uid = #{uid}
     </select>
-
 </mapper>

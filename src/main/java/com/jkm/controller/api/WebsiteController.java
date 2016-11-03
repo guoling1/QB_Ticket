@@ -4,23 +4,19 @@ import com.jkm.controller.common.BaseController;
 import com.jkm.service.WebsiteService;
 import com.jkm.util.DESUtil;
 import com.jkm.util.HttpClientUtil;
-import com.jkm.util.HttpMethod;
 import net.sf.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-/**
- * Created by Administrator on 2016/11/1.
- */
+
 @Controller
 @RequestMapping(value = "/website")
 public class WebsiteController extends BaseController {
-    private final Logger logger = LoggerFactory.getLogger(WebsiteController.class);
+    private static Logger log = Logger.getLogger(WebsiteController.class);
 
     @Autowired
     private WebsiteService websiteService;
@@ -40,7 +36,7 @@ public class WebsiteController extends BaseController {
         JSONObject jo = new JSONObject();
         jo.put("data",data);
         jo.put("accountversion",accountversion);
-        responseJson = HttpMethod.httpClient(jo,"http://trainorder.ws.hangtian123.com/cn_interface/trainAccount/validate");
+        responseJson = HttpClientUtil.sendPost(jo,"http://trainorder.ws.hangtian123.com/cn_interface/trainAccount/validate");
         return responseJson;
     }
     /**
@@ -152,6 +148,20 @@ public class WebsiteController extends BaseController {
             responseJson.put("data", "");
             responseJson.put("message", "登录失败");
         }
+        return responseJson;
+    }
+    /**
+     * 导入12306联系人
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/importContacts", method = RequestMethod.POST)
+    public JSONObject importContacts() throws Exception {
+        JSONObject responseJson = new JSONObject();
+        JSONObject requestJson = super.getRequestJsonParams();
+        String uid = requestJson.getString("uid");
+        websiteService.importContacts(uid);
         return responseJson;
     }
 }

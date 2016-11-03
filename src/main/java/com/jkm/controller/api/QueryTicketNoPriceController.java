@@ -37,7 +37,7 @@ public class QueryTicketNoPriceController extends BaseController {
         String needdistance = requestJson.getString("needdistance");
 
 //        JSONObject requestJson = super.getRequestJsonParams();
-        responseJson = this.queryTicketNoPriceService.query(partnerid, method, train_date, from_station, to_station, purpose_codes, needdistance);
+        responseJson = this.queryTicketNoPriceService.queryTicket(partnerid, method, train_date, from_station, to_station, purpose_codes, needdistance);
 
         return responseJson;
     }
