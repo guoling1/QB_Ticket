@@ -180,6 +180,15 @@ public class OrderForm extends BaseEntity {
     }
 
     /**
+     * 客户是否 付款失败
+     *
+     * @return
+     */
+    public boolean isCustomerPayFail() {
+        return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId();
+    }
+
+    /**
      * 订单是否是占座请求中
      *
      * @return
@@ -215,5 +224,33 @@ public class OrderForm extends BaseEntity {
     public boolean isOccupySuccessOrFail() {
         return  this.getStatus() == EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId()
                 || this.getStatus() == EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_FAIL.getId();
+    }
+
+    /**
+     * 订单是否是  占座成功或者失败状态
+     *
+     * @return
+     */
+    public boolean isOccupySuccess() {
+        return  this.getStatus() == EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId();
+    }
+
+    /**
+     * 订单是否是  出票成功或者失败状态
+     *
+     * @return
+     */
+    public boolean isBuySuccessOrFail() {
+        return  this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUEST_FAIL.getId()
+                || this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUEST_SUCCESS.getId();
+    }
+
+    /**
+     * 是否买了出票保险
+     *
+     * @return
+     */
+    public boolean isBuyInsuance(){
+        return this.buyTicketPackageId > 0;
     }
 }

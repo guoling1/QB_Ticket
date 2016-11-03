@@ -35,6 +35,11 @@ public class ResponseQueryOrderForm {
     private BigDecimal ticketTotalPrice;
 
     /**
+     * 订单总价格
+     */
+    private BigDecimal totalPrice;
+
+    /**
      * 出发站名称
      */
     private String fromStationName;

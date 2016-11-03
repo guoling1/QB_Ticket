@@ -202,17 +202,13 @@ public class TicketServiceImpl implements TicketService {
                 orderFormDetail.setCxin(passengersJo.getString("cxin"));
                 this.orderFormDetailService.update(orderFormDetail);
             }
-            //处理保险策略
-            if (InsurancePolicyUtil.isOpenPolicy) {
-                //取消订单， 返回占座失败
-                this.cancelOrder(orderForm.getId());
-                orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_FAIL.getId());
-                orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_FAIL.getValue());
-                this.orderFormService.update(orderForm);
-                this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getValue(),
-                        EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getId(), orderForm.getId());
+
+            //########################## 处理保险策略 ################################
+            if (InsurancePolicyUtil.isOpenPolicy && !orderForm.isBuyInsuance()) {
+                this.handleInsurancePolicy(orderForm);
                 return;
             }
+            //###########################################################
             //创建商户收款记录
             final ChargeMoneyOrder chargeMoneyOrder = new ChargeMoneyOrder();
             chargeMoneyOrder.setOrderFormId(orderForm.getId());
@@ -235,30 +231,26 @@ public class TicketServiceImpl implements TicketService {
     /**
      * {@inheritDoc}
      *
-     * @param orderFormId
+     * @param orderForm
      * @return
      */
     @Override
     @Transactional
-    public Pair<Boolean, String> confirmOrder(final long orderFormId) {
-        log.info("订单[" + orderFormId + "]--确认订单请求中");
-        final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByIdWithLock(orderFormId);
-        Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + orderFormId + "]不存在");
-        final OrderForm orderForm = orderFormOptional.get();
-        Preconditions.checkState(orderForm.isCustomerPaySuccess(), "订单[" + orderFormId + "]状态不正确");
+    public void confirmOrder(OrderForm orderForm) {
+        log.info("订单[" + orderForm.getId() + "]--确认订单请求中");
+        Preconditions.checkState(orderForm.isCustomerPaySuccess(), "订单[" + orderForm.getId() + "]状态不正确");
 
         final JSONObject jsonObject = this.hySdkService.confirmTrainTicket(orderForm.getOrderId(), orderForm.getOutOrderId());
         final String code = jsonObject.getString("code");
         final boolean success = jsonObject.getBoolean("success");
         if (success && "100".equals(code)) {
-            log.info("订单[" + orderFormId + "]--确认订单请求受理成功");
+            log.info("订单[" + orderForm.getId() + "]--确认订单请求受理成功");
             orderForm.setOrderNumber(jsonObject.getString("ordernumber"));
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUEST_SUCCESS.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUEST_SUCCESS.getValue());
             this.orderFormService.update(orderForm);
-            return Pair.of(true, jsonObject.getString("msg"));
         } else {
-            log.info("订单[" + orderFormId + "]--确认订单受理失败");
+            log.info("订单[" + orderForm.getId() + "]--确认订单受理失败");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUEST_FAIL.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUEST_FAIL.getValue());
             this.orderFormService.update(orderForm);
@@ -266,7 +258,6 @@ public class TicketServiceImpl implements TicketService {
                     EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getId(), orderForm.getId());
             //TODO
             //退款
-            return Pair.of(false, jsonObject.getString("msg"));
         }
     }
 
@@ -284,6 +275,9 @@ public class TicketServiceImpl implements TicketService {
         final String code = jsonObject.getString("code");
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByOrderId(orderId);
         Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + orderId + "]不存在");
+        if (orderFormOptional.get().isBuySuccessOrFail()) {//处理多次回调
+            return;
+        }
         Preconditions.checkState(orderFormOptional.get().confirmTicketRequestSuccess(), "订单[" + orderId + "]状态不正确");
         final Optional<OrderForm> orderFormOptional1 = this.orderFormService.selectByIdWithLock(orderFormOptional.get().getId());
         final OrderForm orderForm = orderFormOptional1.get();
@@ -462,4 +456,46 @@ public class TicketServiceImpl implements TicketService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderFormId
+     * @param isPaySuccess
+     */
+    @Override
+    @Transactional
+    public void handleCustomerPayMsg(final long orderFormId, final boolean isPaySuccess) {
+        final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByIdWithLock(orderFormId);
+        final OrderForm orderForm = orderFormOptional.get();
+        if (isPaySuccess) {
+            log.info("订单[" + orderFormId + "]支付成功");
+            orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId());
+            orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getValue());
+            this.orderFormService.update(orderForm);
+            log.info("订单[" + orderFormId + "]支付成功--调用确认订单接口！！");
+            this.confirmOrder(orderForm);
+        } else {
+            log.info("订单[" + orderFormId + "]支付失败");
+            orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId());
+            orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getValue());
+            this.orderFormService.update(orderForm);
+        }
+    }
+
+
+    /**
+     * 处理保险策略
+     *
+     * 占座成功后执行，处理结果是占座失败
+     *
+     * @param orderForm
+     */
+    private void handleInsurancePolicy(final OrderForm orderForm) {
+        this.cancelOrder(orderForm.getId());
+        orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_FAIL.getId());
+        orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_FAIL.getValue());
+        this.orderFormService.update(orderForm);
+        this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getValue(),
+                EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getId(), orderForm.getId());
+    }
 }
