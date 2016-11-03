@@ -39,7 +39,7 @@
 	</insert>
 
 	<!-- 添加 （匹配有值的字段）-->
-	<insert id="insertSelective" parameterType="com.jkm.entity.UserInfo">
+	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.entity.UserInfo">
 		 INSERT INTO tb_user_info
 		 <trim prefix="(" suffix=")" suffixOverrides="," >
 			<if test="uid != null">

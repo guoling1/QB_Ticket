@@ -2,6 +2,7 @@ package com.jkm.controller.api;
 
 import com.jkm.controller.common.BaseController;
 import com.jkm.service.QueryTicketNoPriceService;
+import com.jkm.service.hy.helper.HySdkConstans;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,16 +29,13 @@ public class QueryTicketNoPriceController extends BaseController {
         /**
          * 获取请求参数
          */
-        String partnerid = requestJson.getString("partnerid");
-        String method = requestJson.getString("method");
-        String train_date = requestJson.getString("train_date");
+        String partnerid = HySdkConstans.PARTNERID;
+        String method ="train_query_remain";
         String from_station = requestJson.getString("from_station");
         String to_station = requestJson.getString("to_station");
-        String purpose_codes = requestJson.getString("purpose_codes");
-        String needdistance = requestJson.getString("needdistance");
-
-//        JSONObject requestJson = super.getRequestJsonParams();
-        responseJson = this.queryTicketNoPriceService.queryTicket(partnerid, method, train_date, from_station, to_station, purpose_codes, needdistance);
+        String train_date = requestJson.getString("train_date");
+        String purpose_codes = "ADULT";
+        responseJson = this.queryTicketNoPriceService.queryTicket(partnerid, method, from_station, to_station, train_date, purpose_codes);
 
         return responseJson;
     }
