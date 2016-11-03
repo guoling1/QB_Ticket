@@ -100,7 +100,7 @@ public class TicketServiceImpl implements TicketService {
         orderForm.setToStationName(requestSubmitOrder.getToStationName());
         orderForm.setToStationCode(requestSubmitOrder.getToStationCode());
         orderForm.setZwCode(requestSubmitOrder.getZwCode());
-        orderForm.setZwName(requestSubmitOrder.getZwName());
+        orderForm.setZwName(EnumTrainTicketSeatType.of(requestSubmitOrder.getZwCode()).getValue());
         orderForm.setStartDate(requestSubmitOrder.getStartDate());
         orderForm.setEndDate(requestSubmitOrder.getEndDate());
         orderForm.setStartTime(requestSubmitOrder.getStartTime());

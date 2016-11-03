@@ -56,11 +56,6 @@ public class RequestSubmitOrder {
     private String zwCode;
 
     /**
-     * 坐席code
-     */
-    private String zwName;
-
-    /**
      * 发车日期
      */
     private String startDate;

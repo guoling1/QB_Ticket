@@ -70,12 +70,12 @@ public class TicketController extends BaseController{
     @RequestMapping(value = "/submitOrder", method = RequestMethod.POST)
     public ResponseEntityBase<ResponseSubmitOrder> submitOrder(final RequestSubmitOrder request) throws IOException {
         final ResponseEntityBase<ResponseSubmitOrder> results = new ResponseEntityBase<>();
-        final RequestSubmitOrder.Passenger passenger = request.new Passenger();
-        passenger.setId(1);
-        passenger.setPiaoType("1");
-        final ArrayList<RequestSubmitOrder.Passenger> passengers = new ArrayList<>();
-        passengers.add(passenger);
-        request.setPassengers(passengers);
+//        final RequestSubmitOrder.Passenger passenger = request.new Passenger();
+//        passenger.setId(1);
+//        passenger.setPiaoType("1");
+//        final ArrayList<RequestSubmitOrder.Passenger> passengers = new ArrayList<>();
+//        passengers.add(passenger);
+//        request.setPassengers(passengers);
         final Triple<Boolean, String, Long> submitOrderResult = this.ticketService.submitOrder(request);
         final ResponseSubmitOrder responseBookTicket = new ResponseSubmitOrder();
         if (submitOrderResult.getLeft()) {
@@ -96,8 +96,8 @@ public class TicketController extends BaseController{
      * @param request
      * @return
      */
-    @RequestMapping(value = "/cancelOrder", method = RequestMethod.POST)
     @ResponseBody
+    @RequestMapping(value = "/cancelOrder", method = RequestMethod.POST)
     public ResponseEntityBase<ResponseCancelOrder> cancelOrder(final RequestCancelOrder request) {
         final ResponseEntityBase<ResponseCancelOrder> results = new ResponseEntityBase<>();
         final Pair<Boolean, String> cancelOrderResult = this.ticketService.cancelOrder(request.getOrderFormId());

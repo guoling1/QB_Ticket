@@ -1,5 +1,7 @@
 package com.jkm.enums;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 
 /**
@@ -67,5 +69,20 @@ public enum EnumTrainTicketSeatType {
     EnumTrainTicketSeatType(final String id, final String value) {
         this.id = id;
         this.value = value;
+    }
+
+    private final static ImmutableMap<String, EnumTrainTicketSeatType> INIT_MAP;
+
+    static {
+        final ImmutableMap.Builder<String, EnumTrainTicketSeatType> builder = new ImmutableMap.Builder<>();
+        for (EnumTrainTicketSeatType type : EnumTrainTicketSeatType.values()) {
+            builder.put(type.getId(), type);
+        }
+        INIT_MAP =  builder.build();
+    }
+
+    public static EnumTrainTicketSeatType of (final String type) {
+        Preconditions.checkState(INIT_MAP.containsKey(type), "unknown EnumTrainTicketSeatType [%s]", type);
+        return INIT_MAP.get(type);
     }
 }
