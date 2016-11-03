@@ -51,12 +51,12 @@ public class OrderForm extends BaseEntity {
     private BigDecimal totalPrice;
 
     /**
-     * 出票套餐价格
+     * 出票套餐金额
      */
     private BigDecimal buyTicketPackagePrice;
 
     /**
-     * 抢票套餐价格
+     * 抢票套餐金额
      */
     private BigDecimal grabTicketPackagePrice;
 
@@ -202,8 +202,18 @@ public class OrderForm extends BaseEntity {
      * @return
      */
     public boolean isCanCancelOrder() {
-        return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId()
+        return  this.getStatus() == EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId()
                 || this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId()
                 || this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId();
+    }
+
+    /**
+     * 订单是否是  占座成功或者失败状态
+     *
+     * @return
+     */
+    public boolean isOccupySuccessOrFail() {
+        return  this.getStatus() == EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId()
+                || this.getStatus() == EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_FAIL.getId();
     }
 }

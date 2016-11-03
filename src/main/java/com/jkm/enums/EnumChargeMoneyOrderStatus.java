@@ -7,9 +7,11 @@ import lombok.Getter;
  */
 public enum EnumChargeMoneyOrderStatus {
 
-    INIT(0, "未付款"),
-    REFUND_TICKET_SUCCESS(1, "付款成功"),
-    REFUND_TICKET_FAIL(2, "付款失败");
+    INIT(1, "未付款"),
+
+    PAYMENT_TICKET_SUCCESS(2, "付款成功"),
+
+    PAYMENT_TICKET_FAIL(3, "付款失败");
 
     @Getter
     private int id;

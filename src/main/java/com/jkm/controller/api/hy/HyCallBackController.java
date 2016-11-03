@@ -1,6 +1,7 @@
 package com.jkm.controller.api.hy;
 
 import com.jkm.entity.HyChannelRequestRecord;
+import com.jkm.helper.InsurancePolicyUtil;
 import com.jkm.service.TicketService;
 import com.jkm.service.hy.HySdkRequestRecordService;
 import com.jkm.service.hy.HySdkService;
@@ -31,8 +32,6 @@ public class HyCallBackController extends BaseController {
 
     private static Logger log = Logger.getLogger(HyCallBackController.class);
 
-    @Autowired
-    private HySdkService hySdkService;
     @Autowired
     private TicketService ticketService;
     @Autowired
