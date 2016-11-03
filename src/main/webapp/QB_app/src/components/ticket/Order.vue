@@ -11,9 +11,7 @@
           <div>
             <span class="form">{{massage.fromstation}}</span>
             <span class="icon"></span>
-            <span class="line">></span>
-            <i></i>
-            <b></b>
+            <img src="../../assets/jiantou.png" alt="" />
             <span class="to">{{massage.tostation}}</span>
           </div>
           <span class="name">{{massage.name}}</span>
@@ -134,27 +132,18 @@
               height: 0;
               border-bottom: 2px solid #000;
             }
-            .line{
+
+            img{
               float: left;
               position: relative;
-              top: 0px;
-              left: 67px;
-
-            }
-
-            b{
-              width: 10px;
-              height:5px;
-              background: #FFF;
-              float: left;
-              position: absolute;
-              top: 29px;
-              right: 227px;
+              top: 5px;
+left: 67px;
             }
           }
 
           .name{
             float: left;
+            font-size: 12px;
             color: #999;
           }
 
@@ -173,6 +162,7 @@
             width: 50px;
             height: 23px;
             line-height: 23px;
+            font-size: 12px;
             color: #fff;
             text-align: center;
             background: #f14242
