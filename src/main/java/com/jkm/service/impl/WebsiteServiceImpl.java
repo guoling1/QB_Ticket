@@ -3,6 +3,7 @@ package com.jkm.service.impl;
 import com.google.common.base.Preconditions;
 import com.jkm.entity.UserInfo;
 import com.jkm.entity.helper.UserBankCardSupporter;
+import com.jkm.enums.EnumAddUserStatus;
 import com.jkm.service.ContactInfoService;
 import com.jkm.service.UserInfoService;
 import com.jkm.service.WebsiteService;
@@ -10,6 +11,7 @@ import com.jkm.service.hy.helper.HySdkConstans;
 import com.jkm.util.DESUtil;
 import com.jkm.util.HttpClientUtil;
 import com.jkm.entity.TbContactInfo;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,15 +90,29 @@ public class WebsiteServiceImpl implements WebsiteService {
             jo.put("accountversion","2");
             JSONObject responseJson = HttpClientUtil.sendPost(jo, HySdkConstans.ACCOUNT_CONTACT_QUERY);
             String resultData = DESUtil.decrypt(responseJson.getString("data"));
-            JSONObject contactsArr = JSONObject.fromObject(resultData);
+            JSONArray contactsArr = JSONArray.fromObject(resultData);
             if(!contactsArr.isEmpty()){
                 for(int i=0;i<contactsArr.size();i++){
-                    if("1".equals(contactsArr.getString("identyType"))){
+                    if("1".equals(contactsArr.getJSONObject(i).getString("identyType"))&&
+                            contactsArr.getJSONObject(i).getInt("checkStatus")==0){
                         TbContactInfo contactInfo = new TbContactInfo();
-
-                        contactInfoService.findByUidAndIdenty(contactInfo);
-
-//                        contactInfoService.add();
+                        contactInfo.setUid(uid);
+                        contactInfo.setBirthday(contactsArr.getJSONObject(i).getString("birthday"));
+                        contactInfo.setSex(contactsArr.getJSONObject(i).getInt("sex"));
+                        contactInfo.setTel(contactsArr.getJSONObject(i).getString("phone"));
+                        contactInfo.setIdenty(contactsArr.getJSONObject(i).getString("identy"));
+                        contactInfo.setIdentyType("1");//只接受身份证
+                        contactInfo.setCountry(contactsArr.getJSONObject(i).getString("country"));
+                        contactInfo.setCheckStatus(0);
+                        contactInfo.setEmail(contactsArr.getJSONObject(i).getString("email"));
+                        contactInfo.setAddress(contactsArr.getJSONObject(i).getString("address"));
+                        contactInfo.setName(contactsArr.getJSONObject(i).getString("name"));
+                        contactInfo.setIsUserSelf(contactsArr.getJSONObject(i).getInt("isUserSelf"));
+                        contactInfo.setPersonType(contactsArr.getJSONObject(i).getInt("personType"));
+                        TbContactInfo resultContactInfo = contactInfoService.findByUidAndIdenty(contactInfo);
+                        if(resultContactInfo==null){
+                            contactInfoService.add(contactInfo);
+                        }
                     }
 
                 }
@@ -104,9 +120,5 @@ public class WebsiteServiceImpl implements WebsiteService {
         } catch (Exception e) {
             logger.info("导入联系人加密错误",e.getMessage());
         }
-
-
-
-
     }
 }

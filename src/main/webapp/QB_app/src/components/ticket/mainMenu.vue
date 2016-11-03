@@ -11,10 +11,10 @@
         <div class="icon icon-rob"></div>
         <p>抢票</p>
       </router-link>
-      <router-link to="/ticket/main-menu/private" class="btn" :class="pathName=='ticketPrivate'?'active':''">
-        <div class="icon icon-private"></div>
-        <p>私人定制</p>
-      </router-link>
+      <!--<router-link to="/ticket/main-menu/private" class="btn" :class="pathName=='ticketPrivate'?'active':''">-->
+        <!--<div class="icon icon-private"></div>-->
+        <!--<p>私人定制</p>-->
+      <!--</router-link>-->
       <router-link to="/ticket/main-menu/order" class="btn" :class="pathName=='ticketOrder'?'active':''">
         <div class="icon icon-order"></div>
         <p>我的订单</p>
@@ -61,7 +61,7 @@
     border-top: 1px solid #ebebeb;
     .btn {
       float: left;
-      width: 25%;
+      width: 33.33%;
       height: 49px;
       text-align: center;
       display: block;
