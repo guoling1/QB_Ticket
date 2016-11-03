@@ -36,6 +36,16 @@ public class HySdkConstans {
     public static final String REFUND_TICKET_NOTIFY_URL;
 
     /**
+     * 12306账号验证
+     */
+    public static final String ACCOUNT_VALIDATE_URL;
+
+    /**
+     * 查询12306常用联系人
+     */
+    public static final String ACCOUNT_CONTACT_QUERY;
+
+    /**
      * 签名密钥
      */
     public static final String SIGN_KEY;
@@ -51,6 +61,11 @@ public class HySdkConstans {
         REFUND_TICKET_NOTIFY_URL = hySdkConfig.refundTicketNotifyUrl();
         SERVICE_GATEWAY_URL = hySdkConfig.serviceGatewayUrl();
         Preconditions.checkState(!Strings.isNullOrEmpty(SERVICE_GATEWAY_URL), "服务网关加载异常");
+        ACCOUNT_VALIDATE_URL = hySdkConfig.accountValidateUrl();
+        Preconditions.checkState(!Strings.isNullOrEmpty(ACCOUNT_VALIDATE_URL), "12306账号验证异常");
+        ACCOUNT_CONTACT_QUERY = hySdkConfig.accountContactQuery();
+        Preconditions.checkState(!Strings.isNullOrEmpty(ACCOUNT_CONTACT_QUERY), "12306常用联系人异常");
+
     }
 
     /**
@@ -107,5 +122,19 @@ public class HySdkConstans {
         @Key("third.channel.hy.service.gateway.url")
         @DefaultValue("")
         String serviceGatewayUrl();
+
+        /**
+         *12306账号验证
+         */
+        @Key("third.channel.hy.account.validate.url")
+        @DefaultValue("")
+        String accountValidateUrl();
+
+        /**
+         *查询12306常用联系人
+         */
+        @Key("third.channel.hy.account.contact.query")
+        @DefaultValue("")
+        String accountContactQuery();
     }
 }

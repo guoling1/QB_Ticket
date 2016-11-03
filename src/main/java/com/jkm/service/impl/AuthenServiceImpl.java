@@ -14,6 +14,7 @@ import com.jkm.entity.helper.UserBankCardSupporter;
 import com.jkm.service.AuthenService;
 import com.jkm.service.SignatureService;
 import com.jkm.util.fusion.*;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,15 +80,19 @@ public class AuthenServiceImpl implements AuthenService {
 
 				if ("0000".equals(response100005.getInfo().getRetCode())) {
 					ret.put("reqSn", request100005.getInfo().getReqSn());
-					ret.put("token", response100005.getBody().getRetDetail()
-							.getTOKEN());
+					JSONObject jo = new JSONObject();
+					jo.put("reqSn",request100005.getInfo().getReqSn());
+//					ret.put("token", response100005.getBody().getRetDetail()
+//							.getTOKEN());
 					ret.put("retCode", true);
 					ret.put("retMsg", response100005.getInfo().getErrMsg());
-					ret.put("retXml", response2);
+					ret.put("retData",jo);
+//					ret.put("retXml", response2);
 				} else {
 					ret.put("retCode", false);
 					ret.put("retMsg", response100005.getInfo().getErrMsg());
-					ret.put("retXml", response2);
+					ret.put("retData",null);
+//					ret.put("retXml", response2);
 				}
 			} else {
 				ret.put("retCode", false);
@@ -126,21 +131,21 @@ public class AuthenServiceImpl implements AuthenService {
 		/**
 		 * 每次必传部分
 		 */
-		detail.setRET_URL(requestData.getRetUrl());
-		detail.setNOTIFY_URL(requestData.getNotifyUrl());
+//		detail.setRET_URL(requestData.getRetUrl());
+//		detail.setNOTIFY_URL(requestData.getNotifyUrl());
 		detail.setCARD_NO(requestData.getCrdNo());
 		detail.setACCOUNT_NAME(requestData.getCapCrdNm());
 		detail.setAMOUNT(requestData.getAmount());
 		detail.setID_TYPE("00");//只支持身份证
 		detail.setID(requestData.getIdNo());//证件号
-		detail.setTEL(requestData.getPhoneNo());
+		detail.setTEL(requestData.getPhoneNo());//手机号
 		detail.setCRE_VAL_DATE("");
 		detail.setCRE_CVN2("");
-		detail.setSTEP_NO(requestData.getStep());
-		if (!"0".equals(requestData.getStep())) {
-			detail.setTEL_CAPTCHA(requestData.getVerifyCode());
-			detail.setTOKEN(requestData.getToken());
-		}
+//		detail.setSTEP_NO(requestData.getStep());
+//		if (!"0".equals(requestData.getStep())) {
+//			detail.setTEL_CAPTCHA(requestData.getVerifyCode());
+//			detail.setTOKEN(requestData.getToken());
+//		}
 		body.setTransDetail(detail);
 		authen.setBody(body);
 		authen.setInfo(head);

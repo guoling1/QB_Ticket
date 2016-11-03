@@ -7,4 +7,5 @@ import net.sf.json.JSONObject;
  */
 public interface WebsiteService {
     long addWebSite(String data,String uid, String appid);
+    void importContacts(String uid, String appid);
 }
