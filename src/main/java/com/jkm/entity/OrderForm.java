@@ -121,11 +121,6 @@ public class OrderForm extends BaseEntity {
     private String outOrderId;
 
     /**
-     * 发车日期 (yyyyMMdd)
-     */
-    private Date trainDate;
-
-    /**
      * 取票单号（电子单号）
      */
     private String orderNumber;
@@ -166,6 +161,11 @@ public class OrderForm extends BaseEntity {
     private String runTime;
 
     /**
+     * 到期时间
+     */
+    private Date expireTime;
+
+    /**
      * 备注
      */
     private String remark;
@@ -179,14 +179,6 @@ public class OrderForm extends BaseEntity {
         return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId();
     }
 
-    /**
-     * 客户是否 付款失败
-     *
-     * @return
-     */
-    public boolean isCustomerPayFail() {
-        return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId();
-    }
 
     /**
      * 订单是否是占座请求中
@@ -211,9 +203,7 @@ public class OrderForm extends BaseEntity {
      * @return
      */
     public boolean isCanCancelOrder() {
-        return  this.getStatus() == EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId()
-                || this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId()
-                || this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId();
+        return  this.getStatus() == EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId();
     }
 
     /**

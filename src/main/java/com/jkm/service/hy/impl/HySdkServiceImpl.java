@@ -57,14 +57,14 @@ public class HySdkServiceImpl implements HySdkService{
             jsonObject.put("method", EnumHTHYMethodCode.SUBMIT_ORDER_FORM.getCode());
             jsonObject.put("is_accept_standing", false);
             jsonObject.put("to_station_code", orderform.getToStationCode());
-            jsonObject.put("train_date", orderform.getTrainDate());
+            jsonObject.put("train_date", orderform.getStartDate());
             jsonObject.put("callbackurl", HySdkConstans.SUBMIT_TICKET_NOTIFY_URL);
             jsonObject.put("reqtime", reqTime);
             jsonObject.put("from_station_name", orderform.getFromStationName());
             jsonObject.put("checi", orderform.getCheci());
             jsonObject.put("orderid", orderform.getOrderId());
             jsonObject.put("from_station_code", orderform.getFromStationCode());
-            jsonObject.put("to_station_name", orderform.getToStationCode());
+            jsonObject.put("to_station_name", orderform.getToStationName());
             jsonObject.put("LoginUserName", orderform.getLoginUserName());
             jsonObject.put("LoginUserPassword", orderform.getLoginUserPassword());
         } catch (Exception e) {
@@ -72,6 +72,7 @@ public class HySdkServiceImpl implements HySdkService{
         }
         final StopWatch stopWatch = new StopWatch();
         final JSONObject resultJsonObject = HttpMethod.httpClient(jsonObject, HySdkConstans.SERVICE_GATEWAY_URL);
+        System.out.println(jsonObject);
         this.postHandle(orderform.getOrderId(),
                 EnumHTHYMethodCode.SUBMIT_ORDER_FORM.getCode(),
                 resultJsonObject.getInt("code"),

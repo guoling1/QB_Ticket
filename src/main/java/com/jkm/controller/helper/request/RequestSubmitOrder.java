@@ -1,7 +1,9 @@
 package com.jkm.controller.helper.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -14,6 +16,8 @@ import java.util.List;
  */
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RequestSubmitOrder {
 
     /**
@@ -85,11 +89,6 @@ public class RequestSubmitOrder {
      * 车次
      */
     private String checi;
-
-    /**
-     * 发车日期 (yyyy-MM-dd)
-     */
-    private String trainDate;
 
     /**
      * 出票套餐id

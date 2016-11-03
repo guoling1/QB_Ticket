@@ -46,7 +46,7 @@ public enum EnumOrderFormStatus {
     /**
      * 客户付款失败
      */
-    ORDER_FORM_CUSTOMER_PAY_FAIL(6, "客户付款失败"),
+//    ORDER_FORM_CUSTOMER_PAY_FAIL(6, "客户付款失败"),
 
     /**
      * 确认出票请求失败
