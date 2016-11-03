@@ -8,12 +8,12 @@
 		 id,	uid,	app_id,	account,  status,	create_time,	update_time
 	</sql>
 
-	<!-- 查询（根据Uid和Appid查询） -->
-	<select id="selectByUidAndAppid" resultType="com.jkm.entity.UserInfo" parameterType="com.jkm.entity.UserInfo">
+	<!-- 查询（根据Uid查询） -->
+	<select id="selectByUid" resultType="com.jkm.entity.UserInfo" parameterType="java.lang.String">
 		SELECT
 		<include refid="Base_Column_List" />
 		FROM tb_user_info
-		WHERE uid = #{uid} and app_id=#{appId}
+		WHERE uid = #{uid}
 	</select>
 
 	<!-- 查询（根据主键ID查询） -->
