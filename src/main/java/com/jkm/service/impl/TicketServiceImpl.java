@@ -6,6 +6,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.jkm.controller.helper.request.RequestSubmitOrder;
 import com.jkm.entity.*;
+import com.jkm.entity.fusion.SingleRefundData;
 import com.jkm.enums.*;
 import com.jkm.helper.InsurancePolicyUtil;
 import com.jkm.service.*;
@@ -32,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by yuxiang on 2016-10-27.
@@ -53,13 +55,20 @@ public class TicketServiceImpl implements TicketService {
     @Autowired
     private HySdkService hySdkService;
 
-//    private UserInfoS
+    @Autowired
+    private UserInfoService userInfoService;
 
     @Autowired
     private ChargeMoneyOrderService chargeMoneyOrderService;
 
     @Autowired
     private RefundTicketFlowService refundTicketFlowService;
+
+    @Autowired
+    private AuthenService authenService;
+
+    @Autowired
+    private RefundOrderFlowService refundOrderFlowService;
 
     /**
      * {@inheritDoc}
@@ -73,6 +82,7 @@ public class TicketServiceImpl implements TicketService {
         final OrderForm orderForm = new OrderForm();
         final Optional<TbContactInfo> contactInfoOptional = this.contactInfoService.selectByUid(requestSubmitOrder.getUid());
         Preconditions.checkState(contactInfoOptional.isPresent(), "订票人uid[" + requestSubmitOrder.getUid() + "]不存在");
+        final UserInfo userInfo = this.userInfoService.selectByUid(requestSubmitOrder.getUid());
         final List<RequestSubmitOrder.Passenger> passengerList = requestSubmitOrder.getPassengers();
         Preconditions.checkState(CollectionUtils.isEmpty(passengerList), "乘客列表为空");
         orderForm.setUid(requestSubmitOrder.getUid());
@@ -93,8 +103,10 @@ public class TicketServiceImpl implements TicketService {
         orderForm.setEndTime(requestSubmitOrder.getEndTime());
         orderForm.setRunTime(requestSubmitOrder.getRunTime());
         orderForm.setCheci(requestSubmitOrder.getCheci());
-//        orderForm.setLoginUserName(contactFormOptional.get().getLoginUserName());
-//        orderForm.setLoginUserPassword(contactFormOptional.get().getLoginUserPassword());
+        if (null != userInfo) {
+            orderForm.setLoginUserName(userInfo.getAccount());
+            orderForm.setLoginUserPassword(userInfo.getPwd());
+        }
         orderForm.setOrderId(SnGenerator.generate());
         orderForm.setTrainDate(DateFormatUtil.parse(requestSubmitOrder.getTrainDate(), DateFormatUtil.yyyy_MM_dd));
         orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_INITIALIZATION.getId());
@@ -236,7 +248,7 @@ public class TicketServiceImpl implements TicketService {
      */
     @Override
     @Transactional
-    public void confirmOrder(OrderForm orderForm) {
+    public void confirmOrder(final OrderForm orderForm) {
         log.info("订单[" + orderForm.getId() + "]--确认订单请求中");
         Preconditions.checkState(orderForm.isCustomerPaySuccess(), "订单[" + orderForm.getId() + "]状态不正确");
 
@@ -256,8 +268,9 @@ public class TicketServiceImpl implements TicketService {
             this.orderFormService.update(orderForm);
             this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getValue(),
                     EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getId(), orderForm.getId());
-            //TODO
             //退款
+            final RefundOrderFlow refundOrderFlow = this.initRefundOrderFlow(orderForm);
+            this.orderRefund(refundOrderFlow);
         }
     }
 
@@ -295,8 +308,9 @@ public class TicketServiceImpl implements TicketService {
             this.orderFormService.update(orderForm);
             this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getValue(),
                     EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getId(), orderForm.getId());
-            //TODO
             //退款
+            final RefundOrderFlow refundOrderFlow = this.initRefundOrderFlow(orderForm);
+            this.orderRefund(refundOrderFlow);
         }
 
     }
@@ -328,7 +342,8 @@ public class TicketServiceImpl implements TicketService {
                     EnumOrderFormDetailStatus.TICKET_ORDER_CANCEL.getId(), orderForm.getId());
             //如果客户支付成功，退款
             if (orderForm.isCustomerPaySuccess()) {
-
+                final RefundOrderFlow refundOrderFlow = this.initRefundOrderFlow(orderForm);
+                this.orderRefund(refundOrderFlow);
             }
             return Pair.of(true, jsonObject.getString("msg"));
         }
@@ -497,5 +512,48 @@ public class TicketServiceImpl implements TicketService {
         this.orderFormService.update(orderForm);
         this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getValue(),
                 EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getId(), orderForm.getId());
+    }
+
+
+    /**
+     * 初始化 退款单
+     *
+     * @return
+     */
+    private RefundOrderFlow initRefundOrderFlow(final OrderForm orderForm) {
+        final Optional<RefundOrderFlow> refundOrderFlowOptional = this.refundOrderFlowService.selectByOrderFormId(orderForm.getId());
+        Preconditions.checkState(!refundOrderFlowOptional.isPresent(), "订单[" + orderForm.getId() + "]已经生成退款单[" + refundOrderFlowOptional.get().getId() + "]");
+        final RefundOrderFlow refundOrderFlow = new RefundOrderFlow();
+        refundOrderFlow.setOrderFormId(orderForm.getId());
+        refundOrderFlow.setPaymentSn(orderForm.getPaymentSn());
+        refundOrderFlow.setOrderDate(DateFormatUtil.format(orderForm.getCreateTime(), DateFormatUtil.yyyyMMdd));
+        refundOrderFlow.setRefundAmount(orderForm.getTotalPrice());
+        refundOrderFlow.setOriginalAmount(orderForm.getTotalPrice());
+        refundOrderFlow.setRefundReason("正常退款");
+        refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.INIT.getId());
+        this.refundOrderFlowService.insert(refundOrderFlow);
+        return refundOrderFlow;
+    }
+
+
+    /**
+     * 客户订单退款
+     */
+    private void orderRefund(final RefundOrderFlow refundOrderFlow) {
+        Preconditions.checkState(refundOrderFlow.isRefundSuccess(), "订单[" + refundOrderFlow.getOrderFormId()  +
+                "]对应的退款单[" + refundOrderFlow.getId()+ "]已经退款");
+        final SingleRefundData singleRefundData = new SingleRefundData();
+        singleRefundData.setOrgSn(refundOrderFlow.getPaymentSn());
+        singleRefundData.setOrdDate(refundOrderFlow.getOrderDate());
+        singleRefundData.setRefundAmount(refundOrderFlow.getRefundAmount().toString());
+        singleRefundData.setOrgAmount(refundOrderFlow.getOriginalAmount().toString());
+        singleRefundData.setRefundReason(refundOrderFlow.getRefundReason());
+        final Map<String, Object> resultMap = this.authenService.singlRefund(singleRefundData);
+        if ((boolean) resultMap.get("retCode")) {
+            refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.REFUND_SUCCESS.getId());
+        } else {
+            refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.REFUND_FAIL.getId());
+        }
+        this.refundOrderFlowService.update(refundOrderFlow);
     }
 }

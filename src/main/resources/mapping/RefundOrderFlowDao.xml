@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.dao.RefundOrderFlowDao">
+    <insert id="insert">
+        INSERT INTO tb_refund_order_flow
+        (
+        order_form_id,
+        payment_sn,
+        order_date,
+        refund_amount,
+        original_amount,
+        refund_reason,
+        status
+        )
+        VALUES
+        (
+        #{orderFormId},
+        #{paymentSn},
+        #{orderDate},
+        #{refundAmount},
+        #{originalAmount},
+        #{refundReason},
+        #{status}
+        );
+    </insert>
+
+    <update id="update">
+        UPDATE tb_refund_order_flow
+        SET
+        order_form_id = #{orderFormId},
+        payment_sn = #{paymentSn},
+        order_date = #{date},
+        refund_amount = #{refundAmount},
+        original_amount = #{originalAmount},
+        refund_reason = #{refundReason},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultType="com.jkm.entity.RefundOrderFlow">
+        SELECT * FROM tb_refund_order_flow WHERE id = #{id}
+    </select>
+
+    <select id="selectByOrderFormId" resultType="com.jkm.entity.RefundOrderFlow">
+        SELECT * FROM tb_refund_order_flow WHERE order_form_id = #{orderFormId}
+    </select>
+
+</mapper>
