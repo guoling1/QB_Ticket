@@ -6,6 +6,8 @@ import App from '../../App';
 // 应用 火车票 流程组件
 const ticketMainMenu = r => require.ensure([], () => r(require('../../components/ticket/MainMenu')), 'group-ticket');
 const ticketReserve = r => require.ensure([], () => r(require('../../components/ticket/Reserve')), 'group-ticket');
+const ticketRob = r => require.ensure([], () => r(require('../../components/ticket/Rob')), 'group-ticket');
+const ticketPrivate = r => require.ensure([], () => r(require('../../components/ticket/Private')), 'group-ticket');
 const ticketOrder = r => require.ensure([], () => r(require('../../components/ticket/Order')), 'group-ticket');
 const ticketTrainMenu = r => require.ensure([], () => r(require('../../components/ticket/TrainMenu')), 'group-ticket');
 const ticketTrain = r => require.ensure([], () => r(require('../../components/ticket/Train')), 'group-ticket');
@@ -24,6 +26,16 @@ export default {
           path: 'reserve',
           name: 'ticketReserve',
           component: ticketReserve
+        },
+        {
+          path: 'rob',
+          name: 'ticketRob',
+          component: ticketRob
+        },
+        {
+          path: 'private',
+          name: 'ticketPrivate',
+          component: ticketPrivate
         },
         {
           path: 'order',

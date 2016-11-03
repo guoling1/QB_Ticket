@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.dao.ReturnMoneyOrderDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_return_money_order
+        (order_form_detail_id, order_form_sn, return_total_money, org_money, org_date
+        return_ticket_money, return_buy_ticket_package, return_grab_ticket_package
+        )VALUES(
+        #{orderFormId}, #{orderFormSn}, #{returnTotalMoney}, #{orgMoney}, #{orgDate}
+        #{returnTicketMoney}, #{returnBuyTicketPackage}, #{returnGrabTicketPackage}
+        )
+    </insert>
+</mapper>

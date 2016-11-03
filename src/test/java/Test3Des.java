@@ -7,6 +7,8 @@ import com.jkm.service.hy.entity.PassengerInfo;
 import com.jkm.service.hy.helper.HySdkConstans;
 import com.jkm.util.DateFormatUtil;
 import com.jkm.util.SnGenerator;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +22,8 @@ import java.util.Date;
  * Created by yuxiang on 2016-10-31.
  */
 
-//RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations = {"classpath:spring-mybatis.xml","classpath:spring-mvc.xml"})
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:spring-mybatis.xml","classpath:spring-mvc.xml"})
 public class Test3Des {
 
    @Autowired
@@ -29,13 +31,7 @@ public class Test3Des {
 
     @Test
     public void test(){
-        /*PassengerInfo passengerInfo = new PassengerInfo();
-        passengerInfo.setTicketNo("E2610890401070051");
-        passengerInfo.setPassengerName("王二");
-        passengerInfo.setPassportTypeseId(1);
-        passengerInfo.setPassportseno("421116198907143795");
-        final ArrayList<PassengerInfo> list = Lists.newArrayList();
-        list.add(passengerInfo);
+
 
         HyReturnTicketRequest request = new HyReturnTicketRequest();
         request.setPartnerId(HySdkConstans.PARTNERID);
@@ -46,13 +42,19 @@ public class Test3Des {
         request.setOrderNumber("EC18532964");
         request.setReqToken(SnGenerator.generate());
         request.setCallBackUrl(HySdkConstans.REFUND_TICKET_NOTIFY_URL);
-        request.setTickets(list);
         request.setLoginUserName("yudandanweiwu");
         request.setLoginUserPassword("yu609685881");
+        JSONObject obj = new JSONObject();
+        obj.put("passengername" , "王大龙");
+        obj.put("passporttypeseid" , "1");
+        obj.put("passportseno" , "152201198505080519");
+        obj.put("ticket_no" , "E5743415381080001");
 
 
-        final HyReturnTicketResponse hyReturnTicketResponse = this.hySdkService.returnTicket(request);
-*/
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.add(obj);
+        final HyReturnTicketResponse hyReturnTicketResponse = this.hySdkService.returnTicket(request ,jsonArray );
+
     }
 }
 

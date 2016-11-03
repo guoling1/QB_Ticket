@@ -45,20 +45,14 @@ public class HyCallBackController extends BaseController {
      */
     @RequestMapping(value = "/refund/ticket", method = RequestMethod.POST)
     public void handleRefundCallBackMsg(final HttpServletRequest request,
-                                        final HttpServletResponse httpServletResponse,
-                                        final HyRefundCallbackResponse response) throws Exception {
-        final Map parameterMap = request.getParameterMap();
-        if (log.isDebugEnabled()) {
-            for (final Object key : parameterMap.keySet()) {
-                log.debug("request param[" + key + "]:" + parameterMap.get(key));
-            }
-        }
-
-        log.info("收到hy退票的异步通知:" + response + "签名结果:" + response.isSignCorrect());
+                                        final HttpServletResponse httpServletResponse) throws Exception {
+        final JSONObject jsonParams = this.getRequestJsonParams();
+        final boolean flag = this.isSignCorrect(jsonParams);
+        log.info("收到hy退票的异步通知:" + jsonParams.toString() + "签名结果:" + flag);
         //记录回调请求
-        this.postHandle("", "线上线下退票结果推送", 0, response.toString(), "", 0);
-        if (response.isSignCorrect()) {
-            this.ticketService.handleRefundCallbackMsg(response);
+        this.postHandle("", "线上线下退票结果推送", 0, jsonParams.toString(), "", 0);
+        if (flag) {
+            this.ticketService.handleRefundCallbackMsg(jsonParams);
             ResponseWriter.writeTxtResponse(httpServletResponse, "SUCCESS");
         } else {
             log.error("######收到一个hy代发异步通知 sign check error,request[" + request.getParameterMap() + "]");

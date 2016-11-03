@@ -61,6 +61,11 @@
             status = #{status}
         WHERE order_form_id = #{orderFormId}
     </update>
+    <update id="updateStatusById">
+        UPDATE tb_order_form_detail
+        SET status = #{status}
+        WHERE id = #{id}
+    </update>
 
     <select id="selectById" resultType="com.jkm.entity.OrderFormDetail">
         SELECT * FROM tb_order_form_detail WHERE id = #{id}

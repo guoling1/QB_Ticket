@@ -10,7 +10,6 @@ import com.jkm.service.hy.entity.*;
 import com.jkm.service.hy.entity.HyReturnTicketRequest;
 import com.jkm.service.hy.entity.HyReturnTicketResponse;
 import com.jkm.service.hy.helper.HySdkConstans;
-import com.jkm.service.hy.helper.HySdkSignUtil;
 import com.jkm.util.HttpMethod;
 import com.jkm.util.MD5Util;
 import com.jkm.util.http.client.HttpClientFacade;
@@ -18,6 +17,8 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.log4j.Logger;
+import org.apache.regexp.RE;
+import org.omg.PortableServer.REQUEST_PROCESSING_POLICY_ID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -182,7 +183,7 @@ public class HySdkServiceImpl implements HySdkService{
      * @return
      */
     @Override
-    public HyReturnTicketResponse returnTicket(final HyReturnTicketRequest request) {
+    public HyReturnTicketResponse returnTicket(final HyReturnTicketRequest request, final JSONArray tickets) {
         JSONObject jsonObject = null;
         try {
             String sign = MD5Util.MD5(request.getPartnerId() + request.getMethod() + request.getReqTime() + MD5Util.MD5(HySdkConstans.SIGN_KEY));
@@ -195,7 +196,7 @@ public class HySdkServiceImpl implements HySdkService{
             jsonObject.put("orderid", request.getOrderId());
             jsonObject.put("LoginUserName", request.getLoginUserName());
             jsonObject.put("LoginUserPassword", request.getLoginUserPassword());
-            jsonObject.put("tickets", request.getTickets());
+            jsonObject.put("tickets", tickets);
             jsonObject.put("ordernumber", request.getOrderNumber());
             jsonObject.put("transactionid", request.getTransactionId());
             jsonObject.put("reqtoken", request.getReqToken());
@@ -226,8 +227,44 @@ public class HySdkServiceImpl implements HySdkService{
      * @return
      */
     @Override
-    public HyPostPolicyOrderResponse postPolicyOrder(HyPostPolicyOrderRequest request) {
-        return null;
+    public JSONObject postPolicyOrder(HyPostPolicyOrderRequest request) {
+        JSONObject jsonObject = null;
+        try {
+            String sign = MD5Util.MD5(request.getUsername() + request.getMethod() + request.getReqtime() + MD5Util.MD5(HySdkConstans.SIGN_KEY));
+            jsonObject = new JSONObject();
+            JSONObject jo = new JSONObject();
+            JSONArray jsonArray = new JSONArray();
+            jsonObject.put("sign", sign);
+            jsonObject.put("username", request.getUsername());
+            jsonObject.put("reqtime", request.getReqtime());
+            jsonObject.put("method", request.getMethod());
+            //=====================================================
+            jo.put("InsProductNo", request.getInsProductNo());// 保险产品代码
+            jo.put("FlightDate", request.getFlightDate());// 航班日期 String(yyyy-MM-dd)
+            jo.put("FlightNumber", request.getFlightNumber());// 航班号/车次号
+            jo.put("SerialNo", request.getSerialNo());// 交易流水号 需要 生成
+            jo.put("ContractName", request.getContractName());// 保险人姓名
+            jo.put("ContractType", request.getContractType());// 用户类型
+            jo.put("Gender", request.getGender());// [M: 男性 F: 女性]
+            jo.put("CardType", request.getCardType());// 证件类型
+            jo.put("CardNo", request.getCardNo());// 证件号码
+            jo.put("Birthday", request.getBirthday());// 出生日期 String (yyyy-MM-dd)
+            jo.put("Phone", request.getPhone());// 联系电话
+            jsonArray.add(jo);
+            jsonObject.put("data", jsonArray);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        final StopWatch stopWatch = new StopWatch();
+        final JSONObject json = requestImpl(jsonObject, HySdkConstans.SERVICE_GATEWAY_URL, request.getSerialNo(), request.getMethod(), stopWatch);
+        this.postHandle(request.getSerialNo(),
+                request.getMethod(),
+                json.getInt("code"),
+                json.toString(),
+                json.toString(),
+                stopWatch.getTime());
+        return json;
     }
 
     /**
@@ -237,8 +274,30 @@ public class HySdkServiceImpl implements HySdkService{
      * @return
      */
     @Override
-    public HyCancelPolicyOrderResponse cancelPolicyOrder(HyCancelPolicyOrderRequest request) {
-        return null;
+    public JSONObject cancelPolicyOrder(HyCancelPolicyOrderRequest request) {
+        JSONObject jsonObject = null;
+        try {
+            String sign = MD5Util.MD5(request.getUsername() + request.getMethod() + request.getReqtime() + MD5Util.MD5(HySdkConstans.SIGN_KEY));
+            jsonObject = new JSONObject();
+            jsonObject.put("sign", sign);
+            jsonObject.put("username", request.getUsername());
+            jsonObject.put("reqtime", request.getReqtime());
+            jsonObject.put("method", request.getMethod());
+            jsonObject.put("policyNo", request.getPolicyNo());
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        final StopWatch stopWatch = new StopWatch();
+        final JSONObject json = requestImpl(jsonObject, HySdkConstans.SERVICE_GATEWAY_URL, request.getPolicyNo(), request.getMethod(), stopWatch);
+        this.postHandle(request.getPolicyNo(),
+                request.getMethod(),
+                json.getInt("code"),
+                json.toString(),
+                json.toString(),
+                stopWatch.getTime());
+        return json;
     }
 
     /**
@@ -248,7 +307,7 @@ public class HySdkServiceImpl implements HySdkService{
      * @return
      */
     @Override
-    public HyQueryPolicyOrderResponse queryPolicyOrder(HyQueryPolicyOrderRequest request) {
+    public JSONObject queryPolicyOrder(HyQueryPolicyOrderRequest request) {
         return null;
     }
 

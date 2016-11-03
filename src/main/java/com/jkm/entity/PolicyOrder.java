@@ -9,6 +9,7 @@ import java.util.Date;
  * Created by yuxiang on 2016-11-02.
  * th_policy_order
  * {@link EnumPolicyOrderStatus}
+ * 保险单
  */
 @Data
 public class PolicyOrder extends BaseEntity {

@@ -154,4 +154,19 @@ public class WebsiteController extends BaseController {
         }
         return responseJson;
     }
+    /**
+     * 导入12306联系人
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping(value = "/importContacts", method = RequestMethod.POST)
+    public JSONObject importContacts() throws Exception {
+        JSONObject responseJson = new JSONObject();
+        JSONObject requestJson = super.getRequestJsonParams();
+        String uid = requestJson.getString("uid");
+        String appid = requestJson.getString("appid");
+        websiteService.importContacts(uid,appid);
+        return responseJson;
+    }
 }

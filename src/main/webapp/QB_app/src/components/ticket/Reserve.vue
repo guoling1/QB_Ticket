@@ -26,10 +26,11 @@
         </div>
       </div>
       <router-link class="submit" to="/ticket/train-menu/train">查询</router-link>
-      <ul class="history">
-        <li>查询历史</li>
-        <li>清空</li>
-      </ul>
+      <div class="history">
+        <div>查询历史</div>
+        <div>清空</div>
+      </div>
+      <div class="know">订票须知<span></span></div>
     </div>
     <datetime></datetime>
   </div>
@@ -184,10 +185,29 @@
     margin-top: 15px;
     font-size: 12px;
     color: #c1c1c1;
-    li {
+    float: left;
+    div {
       float: left;
       line-height: 24px;
       margin-right: 15px;
+    }
+  }
+
+  .know {
+    margin-top: 15px;
+    font-size: 12px;
+    color: #c1c1c1;
+    line-height: 24px;
+    float: right;
+    span {
+      display: block;
+      width: 13px;
+      height: 13px;
+      float: right;
+      margin-top: 5px;
+      margin-left: 5px;
+      background: url('../../assets/know.png') no-repeat;
+      background-size: 13px 13px;
     }
   }
 </style>
