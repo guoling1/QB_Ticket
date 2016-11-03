@@ -13,9 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * 控制层基类
@@ -43,6 +41,14 @@ public class BaseController {
     public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException {
         this.request = request;
         this.response = response;
+        Map<String, String> map = new HashMap<String, String>();
+        Enumeration headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String key = (String) headerNames.nextElement();
+            String value = request.getHeader(key);
+            map.put(key, value);
+        }
+        System.out.print(map.toString());
     }
 
     /**
