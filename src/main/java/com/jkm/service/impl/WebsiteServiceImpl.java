@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.jkm.dao.UserInfoDao;
 import com.jkm.entity.UserInfo;
 import com.jkm.entity.helper.UserBankCardSupporter;
+import com.jkm.service.UserInfoService;
 import com.jkm.service.WebsiteService;
 import com.jkm.service.hy.helper.HySdkConstans;
 import com.jkm.util.DESUtil;
@@ -12,11 +13,13 @@ import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class WebsiteServiceImpl implements WebsiteService {
     private final Logger logger = LoggerFactory.getLogger(WebsiteServiceImpl.class);
     @Autowired
-    private UserInfoDao userInfoDao;
+    private UserInfoService userInfoService;
 
     /**
      * 1.登录12306
@@ -40,17 +43,20 @@ public class WebsiteServiceImpl implements WebsiteService {
             if(responseJson.getBoolean("success")){
                 UserInfo userInfo = new UserInfo();
                 userInfo.setStatus(0);
-                userInfo.setUid(uid);
+                userInfo.setUid(appid+"_"+uid);
                 userInfo.setAppId(appid);
                 userInfo.setAccount(webSiteInfo.getString("trainAccount"));
                 userInfo.setPwd(UserBankCardSupporter.encryptPwd(webSiteInfo.getString("pass")));
-                UserInfo userInfoResult = userInfoDao.selectByUid(uid);
+                UserInfo userInfoResult = userInfoService.selectByUid(uid);
                 //②
                 if(userInfoResult==null){
-                    backId = userInfoDao.insert(userInfo);
+                    backId = userInfoService.insert(userInfo);
                 }else{
                     userInfo.setId(userInfoResult.getId());
-                    backId = userInfoDao.updateByPrimaryKeySelective(userInfo);
+                    int updataRows = userInfoService.updateByPrimaryKeySelective(userInfo);
+                    if(updataRows>0){//修改成功
+                        backId = userInfoResult.getId();
+                    }
                 }
             }
         } catch (Exception e) {
@@ -65,11 +71,8 @@ public class WebsiteServiceImpl implements WebsiteService {
      * @param appid
      */
     @Override
-    public void importContacts(String uid, String appid) {
-        UserInfo userInfo = new UserInfo();
-        userInfo.setUid(uid);
-        userInfo.setAppId(appid);
-        UserInfo userInfoResult = userInfoDao.selectByUid(uid);
+    public void importContacts(String uid) {
+        UserInfo userInfoResult = userInfoService.selectByUid(uid);
         Preconditions.checkNotNull(userInfoResult,"登录信息异常");
         JSONObject userInfoJson = new JSONObject();
         userInfoJson.put("trainAccount",userInfoResult.getAccount());
@@ -86,8 +89,10 @@ public class WebsiteServiceImpl implements WebsiteService {
             if(!contactsArr.isEmpty()){
                 UserInfo contactsInfo = null;
                 for(int i=0;i<contactsArr.size();i++){
-//                    new UserInfo()
-                    userInfoDao.insert(contactsInfo);
+//                    if(){
+//
+//                    }
+                    userInfoService.insert(contactsInfo);
                 }
             }
         } catch (Exception e) {

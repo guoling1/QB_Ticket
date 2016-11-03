@@ -1,11 +1,8 @@
 package com.jkm.service;
 
 import com.jkm.entity.UserInfo;
-import org.apache.ibatis.annotations.Param;
 
-/**
- * Created by Administrator on 2016/11/3.
- */
+
 public interface UserInfoService {
     /**
      *
