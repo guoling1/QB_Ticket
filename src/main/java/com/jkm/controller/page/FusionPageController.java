@@ -1,7 +1,6 @@
 package com.jkm.controller.page;
 
 import com.jkm.controller.common.BaseController;
-import com.jkm.entity.QbBindCard;
 import com.jkm.entity.fusion.AuthenData;
 import com.jkm.service.AuthenService;
 import org.slf4j.Logger;
