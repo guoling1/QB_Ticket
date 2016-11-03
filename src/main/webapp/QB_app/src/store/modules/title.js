@@ -11,7 +11,8 @@ const state = {
     'ticketRobOrder': '确认订单',
     'ticketPrivate': '私人定制',
     'ticketOrder': '我的订单',
-    'ticketSubmitOrder': '提交订单'
+    'ticketSubmitOrder': '提交订单',
+    'ticketSureOrder': '确认订单'
   }
 };
 
