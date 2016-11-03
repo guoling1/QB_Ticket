@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.dao.HyChannelRequestRecordDao">
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO tb_hfb_channel_request_record
+        INSERT INTO tb_hy_channel_request_record
         (order_id,
         method,
         ret_code,

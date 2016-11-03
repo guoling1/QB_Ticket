@@ -68,4 +68,10 @@ public interface OrderFormDetailDao {
      * @return
      */
     OrderFormDetail selectByOrderFormIdAndPassengerIdAndPiaoType(@Param("orderId") String orderId, @Param("passengerId") int passengerId, @Param("piaoType") String piaoType);
+
+    /**
+     *
+     * @param id
+     */
+    void updateStatusById(@Param("id") long id, @Param("status") int status);
 }
