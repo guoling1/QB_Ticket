@@ -94,6 +94,7 @@ public class OrderFormController extends BaseController {
         responseQueryOrderForm.setOrderFormId(orderForm.getId());
         responseQueryOrderForm.setUid(orderForm.getUid());
         responseQueryOrderForm.setPrice(orderForm.getPrice());
+        responseQueryOrderForm.setTotalPrice(orderForm.getTotalPrice());
         responseQueryOrderForm.setTicketTotalPrice(orderForm.getTicketTotalPrice());
         responseQueryOrderForm.setFromStationName(orderForm.getFromStationName());
         responseQueryOrderForm.setFromStationCode(orderForm.getFromStationCode());
