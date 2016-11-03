@@ -6,9 +6,41 @@
       <div class="btn right">后一天</div>
     </div>
     <div class="space">
-      <div class="left"></div>
-      <div class="middle"></div>
-      <div class="right"></div>
+      <div class="left">
+        <div class="time">07:10</div>
+        <div class="place">北京西</div>
+        <div class="date">11-20 周五</div>
+      </div>
+      <div class="middle">
+        <div class="trains">G208</div>
+        <div class="ch"></div>
+        <div class="date">耗时1小时52分</div>
+      </div>
+      <div class="right">
+        <div class="time">17:10</div>
+        <div class="place">北京东</div>
+        <div class="date">11-20 周五</div>
+      </div>
+    </div>
+    <div class="space no-padding">
+      <div class="group">
+        <div class="left">二等座</div>
+        <div class="left"><span class="active">128.5</span>元</div>
+        <div class="left"><span>321</span>张</div>
+        <div class="right blue">预定</div>
+      </div>
+      <div class="group">
+        <div class="left">一等座</div>
+        <div class="left"><span>128.5</span>元</div>
+        <div class="left"><span>321</span>张</div>
+        <div class="right blue">预定</div>
+      </div>
+      <div class="group no-border">
+        <div class="left">商务座</div>
+        <div class="left"><span>128.5</span>元</div>
+        <div class="left"><span>0</span>张</div>
+        <div class="right red">抢票</div>
+      </div>
     </div>
   </div>
 </template>
@@ -43,10 +75,89 @@
     background-color: #f5f5f5;
   }
 
-  .space {
+  .group {
+    width: 100%;
+    height: 49px;
     padding: 0 15px;
+    border-bottom: 1px solid #ebebeb;
+    &.no-border {
+      border: none;
+    }
+    .left {
+      float: left;
+      margin-right: 30px;
+      font-size: 15px;
+      line-height: 49px;
+      color: #000;
+      span.active {
+        color: #f44848;
+      }
+    }
+    .right {
+      border-radius: 3px;
+      padding: 6px 18px;
+      font-size: 12px;
+      color: #FFF;
+      margin-top: 10px;
+      &.blue {
+        background-color: #4ab9f1;
+      }
+      &.red {
+        background-color: #fe6969;
+      }
+      float: right;
+    }
+  }
+
+  .space {
+    padding: 20px 15px;
     background-color: #FFF;
     margin-bottom: 5px;
+    overflow: hidden;
+    position: relative;
+    &.no-padding {
+      padding: 0;
+    }
+    .left {
+      float: left;
+    }
+    .middle {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      margin-top: 24px;
+      .ch {
+        width: 105px;
+        height: 4px;
+        margin: 5px auto 10px;
+        background: url("../../assets/ch.png") no-repeat center;
+        background-size: 105px 4px;
+      }
+    }
+    .right {
+      float: right;
+    }
+    .time {
+      font-size: 18px;
+      color: #111;
+      font-weight: bold;
+    }
+    .place {
+      font-size: 20px;
+      color: #111;
+      font-weight: bold;
+    }
+    .date {
+      font-size: 12px;
+      color: #999;
+    }
+    .trains {
+      font-size: 18px;
+      color: #1ca0e2;
+      font-weight: bold;
+    }
   }
 
   .date-time {
