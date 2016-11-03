@@ -13,7 +13,7 @@ public enum EnumCertificatesType {
 
     SECOND_ID_CARD("1", "二代身份证"),
 
-    first_ID_CARD("2", "一代身份证"),
+    FIRST_ID_CARD("2", "一代身份证"),
 
     HONGKONG_AND_MACAO_PASS("C", "港澳通行证"),
 

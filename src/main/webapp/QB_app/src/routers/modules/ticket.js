@@ -7,10 +7,13 @@ import App from '../../App';
 const ticketMainMenu = r => require.ensure([], () => r(require('../../components/ticket/MainMenu')), 'group-ticket');
 const ticketReserve = r => require.ensure([], () => r(require('../../components/ticket/Reserve')), 'group-ticket');
 const ticketRob = r => require.ensure([], () => r(require('../../components/ticket/Rob')), 'group-ticket');
+const ticketRobOrder = r => require.ensure([], () => r(require('../../components/ticket/RobOrder')), 'group-ticket');
 const ticketPrivate = r => require.ensure([], () => r(require('../../components/ticket/Private')), 'group-ticket');
 const ticketOrder = r => require.ensure([], () => r(require('../../components/ticket/Order')), 'group-ticket');
 const ticketTrainMenu = r => require.ensure([], () => r(require('../../components/ticket/TrainMenu')), 'group-ticket');
 const ticketTrain = r => require.ensure([], () => r(require('../../components/ticket/Train')), 'group-ticket');
+const ticketSubmitOrder = r => require.ensure([], () => r(require('../../components/ticket/SubmitOrder')), 'group-ticket');
+const ticketSureOrder = r => require.ensure([], () => r(require('../../components/ticket/SureOrder')), 'group-ticket');
 
 export default {
   path: '/ticket',
@@ -55,6 +58,21 @@ export default {
           component: ticketTrain
         }
       ]
+    },
+    {
+      path: 'rob-order',
+      name: 'ticketRobOrder',
+      component: ticketRobOrder
+    },
+    {
+      path: 'submit-order',
+      name: 'ticketSubmitOrder',
+      component: ticketSubmitOrder
+    },
+    {
+      path: 'sure-order',
+      name: 'ticketSureOrder',
+      component: ticketSureOrder
     }
   ]
 }

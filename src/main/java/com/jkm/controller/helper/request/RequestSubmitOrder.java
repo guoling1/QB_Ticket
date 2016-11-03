@@ -92,6 +92,16 @@ public class RequestSubmitOrder {
     private String trainDate;
 
     /**
+     * 出票套餐id
+     */
+    private int buyTicketPackageId;
+
+    /**
+     * 抢票套餐id
+     */
+    private int grabTicketPackageId;
+
+    /**
      * 联系人id列表
      */
     private List<Passenger> passengers;

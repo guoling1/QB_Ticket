@@ -1,6 +1,7 @@
 package com.jkm.service;
 
 import com.jkm.controller.helper.request.RequestSubmitOrder;
+import com.jkm.entity.OrderForm;
 import com.jkm.service.hy.entity.HyRefundCallbackResponse;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.tuple.Pair;
@@ -30,10 +31,10 @@ public interface TicketService {
     /**
      * 确认出票
      *
-     * @param orderFormId
+     * @param orderForm
      * @return
      */
-    Pair<Boolean, String> confirmOrder(long orderFormId);
+    void confirmOrder(OrderForm orderForm);
 
     /**
      * 确认出票--回调函数
@@ -56,11 +57,21 @@ public interface TicketService {
      */
     Pair<Boolean,String> refund(long orderFormDetailId);
 
+
     /**
      * 处理退票回调的异步通知
      *
      * @param jsonObject
      */
-     void handleRefundCallbackMsg(JSONObject jsonObject);
+    void handleRefundCallbackMsg(JSONObject jsonObject);
+
+    /**
+     * 客户支付结果处理接口
+     *
+     * @param orderFormId
+     * @param isPaySuccess
+     */
+    void handleCustomerPayMsg(long orderFormId, boolean isPaySuccess);
+
 
 }

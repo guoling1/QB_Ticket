@@ -13,9 +13,11 @@ public enum EnumHTHYMethodCode {
 
     CONFIRM_ORDER_FORM(2, "train_confirm", "确认出票"),
 
-    CANCEL_ORDER_FORM(2, "train_cancel", "取消订单"),
+    CANCEL_ORDER_FORM(3, "train_cancel", "取消订单"),
 
-    RETURN_TICKET(3, "return_ticket", "线上退票");
+    QUERY_ORDER_FORM(4, "return_ticket", "查询订单"),
+
+    RETURN_TICKET(5, "return_ticket", "线上退票");
 
     @Getter
     private int id;

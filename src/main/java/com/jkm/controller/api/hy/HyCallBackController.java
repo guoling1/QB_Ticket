@@ -1,6 +1,7 @@
 package com.jkm.controller.api.hy;
 
 import com.jkm.entity.HyChannelRequestRecord;
+import com.jkm.helper.InsurancePolicyUtil;
 import com.jkm.service.TicketService;
 import com.jkm.service.hy.HySdkRequestRecordService;
 import com.jkm.service.hy.HySdkService;
@@ -31,8 +32,6 @@ public class HyCallBackController extends BaseController {
 
     private static Logger log = Logger.getLogger(HyCallBackController.class);
 
-    @Autowired
-    private HySdkService hySdkService;
     @Autowired
     private TicketService ticketService;
     @Autowired
@@ -82,7 +81,7 @@ public class HyCallBackController extends BaseController {
         final JSONObject jsonParams = this.getRequestJsonParams();
         final boolean signCorrect = this.isSignCorrect(jsonParams);
         log.info("收到订单提交的异步通知:[" + jsonParams + "],签名结果[" + signCorrect + "]");
-//        this.ysSdkService.recordBookTicketCallbackParams(callbackResponse);
+        this.postHandle("", "订单提交回调", 0, response.toString(), "", 0);
         if (signCorrect) {
             this.ticketService.handleSubmitOrderCallbackResponse(this.getRequestJsonParams());
             ResponseWriter.writeTxtResponse(response, "success");
@@ -105,7 +104,7 @@ public class HyCallBackController extends BaseController {
         final JSONObject jsonParams = this.getRequestJsonParams();
         final boolean signCorrect = this.isSignCorrect(jsonParams);
         log.info("收到确认订单的异步通知:[" + jsonParams + "],签名结果[" + signCorrect + "]");
-//        this.ysSdkService.recordBookTicketCallbackParams(callbackResponse);
+        this.postHandle("", "确认订单回调", 0, response.toString(), "", 0);
         if (signCorrect) {
             this.ticketService.handleConfirmOrderCallbackResponse(this.getRequestJsonParams());
             ResponseWriter.writeTxtResponse(response, "success");

@@ -8,10 +8,15 @@ import lombok.Data;
  * 查询我的订单 -- 入参
  */
 @Data
-public class RequestQueryMyOrderForm {
+public class RequestQueryOrderForm {
 
     /**
      * 联系人的用户id
      */
     private String uid;
+
+    /**
+     * 订单id
+     */
+    private long orderFormId;
 }

@@ -18,27 +18,27 @@ public class AuthenData {
 	 */
 	private String notifyUrl;
 	/**
-	 * 卡号
+	 * 卡号（必传）
 	 */
 	private String crdNo;
 	/**
-	 *银行账户名
+	 *银行账户名（必传）
 	 */
 	private String capCrdNm;
 	/**
-	 * 金额
+	 * 金额（必传）
 	 */
 	private String amount;
 	/**
-	 * 证件类型
+	 * 证件类型（默认"00"）
 	 */
 	private String idType;
 	/**
-	 * 证件号
+	 * 证件号（必传）
 	 */
 	private String idNo;
 	/**
-	 * 手机号
+	 * 手机号（必传）
 	 */
 	private String phoneNo;
 	/**
