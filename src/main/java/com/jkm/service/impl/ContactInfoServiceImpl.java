@@ -20,6 +20,12 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     @Autowired
     private ContactInfoDao contactInfoDao;
 
+
+    @Override
+    public TbContactInfo findByUidAndIdenty(TbContactInfo contactInfo) {
+        return contactInfoDao.findByUidAndIdenty(contactInfo);
+    }
+
     /**
      * {@inheritDoc}
      *

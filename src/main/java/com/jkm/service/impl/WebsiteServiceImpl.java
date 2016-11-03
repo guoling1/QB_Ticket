@@ -1,14 +1,15 @@
 package com.jkm.service.impl;
 
 import com.google.common.base.Preconditions;
-import com.jkm.dao.UserInfoDao;
 import com.jkm.entity.UserInfo;
 import com.jkm.entity.helper.UserBankCardSupporter;
+import com.jkm.service.ContactInfoService;
 import com.jkm.service.UserInfoService;
 import com.jkm.service.WebsiteService;
 import com.jkm.service.hy.helper.HySdkConstans;
 import com.jkm.util.DESUtil;
 import com.jkm.util.HttpClientUtil;
+import com.jkm.entity.TbContactInfo;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,8 @@ public class WebsiteServiceImpl implements WebsiteService {
     private final Logger logger = LoggerFactory.getLogger(WebsiteServiceImpl.class);
     @Autowired
     private UserInfoService userInfoService;
+    @Autowired
+    private ContactInfoService contactInfoService;
 
     /**
      * 1.登录12306
@@ -87,12 +90,15 @@ public class WebsiteServiceImpl implements WebsiteService {
             String resultData = DESUtil.decrypt(responseJson.getString("data"));
             JSONObject contactsArr = JSONObject.fromObject(resultData);
             if(!contactsArr.isEmpty()){
-                UserInfo contactsInfo = null;
                 for(int i=0;i<contactsArr.size();i++){
-//                    if(){
-//
-//                    }
-                    userInfoService.insert(contactsInfo);
+                    if("1".equals(contactsArr.getString("identyType"))){
+                        TbContactInfo contactInfo = new TbContactInfo();
+
+                        contactInfoService.findByUidAndIdenty(contactInfo);
+
+//                        contactInfoService.add();
+                    }
+
                 }
             }
         } catch (Exception e) {

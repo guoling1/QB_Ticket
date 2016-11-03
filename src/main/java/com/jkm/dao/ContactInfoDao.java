@@ -11,6 +11,14 @@ import java.util.List;
 public interface ContactInfoDao {
 
     /**
+     * 根据用户id和证件号查找用户信息
+     *
+     * @param contactInfo
+     * @return
+     */
+    TbContactInfo findByUidAndIdenty(TbContactInfo contactInfo);
+
+    /**
      * 插入
      *
      * @param contactInfo

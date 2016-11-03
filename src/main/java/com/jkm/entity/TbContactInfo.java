@@ -7,10 +7,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class TbContactInfo extends BaseEntity{
     /**
-     * 商户appid
-     */
-    private String appId;
-    /**
      * 三方用户编码
      */
     private String uid;

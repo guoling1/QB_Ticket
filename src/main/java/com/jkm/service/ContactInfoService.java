@@ -11,6 +11,14 @@ import java.util.List;
 public interface ContactInfoService {
 
     /**
+     * 根据用户id和证件号查找用户信息
+     *
+     * @param contactInfo
+     * @return
+     */
+    public TbContactInfo findByUidAndIdenty(TbContactInfo contactInfo);
+
+    /**
      * 增加联系人
      *
      * @param contactInfo
