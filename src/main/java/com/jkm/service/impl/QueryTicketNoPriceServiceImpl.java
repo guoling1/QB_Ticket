@@ -17,24 +17,24 @@ import java.util.Date;
 public class QueryTicketNoPriceServiceImpl implements QueryTicketNoPriceService {
 
     @Override
-    public JSONObject queryTicket(String partnerid, String method, String train_date, String from_station,
-                            String to_station, String purpose_codes, String needdistance) {
+    public JSONObject queryTicket(String partnerid, String method, String from_station, String to_station, String train_date, String purpose_codes) {
 
         JSONObject jsonObject = null;
         SimpleDateFormat date = new SimpleDateFormat("yyyyMMddHHmmss");
         String reqtime = date.format(new Date());
+        jsonObject = new JSONObject();
+        String sign = null;
         try {
-
-            jsonObject = new JSONObject();
-            String sign = MD5Util.MD5(partnerid + method + reqtime + MD5Util.MD5(HySdkConstans.SIGN_KEY));
-            jsonObject.put("sign", sign);
+            sign = MD5Util.MD5(partnerid + method + reqtime + MD5Util.MD5(HySdkConstans.SIGN_KEY));
             jsonObject.put("partnerid", partnerid);
             jsonObject.put("method", method);
+            jsonObject.put("reqtime", reqtime);
+            jsonObject.put("sign", sign);
+            jsonObject.put("train_date", train_date);
             jsonObject.put("from_station", from_station);
             jsonObject.put("to_station", to_station);
-            jsonObject.put("train_date", train_date);
-            jsonObject.put("purpose_codes", purpose_codes);
-            jsonObject.put("needdistance", needdistance);
+            jsonObject.put("purpose_codes",purpose_codes);
+//            jsonObject.put("needdistance", needdistance);
 
         } catch (Exception e) {
             e.printStackTrace();
