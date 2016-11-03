@@ -43,7 +43,7 @@ public class BindCardServiceImpl implements BindCardService{
         int returnNum = bindCardDao.isAdd(record.getCardNo());
         if(returnNum>0){
             jo.put("result",false);
-            jo.put("message","该银行卡已占用");
+            jo.put("message","该银行卡已绑定");
         }else{
             jo.put("result",true);
             jo.put("data",bindCardDao.insertSelective(record));

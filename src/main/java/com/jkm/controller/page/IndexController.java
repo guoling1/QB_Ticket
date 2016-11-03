@@ -13,7 +13,7 @@ public class IndexController extends BaseController {
      *
      * @return
      */
-    @RequestMapping(value = "/index", method = RequestMethod.GET)
+    @RequestMapping(value = "", method = RequestMethod.GET)
     public String fastPayPage() {
         return "index.html";
     }
