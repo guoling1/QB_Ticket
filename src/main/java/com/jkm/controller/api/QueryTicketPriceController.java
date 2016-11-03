@@ -1,17 +1,13 @@
 package com.jkm.controller.api;
 
 import com.jkm.controller.common.BaseController;
-import com.jkm.service.hy.helper.HySdkConstans;
-import com.jkm.util.HttpMethod;
-import com.jkm.util.MD5Util;
+import com.jkm.service.QueryTicketPriceService;
 import net.sf.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by zhangbin on 2016/11/1.
@@ -20,6 +16,9 @@ import java.util.Date;
 @RequestMapping(value = "/queryTicketPrice")
 public class QueryTicketPriceController extends BaseController {
 
+    @Autowired
+    private QueryTicketPriceService queryTicketPriceService;
+
     @ResponseBody
     @RequestMapping(value = "/query", method = RequestMethod.POST)
     public JSONObject query() throws Exception{
@@ -27,28 +26,14 @@ public class QueryTicketPriceController extends BaseController {
 
         JSONObject requestJson = super.getRequestJsonParams();
         String method = requestJson.getString("method");
-        SimpleDateFormat date = new SimpleDateFormat("yyyyMMddHHmmss");
-        String reqtime = date.format(new Date());
         String from_station = requestJson.getString("from_station");
         String train_date = requestJson.getString("train_date");
         String partnerid = requestJson.getString("partnerid");
         String purpose_codes = requestJson.getString("purpose_codes");
         String to_station = requestJson.getString("to_station");
         String needdistance = requestJson.getString("needdistance");
-
-        JSONObject jsonObject = new JSONObject();
-        String sign = MD5Util.MD5(partnerid + method + reqtime + MD5Util.MD5(HySdkConstans.SIGN_KEY));
-        jsonObject.put("method", method);
-        jsonObject.put("reqtime", reqtime);
-        jsonObject.put("sign", sign);
-        jsonObject.put("from_station", from_station);
-        jsonObject.put("train_date", train_date);
-        jsonObject.put("partnerid", partnerid);
-        jsonObject.put("purpose_codes", purpose_codes);
-        jsonObject.put("to_station", to_station);
-        jsonObject.put("needdistance",needdistance);
-
-        responseJson = HttpMethod.httpClient(jsonObject, "http://searchtrain.hangtian123.net/trainSearch");
+        responseJson = this.queryTicketPriceService.queryTicket(partnerid, method, train_date,
+                from_station, to_station, purpose_codes, needdistance);
 
         return responseJson;
     }
