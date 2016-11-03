@@ -10,7 +10,6 @@ import com.jkm.controller.helper.response.ResponseQueryOrderForm;
 import com.jkm.entity.OrderForm;
 import com.jkm.entity.OrderFormDetail;
 import com.jkm.enums.EnumTrainTicketType;
-import com.jkm.service.ContactInfoService;
 import com.jkm.service.OrderFormDetailService;
 import com.jkm.service.OrderFormService;
 import org.apache.commons.collections.CollectionUtils;
@@ -42,8 +41,8 @@ public class OrderFormController extends BaseController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "queryMyOrder")
     @ResponseBody
+    @RequestMapping(value = "queryMyOrder")
     public ResponseEntityBase<Object[]> queryMyOrderForm(final RequestQueryOrderForm request) {
         final ResponseEntityBase<Object[]> results = new ResponseEntityBase<>();
         final List<OrderForm> orderForms = this.orderFormService.selectByUid(request.getUid());
@@ -75,8 +74,8 @@ public class OrderFormController extends BaseController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "queryById")
     @ResponseBody
+    @RequestMapping(value = "queryById")
     public ResponseEntityBase<ResponseQueryOrderForm> queryById(final RequestQueryOrderForm request) {
         final ResponseEntityBase<ResponseQueryOrderForm> results = new ResponseEntityBase<>();
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectById(request.getOrderFormId());

@@ -100,7 +100,7 @@ public class TicketServiceImpl implements TicketService {
         orderForm.setToStationName(requestSubmitOrder.getToStationName());
         orderForm.setToStationCode(requestSubmitOrder.getToStationCode());
         orderForm.setZwCode(requestSubmitOrder.getZwCode());
-        orderForm.setZwName(requestSubmitOrder.getZwName());
+        orderForm.setZwName(EnumTrainTicketSeatType.of(requestSubmitOrder.getZwCode()).getValue());
         orderForm.setStartDate(requestSubmitOrder.getStartDate());
         orderForm.setEndDate(requestSubmitOrder.getEndDate());
         orderForm.setStartTime(requestSubmitOrder.getStartTime());
@@ -478,17 +478,19 @@ public class TicketServiceImpl implements TicketService {
      * {@inheritDoc}
      *
      * @param orderFormId
+     * @param paymentSn
      * @param isPaySuccess
      */
     @Override
     @Transactional
-    public void handleCustomerPayMsg(final long orderFormId, final boolean isPaySuccess) {
+    public void handleCustomerPayMsg(final long orderFormId, final String paymentSn, final boolean isPaySuccess) {
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByIdWithLock(orderFormId);
         final OrderForm orderForm = orderFormOptional.get();
         if (isPaySuccess) {
             log.info("订单[" + orderFormId + "]支付成功");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getValue());
+            orderForm.setPaymentSn(paymentSn);
             this.orderFormService.update(orderForm);
             log.info("订单[" + orderFormId + "]支付成功--调用确认订单接口！！");
             this.confirmOrder(orderForm);

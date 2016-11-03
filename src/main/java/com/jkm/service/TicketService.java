@@ -69,9 +69,10 @@ public interface TicketService {
      * 客户支付结果处理接口
      *
      * @param orderFormId
+     * @param paymentSn
      * @param isPaySuccess
      */
-    void handleCustomerPayMsg(long orderFormId, boolean isPaySuccess);
+    void handleCustomerPayMsg(long orderFormId, String paymentSn, boolean isPaySuccess);
 
 
 }
