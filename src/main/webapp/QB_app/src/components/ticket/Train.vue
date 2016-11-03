@@ -169,10 +169,6 @@
       width: 100%;
       background: #fff;
 
-      &.select {
-        background: #f6f6f6;
-      }
-
       .top {
         margin-bottom: 17px;
         height: 34px;
