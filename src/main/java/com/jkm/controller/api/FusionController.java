@@ -1,7 +1,6 @@
 package com.jkm.controller.api;
 
 import com.jkm.controller.common.BaseController;
-import com.jkm.entity.QbBindCard;
 import com.jkm.entity.fusion.AuthenData;
 import com.jkm.entity.fusion.SingleRefundData;
 import com.jkm.service.AuthenService;
@@ -16,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
 import java.util.Map;
 
+/**
+ * 合众快捷支付
+ */
 @Controller
 @RequestMapping(value = "/authen")
 public class FusionController extends BaseController {
@@ -138,65 +139,5 @@ public class FusionController extends BaseController {
             //不做任何处理
         }
         return  result;
-    }
-    /**
-     * 绑定银行卡
-     * @param requestData
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "/bindCard", method = RequestMethod.POST)
-    public JSONObject QbBindCard(@ModelAttribute("requestData") QbBindCard requestData) {
-        JSONObject result = new JSONObject();
-        requestData.setUid("1");
-        requestData.setCardNo("6228481698729890079");
-        requestData.setAccountName("张三");
-        requestData.setCardType("00");
-        requestData.setCardId("511702197701193532");
-        requestData.setPhone("13146716739");
-        requestData.setStatus(0);
-        long backId = authenService.bindCard(requestData);
-        if(backId>0){
-            result.put("message", "新增成功");
-            result.put("data",backId);
-            result.put("code", "200");
-        }else{
-            result.put("message", "新增失败");
-            result.put("data",backId);
-            result.put("code", "401");
-        }
-        return result;
-    }
-    /**
-     * 删除银行卡
-     * @param requestData
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "/deleteCard", method = RequestMethod.POST)
-    public JSONObject deleteCard(@ModelAttribute("requestData") QbBindCard requestData) {
-        JSONObject result = new JSONObject();
-//        requestData.setId(1);
-        authenService.deleteCard(requestData.getId());
-        result.put("message", "删除成功");
-        result.put("code", "200");
-        return result;
-    }
-
-    /**
-     * 用户银行卡列表
-     * @param requestData
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "/cardList", method = RequestMethod.POST)
-    public JSONObject cardList(@ModelAttribute("requestData") QbBindCard requestData) {
-        JSONObject result = new JSONObject();
-//        requestData.setUid("1");
-        List<QbBindCard> list =  authenService.cardList(requestData.getUid());
-        result.put("message", "删除成功");
-        result.put("data",list);
-        result.put("code", "200");
-        return result;
     }
 }

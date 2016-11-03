@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jkm.dao.BindCardDao">
+
+	<!-- 通用查询结果列-->
+	<sql id="Base_Column_List">
+		 id,	uid,	card_no,	account_name,	card_type,	card_id,	phone, 	create_time,	update_time
+	</sql>
+
+	<!-- 查询（根据uid查询） -->
+	<select id="selectByUid" resultType="com.jkm.entity.BindCard" parameterType="java.lang.String">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tb_bind_card
+		WHERE uid = #{uid} and status=0
+	</select>
+
+	<!-- 查询（根据主键ID查询） -->
+	<select id="selectByPrimaryKey" resultType="com.jkm.entity.BindCard" parameterType="java.lang.Long">
+		 SELECT
+		 <include refid="Base_Column_List" />
+		 FROM tb_bind_card
+		 WHERE id = #{id} and status=0
+	</select>
+
+	<!--删除：根据主键ID删除-->
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		 DELETE FROM tb_bind_card
+		 WHERE id = #{id}
+	</delete>
+
+	<!-- 添加 -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.entity.BindCard">
+		 INSERT INTO tb_bind_card
+ 		(uid,card_no,account_name,card_type,card_id,phone,pay_pwd,status)
+		 VALUES 
+ 		(#{uid},#{cardNo},#{accountName},#{cardType},#{cardId},#{phone},#{payPwd},#{status})
+	</insert>
+
+	<!-- 添加 （匹配有值的字段）-->
+	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.entity.BindCard">
+		 INSERT INTO tb_bind_card
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="uid != null">
+				 uid,
+			</if>
+			<if test="cardNo != null">
+				 card_no,
+			</if>
+			<if test="accountName != null">
+				 account_name,
+			</if>
+			<if test="cardType != null">
+				 card_type,
+			</if>
+			<if test="cardId != null">
+				 card_id,
+			</if>
+			<if test="phone != null">
+				 phone,
+			</if>
+			<if test="payPwd != null">
+				 pay_pwd,
+			</if>
+			<if test="status != null">
+				 status,
+			</if>
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="uid!=null">
+				 #{uid},
+			</if>
+			<if test="cardNo!=null">
+				 #{cardNo},
+			</if>
+			<if test="accountName!=null">
+				 #{accountName},
+			</if>
+			<if test="cardType!=null">
+				 #{cardType},
+			</if>
+			<if test="cardId!=null">
+				 #{cardId},
+			</if>
+			<if test="phone!=null">
+				 #{phone},
+			</if>
+			<if test="payPwd!=null">
+				 #{payPwd},
+			</if>
+			<if test="status!=null">
+				 #{status},
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 修 改-->
+	<update id="updateByPrimaryKeySelective" parameterType="com.jkm.entity.BindCard">
+		 UPDATE tb_bind_card
+ 		 <set> 
+			<if test="uid != null">
+				 uid = #{uid},
+			</if>
+			<if test="cardNo != null">
+				 card_no = #{cardNo},
+			</if>
+			<if test="accountName != null">
+				 account_name = #{accountName},
+			</if>
+			<if test="cardType != null">
+				 card_type = #{cardType},
+			</if>
+			<if test="cardId != null">
+				 card_id = #{cardId},
+			</if>
+			<if test="phone != null">
+				 phone = #{phone},
+			</if>
+			<if test="payPwd != null">
+				 pay_pwd = #{payPwd},
+			</if>
+			<if test="status != null">
+				 status = #{status},
+			</if>
+ 		 </set>
+		 WHERE id = #{id}
+	</update>
+
+	<!-- 修 改-->
+	<update id="updateByPrimaryKey" parameterType="com.jkm.entity.BindCard">
+		 UPDATE tb_bind_card
+		 SET 
+			 uid = #{uid},
+			 card_no = #{cardNo},
+			 account_name = #{accountName},
+			 card_type = #{cardType},
+			 card_id = #{cardId},
+			 phone = #{phone},
+			 pay_pwd = #{payPwd},
+			 status = #{status},
+		 WHERE id = #{id}
+	</update>
+
+	<!-- 修改状态-->
+	<update id="updateState" parameterType="java.lang.Long">
+		UPDATE tb_bind_card
+		SET
+		status =1,
+		WHERE id = #{id}
+	</update>
+
+	<!-- 查询是否添加过银行卡 -->
+	<select id="isAdd" resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT
+		count(1)
+		FROM tb_bind_card
+		WHERE card_no = #{cardNo} and status=0
+	</select>
+</mapper>

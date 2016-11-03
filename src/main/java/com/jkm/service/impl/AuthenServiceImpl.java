@@ -1,7 +1,5 @@
 package com.jkm.service.impl;
 
-import com.jkm.dao.QbBindCardDao;
-import com.jkm.entity.QbBindCard;
 import com.jkm.entity.fusion.*;
 import com.jkm.entity.fusion.body.RequestBody100003;
 import com.jkm.entity.fusion.body.RequestBody100004;
@@ -10,7 +8,6 @@ import com.jkm.entity.fusion.detail.RequestDetail100003;
 import com.jkm.entity.fusion.detail.RequestDetail100004;
 import com.jkm.entity.fusion.detail.RequestDetail100005;
 import com.jkm.entity.fusion.head.RequestHead;
-import com.jkm.entity.helper.UserBankCardSupporter;
 import com.jkm.service.AuthenService;
 import com.jkm.service.SignatureService;
 import com.jkm.util.SnGenerator;
@@ -24,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,8 +31,6 @@ public class AuthenServiceImpl implements AuthenService {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private SignatureService signatureService;
-	@Autowired
-	private QbBindCardDao qbBindCardDao;
 
 	/**
 	 * 快捷支付
@@ -337,51 +331,4 @@ public class AuthenServiceImpl implements AuthenService {
 		cardAuth.setInfo(head);
 		return cardAuth;
 	}
-	/**
-	 * 绑定银行卡
-	 * @param qbBindCard
-	 * @return
-	 */
-	@Override
-	public long bindCard(QbBindCard qbBindCard) {
-//		CardAuthData cardAuthData = new CardAuthData();
-//		cardAuthData.setCrdNo(UserBankCardSupporter.encryptCardNo(qbBindCard.getCardNo()));
-//		cardAuthData.setAccountName(qbBindCard.getAccountName());
-//		cardAuthData.setIdType("00");
-//		cardAuthData.setIdNo(UserBankCardSupporter.encryptCardId(qbBindCard.getCardId()));
-//		cardAuthData.setPhoneNo(qbBindCard.getPhone());
-//		Map<String, Object> map = cardAuth(cardAuthData);
-//		if(map.get("retCode")==true){
-		qbBindCard.setCardNo(UserBankCardSupporter.encryptCardNo(qbBindCard.getCardNo()));
-		qbBindCard.setCardId(UserBankCardSupporter.encryptCardId(qbBindCard.getCardId()));
-		qbBindCard.setStatus(0);
-		return qbBindCardDao.insert(qbBindCard);
-//		}else{
-//			return -1;
-//		}
-	}
-
-	/**
-	 * 删除银行卡
-	 * @param id
-	 */
-	@Override
-	public void deleteCard(long id) {
-		qbBindCardDao.delete(id);
-	}
-
-	/**
-	 * 银行卡列表
-	 * @param uid
-	 * @return
-	 */
-	@Override
-	public List<QbBindCard> cardList(String uid) {
-		List<QbBindCard> cardList = qbBindCardDao.select(uid);
-		return cardList;
-	}
-
-
-
-
 }

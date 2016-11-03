@@ -23,7 +23,7 @@ public interface ContactInfoDao {
      *
      * @param contactInfo
      */
-    void insert(TbContactInfo contactInfo);
+    long insert(TbContactInfo contactInfo);
 
     /**
      * 更新
@@ -56,4 +56,25 @@ public interface ContactInfoDao {
      * @return
      */
     TbContactInfo selectByUid(@Param("uid") String uid);
+
+    /**
+     * 根据身份证号查询是否有记录
+     * @param identy
+     * @return
+     */
+    int selectCountByIdenty(@Param("identy") String identy);
+
+    /**
+     * 根据id更改状态
+     * @param id
+     * @return
+     */
+    int updateStatus(long id);
+    /**
+     * 根据主键更新
+     *
+     * @param contactInfo
+     * @return
+     */
+    int updateByPrimaryKeySelective(TbContactInfo contactInfo);
 }
