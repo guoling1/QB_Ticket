@@ -12,9 +12,12 @@ import com.jkm.controller.helper.response.ResponseTicketRefund;
 import com.jkm.controller.helper.response.ResponseTrainTripsQuery;
 import com.jkm.service.TicketService;
 import com.jkm.service.TrainTripsQueryService;
+import net.sf.json.JSON;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.log4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -61,10 +66,16 @@ public class TicketController extends BaseController{
      * @param request
      * @return
      */
-    @RequestMapping(value = "/submitOrder", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntityBase<ResponseSubmitOrder> submitOrder(final RequestSubmitOrder request) {
+    @RequestMapping(value = "/submitOrder", method = RequestMethod.POST)
+    public ResponseEntityBase<ResponseSubmitOrder> submitOrder(final RequestSubmitOrder request) throws IOException {
         final ResponseEntityBase<ResponseSubmitOrder> results = new ResponseEntityBase<>();
+        final RequestSubmitOrder.Passenger passenger = request.new Passenger();
+        passenger.setId(1);
+        passenger.setPiaoType("1");
+        final ArrayList<RequestSubmitOrder.Passenger> passengers = new ArrayList<>();
+        passengers.add(passenger);
+        request.setPassengers(passengers);
         final Triple<Boolean, String, Long> submitOrderResult = this.ticketService.submitOrder(request);
         final ResponseSubmitOrder responseBookTicket = new ResponseSubmitOrder();
         if (submitOrderResult.getLeft()) {

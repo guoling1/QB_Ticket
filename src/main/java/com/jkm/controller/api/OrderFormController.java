@@ -108,6 +108,7 @@ public class OrderFormController extends BaseController {
         responseQueryOrderForm.setStartTime(orderForm.getStartTime());
         responseQueryOrderForm.setEndTime(orderForm.getEndTime());
         responseQueryOrderForm.setRunTime(orderForm.getRunTime());
+        responseQueryOrderForm.setExpireTime(orderForm.getExpireTime());
         responseQueryOrderForm.setStatus(orderForm.getStatus());
         final Iterator<OrderFormDetail> iterator = orderFormDetails.iterator();
         while (iterator.hasNext()) {

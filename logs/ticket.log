@@ -1,4 +1,0 @@
-[INFO] [2016-11-03 19:52:52][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-03 19:54:31][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-03 19:55:41][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-03 19:56:36][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}

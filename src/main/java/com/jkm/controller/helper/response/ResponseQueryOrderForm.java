@@ -104,6 +104,11 @@ public class ResponseQueryOrderForm {
     private String runTime;
 
     /**
+     * 支付到期时间
+     */
+    private Date expireTime;
+
+    /**
      * 状态
      */
     private int status;
