@@ -44,7 +44,7 @@ public class WebsiteServiceImpl implements WebsiteService {
                 userInfo.setAppId(appid);
                 userInfo.setAccount(webSiteInfo.getString("trainAccount"));
                 userInfo.setPwd(UserBankCardSupporter.encryptPwd(webSiteInfo.getString("pass")));
-                UserInfo userInfoResult = userInfoDao.selectByUidAndAppid(userInfo);
+                UserInfo userInfoResult = userInfoDao.selectByUid(uid);
                 //②
                 if(userInfoResult==null){
                     backId = userInfoDao.insert(userInfo);
@@ -69,7 +69,7 @@ public class WebsiteServiceImpl implements WebsiteService {
         UserInfo userInfo = new UserInfo();
         userInfo.setUid(uid);
         userInfo.setAppId(appid);
-        UserInfo userInfoResult = userInfoDao.selectByUidAndAppid(userInfo);
+        UserInfo userInfoResult = userInfoDao.selectByUid(uid);
         Preconditions.checkNotNull(userInfoResult,"登录信息异常");
         JSONObject userInfoJson = new JSONObject();
         userInfoJson.put("trainAccount",userInfoResult.getAccount());

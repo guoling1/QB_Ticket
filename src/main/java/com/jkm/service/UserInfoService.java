@@ -1,29 +1,31 @@
-package com.jkm.dao;
-
+package com.jkm.service;
 
 import com.jkm.entity.UserInfo;
 import org.apache.ibatis.annotations.Param;
 
-public interface UserInfoDao {
+/**
+ * Created by Administrator on 2016/11/3.
+ */
+public interface UserInfoService {
     /**
      *
-     * 查询（根据uid）
+     * 查询(根据uid查询)
      *
      **/
-    UserInfo selectByUid (@Param("uid") String uid);
+    UserInfo selectByUid (String uid);
     /**
      *
      * 查询（根据主键ID查询）
      *
      **/
-    UserInfo selectByPrimaryKey (@Param("id") Long id );
+    UserInfo selectByPrimaryKey (Long id );
 
     /**
      *
      * 删除（根据主键ID删除）
      *
      **/
-    int deleteByPrimaryKey ( @Param("id") Long id );
+    int deleteByPrimaryKey (Long id );
 
     /**
      *
