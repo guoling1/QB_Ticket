@@ -41,6 +41,11 @@ public class QueryTicketPriceServiceImpl implements QueryTicketPriceService {
 
         JSONObject responseJson = new JSONObject();
         responseJson = HttpMethod.httpClient(jsonObject, "http://searchtrain.hangtian123.net/trainSearch");
+       if(!responseJson.isNullObject()){
+           responseJson.put("success", true);
+           responseJson.put("code", 200);
+           responseJson.put("msg","没有符合条件的车次信息");
+       }
         return responseJson;
     }
 }
