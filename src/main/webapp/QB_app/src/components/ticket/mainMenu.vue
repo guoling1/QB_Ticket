@@ -7,6 +7,14 @@
         <div class="icon icon-ticket"></div>
         <p>车票预定</p>
       </router-link>
+      <router-link to="/ticket/main-menu/rob" class="btn" :class="pathName=='ticketRob'?'active':''">
+        <div class="icon icon-rob"></div>
+        <p>抢票</p>
+      </router-link>
+      <router-link to="/ticket/main-menu/private" class="btn" :class="pathName=='ticketPrivate'?'active':''">
+        <div class="icon icon-private"></div>
+        <p>私人定制</p>
+      </router-link>
       <router-link to="/ticket/main-menu/order" class="btn" :class="pathName=='ticketOrder'?'active':''">
         <div class="icon icon-order"></div>
         <p>我的订单</p>
@@ -53,25 +61,26 @@
     border-top: 1px solid #ebebeb;
     .btn {
       float: left;
-      width: 50%;
+      width: 25%;
       height: 49px;
       text-align: center;
       display: block;
       .icon {
-        margin: auto;
+        margin: 10px auto 0;
+        width: 16px;
+        height: 16px;
+        background-size: 16px 16px;
         &.icon-ticket {
-          width: 19px;
-          height: 22px;
-          margin-top: 6px;
           background-image: url("../../assets/ticket.png");
-          background-size: 19px 22px;
+        }
+        &.icon-rob {
+          background-image: url("../../assets/rob.png");
+        }
+        &.icon-private {
+          background-image: url("../../assets/private.png");
         }
         &.icon-order {
-          width: 24px;
-          height: 20px;
-          margin-top: 8px;
           background-image: url("../../assets/order.png");
-          background-size: 24px 20px;
         }
       }
       p {
@@ -82,6 +91,12 @@
       &.active {
         .icon-ticket {
           background-image: url("../../assets/ticket-active.png");
+        }
+        .icon-rob {
+          background-image: url("../../assets/rob-active.png");
+        }
+        .icon-private {
+          background-image: url("../../assets/private-active.png");
         }
         .icon-order {
           background-image: url("../../assets/order-active.png");

@@ -2,7 +2,7 @@ import Vue from 'vue'
 // 使用 vuex
 import store from './store'
 // 使用 vue-router
-import router from './routers';
+import router from './routers'
 // 使用 vue-resource
 import VueResource from 'vue-resource'
 Vue.use(VueResource);

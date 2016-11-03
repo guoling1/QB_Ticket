@@ -1,8 +1,5 @@
 <template lang="html">
   <div class="main">
-    <div class="banner">
-      <img src="../../assets/banner.png">
-    </div>
     <div class="from">
       <div class="goto">
         <div class="side show">
@@ -11,26 +8,37 @@
         </div>
         <div class="side write">
           <div class="left" @click="station">北京</div>
-          <img class="middle" src="../../assets/exchange.png">
+          <img class="middle" src="../../assets/exchange-blue.png">
 
           <div class="right" @click="station">上海</div>
         </div>
       </div>
-      <div class="time" @click="time('dateONE')">
-        <div class="show">{{dateONE}}</div>
+      <div class="group" @click="time('dateONE')">
+        <div class="prompt">出发日期</div>
+        <div class="write">{{dateONE}}</div>
       </div>
-      <div class="option">
-        <div class="show">只看高铁/动车</div>
-        <div class="check active">
-          <div class="btn"></div>
-        </div>
+      <div class="group" @click="time('dateONE')">
+        <div class="prompt">指定车次</div>
+        <div class="write empty">{{dateONE}}</div>
       </div>
-      <router-link class="submit" to="/ticket/train-menu/train">查询</router-link>
-      <div class="history">
-        <div>查询历史</div>
-        <div>清空</div>
+      <div class="group" @click="time('dateONE')">
+        <div class="prompt">坐席类型</div>
+        <div class="write empty">{{dateONE}}</div>
       </div>
-      <div class="know">订票须知<span></span></div>
+      <div class="group" @click="time('dateONE')">
+        <div class="prompt">抢票时效</div>
+        <div class="write empty">{{dateONE}}</div>
+      </div>
+      <div class="group" @click="time('dateONE')">
+        <div class="prompt">抢票套餐</div>
+        <div class="write empty no-prompt">{{dateONE}}</div>
+      </div>
+      <div class="group no-border" @click="time('dateONE')">
+        <div class="prompt">抢票成功率约</div>
+        <div class="write red empty no-prompt">99%</div>
+      </div>
+      <router-link class="submit" to="/ticket/train-menu/train">下一步</router-link>
+      <div class="know">抢票须知<span></span></div>
     </div>
     <datetime></datetime>
   </div>
@@ -94,6 +102,38 @@
 
   .from {
     padding: 0 15px;
+    .group {
+      height: 56px;
+      border-bottom: 1px solid #efefef;
+      &.no-border {
+        border: none;
+      }
+      .prompt {
+        float: left;
+        font-size: 16px;
+        color: #999;
+        line-height: 56px;
+        margin-right: 18px;
+      }
+      .write {
+        &.empty {
+          color: #CCC;
+        }
+        &.no-prompt {
+          background: none;
+        }
+        &.red {
+          color: #fe6969;
+        }
+        line-height: 56px;
+        font-size: 16px;
+        color: #111;
+        text-align: left;
+        background: url("../../assets/prompt-arrow.png") no-repeat right;
+        background-size: 7px 12px;
+      }
+    }
+
   }
 
   .goto {
@@ -126,49 +166,6 @@
     }
   }
 
-  .time {
-    height: 56px;
-    border-bottom: 1px solid #efefef;
-    .show {
-      line-height: 56px;
-      font-size: 16px;
-      color: #111;
-      text-align: left;
-      font-weight: bold;
-    }
-  }
-
-  .option {
-    height: 56px;
-    .show {
-      line-height: 56px;
-      font-size: 15px;
-      color: #999;
-      float: left;
-    }
-    .check {
-      width: 50px;
-      height: 26px;
-      float: right;
-      margin-top: 15px;
-      border-radius: 13px;
-      background-color: #eaeaea;
-      padding: 2px;
-      .btn {
-        width: 22px;
-        height: 22px;
-        border-radius: 50%;
-        background-color: #FFF;
-      }
-      &.active {
-        background-color: #4ab9f1;
-        .btn {
-          float: right;
-        }
-      }
-    }
-  }
-
   .submit {
     display: block;
     width: 100%;
@@ -179,18 +176,6 @@
     font-size: 18px;
     font-weight: bold;
     color: #FFF;
-  }
-
-  .history {
-    margin-top: 15px;
-    font-size: 12px;
-    color: #c1c1c1;
-    float: left;
-    div {
-      float: left;
-      line-height: 24px;
-      margin-right: 15px;
-    }
   }
 
   .know {
