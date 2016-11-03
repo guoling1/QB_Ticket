@@ -1,13 +1,13 @@
 package com.jkm.service.impl;
 
-import com.jkm.dao.ContactInfoDao;
 import com.jkm.dao.UserInfoDao;
 import com.jkm.entity.UserInfo;
 import com.jkm.service.UserInfoService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public class UserInfoServiceImpl implements UserInfoService {
     private static Logger log = Logger.getLogger(UserInfoServiceImpl.class);
 
