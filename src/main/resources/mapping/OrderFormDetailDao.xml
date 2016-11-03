@@ -5,6 +5,7 @@
        INSERT INTO tb_order_form_detail
         (
         order_form_id,
+        mobile,
         passenger_id,
         passenger_name,
         passport_se_no,
@@ -20,6 +21,7 @@
        VALUES
        (
        #{orderFormId},
+       #{mobile},
        #{passengerId},
        #{passengerName},
        #{passportSeNo},
@@ -39,6 +41,7 @@
         UPDATE tb_order_form_detail
         SET
         order_form_id = #{orderFormId},
+        mobile = #{mobile},
         passenger_id = #{passengerId},
         passenger_name = #{passengerName},
         passport_se_no = #{passportSeNo},

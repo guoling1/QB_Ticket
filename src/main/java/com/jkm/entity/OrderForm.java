@@ -26,6 +26,16 @@ public class OrderForm extends BaseEntity {
     private String uid;
 
     /**
+     * 订票人手机号
+     */
+    private String mobile;
+
+    /**
+     * 支付流水号
+     */
+    private String paymentSn;
+
+    /**
      * 单张车票价格
      */
     private BigDecimal price;

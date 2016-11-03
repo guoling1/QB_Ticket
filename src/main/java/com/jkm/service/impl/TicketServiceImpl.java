@@ -56,6 +56,7 @@ public class TicketServiceImpl implements TicketService {
     @Autowired
     private HySdkService hySdkService;
 
+//    private UserInfoS
 
 
     /**
@@ -68,9 +69,10 @@ public class TicketServiceImpl implements TicketService {
     public Triple<Boolean, String, Long> submitOrder(final RequestSubmitOrder requestSubmitOrder) {
         log.info("开始创建订单！！");
         final OrderForm orderForm = new OrderForm();
-        final Optional<TbContactInfo> contactFormOptional = this.contactInfoService.selectByUid(requestSubmitOrder.getUid());
-        Preconditions.checkState(contactFormOptional.isPresent(), "订票人uid[" + requestSubmitOrder.getUid() + "]不存在");
+        final Optional<TbContactInfo> contactInfoOptional = this.contactInfoService.selectByUid(requestSubmitOrder.getUid());
+        Preconditions.checkState(contactInfoOptional.isPresent(), "订票人uid[" + requestSubmitOrder.getUid() + "]不存在");
         orderForm.setUid(requestSubmitOrder.getUid());
+        orderForm.setMobile(contactInfoOptional.get().getTel());
         orderForm.setPrice(requestSubmitOrder.getPrice());
         orderForm.setBuyTicketPackageId(requestSubmitOrder.getBuyTicketPackageId());
         orderForm.setBuyTicketPackagePrice(new BigDecimal(EnumBuyTicketPackageType.of(requestSubmitOrder.getBuyTicketPackageId()).getPrice()));
@@ -105,6 +107,7 @@ public class TicketServiceImpl implements TicketService {
                 final OrderFormDetail orderFormDetail = new OrderFormDetail();
                 final JSONObject passengerJsonObject = new JSONObject();
                 orderFormDetail.setOrderFormId(orderForm.getId());
+                orderFormDetail.setMobile(contactInfo.getTel());
                 orderFormDetail.setPassengerId(contactInfo.getId());
                 orderFormDetail.setPassengerName(contactInfo.getName());
                 orderFormDetail.setPassportSeNo(contactInfo.getIdenty());

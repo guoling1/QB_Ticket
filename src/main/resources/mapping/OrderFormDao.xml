@@ -5,6 +5,8 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
       INSERT INTO tb_order_form
       (uid,
+      mobile,
+      payment_sn,
       order_id,
       out_order_id,
       order_number,
@@ -36,6 +38,8 @@
       VALUES
       (
       #{uid},
+      #{mobile},
+      #{paymentSn},
       #{orderId},
       #{outOrderId},
       #{orderNumber},
@@ -70,6 +74,8 @@
       UPDATE tb_order_form
       SET
         uid = #{uid},
+        mobile = #{mobile},
+        payment_sn = #{paymentSn},
         order_id = #{orderId},
         out_order_id = #{outOrderId},
         order_number = #{orderNumber},

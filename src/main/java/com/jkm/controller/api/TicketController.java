@@ -63,7 +63,7 @@ public class TicketController extends BaseController{
      */
     @RequestMapping(value = "/submitOrder", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntityBase<ResponseSubmitOrder> submitTicket(final RequestSubmitOrder request) {
+    public ResponseEntityBase<ResponseSubmitOrder> submitOrder(final RequestSubmitOrder request) {
         final ResponseEntityBase<ResponseSubmitOrder> results = new ResponseEntityBase<>();
         final Triple<Boolean, String, Long> submitOrderResult = this.ticketService.submitOrder(request);
         final ResponseSubmitOrder responseBookTicket = new ResponseSubmitOrder();
@@ -99,6 +99,7 @@ public class TicketController extends BaseController{
         results.setData(responseCancelOrder);
         return results;
     }
+
 
     /**
      * 火车车票退票受理

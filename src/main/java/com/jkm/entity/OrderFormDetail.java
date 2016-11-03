@@ -25,6 +25,11 @@ public class OrderFormDetail extends BaseEntity{
     private long orderFormId;
 
     /**
+     * 手机号
+     */
+    private String mobile;
+
+    /**
      * 乘客id
      */
     private long passengerId;

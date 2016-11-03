@@ -3,14 +3,12 @@ package com.jkm.controller.api;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
 import com.jkm.controller.helper.request.RequestQueryOrderForm;
 import com.jkm.controller.helper.response.ResponseQueryOrderForm;
 import com.jkm.entity.OrderForm;
 import com.jkm.entity.OrderFormDetail;
-import com.jkm.entity.TbContactInfo;
 import com.jkm.enums.EnumTrainTicketType;
 import com.jkm.service.ContactInfoService;
 import com.jkm.service.OrderFormDetailService;
@@ -28,15 +26,12 @@ import java.util.*;
  * Created by yulong.zhang on 2016/10/31.
  */
 @Controller
-@RequestMapping(value = "/orderForm")
+@RequestMapping(value = "/order")
 public class OrderFormController extends BaseController {
     private static Logger log = Logger.getLogger(OrderFormController.class);
 
     @Autowired
     private OrderFormService orderFormService;
-
-    @Autowired
-    private ContactInfoService contactInfoService;
 
     @Autowired
     private OrderFormDetailService orderFormDetailService;
