@@ -37,7 +37,7 @@
         <div class="prompt">抢票成功率约</div>
         <div class="write red empty no-prompt">99%</div>
       </div>
-      <router-link class="submit" to="/ticket/train-menu/train">下一步</router-link>
+      <router-link class="submit" to="/ticket/rob-order">下一步</router-link>
       <div class="know">抢票须知<span></span></div>
     </div>
     <datetime></datetime>
