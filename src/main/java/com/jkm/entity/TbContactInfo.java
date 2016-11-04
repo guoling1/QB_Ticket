@@ -3,6 +3,7 @@ package com.jkm.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class TbContactInfo extends BaseEntity{
