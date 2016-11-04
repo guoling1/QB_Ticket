@@ -92,8 +92,8 @@
     },
     beforeRouteEnter (to, from, next) {
       Vue.http.post('/queryTicketPrice/query', {
-        from_station: "BXP", //出发站简码
-        to_station: "GZQ", //到达站简码
+        from_station: "VAP", //出发站简码
+        to_station: "VNP", //到达站简码
         train_date: "2016-12-06" //乘车日期（yyyy-MM-dd）
       }).then(function (res) {
         console.log(res);
