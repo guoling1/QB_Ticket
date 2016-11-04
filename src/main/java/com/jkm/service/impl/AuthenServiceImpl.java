@@ -1,5 +1,7 @@
 package com.jkm.service.impl;
 
+import com.jkm.entity.PayResultRecord;
+import com.jkm.entity.RefundResultRecord;
 import com.jkm.entity.fusion.*;
 import com.jkm.entity.fusion.body.RequestBody100003;
 import com.jkm.entity.fusion.body.RequestBody100004;
@@ -9,6 +11,8 @@ import com.jkm.entity.fusion.detail.RequestDetail100004;
 import com.jkm.entity.fusion.detail.RequestDetail100005;
 import com.jkm.entity.fusion.head.RequestHead;
 import com.jkm.service.AuthenService;
+import com.jkm.service.PayResultRecordService;
+import com.jkm.service.RefundResultRecordService;
 import com.jkm.service.SignatureService;
 import com.jkm.util.SnGenerator;
 import com.jkm.util.fusion.*;
@@ -31,6 +35,10 @@ public class AuthenServiceImpl implements AuthenService {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private SignatureService signatureService;
+	@Autowired
+	private PayResultRecordService payResultRecordService;
+	@Autowired
+	private RefundResultRecordService refundResultRecordService;
 
 	/**
 	 * 快捷支付
@@ -84,10 +92,28 @@ public class AuthenServiceImpl implements AuthenService {
 					ret.put("retMsg", response100005.getInfo().getErrMsg());
 					ret.put("retData",jo);
 //					ret.put("retXml", response2);
+					PayResultRecord payResultRecord = new PayResultRecord();
+					payResultRecord.setStatus(0);
+					payResultRecord.setAmount(request100005.getBody().getTransDetail().getAMOUNT());
+					payResultRecord.setPayChannel("fastpay");
+					payResultRecord.setPayParams(xml);
+					payResultRecord.setPayResult("1");
+					payResultRecord.setReqSn(request100005.getInfo().getReqSn());
+					payResultRecord.setResultParams(response100005.toString());
+					payResultRecordService.insertSelective(payResultRecord);
 				} else {
 					ret.put("retCode", false);
 					ret.put("retMsg", response100005.getInfo().getErrMsg());
 //					ret.put("retXml", response2);
+					PayResultRecord payResultRecord = new PayResultRecord();
+					payResultRecord.setStatus(0);
+					payResultRecord.setAmount(request100005.getBody().getTransDetail().getAMOUNT());
+					payResultRecord.setPayChannel("fastpay");
+					payResultRecord.setPayParams(xml);
+					payResultRecord.setPayResult("2");
+					payResultRecord.setReqSn(request100005.getInfo().getReqSn());
+					payResultRecord.setResultParams(response100005.toString());
+					payResultRecordService.insertSelective(payResultRecord);
 				}
 			} else {
 				ret.put("retCode", false);
@@ -193,11 +219,30 @@ public class AuthenServiceImpl implements AuthenService {
 					ret.put("retMsg", response100003.getInfo().getErrMsg());
 					ret.put("retData", jo);
 //					ret.put("retXml", response2);
+
+					RefundResultRecord refundResultRecord = new RefundResultRecord();
+					refundResultRecord.setStatus(0);
+					refundResultRecord.setAmount(request100003.getBody().getTransDetail().getREFUND_AMOUNT());
+					refundResultRecord.setRefundChannel("fastpay");
+					refundResultRecord.setRefundParams(xml);
+					refundResultRecord.setRefundResult("1");
+					refundResultRecord.setReqSn(request100003.getInfo().getReqSn());
+					refundResultRecord.setResultParams(response100003.toString());
+					refundResultRecordService.insertSelective(refundResultRecord);
 				} else {
 					ret.put("retCode", false);
 					ret.put("retMsg", response100003.getInfo().getErrMsg());
 					ret.put("retData", null);
 //					ret.put("retXml", response2);
+					RefundResultRecord refundResultRecord = new RefundResultRecord();
+					refundResultRecord.setStatus(0);
+					refundResultRecord.setAmount(request100003.getBody().getTransDetail().getREFUND_AMOUNT());
+					refundResultRecord.setRefundChannel("fastpay");
+					refundResultRecord.setRefundParams(xml);
+					refundResultRecord.setRefundResult("2");
+					refundResultRecord.setReqSn(request100003.getInfo().getReqSn());
+					refundResultRecord.setResultParams(response100003.toString());
+					refundResultRecordService.insertSelective(refundResultRecord);
 				}
 			} else {
 				ret.put("retCode", false);
