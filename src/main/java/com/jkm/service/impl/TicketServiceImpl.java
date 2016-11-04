@@ -381,7 +381,7 @@ public class TicketServiceImpl implements TicketService {
         this.refundTicketFlowService.init(flow);
         //向航天华有发退票请求
         final HyReturnTicketRequest request = new HyReturnTicketRequest();
-        request.setPartnerId(HySdkConstans.PARTNERID);
+        request.setPartnerId(HySdkConstans.ORDER_PARTNER_ID);
         request.setMethod(EnumHTHYMethodCode.RETURN_TICKET.getCode());
         request.setReqTime(DateFormatUtil.format(new Date(),DateFormatUtil.yyyyMMddHHmmss));
         request.setCallBackUrl(HySdkConstans.REFUND_TICKET_NOTIFY_URL);
@@ -486,15 +486,24 @@ public class TicketServiceImpl implements TicketService {
     public void handleCustomerPayMsg(final long orderFormId, final String paymentSn, final boolean isPaySuccess) {
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByIdWithLock(orderFormId);
         final OrderForm orderForm = orderFormOptional.get();
+        Preconditions.checkState(orderForm.isOccupySuccess(), "处理客户付款，订单[%s]的状态不是占座成功状态！！！");
+        final Optional<ChargeMoneyOrder> chargeMoneyOrderOptional = this.chargeMoneyOrderService.selectByOrderFormId(orderFormId);
+        Preconditions.checkState(chargeMoneyOrderOptional.isPresent(), "订单[%s]对应的收款记录不存在", orderFormId);
+        final ChargeMoneyOrder chargeMoneyOrder = this.chargeMoneyOrderService.selectByIdWithLock(chargeMoneyOrderOptional.get().getId()).get();
+        Preconditions.checkState(chargeMoneyOrder.isPaySuccess(), "订单[%s]对应的收款记录已经付款成功！！！！！！！");
         if (isPaySuccess) {
             log.info("订单[" + orderFormId + "]支付成功");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getValue());
             orderForm.setPaymentSn(paymentSn);
             this.orderFormService.update(orderForm);
+            chargeMoneyOrder.setStatus(EnumChargeMoneyOrderStatus.PAYMENT_TICKET_SUCCESS.getId());
             log.info("订单[" + orderFormId + "]支付成功--调用确认订单接口！！");
             this.confirmOrder(orderForm);
+        } else {
+            chargeMoneyOrder.setStatus(EnumChargeMoneyOrderStatus.PAYMENT_TICKET_FAIL.getId());
         }
+        this.chargeMoneyOrderService.update(chargeMoneyOrder);
     }
 
 

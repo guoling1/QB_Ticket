@@ -52,7 +52,7 @@ public class HySdkServiceImpl implements HySdkService{
         String reqTime = this.getCurrentDateString();
         try {
             jsonObject.put("sign", this.getSign(EnumHTHYMethodCode.SUBMIT_ORDER_FORM.getCode(), reqTime));
-            jsonObject.put("partnerid", HySdkConstans.PARTNERID);
+            jsonObject.put("partnerid", HySdkConstans.ORDER_PARTNER_ID);
             jsonObject.put("passengers", passengers);
             jsonObject.put("method", EnumHTHYMethodCode.SUBMIT_ORDER_FORM.getCode());
             jsonObject.put("is_accept_standing", false);
@@ -71,8 +71,9 @@ public class HySdkServiceImpl implements HySdkService{
             e.printStackTrace();
         }
         final StopWatch stopWatch = new StopWatch();
+        jsonObject = JSONObject.fromObject(new String("{\"LoginUserName\":\"\",\"LoginUserPassword\":\"\",\"callbackurl\":\"http://120.26.83.131:58080/TrainInterfaceDebug/interface\",\"checi\":\"G6224\",\"from_station_code\":\"IUQ\",\"from_station_name\":\"虎门\",\"is_accept_standing\":false,\"method\":\"train_order\",\"orderid\":\"201511041430\",\"partnerid\":\"hthyzz_test\",\"passengers\":[{\"passengerid\":1,\"passengersename\":\"李佳\",\"passportseno\":\"410223199305204593\",\"passporttypeseid\":\"1\",\"passporttypeseidname\":\"二代身份证\",\"piaotype\":\"1\",\"piaotypename\":\"成人票\",\"price\":\"34.5\",\"ticket_no\":\"3213213212321\",\"zwcode\":\"O\",\"zwname\":\"二等座\"}],\"reqtime\":\"20161104143212\",\"sign\":\"c58110c8054485129b792215b77a675f\",\"to_station_code\":\"IZQ\",\"to_station_name\":\"广州南\",\"train_date\":\"2016-11-09\"}"));
         final JSONObject resultJsonObject = HttpMethod.httpClient(jsonObject, HySdkConstans.SERVICE_GATEWAY_URL);
-        System.out.println(jsonObject);
+        System.out.println("请求参数 : " + jsonObject);
         this.postHandle(orderform.getOrderId(),
                 EnumHTHYMethodCode.SUBMIT_ORDER_FORM.getCode(),
                 resultJsonObject.getInt("code"),
@@ -94,7 +95,7 @@ public class HySdkServiceImpl implements HySdkService{
         String reqTime = this.getCurrentDateString();
         try {
             jsonObject.put("sign", this.getSign(EnumHTHYMethodCode.CONFIRM_ORDER_FORM.getCode(), reqTime));
-            jsonObject.put("partnerid", HySdkConstans.PARTNERID);
+            jsonObject.put("partnerid", HySdkConstans.ORDER_PARTNER_ID);
             jsonObject.put("method", EnumHTHYMethodCode.CONFIRM_ORDER_FORM.getCode());
             jsonObject.put("orderid", orderId);
             jsonObject.put("reqtime", reqTime);
@@ -125,7 +126,7 @@ public class HySdkServiceImpl implements HySdkService{
         String reqTime = this.getCurrentDateString();
         try {
             jsonObject.put("sign", this.getSign(EnumHTHYMethodCode.CANCEL_ORDER_FORM.getCode(), reqTime));
-            jsonObject.put("partnerid", HySdkConstans.PARTNERID);
+            jsonObject.put("partnerid", HySdkConstans.ORDER_PARTNER_ID);
             jsonObject.put("method", EnumHTHYMethodCode.CANCEL_ORDER_FORM.getCode());
             jsonObject.put("orderid", orderId);
             jsonObject.put("transactionid", transactionId);
@@ -157,7 +158,7 @@ public class HySdkServiceImpl implements HySdkService{
         String reqTime = this.getCurrentDateString();
         try {
             jsonObject.put("sign", this.getSign(EnumHTHYMethodCode.QUERY_ORDER_FORM.getCode(), reqTime));
-            jsonObject.put("partnerid", HySdkConstans.PARTNERID);
+            jsonObject.put("partnerid", HySdkConstans.ORDER_PARTNER_ID);
             jsonObject.put("method", EnumHTHYMethodCode.QUERY_ORDER_FORM.getCode());
             jsonObject.put("orderid", orderId);
             jsonObject.put("transactionid", transactionId);
@@ -187,7 +188,7 @@ public class HySdkServiceImpl implements HySdkService{
     public HyReturnTicketResponse returnTicket(final HyReturnTicketRequest request, final JSONArray tickets) {
         JSONObject jsonObject = null;
         try {
-            String sign = MD5Util.MD5(request.getPartnerId() + request.getMethod() + request.getReqTime() + MD5Util.MD5(HySdkConstans.SIGN_KEY));
+            String sign = MD5Util.MD5(request.getPartnerId() + request.getMethod() + request.getReqTime() + MD5Util.MD5(HySdkConstans.ORDER_SIGN_KEY));
             jsonObject = new JSONObject();
             jsonObject.put("sign", sign);
             jsonObject.put("partnerid", request.getPartnerId());
@@ -231,7 +232,7 @@ public class HySdkServiceImpl implements HySdkService{
     public JSONObject postPolicyOrder(HyPostPolicyOrderRequest request) {
         JSONObject jsonObject = null;
         try {
-            String sign = MD5Util.MD5(request.getUsername() + request.getMethod() + request.getReqtime() + MD5Util.MD5(HySdkConstans.SIGN_KEY));
+            String sign = MD5Util.MD5(request.getUsername() + request.getMethod() + request.getReqtime() + MD5Util.MD5(HySdkConstans.QUERY_PARTNER_ID));
             jsonObject = new JSONObject();
             JSONObject jo = new JSONObject();
             JSONArray jsonArray = new JSONArray();
@@ -278,7 +279,7 @@ public class HySdkServiceImpl implements HySdkService{
     public JSONObject cancelPolicyOrder(HyCancelPolicyOrderRequest request) {
         JSONObject jsonObject = null;
         try {
-            String sign = MD5Util.MD5(request.getUsername() + request.getMethod() + request.getReqtime() + MD5Util.MD5(HySdkConstans.SIGN_KEY));
+            String sign = MD5Util.MD5(request.getUsername() + request.getMethod() + request.getReqtime() + MD5Util.MD5(HySdkConstans.QUERY_SIGN_KEY));
             jsonObject = new JSONObject();
             jsonObject.put("sign", sign);
             jsonObject.put("username", request.getUsername());
@@ -343,8 +344,8 @@ public class HySdkServiceImpl implements HySdkService{
     private String getSign(final String method, final String reqtime) {
 
         try {
-            return MD5Util.MD5(HySdkConstans.PARTNERID + method
-                    + reqtime + MD5Util.MD5(HySdkConstans.SIGN_KEY));
+            return MD5Util.MD5(HySdkConstans.ORDER_PARTNER_ID + method
+                    + reqtime + MD5Util.MD5(HySdkConstans.ORDER_SIGN_KEY));
         } catch (final Exception e) {
             log.info(e);
             e.printStackTrace();

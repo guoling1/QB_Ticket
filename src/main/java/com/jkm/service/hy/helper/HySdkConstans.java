@@ -12,9 +12,26 @@ import org.aeonbits.owner.ConfigCache;
 public class HySdkConstans {
 
     /**
-     * 帐号
+     * 查询的帐号
      */
-    public static final String PARTNERID;
+    public static final String QUERY_PARTNER_ID;
+
+    /**
+     * 查询的签名密钥
+     */
+    public static final String QUERY_SIGN_KEY;
+
+    /**
+     * 订单的帐号
+     */
+    public static final String ORDER_PARTNER_ID;
+
+    /**
+     * 订单的签名密钥
+     */
+    public static final String ORDER_SIGN_KEY;
+
+
     /**
      * 服务网关
      */
@@ -45,17 +62,17 @@ public class HySdkConstans {
      */
     public static final String ACCOUNT_CONTACT_QUERY;
 
-    /**
-     * 签名密钥
-     */
-    public static final String SIGN_KEY;
 
     static {
         final HySdkConfig hySdkConfig = getHySdkConfig();
-        PARTNERID = hySdkConfig.partnerid();
-        Preconditions.checkState(!Strings.isNullOrEmpty(PARTNERID), "帐号");
-        SIGN_KEY = hySdkConfig.signKey();
-        Preconditions.checkState(!Strings.isNullOrEmpty(SIGN_KEY), "秘钥加载异常");
+        QUERY_PARTNER_ID = hySdkConfig.queryPartnerId();
+        Preconditions.checkState(!Strings.isNullOrEmpty(QUERY_PARTNER_ID), "查询帐号");
+        QUERY_SIGN_KEY = hySdkConfig.querySignKey();
+        Preconditions.checkState(!Strings.isNullOrEmpty(QUERY_SIGN_KEY), "查询秘钥加载异常");
+        ORDER_PARTNER_ID = hySdkConfig.orderPartnerId();
+        Preconditions.checkState(!Strings.isNullOrEmpty(ORDER_PARTNER_ID), "订单帐号");
+        ORDER_SIGN_KEY = hySdkConfig.orderSignKey();
+        Preconditions.checkState(!Strings.isNullOrEmpty(ORDER_SIGN_KEY), "订单秘钥加载异常");
         SUBMIT_TICKET_NOTIFY_URL = hySdkConfig.submitTicketNotifyUrl();
         CONFIRM_TICKET_NOTIFY_URL = hySdkConfig.confirmTicketNotifyUrl();
         REFUND_TICKET_NOTIFY_URL = hySdkConfig.refundTicketNotifyUrl();
@@ -81,18 +98,32 @@ public class HySdkConstans {
     private interface HySdkConfig extends org.aeonbits.owner.Config {
 
         /**
-         * 帐号
+         * 查询帐号
          */
-        @Key("third.channel.hy.partnerid")
+        @Key("third.channel.hy.query.partner.id")
         @DefaultValue("")
-        String partnerid();
+        String queryPartnerId();
 
         /**
-         * 签名秘钥
+         * 查询签名秘钥
          */
-        @Key("third.channel.hy.sign.key")
+        @Key("third.channel.hy.query.sign.key")
         @DefaultValue("")
-        String signKey();
+        String querySignKey();
+
+        /**
+         * 订单帐号
+         */
+        @Key("third.channel.hy.order.partner.id")
+        @DefaultValue("")
+        String orderPartnerId();
+
+        /**
+         * 订单签名秘钥
+         */
+        @Key("third.channel.hy.order.sign.key")
+        @DefaultValue("")
+        String orderSignKey();
 
         /**
          * 占座回调url

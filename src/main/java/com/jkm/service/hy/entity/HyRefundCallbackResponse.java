@@ -48,12 +48,12 @@ public class HyRefundCallbackResponse  {
      */
     public boolean isSignCorrect() throws Exception {
         if(this.returntype == 0 || this.returntype == 2){
-            final String expectSign = MD5Util.MD5(HySdkConstans.PARTNERID + this.returntype + this.timestamp
-                    + this.apiorderid + this.trainorderid +this.returnmoney + this.returnstate + MD5Util.MD5(HySdkConstans.SIGN_KEY));
+            final String expectSign = MD5Util.MD5(HySdkConstans.ORDER_PARTNER_ID + this.returntype + this.timestamp
+                    + this.apiorderid + this.trainorderid +this.returnmoney + this.returnstate + MD5Util.MD5(HySdkConstans.ORDER_SIGN_KEY));
             return Objects.equals(expectSign, sign);
         }else{
-            final String expectSign = MD5Util.MD5(HySdkConstans.PARTNERID + this.returntype + this.timestamp
-                    + this.apiorderid + this.trainorderid + this.token +this.returnmoney + this.returnstate + MD5Util.MD5(HySdkConstans.SIGN_KEY));
+            final String expectSign = MD5Util.MD5(HySdkConstans.ORDER_PARTNER_ID + this.returntype + this.timestamp
+                    + this.apiorderid + this.trainorderid + this.token +this.returnmoney + this.returnstate + MD5Util.MD5(HySdkConstans.ORDER_SIGN_KEY));
             return Objects.equals(expectSign, sign);
         }
     }

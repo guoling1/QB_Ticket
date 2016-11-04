@@ -25,7 +25,7 @@ public class QueryTicketPriceServiceImpl implements QueryTicketPriceService {
         jsonObject = new JSONObject();
         String sign = null;
         try {
-            sign = MD5Util.MD5(partnerid + method + reqtime + MD5Util.MD5(HySdkConstans.SIGN_KEY));
+            sign = MD5Util.MD5(partnerid + method + reqtime + MD5Util.MD5(HySdkConstans.QUERY_SIGN_KEY));
             jsonObject.put("partnerid", partnerid);
             jsonObject.put("method", method);
             jsonObject.put("reqtime", reqtime);

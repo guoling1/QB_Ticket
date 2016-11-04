@@ -71,7 +71,7 @@ public class TicketController extends BaseController{
     public ResponseEntityBase<ResponseSubmitOrder> submitOrder(final RequestSubmitOrder request) throws IOException {
         final ResponseEntityBase<ResponseSubmitOrder> results = new ResponseEntityBase<>();
 //        final RequestSubmitOrder.Passenger passenger = request.new Passenger();
-//        passenger.setId(1);
+//        passenger.setId(2);
 //        passenger.setPiaoType("1");
 //        final ArrayList<RequestSubmitOrder.Passenger> passengers = new ArrayList<>();
 //        passengers.add(passenger);
