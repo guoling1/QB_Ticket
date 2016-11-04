@@ -1,26 +1,27 @@
 <template lang="html">
   <div class="main">
     <div class="from">
+      <div class="train-info">
+        <div class="left">
+          <div class="time">07:10</div>
+          <div class="place">北京西</div>
+          <div class="date">11-20 周五</div>
+        </div>
+        <div class="middle">
+          <div class="trains">G208</div>
+          <div class="ch"></div>
+          <div class="date">耗时1小时52分</div>
+        </div>
+        <div class="right">
+          <div class="time">17:10</div>
+          <div class="place">北京东</div>
+          <div class="date">11-20 周五</div>
+        </div>
+      </div>
       <div class="space">
-        <div class="goto">
-          <div class="side show">
-            <div class="left">出发城市</div>
-            <div class="right">到达城市</div>
-          </div>
-          <div class="side write">
-            <div class="left" @click="station">北京</div>
-            <img class="middle" src="../../assets/exchange-blue.png">
-
-            <div class="right" @click="station">上海</div>
-          </div>
-        </div>
-        <div class="group" @click="time('dateONE')">
-          <div class="prompt">已选车次</div>
-          <div class="write no-prompt right">{{dateONE}}</div>
-        </div>
         <div class="group no-border" @click="time('dateONE')">
-          <div class="prompt">已选坐席</div>
-          <div class="write no-prompt right empty">{{dateONE}}</div>
+          <div class="prompt">二等座</div>
+          <div class="write right"><span class="price">￥123.85</span></div>
         </div>
       </div>
       <div class="space">
@@ -32,7 +33,7 @@
       <div class="space no-border">
         <div class="group no-border" @click="time('dateONE')">
           <div class="list"></div>
-          <div class="write">
+          <div class="write no-prompt">
             <span class="name">成龙</span>
             120********1234
             <span class="info">成人票</span>
@@ -40,7 +41,7 @@
         </div>
         <div class="group no-border" @click="time('dateONE')">
           <div class="list"></div>
-          <div class="write">
+          <div class="write no-prompt">
             <span class="name">成凤</span>
             120********4321
             <span class="info">成人票</span>
@@ -49,17 +50,9 @@
       </div>
       <div class="space no-padding">
         <div class="handle">
-          <router-link class="btn" to="/ticket/contacts">
-            添加/编辑乘客
-          </router-link>
+          <div class="btn">添加/编辑乘客</div>
           <div class="line"></div>
           <div class="btn">添加儿童</div>
-        </div>
-      </div>
-      <div class="space">
-        <div class="group no-border" @click="time('dateONE')">
-          <div class="prompt">套餐类型</div>
-          <div class="write empty">{{dateONE}}</div>
         </div>
       </div>
       <div class="space">
@@ -68,7 +61,34 @@
           <div class="write no-prompt empty">通知出票信息</div>
         </div>
       </div>
-      <router-link class="submit" to="/ticket/train-menu/train">立即抢票</router-link>
+      <div class="space">
+        <div class="group no-border" @click="time('dateONE')">
+          <div class="prompt">套餐类型</div>
+          <div class="write empty">{{dateONE}}</div>
+        </div>
+      </div>
+      <div class="submit">
+        <div class="detail">
+          <div class="tt">金额详情</div>
+          <div class="tt_detail">
+            <div class="left">火车票</div>
+            <div class="right">x1人</div>
+            <div class="right margin">￥128.5</div>
+          </div>
+          <div class="tt_detail">
+            <div class="left">火车票</div>
+            <div class="right">x1人</div>
+            <div class="right margin">￥128.5</div>
+          </div>
+        </div>
+        <div class="btn">
+          <div class="left">
+            <div class="amount">实付款<span class="red">￥</span><span class="red big">128.5</span></div>
+            <div class="i"></div>
+          </div>
+          <div class="right">提交订单</div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -121,6 +141,57 @@
     overflow: hidden;
     .flexItem(1, 100%);
     background-color: #f5f5f5;
+  }
+
+  .train-info {
+    padding: 20px 15px;
+    background-color: #FFF;
+    margin-bottom: 5px;
+    overflow: hidden;
+    position: relative;
+    &.no-padding {
+      padding: 0;
+    }
+    .left {
+      float: left;
+    }
+    .middle {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      margin-top: 24px;
+      .ch {
+        width: 105px;
+        height: 4px;
+        margin: 5px auto 10px;
+        background: url("../../assets/ch.png") no-repeat center;
+        background-size: 105px 4px;
+      }
+    }
+    .right {
+      float: right;
+    }
+    .time {
+      font-size: 18px;
+      color: #111;
+      font-weight: bold;
+    }
+    .place {
+      font-size: 20px;
+      color: #111;
+      font-weight: bold;
+    }
+    .date {
+      font-size: 12px;
+      color: #999;
+    }
+    .trains {
+      font-size: 18px;
+      color: #1ca0e2;
+      font-weight: bold;
+    }
   }
 
   .from {
@@ -207,6 +278,10 @@
         .name {
           font-weight: bold;
         }
+        .price {
+          color: #f14242;
+          margin-right: 15px;
+        }
         line-height: 56px;
         font-size: 16px;
         color: #111;
@@ -249,16 +324,81 @@
   }
 
   .submit {
-    display: block;
-    width: 100%;
-    height: 49px;
-    line-height: 49px;
-    background-color: #4ab9f1;
-    font-size: 18px;
-    font-weight: bold;
-    color: #FFF;
     position: fixed;
     bottom: 0;
     left: 0;
+    width: 100%;
+    height: 49px;
+    .detail {
+      position: absolute;
+      z-index: 1;
+      background-color: #FFF;
+      width: 100%;
+      top: -88px;
+      left: 0;
+      padding: 15px;
+      .tt {
+        font-size: 12px;
+        color: #111;
+        text-align: left;
+      }
+      .tt_detail {
+        font-size: 12px;
+        color: #111;
+        margin-top: 5px;
+        overflow: hidden;
+        .left {
+          float: left;
+        }
+        .right {
+          float: right;
+        }
+        .margin {
+          margin-right: 50px;
+        }
+      }
+    }
+    .btn {
+      position: absolute;
+      z-index: 9;
+      background-color: #FFF;
+      width: 100%;
+      height: 49px;
+      .left {
+        float: left;
+        width: 50%;
+        .amount {
+          float: left;
+          padding-left: 30px;
+          line-height: 49px;
+          font-size: 12px;
+          color: #999;
+          margin-right: 20px;
+          .red {
+            color: #fe6969;
+          }
+          .big {
+            font-size: 18px;
+          }
+        }
+        .i {
+          width: 12px;
+          height: 7px;
+          float: left;
+          margin-top: 20px;
+          background: url("../../assets/detail.png") no-repeat center;
+          background-size: 12px 7px;
+        }
+      }
+      .right {
+        float: right;
+        width: 50%;
+        height: 49px;
+        line-height: 49px;
+        font-size: 15px;
+        color: #FFF;
+        background-color: #4ab9f1;
+      }
+    }
   }
 </style>

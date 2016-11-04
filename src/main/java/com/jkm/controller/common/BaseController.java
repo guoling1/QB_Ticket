@@ -66,9 +66,13 @@ public class BaseController {
             body.append(line);
             counter++;
         }
-        JSONObject jo = JSONObject.fromObject(body.toString());
-        logger.info("请求参数为："+jo.toString());
-        return  jo;
+        if(!"".equals(body)){
+            JSONObject jo = JSONObject.fromObject(body.toString());
+            logger.info("请求参数为："+jo.toString());
+            return  jo;
+        }else{
+            return null;
+        }
     }
 
     /**
@@ -111,4 +115,27 @@ public class BaseController {
         response.getWriter().close();
     }
 
+    /**
+     * 返回json格式数据
+     * @param data
+     * @throws IOException
+     */
+    public void returnJson(JSONObject data) throws IOException {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/json;charset=UTF-8");
+        response.setHeader("cache-control", "max-age=7200");
+        response.setHeader("pragma", "no-cache");
+        response.setDateHeader("expires", 0L);
+        response.getWriter().write(data.toString());
+        response.getWriter().flush();
+        response.getWriter().close();
+    }
+
+    /**
+     * 获取三方登录id
+     * @return
+     */
+    public String getUid(){
+        return (String) request.getSession().getAttribute("uid");
+    }
 }

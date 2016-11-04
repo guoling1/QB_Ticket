@@ -33,6 +33,26 @@ public class HySdkConstans {
 
 
     /**
+     *用户的账号
+     */
+    public static final String USERNAME;
+    /**
+     * 签名密钥
+     */
+    public static final String MAN;
+    /**
+     * 签名密钥
+     */
+    public static final String CHILD;
+    /**
+     * 签名密钥
+     */
+    public static final String PERSON;
+    /**
+     * 签名密钥
+     */
+    public static final String SIGN_KEY;
+    /**
      * 服务网关
      */
     public static final String SERVICE_GATEWAY_URL;
@@ -62,6 +82,12 @@ public class HySdkConstans {
      */
     public static final String ACCOUNT_CONTACT_QUERY;
 
+    /**
+     * 火车票保险网关服务地址
+     */
+    public static final String POLICY_GATEWAY_URL;
+
+
 
     static {
         final HySdkConfig hySdkConfig = getHySdkConfig();
@@ -73,6 +99,8 @@ public class HySdkConstans {
         Preconditions.checkState(!Strings.isNullOrEmpty(ORDER_PARTNER_ID), "订单帐号");
         ORDER_SIGN_KEY = hySdkConfig.orderSignKey();
         Preconditions.checkState(!Strings.isNullOrEmpty(ORDER_SIGN_KEY), "订单秘钥加载异常");
+        USERNAME = hySdkConfig.username();
+        Preconditions.checkState(!Strings.isNullOrEmpty(USERNAME), "用户的帐号");
         SUBMIT_TICKET_NOTIFY_URL = hySdkConfig.submitTicketNotifyUrl();
         CONFIRM_TICKET_NOTIFY_URL = hySdkConfig.confirmTicketNotifyUrl();
         REFUND_TICKET_NOTIFY_URL = hySdkConfig.refundTicketNotifyUrl();
@@ -82,7 +110,10 @@ public class HySdkConstans {
         Preconditions.checkState(!Strings.isNullOrEmpty(ACCOUNT_VALIDATE_URL), "12306账号验证异常");
         ACCOUNT_CONTACT_QUERY = hySdkConfig.accountContactQuery();
         Preconditions.checkState(!Strings.isNullOrEmpty(ACCOUNT_CONTACT_QUERY), "12306常用联系人异常");
-
+        MAN = hySdkConfig.man();
+        CHILD = hySdkConfig.child();
+        PERSON = hySdkConfig.person();
+        POLICY_GATEWAY_URL = hySdkConfig.policyGatewayUrl();
     }
 
     /**
@@ -103,6 +134,34 @@ public class HySdkConstans {
         @Key("third.channel.hy.query.partner.id")
         @DefaultValue("")
         String queryPartnerId();
+
+        /**
+         * 用户帐号
+         */
+        @Key("third.channel.hy.username")
+        @DefaultValue("")
+        String username();
+
+        /**
+         * 保险产品代码(20元 成人)
+         */
+        @Key("third.channel.hy.policy.man")
+        @DefaultValue("")
+        String man();
+
+        /**
+         * 保险产品代码(20元 儿童)
+         */
+        @Key("third.channel.hy.policy.child")
+        @DefaultValue("")
+        String child();
+
+        /**
+         * 保险产品代码(30元)
+         */
+        @Key("third.channel.hy.policy.person")
+        @DefaultValue("")
+        String person();
 
         /**
          * 查询签名秘钥
@@ -167,5 +226,12 @@ public class HySdkConstans {
         @Key("third.channel.hy.account.contact.query")
         @DefaultValue("")
         String accountContactQuery();
+
+        /**
+         *火车票保险网关服务地址
+         */
+        @Key("third.channel.hy.policy.gateway.url")
+        @DefaultValue("")
+        String policyGatewayUrl();
     }
 }

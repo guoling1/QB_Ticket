@@ -22,9 +22,9 @@ public class QueryTicketPriceController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/query", method = RequestMethod.POST)
-    public JSONObject query() throws Exception{
-        JSONObject responseJson = new JSONObject();
+    public void query() throws Exception{
 
+        JSONObject responseJson = new JSONObject();
         JSONObject requestJson = super.getRequestJsonParams();
         String partnerid = HySdkConstans.QUERY_PARTNER_ID;
         String method = "train_query";
@@ -34,6 +34,6 @@ public class QueryTicketPriceController extends BaseController {
         String purpose_codes = "ADULT";
         responseJson = this.queryTicketPriceService.queryTicket(partnerid, method, from_station, to_station, train_date, purpose_codes);
 
-        return responseJson;
+        returnJson(responseJson);
     }
 }
