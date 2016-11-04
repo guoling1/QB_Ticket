@@ -3,12 +3,26 @@
  */
 
 const state = {
-  openCtrl: false
+  ctrl: false,
+  scope: {
+    stationONE: {
+      station: '北京'
+    },
+    stationTWO: {
+      station: '深圳'
+    }
+  },
+  now: ''
 };
 
 const mutations = {
-  STATION_CTRL (state, n) {
-    state.openCtrl = n;
+  STATION_OPEN (state, obj) {
+    state.now = obj.name;
+    state.ctrl = obj.ctrl;
+  },
+  STATION_CLOSE (state, obj) {
+    state.ctrl = obj.ctrl;
+    state.scope[state.now].station = obj.station;
   }
 };
 
