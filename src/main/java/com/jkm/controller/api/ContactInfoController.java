@@ -2,6 +2,7 @@ package com.jkm.controller.api;
 
 import com.google.common.base.Preconditions;
 import com.jkm.controller.common.BaseController;
+import com.jkm.entity.BindCard;
 import com.jkm.entity.TbContactInfo;
 import com.jkm.service.ContactInfoService;
 import net.sf.json.JSONObject;
@@ -11,6 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/contactInfo")
@@ -126,4 +130,32 @@ public class ContactInfoController extends BaseController {
         }
         return responseJson;
     }
+
+    /**
+     * 联系人列表
+     * @return
+     * @throws IOException
+     */
+    @ResponseBody
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
+    public JSONObject list(){
+        JSONObject responseJson = new JSONObject();
+        try {
+            JSONObject requestJson = super.getRequestJsonParams();
+            Preconditions.checkNotNull(requestJson.get("uid"),"缺失参数uid");
+            String uid = requestJson.getString("uid");
+            log.info("联系人参数："+requestJson.toString());
+            List<TbContactInfo> list = contactInfoService.selectListByUid(uid);
+            responseJson.put("result", true);
+            responseJson.put("data",list);
+            responseJson.put("message", "调用成功");
+        }catch (Exception e){
+            log.info(e.getMessage());
+            responseJson.put("result", false);
+            responseJson.put("data",null);
+            responseJson.put("message", "调用失败");
+        }
+        return responseJson;
+    }
+
 }

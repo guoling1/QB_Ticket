@@ -127,4 +127,9 @@ public class ContactInfoServiceImpl implements ContactInfoService {
         return contactInfoDao.updateByPrimaryKeySelective(tbContactInfo);
     }
 
+    @Override
+    public List<TbContactInfo> selectListByUid(String uid) {
+        return this.contactInfoDao.selectListByUid(uid);
+    }
+
 }
