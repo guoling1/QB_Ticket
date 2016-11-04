@@ -22,7 +22,7 @@ public class QueryTicketNoPriceController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/query",method = RequestMethod.POST)
-    public JSONObject query() throws Exception {
+    public void query() throws Exception {
 
         JSONObject responseJson = new JSONObject();
         JSONObject requestJson = super.getRequestJsonParams();
@@ -37,6 +37,6 @@ public class QueryTicketNoPriceController extends BaseController {
         String purpose_codes = "ADULT";
         responseJson = this.queryTicketNoPriceService.queryTicket(partnerid, method, from_station, to_station, train_date, purpose_codes);
 
-        return responseJson;
+        returnJson(responseJson);
     }
 }
