@@ -12,7 +12,8 @@ public enum EnumPolicyOrderStatus {
     INIT(0, "初始化保险单"),
     POLICY_BUY_SUCCESS(1, "保险单购买成功"),
     POLICY_BUY_FAIL(2, "保险单购买失败"),
-    POLICY_RETURN(3, "保险单已撤销");
+    POLICY_RETURN_SUCCESS(3, "保险单退保成功"),
+    POLICY_RETURN_FAIL(4, "保险单退保失败");
 
     @Getter
     private int id;

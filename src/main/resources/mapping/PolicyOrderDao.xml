@@ -5,15 +5,38 @@
         INSERT INTO tb_policy_order
         (order_form_detail_id, ins_product_no, flight_date, flight_number, serial_no,
         contract_name, contract_type, gender, card_type, card_no, birthday, phone,
-        policy_no, print_no, apply_no, status)
+        policy_no, print_no, apply_no, remark, status)
         VALUES(
         #{orderFormDetailId},#{insProductNo},#{flightDate},#{flightNumber},#{serialNo},
         #{contractName},#{contractType},#{gender},#{cardType}, #{cardNo}, #{birthday},
-        #{phone}, #{policyNo}, #{printNo}, #{applyNo}, #{status}
+        #{phone}, #{policyNo}, #{printNo}, #{applyNo},#{remark}, #{status}
         )
     </insert>
     <update id="updateStatusById">
         UPDATE tb_policy_order
         SET status = #{status} WHERE id = #{id}
     </update>
+    <update id="update">
+        UPDATE tb_policy_order
+        SET order_form_detail_id =#{orderFormDetailId},
+        ins_product_no =#{insProductNo},
+        flight_date =#{flightDate},
+        flight_number =#{flightNumber},
+        serial_no =#{serialNo},
+        contract_name =#{contractName},
+        contract_type =#{contractType},
+        gender =#{gender},
+        card_type =#{cardType},
+        card_no =#{cardNo},
+        birthday =#{birthday},
+        phone =#{phone},
+        policy_no =#{policyNo},
+        print_no = #{printNo},
+        apply_no =#{applyNo}
+        remark =#{remark},
+        status =#{status} WHERE id = #{id}
+    </update>
+    <select id="selectByOrderFormDetailId" resultType="com.jkm.entity.PolicyOrder">
+        SELECT * FROM tb_policy_order WHERE order_form_detail_id = #{orderFormDetailId}
+    </select>
 </mapper>
