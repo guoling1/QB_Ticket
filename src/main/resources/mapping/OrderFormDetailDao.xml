@@ -65,8 +65,9 @@
         WHERE order_form_id = #{orderFormId}
     </update>
     <update id="updateStatusById">
-        UPDATE tb_order_form_detail
-        SET status = #{status}
+       UPDATE tb_order_form_detail
+        SET remark = #{remark},
+            status = #{status}
         WHERE id = #{id}
     </update>
 

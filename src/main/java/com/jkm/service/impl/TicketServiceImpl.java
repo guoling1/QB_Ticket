@@ -304,13 +304,14 @@ public class TicketServiceImpl implements TicketService {
         Preconditions.checkState(orderFormOptional.get().confirmTicketRequestSuccess(), "订单[" + orderId + "]状态不正确");
         final Optional<OrderForm> orderFormOptional1 = this.orderFormService.selectByIdWithLock(orderFormOptional.get().getId());
         final OrderForm orderForm = orderFormOptional1.get();
-        if ("Y".equals(isSuccess) && "100".equals(code)) {
+        if ("Y".equals(isSuccess)) {// && "100".equals(code)
             log.info("确认订单回调函数--出票成功");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_TICKET_SUCCESS.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_TICKET_SUCCESS.getValue());
             this.orderFormService.update(orderForm);
             this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_BUY_SUCCESS.getValue(),
                     EnumOrderFormDetailStatus.TICKET_BUY_SUCCESS.getId(), orderForm.getId());
+            this.policyOrderService.batchBuyPolicy(orderForm.getId());
         } else {
             log.info("确认订单回调函数--出票失败");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_TICKET_FAIL.getId());

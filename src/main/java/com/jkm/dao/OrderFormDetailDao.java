@@ -73,5 +73,5 @@ public interface OrderFormDetailDao {
      *
      * @param id
      */
-    void updateStatusById(@Param("id") long id, @Param("status") int status);
+    void updateStatusById(@Param("id") long id, @Param("status") int status, @Param("remark") String remark);
 }
