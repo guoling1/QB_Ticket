@@ -170,8 +170,7 @@ public class WebsiteController extends BaseController {
         JSONObject responseJson = new JSONObject();
         try {
             JSONObject requestJson = super.getRequestJsonParams();
-            Preconditions.checkNotNull(requestJson.get("uid"),"缺失参数uid");
-            String uid = requestJson.getString("uid");
+            String uid = super.getUid();
             websiteService.importContacts(uid);
             responseJson.put("result", true);
             responseJson.put("data",null);
