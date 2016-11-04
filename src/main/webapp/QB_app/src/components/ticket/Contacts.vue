@@ -35,6 +35,30 @@
     <div class="bottom">
       确定
     </div>
+    <div class="mask">
+      <div class="content">
+        <div class="sub">
+          <span class="del">删除联系人</span>
+          <span class="sev">保存</span>
+        </div>
+        <ul>
+          <li>
+            <label for="name">乘客姓名</label>
+            <input type="text" name="name" value="刘思思">
+          </li>
+          <li class="typeLi">
+            <label for="type">证件类型</label>
+            <input type="text" name="type" value="身份证">
+          </li><li>
+            <label for="typeID">证件号码</label>
+            <input type="text" name="typeID" value="1321251198904040652">
+          </li><li style="border:none">
+            <label for="name">乘客类型</label>
+            <input type="text" name="name" value="成人">
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 <script lang="babel">
@@ -148,5 +172,64 @@ ul{
   position: fixed;
   bottom: 0;
   left:0;
+}
+.mask{
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+
+  .content{
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background: #fff;
+    .sub{
+      padding: 8px 15px 0;
+      width: 100%;
+      height: 42.5px;
+      line-height:42.5px;
+
+      .del{
+        position: relative;
+        right: 140px;
+        font-size: 15px;
+        color: #b9b9b9;
+
+      }
+      .sev{
+        float: right;
+        font-size: 15px;
+        color: #4ab9f1;
+      }
+    }
+    ul{
+      padding-bottom: 22px;
+      li{
+        width: 100%;
+        height: 48px;
+        line-height: 48px;
+        font-size: 15px;
+        text-align: left;
+        padding:0 15px;
+        background: #fff;
+        border-bottom: 1px solid #ebebeb;
+
+        &.typeLi{
+          background: url("../../assets/prompt-arrow.png") no-repeat 96%;
+          background-size: 8px 11px;
+        }
+
+        input{
+          border: none;
+          color:#999;
+        }
+      }
+    }
+  }
 }
 </style>
