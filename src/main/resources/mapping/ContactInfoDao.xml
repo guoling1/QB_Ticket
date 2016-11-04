@@ -2,6 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.dao.ContactInfoDao">
 
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+        id,	uid,	birthday,	sex,	identy,	tel,	identy_type,	country,	check_status,	email,	address,	name,	person_type,	is_user_self,	province_name,	province_code,	school_code,	school_name,	student_no,	school_system,	preference_from_station_name,	preference_from_station_code,	preference_to_station_name,	preference_to_station_code,	enter_year,	status,	create_time,	update_time
+    </sql>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_contact_info
@@ -151,4 +155,11 @@
         </set>
         WHERE id = #{id}
     </update>
+
+    <!--根据uid查询列表-->
+    <select id="selectListByUid" resultType="com.jkm.entity.TbContactInfo" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List" />
+         FROM tb_contact_info WHERE uid = #{uid} and status=0
+    </select>
 </mapper>

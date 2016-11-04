@@ -111,4 +111,20 @@ public class BaseController {
         response.getWriter().close();
     }
 
+    /**
+     * 返回json格式数据
+     * @param data
+     * @throws IOException
+     */
+    public void returnJson(JSONObject data) throws IOException {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/json;charset=UTF-8");
+        response.setHeader("cache-control", "max-age=7200");
+        response.setHeader("pragma", "no-cache");
+        response.setDateHeader("expires", 0L);
+        response.getWriter().write(data.toString());
+        response.getWriter().flush();
+        response.getWriter().close();
+    }
+
 }

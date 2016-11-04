@@ -83,4 +83,11 @@ public interface ContactInfoService {
      * @return
      */
     int updateByPrimaryKeySelective(TbContactInfo tbContactInfo);
+
+    /**
+     * 根据uid查询用户列表
+     * @param uid
+     * @return
+     */
+    List<TbContactInfo> selectListByUid(String uid);
 }

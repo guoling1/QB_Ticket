@@ -77,4 +77,11 @@ public interface ContactInfoDao {
      * @return
      */
     int updateByPrimaryKeySelective(TbContactInfo contactInfo);
+
+    /**
+     * 根据uid查询用户信息
+     * @param uid
+     * @return
+     */
+    List<TbContactInfo> selectListByUid(@Param("uid") String uid);
 }
