@@ -2,6 +2,7 @@ package com.jkm.entity;
 
 import com.jkm.enums.EnumReturnMoneyOrderStatus;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Date;
  * {@link EnumReturnMoneyOrderStatus}
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class ReturnMoneyOrder extends BaseEntity{
 
     /**
@@ -21,7 +23,7 @@ public class ReturnMoneyOrder extends BaseEntity{
      */
     private long orderFormDetailId;
     /**
-     * 大订单支付流水号
+     * 大订单支付流水号 *
      */
     private String  orderFormSn;
     /**
@@ -29,17 +31,17 @@ public class ReturnMoneyOrder extends BaseEntity{
      */
     private String  remark;
     /**
-     * 实际退款总金额
+     * 原商户订单日期(订单购买成功时间) *
+     */
+    private Date orgDate;
+    /**
+     * 实际退款总金额 *
      */
     private BigDecimal returnTotalMoney;
     /**
-     * 原订单金额
+     * 原订单金额 *
      */
     private BigDecimal orgMoney;
-    /**
-     * 原商户订单日期(订单购买成功时间)
-     */
-    private Date orgDate;
     /**
      * 乘客票款实退金额
      */

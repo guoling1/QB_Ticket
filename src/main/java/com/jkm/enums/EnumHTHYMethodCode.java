@@ -17,7 +17,13 @@ public enum EnumHTHYMethodCode {
 
     QUERY_ORDER_FORM(4, "return_ticket", "查询订单"),
 
-    RETURN_TICKET(5, "return_ticket", "线上退票");
+    RETURN_TICKET(5, "return_ticket", "线上退票"),
+
+    POST_POLICY_ORDER(6, "PostPolicyOrder", "提交保险单"),
+
+    CANCEL_POLICY_ORDER(7 , "CancelPolicyOrder", "撤消保险单"),
+
+    QUERY_POLICY_ORDER(8, "QueryPolicyOrder", "查询投保单状态");
 
     @Getter
     private int id;

@@ -17,5 +17,18 @@ public interface PolicyOrderDao {
     /**
      * 更新保单状态
      */
-    void updateStatusById(@Param("status") int status, @Param("id") long id);
+    void updateStatusById(@Param("id") long id ,@Param("status") int status);
+
+    /**
+     *
+     * @param orderFormDetailId
+     * @return
+     */
+    PolicyOrder selectByOrderFormDetailId(@Param("orderFormDetailId") long orderFormDetailId);
+
+    /**
+     *
+     * @param input
+     */
+    void update(PolicyOrder input);
 }

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -228,17 +229,20 @@ public class HySdkServiceImpl implements HySdkService{
      * @return
      */
     @Override
-    public JSONObject postPolicyOrder(HyPostPolicyOrderRequest request) {
-        JSONObject jsonObject = null;
+    public JSONArray postPolicyOrder(HyPostPolicyOrderRequest request) {
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        String sign = null;
         try {
-            String sign = MD5Util.MD5(request.getUsername() + request.getMethod() + request.getReqtime() + MD5Util.MD5(HySdkConstans.SIGN_KEY));
-            jsonObject = new JSONObject();
+            sign = MD5Util.MD5(request.getUsername() + request.getMethod() + request.getReqtime() + MD5Util.MD5(HySdkConstans.SIGN_KEY));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        jsonObject.put("sign", sign);
+        jsonObject.put("username", request.getUsername());
+        jsonObject.put("reqtime", request.getReqtime());
+        jsonObject.put("method", request.getMethod());
             JSONObject jo = new JSONObject();
-            JSONArray jsonArray = new JSONArray();
-            jsonObject.put("sign", sign);
-            jsonObject.put("username", request.getUsername());
-            jsonObject.put("reqtime", request.getReqtime());
-            jsonObject.put("method", request.getMethod());
             //=====================================================
             jo.put("InsProductNo", request.getInsProductNo());// 保险产品代码
             jo.put("FlightDate", request.getFlightDate());// 航班日期 String(yyyy-MM-dd)
@@ -252,16 +256,12 @@ public class HySdkServiceImpl implements HySdkService{
             jo.put("Birthday", request.getBirthday());// 出生日期 String (yyyy-MM-dd)
             jo.put("Phone", request.getPhone());// 联系电话
             jsonArray.add(jo);
-            jsonObject.put("data", jsonArray);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        jsonObject.put("data", jsonArray);
         final StopWatch stopWatch = new StopWatch();
-        final JSONObject json = requestImpl(jsonObject, HySdkConstans.SERVICE_GATEWAY_URL, request.getSerialNo(), request.getMethod(), stopWatch);
-        this.postHandle(request.getSerialNo(),
-                request.getMethod(),
-                json.getInt("code"),
+        final JSONArray json = requestImplToArray(jsonObject, HySdkConstans.POLICY_GATEWAY_URL, "", EnumHTHYMethodCode.POST_POLICY_ORDER.getCode(), stopWatch);
+        this.postHandle("",
+                EnumHTHYMethodCode.POST_POLICY_ORDER.getCode(),
+                0,
                 json.toString(),
                 json.toString(),
                 stopWatch.getTime());
@@ -291,7 +291,7 @@ public class HySdkServiceImpl implements HySdkService{
             e.printStackTrace();
         }
         final StopWatch stopWatch = new StopWatch();
-        final JSONObject json = requestImpl(jsonObject, HySdkConstans.SERVICE_GATEWAY_URL, request.getPolicyNo(), request.getMethod(), stopWatch);
+        final JSONObject json = requestImpl(jsonObject,  HySdkConstans.POLICY_GATEWAY_URL, request.getPolicyNo(), request.getMethod(), stopWatch);
         this.postHandle(request.getPolicyNo(),
                 request.getMethod(),
                 json.getInt("code"),
@@ -331,6 +331,23 @@ public class HySdkServiceImpl implements HySdkService{
         stopWatch.start();
         try {
            final JSONObject json = HttpMethod.httpClient(jsonObject, requestUrl);
+            stopWatch.stop();
+            return json;
+        } catch (final Throwable e) {
+            this.postHandle(orderId, method ,0,jsonObject.toString(),"error",stopWatch.getTime());
+            stopWatch.stop();
+            throw e;
+        }
+    }
+
+    private JSONArray requestImplToArray(final JSONObject jsonObject,
+                                   final String requestUrl,
+                                   final String orderId,
+                                   final String method,
+                                   final StopWatch stopWatch) {
+        stopWatch.start();
+        try {
+            final JSONArray json = HttpMethod.httpClientToArray(jsonObject, requestUrl);
             stopWatch.stop();
             return json;
         } catch (final Throwable e) {
