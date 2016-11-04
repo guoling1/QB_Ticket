@@ -17,14 +17,16 @@
             <span class="time">7小时25分</span>
           </div>
           <div class="topMiddle">
-            <div class="midTop">
-              <span class="form">北京西</span>
+            <div class="form">
+              <span class="static">北京西</span>
+              <span class="formTime">19:24</span>
+            </div>
+            <div class="line">
               <span class="icon"></span>
               <img src="../../assets/jiantou.png" alt="" />
-              <span class="to">深圳</span>
             </div>
-            <div class="midBottom">
-              <span class="fromTime">19:24</span>
+            <div class="to">
+              <span class="static">深圳</span>
               <span class="toTime">14:00</span>
             </div>
           </div>
@@ -46,14 +48,16 @@
             <span class="time">7小时25分</span>
           </div>
           <div class="topMiddle">
-            <div class="midTop">
-              <span class="form">北京西</span>
+            <div class="form">
+              <span class="static">北京西</span>
+              <span class="formTime">19:24</span>
+            </div>
+            <div class="line">
               <span class="icon"></span>
               <img src="../../assets/jiantou.png" alt="" />
-              <span class="to">深圳</span>
             </div>
-            <div class="midBottom">
-              <span class="fromTime">19:24</span>
+            <div class="to">
+              <span class="static">深圳</span>
               <span class="toTime">14:00</span>
             </div>
           </div>
@@ -162,6 +166,7 @@
         .checi{
           float: left;
           font-size: 22px;
+          font-weight: bold;
         }
 
         .topRight{
@@ -173,60 +178,72 @@
           p{
             color: #f14242;
             font-size: 14px;
+            font-weight: bold;
             span{
               font-size: 10px;
               color: #f14242;
+              font-weight: normal;
             }
           }
           >span{
             color: #999;
             font-size: 12px;
-            position: relative;
-            top:-8px;
-            left: 0;
+
           }
         }
         .topMiddle{
           margin:0 auto;
           height: 34px;
-          .midTop{
-            height: 16px;
-            position: relative;
-            top:-10px;
-            margin-bottom: 7px;
-            span{
-              font-size: 16px;
-              display: inline-block;;
-              &.icon{
-                vertical-align: middle;
-                width: 24px;
-                border-bottom: 2px solid #000;
-                position: relative;
-                left: 4px;
-              }
+          width: 138px;
 
+          .form{
+            float: left;
+            font-size: 16px;
+            width: 50px;
+            height: 34px;
+            line-height: 17px;
+            .static{
+              font-weight: bold;
+            }
+            .formTime{
+              font-size: 12px;
+              color: #999;
+              position: relative;
+              top: 4px;
+            }
+          }
+          .line{
+            float: left;
+            position: relative;
+            left: 10px;
+
+            .icon{
+              overflow: hidden;
+              display: inline-block;
+              vertical-align: 10px;
+              border-bottom: 2px solid #000;
+              width: 24px;
             }
             img{
-              //float: left;
-              position: relative;
-              top:-5px;
-              left: -7px;
+             position: relative;
+              top: -12px;
+              left: -11px;
             }
-
           }
-          .midBottom{
-            margin:0 auto;
-            position: relative;
-            top:-10px;
-            width: 233px;
-            height: 17px;
-            span{
-              display: inline-block;
-              color: #999;
+          .to{
+            float: right;
+            font-size: 16px;
+            width: 50px;
+            height: 34px;
+            line-height: 17px;
+            .static{
+              font-weight: bold;
+            }
+            .toTime{
               font-size: 12px;
-              &.fromTime{
-                margin-right: 60px;
-              }
+              color: #999;
+              position: relative;
+              top: 4px;
             }
           }
 

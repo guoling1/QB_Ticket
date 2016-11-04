@@ -49,7 +49,9 @@
       </div>
       <div class="space no-padding">
         <div class="handle">
-          <div class="btn">添加/编辑乘客</div>
+          <router-link class="btn" to="/ticket/contacts">
+            添加/编辑乘客
+          </router-link>
           <div class="line"></div>
           <div class="btn">添加儿童</div>
         </div>
