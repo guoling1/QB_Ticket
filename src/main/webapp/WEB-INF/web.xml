@@ -122,8 +122,4 @@
         <servlet-name>default</servlet-name>
         <url-pattern>*.xml</url-pattern>
     </servlet-mapping>
-    <error-page>
-        <error-code>404</error-code>
-        <location>/</location>
-    </error-page>
 </web-app>
