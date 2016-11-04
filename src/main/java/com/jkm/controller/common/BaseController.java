@@ -23,6 +23,7 @@ public class BaseController {
     protected HttpServletRequest request;
     protected HttpServletResponse response;
     protected JSONObject RequestJsonParams;
+    protected String uid;
     /**
      * @param binder
      * @throws Exception
@@ -61,8 +62,10 @@ public class BaseController {
                 JSONObject jo = JSONObject.fromObject(body.toString());
                 RequestJsonParams = jo;
                 if(jo.get("uid")!=null&&jo.get("appid")!=null){
-                    request.getSession().setAttribute("uid", jo.getString("uid")+"_"+jo.getString("appid"));
+//                    request.getSession().setAttribute("uid", jo.getString("uid")+"_"+jo.getString("appid"));
+                    uid = jo.getString("uid")+"_"+jo.getString("appid");
                 }
+
             }
         }
     }
@@ -137,6 +140,7 @@ public class BaseController {
      * @return
      */
     public String getUid(){
-        return (String) request.getSession().getAttribute("uid");
+//        return (String) request.getSession().getAttribute("uid");
+        return uid;
     }
 }

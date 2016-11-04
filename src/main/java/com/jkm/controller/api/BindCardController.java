@@ -32,6 +32,7 @@ public class BindCardController extends BaseController {
         JSONObject responseJson = new JSONObject();
         try{
             JSONObject requestJson = super.getRequestJsonParams();
+            requestJson.put("uid",super.getUid());
             log.info("银行卡参数："+requestJson.toString());
             JSONObject jo = bindCardService.insertSelective((BindCard)JSONObject.toBean(requestJson));
             if(jo.getBoolean("success")){
@@ -63,8 +64,7 @@ public class BindCardController extends BaseController {
         JSONObject responseJson = new JSONObject();
         try {
             JSONObject requestJson = super.getRequestJsonParams();
-            Preconditions.checkNotNull(requestJson.get("uid"),"缺失参数uid");
-            String uid = requestJson.getString("uid");
+            String uid = super.getUid();
             log.info("银行卡参数："+requestJson.toString());
             List<BindCard> list = bindCardService.selectByUid(uid);
             responseJson.put("result", true);
