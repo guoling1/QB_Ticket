@@ -9,6 +9,8 @@ import com.jkm.service.hy.entity.HySubmitOrderResponse;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import java.util.List;
+
 /**
  * Created by yuxiang on 2016-11-01.
  */
@@ -58,7 +60,7 @@ public interface HySdkService {
     /**
      * 提交保险单
      */
-    JSONObject postPolicyOrder(final HyPostPolicyOrderRequest request);
+    JSONArray postPolicyOrder(final HyPostPolicyOrderRequest request);
 
     /**
      * 撤消保险订单

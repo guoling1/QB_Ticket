@@ -123,8 +123,14 @@ public class TicketController extends BaseController{
 
         try{
             Pair<Boolean,String> pair = this.ticketService.refund(req.getOrderFormDetailId());
+            if(pair.getLeft()){
+                result.setCode(0);
+                result.setMessage(pair.getRight());
+            }else{
+                result.setCode(-2);
+                result.setMessage(pair.getRight());
+            }
         }catch(final Throwable throwable){
-
             result.setCode(-1);
             result.setMessage("退票失败");
         }

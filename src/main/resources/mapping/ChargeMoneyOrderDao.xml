@@ -3,9 +3,9 @@
 <mapper namespace="com.jkm.dao.ChargeMoneyOrderDao">
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_charge_money_order
-        (order_form_id, total_amount, buy_ticket_package, grab_ticket_package
+        (order_form_id, total_amount, buy_ticket_package, grab_ticket_package , status
         )VALUES(
-        #{orderFormId}, #{totalAmount}, #{buyTicketPackage}, #{grabTicketPackage}
+        #{orderFormId}, #{totalAmount}, #{buyTicketPackage}, #{grabTicketPackage} , #{status}
         )
     </insert>
 </mapper>

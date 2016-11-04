@@ -2,6 +2,7 @@ package com.jkm.entity;
 
 import com.jkm.enums.EnumPolicyOrderStatus;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
@@ -12,6 +13,7 @@ import java.util.Date;
  * 保险单
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class PolicyOrder extends BaseEntity {
 
     /**
@@ -27,7 +29,7 @@ public class PolicyOrder extends BaseEntity {
      *航班日期（列车开车时间）
      *(yyyy-MM-dd HH:mm:ss)
      */
-    private Date flightDate;
+    private String flightDate;
     /**
      *航班号（车次）
      */
@@ -77,4 +79,8 @@ public class PolicyOrder extends BaseEntity {
      *保单号
      */
     private String applyNo;
+    /**
+     * 备注
+     */
+    private String remark;
 }
