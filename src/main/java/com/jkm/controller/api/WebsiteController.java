@@ -138,7 +138,7 @@ public class WebsiteController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/addWebSite", method = RequestMethod.POST)
-    public void addWebSite() throws Exception {
+    public JSONObject addWebSite() throws Exception {
         JSONObject responseJson = new JSONObject();
         JSONObject requestJson = super.getRequestJsonParams();
         Preconditions.checkNotNull(requestJson.get("data"),"缺失参数data");
@@ -157,7 +157,7 @@ public class WebsiteController extends BaseController {
             responseJson.put("data", null);
             responseJson.put("message", "登录失败");
         }
-        returnJson(responseJson);
+        return responseJson;
     }
     /**
      * 导入12306联系人
