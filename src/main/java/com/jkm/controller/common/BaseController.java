@@ -41,26 +41,6 @@ public class BaseController {
     public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException {
         this.request = request;
         this.response = response;
-        if ("POST".equals(request.getMethod())) {
-            String line = "";
-            StringBuilder body = new StringBuilder();
-            int counter = 0;
-            InputStream stream;
-            stream = request.getInputStream();
-            //读取POST提交的数据内容
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream,"utf-8"));
-            while ((line = reader.readLine()) != null) {
-                if(counter > 0){
-                    body.append("\r\n");
-                }
-                body.append(line);
-                counter++;
-            }
-            JSONObject jo = JSONObject.fromObject(body.toString());
-            if(jo.get("uid")!=null&&jo.get("appid")!=null){
-                request.getSession().setAttribute("uid", jo.getString("appid")+"_"+jo.getString("uid"));
-            }
-        }
     }
 
     /**
@@ -86,9 +66,13 @@ public class BaseController {
             body.append(line);
             counter++;
         }
-        JSONObject jo = JSONObject.fromObject(body.toString());
-        logger.info("请求参数为："+jo.toString());
-        return  jo;
+        if(!"".equals(body)){
+            JSONObject jo = JSONObject.fromObject(body.toString());
+            logger.info("请求参数为："+jo.toString());
+            return  jo;
+        }else{
+            return null;
+        }
     }
 
     /**
