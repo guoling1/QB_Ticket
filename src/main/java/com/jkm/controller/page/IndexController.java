@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
-@RequestMapping(value = "")
+@RequestMapping(value = "*")
 public class IndexController extends BaseController {
     /**
      * 全局首页跳转
@@ -14,7 +14,7 @@ public class IndexController extends BaseController {
      * @return
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String fastPayPage() {
+    public String index() {
         return "index.html";
     }
 }
