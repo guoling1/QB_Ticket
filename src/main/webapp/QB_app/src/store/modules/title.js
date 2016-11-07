@@ -13,8 +13,9 @@ const state = {
     'ticketOrder': '我的订单',
     'ticketSubmitOrder': '提交订单',
     'ticketSureOrder': '确认订单',
-    'ticketTrain':'北京 → 深圳',
-    'ticketContacts':'常用联系人'
+    'ticketTrain': '北京 → 深圳',
+    'ticketContacts': '常用联系人',
+    'ticketLogin': '12306登录'
   }
 };
 
