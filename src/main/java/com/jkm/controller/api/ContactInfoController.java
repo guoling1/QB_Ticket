@@ -33,7 +33,7 @@ public class ContactInfoController extends BaseController {
         JSONObject responseJson = new JSONObject();
         try{
             JSONObject requestJson = super.getRequestJsonParams();
-            requestJson.put("uid",super.getUid());
+            requestJson.put("uid",super.getUid(requestJson.getString("appid"),requestJson.getString("uid")));
             log.info("联系人参数："+requestJson.toString());
             JSONObject jo = contactInfoService.insert((TbContactInfo)JSONObject.toBean(requestJson));
             if(jo.getBoolean("success")){
@@ -143,7 +143,7 @@ public class ContactInfoController extends BaseController {
         JSONObject responseJson = new JSONObject();
         try {
             JSONObject requestJson = super.getRequestJsonParams();
-            String uid = super.getUid();
+            String uid = super.getUid(requestJson.getString("appid"),requestJson.getString("uid"));
             log.info("联系人参数："+requestJson.toString());
             List<TbContactInfo> list = contactInfoService.selectListByUid(uid);
             responseJson.put("result", true);

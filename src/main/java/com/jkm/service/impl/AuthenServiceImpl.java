@@ -1,5 +1,10 @@
 package com.jkm.service.impl;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.jkm.entity.OrderForm;
+import com.jkm.entity.PayResultRecord;
+import com.jkm.entity.RefundResultRecord;
 import com.jkm.entity.fusion.*;
 import com.jkm.entity.fusion.body.RequestBody100003;
 import com.jkm.entity.fusion.body.RequestBody100004;
@@ -8,8 +13,8 @@ import com.jkm.entity.fusion.detail.RequestDetail100003;
 import com.jkm.entity.fusion.detail.RequestDetail100004;
 import com.jkm.entity.fusion.detail.RequestDetail100005;
 import com.jkm.entity.fusion.head.RequestHead;
-import com.jkm.service.AuthenService;
-import com.jkm.service.SignatureService;
+import com.jkm.enums.EnumOrderFormStatus;
+import com.jkm.service.*;
 import com.jkm.util.SnGenerator;
 import com.jkm.util.fusion.*;
 import net.sf.json.JSONObject;
@@ -19,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +37,14 @@ public class AuthenServiceImpl implements AuthenService {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private SignatureService signatureService;
+	@Autowired
+	private PayResultRecordService payResultRecordService;
+	@Autowired
+	private RefundResultRecordService refundResultRecordService;
+	@Autowired
+	private OrderFormService orderFormService;
+	@Autowired
+	private TicketService ticketService;
 
 	/**
 	 * 快捷支付
@@ -84,10 +98,28 @@ public class AuthenServiceImpl implements AuthenService {
 					ret.put("retMsg", response100005.getInfo().getErrMsg());
 					ret.put("retData",jo);
 //					ret.put("retXml", response2);
+					PayResultRecord payResultRecord = new PayResultRecord();
+					payResultRecord.setStatus(0);
+					payResultRecord.setAmount(request100005.getBody().getTransDetail().getAMOUNT());
+					payResultRecord.setPayChannel("fastpay");
+					payResultRecord.setPayParams(xml);
+					payResultRecord.setPayResult("1");
+					payResultRecord.setReqSn(request100005.getInfo().getReqSn());
+					payResultRecord.setResultParams(response100005.toString());
+					payResultRecordService.insertSelective(payResultRecord);
 				} else {
 					ret.put("retCode", false);
 					ret.put("retMsg", response100005.getInfo().getErrMsg());
 //					ret.put("retXml", response2);
+					PayResultRecord payResultRecord = new PayResultRecord();
+					payResultRecord.setStatus(0);
+					payResultRecord.setAmount(request100005.getBody().getTransDetail().getAMOUNT());
+					payResultRecord.setPayChannel("fastpay");
+					payResultRecord.setPayParams(xml);
+					payResultRecord.setPayResult("2");
+					payResultRecord.setReqSn(request100005.getInfo().getReqSn());
+					payResultRecord.setResultParams(response100005.toString());
+					payResultRecordService.insertSelective(payResultRecord);
 				}
 			} else {
 				ret.put("retCode", false);
@@ -193,11 +225,30 @@ public class AuthenServiceImpl implements AuthenService {
 					ret.put("retMsg", response100003.getInfo().getErrMsg());
 					ret.put("retData", jo);
 //					ret.put("retXml", response2);
+
+					RefundResultRecord refundResultRecord = new RefundResultRecord();
+					refundResultRecord.setStatus(0);
+					refundResultRecord.setAmount(request100003.getBody().getTransDetail().getREFUND_AMOUNT());
+					refundResultRecord.setRefundChannel("fastpay");
+					refundResultRecord.setRefundParams(xml);
+					refundResultRecord.setRefundResult("1");
+					refundResultRecord.setReqSn(request100003.getInfo().getReqSn());
+					refundResultRecord.setResultParams(response100003.toString());
+					refundResultRecordService.insertSelective(refundResultRecord);
 				} else {
 					ret.put("retCode", false);
 					ret.put("retMsg", response100003.getInfo().getErrMsg());
 					ret.put("retData", null);
 //					ret.put("retXml", response2);
+					RefundResultRecord refundResultRecord = new RefundResultRecord();
+					refundResultRecord.setStatus(0);
+					refundResultRecord.setAmount(request100003.getBody().getTransDetail().getREFUND_AMOUNT());
+					refundResultRecord.setRefundChannel("fastpay");
+					refundResultRecord.setRefundParams(xml);
+					refundResultRecord.setRefundResult("2");
+					refundResultRecord.setReqSn(request100003.getInfo().getReqSn());
+					refundResultRecord.setResultParams(response100003.toString());
+					refundResultRecordService.insertSelective(refundResultRecord);
 				}
 			} else {
 				ret.put("retCode", false);
@@ -303,6 +354,8 @@ public class AuthenServiceImpl implements AuthenService {
 		}
 		return ret;
 	}
+
+
 	private Request100004 createCardAuth(CardAuthData requestData) {
 		Request100004 cardAuth = new Request100004();
 		RequestHead head = new RequestHead();
@@ -330,5 +383,30 @@ public class AuthenServiceImpl implements AuthenService {
 		cardAuth.setBody(body);
 		cardAuth.setInfo(head);
 		return cardAuth;
+	}
+
+	@Override
+	public Map<String, Object> toPay(JSONObject requestData) {
+		JSONObject jo = new JSONObject();
+		Optional<OrderForm>  orderFormOptional = orderFormService.selectById(requestData.getLong("orderId"));
+		Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + orderFormOptional.get().getId() + "]不存在");
+		BigDecimal amount = orderFormOptional.get().getTotalPrice();
+		AuthenData authenData = new AuthenData();
+		authenData.setAmount(amount+"");
+		authenData.setPhoneNo(requestData.getString("phoneNo"));
+		authenData.setCrdNo(requestData.getString("crdNo"));
+		authenData.setCapCrdNm(requestData.getString("capCrdNm"));
+		authenData.setIdNo(requestData.getString("idNo"));
+		Map<String, Object> result = new HashMap<String, Object>();
+		orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId());
+		orderFormService.updateStatus(orderFormOptional.get());
+		Map<String, Object> ret = this.fastPay(authenData);
+		if(ret.get("retCode")==true){//支付成功
+			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),ret.get("reqSn").toString(),true);
+		}else{//支付失败
+			orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId());
+			orderFormService.updateStatus(orderFormOptional.get());
+		}
+		return ret;
 	}
 }

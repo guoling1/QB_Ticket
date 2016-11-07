@@ -48,4 +48,16 @@ public class UserInfoServiceImpl implements UserInfoService {
     public int updateByPrimaryKey(UserInfo record) {
         return userInfoDao.updateByPrimaryKey(record);
     }
+
+    @Override
+    public void insertUser(String uid) {
+        UserInfo userInfo = userInfoDao.selectByUid(uid);
+        if(userInfo==null){
+            UserInfo u = new UserInfo();
+            u.setAppId(uid.split("_")[0]);
+            u.setUid(uid);
+            u.setStatus(0);
+            userInfoDao.insert(u);
+        }
+    }
 }

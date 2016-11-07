@@ -73,4 +73,12 @@ public interface OrderFormService {
      */
     Optional<OrderForm> selectByReqSn(String reqSn);
 
+    /**
+     * 更新订单状态
+     *
+     * @param orderForm
+     * @return
+     */
+    int updateStatus(OrderForm orderForm);
+
 }

@@ -1,5 +1,6 @@
 package com.jkm.controller.common;
 
+import com.google.common.base.Preconditions;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -22,7 +23,6 @@ public class BaseController {
     private static Logger logger = Logger.getLogger(BaseController.class);
     protected HttpServletRequest request;
     protected HttpServletResponse response;
-    protected JSONObject RequestJsonParams;
     protected String uid;
     /**
      * @param binder
@@ -43,31 +43,7 @@ public class BaseController {
     public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException {
         this.request = request;
         this.response = response;
-        if("POST".equals(request.getMethod())){
-            String line = "";
-            StringBuilder body = new StringBuilder();
-            int counter = 0;
-            InputStream stream;
-            stream = request.getInputStream();
-            //读取POST提交的数据内容
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream,"utf-8"));
-            while ((line = reader.readLine()) != null) {
-                if(counter > 0){
-                    body.append("\r\n");
-                }
-                body.append(line);
-                counter++;
-            }
-            if(!"".equals(body.toString())){
-                JSONObject jo = JSONObject.fromObject(body.toString());
-                RequestJsonParams = jo;
-                if(jo.get("uid")!=null&&jo.get("appid")!=null){
-//                    request.getSession().setAttribute("uid", jo.getString("uid")+"_"+jo.getString("appid"));
-                    uid = jo.getString("uid")+"_"+jo.getString("appid");
-                }
 
-            }
-        }
     }
 
     /**
@@ -76,7 +52,30 @@ public class BaseController {
      * @throws IOException
      */
     protected JSONObject getRequestJsonParams() throws IOException {
-        return RequestJsonParams;
+        if (request == null) {
+            return null;
+        }
+        String line = "";
+        StringBuilder body = new StringBuilder();
+        int counter = 0;
+        InputStream stream;
+        stream = request.getInputStream();
+        //读取POST提交的数据内容
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream,"utf-8"));
+        while ((line = reader.readLine()) != null) {
+            if(counter > 0){
+                body.append("\r\n");
+            }
+            body.append(line);
+            counter++;
+        }
+        if(!"".equals(body)){
+            JSONObject jo = JSONObject.fromObject(body.toString());
+            logger.info("请求参数为："+jo.toString());
+            return  jo;
+        }else{
+            return null;
+        }
     }
 
     /**
@@ -139,8 +138,9 @@ public class BaseController {
      * 获取三方登录id
      * @return
      */
-    public String getUid(){
-//        return (String) request.getSession().getAttribute("uid");
-        return uid;
+    public String getUid(String appid,String uid){
+        Preconditions.checkNotNull(appid,"缺失参数appid");
+        Preconditions.checkNotNull(uid,"缺失参数uid");
+        return appid+"_"+uid;
     }
 }
