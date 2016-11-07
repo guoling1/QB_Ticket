@@ -23,7 +23,6 @@ public class BaseController {
     private static Logger logger = Logger.getLogger(BaseController.class);
     protected HttpServletRequest request;
     protected HttpServletResponse response;
-    protected JSONObject RequestJsonParams;
     protected String uid;
     /**
      * @param binder
