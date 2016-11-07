@@ -70,12 +70,7 @@ public class TicketController extends BaseController{
     @RequestMapping(value = "/submitOrder", method = RequestMethod.POST)
     public ResponseEntityBase<ResponseSubmitOrder> submitOrder(@RequestBody final RequestSubmitOrder request) {
         final ResponseEntityBase<ResponseSubmitOrder> results = new ResponseEntityBase<>();
-//        final RequestSubmitOrder.Passenger passenger = request.new Passenger();
-//        passenger.setId(2);
-//        passenger.setPiaoType("1");
-//        final ArrayList<RequestSubmitOrder.Passenger> passengers = new ArrayList<>();
-//        passengers.add(passenger);
-//        request.setPassengers(passengers);
+        request.setUid(super.getUid(request.getAppId(), request.getUid()));
         final Triple<Boolean, String, Long> submitOrderResult = this.ticketService.submitOrder(request);
         final ResponseSubmitOrder responseBookTicket = new ResponseSubmitOrder();
         if (submitOrderResult.getLeft()) {

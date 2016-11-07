@@ -11,7 +11,6 @@ import com.jkm.service.ys.helper.YsSdkSignUtil;
 import com.jkm.service.ys.helper.serialize.YsSdkSerializeUtil;
 import com.jkm.util.JsonUtil;
 import com.jkm.util.http.client.HttpClientFacade;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,6 @@ import java.util.Map;
 /**
  * Created by yuxiang on 2016-09-29.
  */
-@Slf4j
 @Service
 public class YsSdkServiceImpl implements YsSdkService {
 

@@ -1,6 +1,6 @@
 package com.jkm.util.reactor;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.log4j.Logger;
 import reactor.event.Event;
 import reactor.function.Consumer;
 
@@ -8,8 +8,9 @@ import reactor.function.Consumer;
  * Created by hutao on 15/7/10.
  * 下午7:09
  */
-@Slf4j
 public abstract class AbstractTaskProcessor<T extends TaskEvent> implements Consumer<Event<T>> {
+
+    private static Logger log = Logger.getLogger(TaskReactor.class);
     /**
      * 模版方法，适配接口
      *
