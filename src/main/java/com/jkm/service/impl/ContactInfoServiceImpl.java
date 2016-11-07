@@ -101,6 +101,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
             jo.put("result",false);
             jo.put("message","已有此乘客信息，不能重复添加");
         }else{
+            contactInfoDao.insert(tbContactInfo);
             jo.put("result",true);
             jo.put("data",count);
             jo.put("message","绑定成功");
