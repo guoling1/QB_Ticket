@@ -9,6 +9,7 @@ const state = {
     'ticketReserve': '车票预定',
     'ticketRob': '抢票',
     'ticketRobOrder': '确认订单',
+    'ticketRobDetail': '抢票详情',
     'ticketPrivate': '私人定制',
     'ticketOrder': '我的订单',
     'ticketSubmitOrder': '提交订单',
