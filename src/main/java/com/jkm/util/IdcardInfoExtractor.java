@@ -186,7 +186,7 @@ public class IdcardInfoExtractor {
     }
 
     public static void main(String[] args) {
-        String idcard = "411082198805113634";
+        String idcard = "411085498605163658";
         IdcardInfoExtractor ie = new IdcardInfoExtractor(idcard);
         System.out.println(ie.toString());
     }
