@@ -45,3 +45,4 @@
 [INFO] [2016-11-07 17:11:18][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"SZQ","train_date":"2016-12-06"}
 [INFO] [2016-11-07 17:24:05][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"SZQ","train_date":"2016-12-06"}
 [INFO] [2016-11-07 17:25:07][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"SZQ","train_date":"2016-12-06"}
+[INFO] [2016-11-07 17:27:24][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"SZQ","train_date":"2016-12-06"}
