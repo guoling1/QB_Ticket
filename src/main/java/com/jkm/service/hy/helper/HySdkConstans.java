@@ -49,9 +49,9 @@ public class HySdkConstans {
      */
     public static final String PERSON;
     /**
-     * 签名密钥
+     * 保险签名密钥
      */
-    public static final String SIGN_KEY;
+    public static final String POLICY_SIGN_KEY;
     /**
      * 服务网关
      */
@@ -114,6 +114,7 @@ public class HySdkConstans {
         CHILD = hySdkConfig.child();
         PERSON = hySdkConfig.person();
         POLICY_GATEWAY_URL = hySdkConfig.policyGatewayUrl();
+        POLICY_SIGN_KEY = hySdkConfig.policySignKey();
     }
 
     /**
@@ -183,6 +184,13 @@ public class HySdkConstans {
         @Key("third.channel.hy.order.sign.key")
         @DefaultValue("")
         String orderSignKey();
+
+        /**
+         * 保险签名秘钥
+         */
+        @Key("third.channel.hy.policy.sign.key")
+        @DefaultValue("")
+        String policySignKey();
 
         /**
          * 占座回调url

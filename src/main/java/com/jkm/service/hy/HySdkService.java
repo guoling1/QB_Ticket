@@ -72,4 +72,8 @@ public interface HySdkService {
      */
     JSONObject queryPolicyOrder(final HyQueryPolicyOrderRequest request);
 
+    /**
+     * 航天华有抢票下单
+     */
+    JSONObject grabTickets(final JSONObject jsonObject);
 }
