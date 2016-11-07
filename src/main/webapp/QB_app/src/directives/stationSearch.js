@@ -2,8 +2,11 @@
  * Created by administrator on 16/11/2.
  */
 
+import Vue from 'vue'
+import Vuex from 'vuex'
+
 export default {
-  inserted: function (el) {
+  inserted: function (el, binding) {
     // 车站信息解析
     const station_names = require('../station_name');
     const stationList = {};
@@ -25,16 +28,19 @@ export default {
       // 根据用户输入,进行模糊匹配
       // matchList里只记录id,完成后去重
       for (let i = 0; i < stationList.length; i++) {
+        let stationObj = {};
+        stationObj.code = stationList[i].code;
+        stationObj.city = stationList[i].city;
         if (stationList[i].city.indexOf(val) > -1) {
-          matchList.push(stationList[i].city);
+          matchList.push(stationObj);
           continue;
         }
         if (stationList[i].fullname.indexOf(val) > -1) {
-          matchList.push(stationList[i].city);
+          matchList.push(stationObj);
           continue;
         }
         if (stationList[i].shortname.indexOf(val) > -1) {
-          matchList.push(stationList[i].city);
+          matchList.push(stationObj);
         }
       }
       // 根据匹配结果添加匹配列表
@@ -46,7 +52,10 @@ export default {
       }
       for (let i = 0; i < matchList.length; i++) {
         var li = document.createElement('li');
-        li.innerHTML = matchList[i];
+        li.addEventListener('click', function () {
+          binding.value.closeEvent(matchList[i].code, matchList[i].city);
+        });
+        li.innerHTML = matchList[i].city;
         ul.appendChild(li);
       }
       el.appendChild(ul);

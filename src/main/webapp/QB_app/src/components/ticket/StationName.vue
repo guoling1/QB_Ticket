@@ -1,11 +1,10 @@
 <template lang="html">
   <transition name="fade">
     <div v-if="show" class="main">
-      这是时间选择的组件
-      <div @click="close">取消时间选择组件</div>
+      <div v-search-station="{closeEvent:close}"></div>
+      <div @click="close">取消车站选择组件</div>
     </div>
   </transition>
-
 </template>
 
 <script lang="babel">
@@ -17,13 +16,17 @@
       }
     },
     methods: {
-      close: function () {
-        this.$store.commit('TIME_CTRL', false);
+      close: function (code, station) {
+        this.$store.commit('STATION_CLOSE', {
+          ctrl: false,
+          code: code,
+          station: station
+        });
       }
     },
     computed: {
       show () {
-        return this.$store.state.date.openCtrl
+        return this.$store.state.station.ctrl
       }
     }
   }

@@ -76,6 +76,7 @@
           </p>
         </div>
       </li>
+      {{stations}}
     </ul>
 
   </div>
@@ -87,23 +88,33 @@
     name: 'menu',
     data () {
       return {
-        msg: 'Welcome to Your Vue.js App'
+        msg: 'Welcome to Your Vue.js App',
+        initStations: []
       }
     },
     beforeRouteEnter (to, from, next) {
+      let date = to.query.date;
+      let froms = to.query.from;
+      let tos = to.query.to;
       Vue.http.post('/queryTicketPrice/query', {
-        from_station: "VAP", //出发站简码
-        to_station: "VNP", //到达站简码
-        train_date: "2016-12-06" //乘车日期（yyyy-MM-dd）
+        from_station: froms, //出发站简码
+        to_station: tos, //到达站简码
+        train_date: date //乘车日期（yyyy-MM-dd）
       }).then(function (res) {
         console.log(res);
-        next();
+        next(function (vm) {
+          vm.$data.initStations = res.body.data;
+        });
       }, function (err) {
         console.log(err);
         next(false);
       })
+    },
+    computed: {
+      stations () {
+        return this.initStations
+      }
     }
-
   }
 </script>
 

@@ -10,10 +10,10 @@
           <div class="right">到达城市</div>
         </div>
         <div class="side write">
-          <div class="left" @click="station">{{$data.form}}</div>
+          <div class="left" @click="station('stationONE')">{{$data.from}}</div>
           <img class="middle" src="../../assets/exchange.png">
 
-          <div class="right" @click="station">{{$data.to}}</div>
+          <div class="right" @click="station('stationTWO')">{{$data.to}}</div>
         </div>
       </div>
       <div class="time" @click="time('dateONE')">
@@ -25,7 +25,8 @@
           <div class="btn"></div>
         </div>
       </div>
-      <router-link class="submit" :to="{path:'/ticket/train-menu/train',query:{date:$from.date}}">查询
+      <router-link class="submit"
+                   :to="{path:'/ticket/train-menu/train',query:{date:$from.date,from:$from.from,to:$from.to}}">查询
       </router-link>
       <div class="history">
         <div>查询历史</div>
@@ -34,15 +35,18 @@
       <div class="know">订票须知<span></span></div>
     </div>
     <datetime></datetime>
+    <stationName></stationName>
   </div>
 </template>
 
 <script lang="babel">
   import Datetime from './Datetime.vue';
+  import StationName from './StationName.vue';
   export default {
     name: 'menu',
     components: {
-      Datetime
+      Datetime,
+      StationName
     },
     data: function () {
       return {
@@ -56,21 +60,26 @@
           ctrl: true
         });
       },
-      station: function () {
-        this.$store.commit('STATION_CTRL', true);
+      station: function (name) {
+        this.$store.commit('STATION_OPEN', {
+          name: name,
+          ctrl: true
+        });
       }
     },
     computed: {
       $data: function () {
         return {
           date: this.$store.state.date.scope.dateONE.time,
-          form: this.$store.state.station.scope.stationONE.station,
+          from: this.$store.state.station.scope.stationONE.station,
           to: this.$store.state.station.scope.stationTWO.station
         }
       },
       $from: function () {
         return {
-          date: '2016-12-06'
+          date: '2016-12-06',
+          from: this.$store.state.station.scope.stationONE.code,
+          to: this.$store.state.station.scope.stationTWO.code
         };
       }
     }
