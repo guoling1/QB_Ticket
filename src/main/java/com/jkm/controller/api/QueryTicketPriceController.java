@@ -46,12 +46,10 @@ public class QueryTicketPriceController extends BaseController {
             }
 
             responseJson.put("success", false);
-            responseJson.put("code",null);
+            responseJson.put("code",responseJson.getLong("code"));
             responseJson.put("msg", responseJson.getString("msg"));
         } catch (IOException e) {
-            responseJson.put("success", false);
-            responseJson.put("code",null);
-            responseJson.put("msg", "查询异常");
+            e.printStackTrace();
         }
         return responseJson;
     }
