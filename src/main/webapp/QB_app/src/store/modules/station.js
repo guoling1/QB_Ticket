@@ -6,9 +6,11 @@ const state = {
   ctrl: false,
   scope: {
     stationONE: {
+      code: 'BJP',
       station: '北京'
     },
     stationTWO: {
+      code: 'SZQ',
       station: '深圳'
     }
   },
@@ -22,6 +24,7 @@ const mutations = {
   },
   STATION_CLOSE (state, obj) {
     state.ctrl = obj.ctrl;
+    state.scope[state.now].code = obj.code;
     state.scope[state.now].station = obj.station;
   }
 };

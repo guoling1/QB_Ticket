@@ -25,7 +25,7 @@
           <div class="btn"></div>
         </div>
       </div>
-      <router-link class="submit" :to="{path:'/ticket/train-menu/train',query:{date:dateAjax}}">查询
+      <router-link class="submit" :to="{path:'/ticket/train-menu/train',query:{date:$from.date}}">查询
       </router-link>
       <div class="history">
         <div>查询历史</div>
@@ -68,8 +68,10 @@
           to: this.$store.state.station.scope.stationTWO.station
         }
       },
-      dateAjax () {
-        return '2016-12-06';
+      $from: function () {
+        return {
+          date: '2016-12-06'
+        };
       }
     }
   }
