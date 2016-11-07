@@ -401,7 +401,7 @@ public class AuthenServiceImpl implements AuthenService {
 		orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId());
 		orderFormService.updateStatus(orderFormOptional.get());
 		Map<String, Object> ret = this.fastPay(authenData);
-		if(ret.get("retCode")==true){//支付成功
+		if((boolean)ret.get("retCode")==true){//支付成功
 			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),ret.get("reqSn").toString(),true);
 		}else{//支付失败
 			orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId());
