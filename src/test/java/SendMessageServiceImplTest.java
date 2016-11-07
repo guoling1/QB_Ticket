@@ -16,32 +16,32 @@ import java.util.Map;
 /**
  * Created by konglingxin on 15/11/4.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:spring-mybatis.xml","classpath:spring-mvc.xml"})
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(locations = {"classpath:spring-mybatis.xml","classpath:spring-mvc.xml"})
 public class SendMessageServiceImplTest {
-    @Autowired
-    private SendMessageService sendMessageService;
-    @Autowired
-    private NoticeTemplateInitService noticeTemplateInitService;
-
-    @Test
-    public void testSendMessage() throws Exception {
-        this.noticeTemplateInitService.initTemplate();
-        final Map<String, String> data = new HashMap<>();
-        data.put("code", "323233");
-        final SendMessageParams sendMessageParams = SendMessageParams.builder()
-                .uid(1)
-                .noticeType(EnumNoticeType.BIND_MOBILE)
-                .userType(EnumUserType.BACKGROUND_USER)
-                .mobile("18640426296")
-                .addMapData("code", "323233")
-                .build();
-        this.sendMessageService.sendMessage(sendMessageParams);
-        this.sendMessageService.asyncSendInstantMessage(sendMessageParams);
-    }
-
-    @Test
-    public void name() throws Exception {
-
-    }
+//    @Autowired
+//    private SendMessageService sendMessageService;
+//    @Autowired
+//    private NoticeTemplateInitService noticeTemplateInitService;
+//
+//    @Test
+//    public void testSendMessage() throws Exception {
+//        this.noticeTemplateInitService.initTemplate();
+//        final Map<String, String> data = new HashMap<>();
+//        data.put("code", "323233");
+//        final SendMessageParams sendMessageParams = SendMessageParams.builder()
+//                .uid(1)
+//                .noticeType(EnumNoticeType.BIND_MOBILE)
+//                .userType(EnumUserType.BACKGROUND_USER)
+//                .mobile("18640426296")
+//                .addMapData("code", "323233")
+//                .build();
+//        this.sendMessageService.sendMessage(sendMessageParams);
+//        this.sendMessageService.asyncSendInstantMessage(sendMessageParams);
+//    }
+//
+//    @Test
+//    public void name() throws Exception {
+//
+//    }
 }
