@@ -25,7 +25,7 @@ public class QueryTicketPriceController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/query", method = RequestMethod.POST)
-    public ResponseEntityBase<JSONObject> query() throws IOException {
+    public ResponseEntityBase<String> query() throws IOException {
 
         JSONObject responseJson = new JSONObject();
 
@@ -39,8 +39,8 @@ public class QueryTicketPriceController extends BaseController {
             String train_date = requestJson.getString("train_date");
             String purpose_codes = "ADULT";
             responseJson = this.queryTicketPriceService.queryTicket(partnerid, method, from_station, to_station, train_date, purpose_codes);
-            final ResponseEntityBase<JSONObject> results = new ResponseEntityBase<>();
-            results.setData(responseJson);
+            final ResponseEntityBase<String> results = new ResponseEntityBase<>();
+            results.setData((String) responseJson.get("data"));
 //            if(responseJson.getBoolean("success")) {
 //                requestJson.put("success", true);
 //                requestJson.put("code", responseJson.getLong("1"));
