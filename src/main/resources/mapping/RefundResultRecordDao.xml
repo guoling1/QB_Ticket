@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jkm.dao.RefundResultRecordDao">
+
+	<!-- 通用查询结果列-->
+	<sql id="Base_Column_List">
+		 id,	refund_channel,	req_sn,	amount,	refund_result,	refund_params,	result_params,	status,	create_time,	update_time
+	</sql>
+
+	<!-- 查询（根据主键ID查询） -->
+	<select id="selectByPrimaryKey" resultType="com.jkm.entity.RefundResultRecord" parameterType="java.lang.Long">
+		 SELECT
+		 <include refid="Base_Column_List" />
+		 FROM qb_refund_result_record
+		 WHERE id = #{id}
+	</select>
+
+	<!--删除：根据主键ID删除-->
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		 DELETE FROM qb_refund_result_record
+		 WHERE id = #{id}
+	</delete>
+
+	<!-- 添加 -->
+	<insert id="insert" parameterType="com.jkm.entity.RefundResultRecord">
+		 INSERT INTO qb_refund_result_record
+ 		(refund_channel,req_sn,amount,refund_result,refund_params,result_params,status)
+		 VALUES 
+ 		(#{refundChannel},#{reqSn},#{amount},#{refundResult},#{refundParams},#{resultParams},#{status})
+	</insert>
+
+	<!-- 添加 （匹配有值的字段）-->
+	<insert id="insertSelective" parameterType="com.jkm.entity.RefundResultRecord">
+		 INSERT INTO qb_refund_result_record
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="refundChannel != null">
+				 refund_channel,
+			</if>
+			<if test="reqSn != null">
+				 req_sn,
+			</if>
+			<if test="amount != null">
+				 amount,
+			</if>
+			<if test="refundResult != null">
+				 refund_result,
+			</if>
+			<if test="refundParams != null">
+				 refund_params,
+			</if>
+			<if test="resultParams != null">
+				 result_params,
+			</if>
+			<if test="status != null">
+				 status,
+			</if>
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="refundChannel!=null">
+				 #{refundChannel},
+			</if>
+			<if test="reqSn!=null">
+				 #{reqSn},
+			</if>
+			<if test="amount!=null">
+				 #{amount},
+			</if>
+			<if test="refundResult!=null">
+				 #{refundResult},
+			</if>
+			<if test="refundParams!=null">
+				 #{refundParams},
+			</if>
+			<if test="resultParams!=null">
+				 #{resultParams},
+			</if>
+			<if test="status!=null">
+				 #{status},
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 修 改-->
+	<update id="updateByPrimaryKeySelective" parameterType="com.jkm.entity.RefundResultRecord">
+		 UPDATE qb_refund_result_record
+ 		 <set> 
+			<if test="refundChannel != null">
+				 refund_channel = #{refundChannel},
+			</if>
+			<if test="reqSn != null">
+				 req_sn = #{reqSn},
+			</if>
+			<if test="amount != null">
+				 amount = #{amount},
+			</if>
+			<if test="refundResult != null">
+				 refund_result = #{refundResult},
+			</if>
+			<if test="refundParams != null">
+				 refund_params = #{refundParams},
+			</if>
+			<if test="resultParams != null">
+				 result_params = #{resultParams},
+			</if>
+			<if test="status != null">
+				 status = #{status},
+			</if>
+ 		 </set>
+		 WHERE id = #{id}
+	</update>
+
+	<!-- 修 改-->
+	<update id="updateByPrimaryKey" parameterType="com.jkm.entity.RefundResultRecord">
+		 UPDATE qb_refund_result_record
+		 SET 
+			 refund_channel = #{refundChannel},
+			 req_sn = #{reqSn},
+			 amount = #{amount},
+			 refund_result = #{refundResult},
+			 refund_params = #{refundParams},
+			 result_params = #{resultParams},
+			 status = #{status}
+		 WHERE id = #{id}
+	</update>
+
+</mapper>

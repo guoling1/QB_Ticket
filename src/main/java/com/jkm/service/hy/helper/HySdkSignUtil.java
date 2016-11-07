@@ -51,8 +51,8 @@ public class HySdkSignUtil {
 
     private static String getSignedStr(final String method, final String reqTime,
                                        final String key) {
-       final String content = HySdkConstans.PARTNERID + method + reqTime +
-               BytesHexConverterUtil.bytesToHexStr(MD5Util.md5Digest(HySdkConstans.SIGN_KEY.getBytes(Charset.forName("utf-8"))));
+       final String content = HySdkConstans.ORDER_PARTNER_ID + method + reqTime +
+               BytesHexConverterUtil.bytesToHexStr(MD5Util.md5Digest(HySdkConstans.ORDER_SIGN_KEY.getBytes(Charset.forName("utf-8"))));
         return content;
     }
 

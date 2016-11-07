@@ -29,7 +29,7 @@ public class QueryTicketNoPriceController extends BaseController {
         /**
          * 获取请求参数
          */
-        String partnerid = HySdkConstans.PARTNERID;
+        String partnerid = HySdkConstans.QUERY_PARTNER_ID;
         String method ="train_query_remain";
         String from_station = requestJson.getString("from_station");
         String to_station = requestJson.getString("to_station");

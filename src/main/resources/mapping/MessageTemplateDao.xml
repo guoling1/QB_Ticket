@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.dao.notifier.MessageTemplateDao">
+    <insert id="addTemplate" parameterType="com.jkm.entity.notifier.SmsTemplate" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO tb_message_template (notice_type,message_template)
+        VALUES (#{noticeType}, #{messageTemplate})
+    </insert>
+    <update id="modifyMessageTemplate">
+        UPDATE tb_message_template
+        SET message_template = #{messageTemplate}
+        WHERE id = #{messageTemplateId}
+    </update>
+    <select id="getTemplateByType" resultType="com.jkm.entity.notifier.SmsTemplate">
+        SELECT *
+        FROM tb_message_template
+        WHERE notice_type=#{typeId}
+    </select>
+    <select id="getMessageTemplate" resultType="com.jkm.entity.notifier.SmsTemplate">
+        SELECT *
+        FROM tb_message_template
+        WHERE status = 0
+    </select>
+    <select id="getMessageTemplateById" resultType="com.jkm.entity.notifier.SmsTemplate">
+        SELECT *
+        FROM tb_message_template
+        WHERE id = #{id}
+    </select>
+</mapper>

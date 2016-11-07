@@ -118,7 +118,7 @@ public class HyCallBackController extends BaseController {
 
     private boolean isSignCorrect(final JSONObject jsonObject) {
         try {
-            String sign = MD5Util.MD5(HySdkConstans.PARTNERID + jsonObject.getString("reqtime") + MD5Util.MD5(HySdkConstans.SIGN_KEY));
+            String sign = MD5Util.MD5(HySdkConstans.ORDER_PARTNER_ID + jsonObject.getString("reqtime") + MD5Util.MD5(HySdkConstans.ORDER_SIGN_KEY));
             return sign.equals(jsonObject.getString("sign"));
         } catch (Exception e) {
             log.info(e);

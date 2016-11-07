@@ -25,12 +25,21 @@ public class ChargeMoneyOrder extends BaseEntity{
      */
     private BigDecimal totalAmount;
     /**
-     * 出票套餐价格
+     * 出票套餐费
      */
     private BigDecimal buyTicketPackage;
     /**
-     * 抢票套餐价格
+     * 抢票套餐费
      */
     private BigDecimal grabTicketPackage;
+
+    /**
+     * 付款成功
+     *
+     * @return
+     */
+    public boolean isPaySuccess() {
+        return this.getStatus() == EnumChargeMoneyOrderStatus.PAYMENT_TICKET_SUCCESS.getId();
+    }
 
 }

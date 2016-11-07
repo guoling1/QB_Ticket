@@ -113,7 +113,7 @@ public class OrderFormDetailServiceImpl implements OrderFormDetailService {
      *
      */
     @Override
-    public void updateStatusById(long id , EnumOrderFormDetailStatus status) {
-        this.orderFormDetailDao.updateStatusById(id , status.getId());
+    public void updateStatusById(final long id , final EnumOrderFormDetailStatus status) {
+        this.orderFormDetailDao.updateStatusById(id , status.getId(), status.getValue());
     }
 }

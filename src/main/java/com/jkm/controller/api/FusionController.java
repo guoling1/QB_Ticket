@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -113,6 +114,19 @@ public class FusionController extends BaseController {
         return new ModelAndView("fusion/retMsg.jsp", authenService.fastPay(data));
     }
 
+    /**
+     * 立即支付
+     *
+     * @param requestData
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/toPay", method = RequestMethod.POST)
+    public JSONObject toPay() throws IOException {
+        JSONObject result = new JSONObject();
+        JSONObject requestJson = super.getRequestJsonParams();
+        return result;
+    }
     /**
      * 单笔退款
      *
