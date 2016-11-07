@@ -8,13 +8,16 @@ const ticketMainMenu = r => require.ensure([], () => r(require('../../components
 const ticketReserve = r => require.ensure([], () => r(require('../../components/ticket/Reserve')), 'group-ticket');
 const ticketRob = r => require.ensure([], () => r(require('../../components/ticket/Rob')), 'group-ticket');
 const ticketRobOrder = r => require.ensure([], () => r(require('../../components/ticket/RobOrder')), 'group-ticket');
+const ticketRobDetail = r => require.ensure([], () => r(require('../../components/ticket/RobDetail')), 'group-ticket');
 const ticketPrivate = r => require.ensure([], () => r(require('../../components/ticket/Private')), 'group-ticket');
 const ticketOrder = r => require.ensure([], () => r(require('../../components/ticket/Order')), 'group-ticket');
 const ticketTrainMenu = r => require.ensure([], () => r(require('../../components/ticket/TrainMenu')), 'group-ticket');
 const ticketTrain = r => require.ensure([], () => r(require('../../components/ticket/Train')), 'group-ticket');
 const ticketSubmitOrder = r => require.ensure([], () => r(require('../../components/ticket/SubmitOrder')), 'group-ticket');
 const ticketSureOrder = r => require.ensure([], () => r(require('../../components/ticket/SureOrder')), 'group-ticket');
+const ticketPayOrder = r => require.ensure([], () => r(require('../../components/ticket/PayOrder')), 'group-ticket');
 const ticketContacts = r => require.ensure([], () => r(require('../../components/ticket/Contacts')), 'group-ticket');
+const ticketLogin = r => require.ensure([], () => r(require('../../components/ticket/Login')), 'group-ticket');
 
 export default {
   path: '/ticket',
@@ -66,6 +69,11 @@ export default {
       component: ticketRobOrder
     },
     {
+      path: 'rob-detail',
+      name: 'ticketRobDetail',
+      component: ticketRobDetail
+    },
+    {
       path: 'submit-order',
       name: 'ticketSubmitOrder',
       component: ticketSubmitOrder
@@ -76,9 +84,19 @@ export default {
       component: ticketSureOrder
     },
     {
-      path:'contacts',
-      name:'ticketContacts',
-      component:ticketContacts,
+      path: 'pay-order',
+      name: 'ticketPayOrder',
+      component: ticketPayOrder
+    },
+    {
+      path: 'contacts',
+      name: 'ticketContacts',
+      component: ticketContacts
+    },
+    {
+      path: 'login',
+      name: 'ticketLogin',
+      component: ticketLogin
     }
   ]
 }

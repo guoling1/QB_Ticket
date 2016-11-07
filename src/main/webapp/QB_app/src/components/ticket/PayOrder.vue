@@ -1,71 +1,39 @@
 <template lang="html">
   <div class="main">
     <div class="from">
-      <div class="train-info">
-        <div class="left">
-          <div class="time">07:10</div>
-          <div class="place">北京西</div>
-          <div class="date">11-20 周五</div>
-        </div>
-        <div class="middle">
-          <div class="trains">G208</div>
-          <div class="ch"></div>
-          <div class="date">耗时1小时52分</div>
-        </div>
-        <div class="right">
-          <div class="time">17:10</div>
-          <div class="place">北京东</div>
-          <div class="date">11-20 周五</div>
-        </div>
-      </div>
       <div class="space">
-        <div class="group no-border" @click="time('dateONE')">
-          <div class="prompt">二等座</div>
-          <div class="write right"><span class="price">￥123.85</span></div>
-        </div>
-      </div>
-      <div class="space">
-        <div class="group no-border" @click="time('dateONE')">
-          <div class="logo"></div>
-          <div class="write">使用12306账号登录</div>
-        </div>
-      </div>
-      <div class="space no-border">
-        <div class="group no-border" @click="time('dateONE')">
-          <div class="list"></div>
-          <div class="write no-prompt">
-            <span class="name">成龙</span>
-            120********1234
-            <span class="info">成人票</span>
+        <div class="train-info">
+          <div class="left">
+            <div class="time">07:10</div>
+            <div class="place">北京西</div>
+            <div class="date">11-20 周五</div>
+          </div>
+          <div class="middle">
+            <div class="trains">G208</div>
+            <div class="ch"></div>
+            <div class="date">耗时1小时52分</div>
+          </div>
+          <div class="right">
+            <div class="time">17:10</div>
+            <div class="place">北京东</div>
+            <div class="date">11-20 周五</div>
           </div>
         </div>
-        <div class="group no-border" @click="time('dateONE')">
-          <div class="list"></div>
-          <div class="write no-prompt">
-            <span class="name">成凤</span>
-            120********4321
-            <span class="info">成人票</span>
+        <div class="man-info">
+          <div class="left">
+            <div class="big">刘思思 <span class="small">成人票</span></div>
+            <div class="small">120***********0565</div>
+            <div class="red">待支付</div>
+          </div>
+          <div class="right">
+            <div class="big">13号车厢01A号</div>
+            <div class="small">二等座</div>
+            <div class="red">￥<span>128.5</span></div>
           </div>
         </div>
       </div>
-      <div class="space no-padding">
-        <div class="handle">
-          <div class="btn">添加/编辑乘客</div>
-          <div class="line"></div>
-          <div class="btn">添加儿童</div>
-        </div>
-      </div>
       <div class="space">
-        <div class="group no-border" @click="time('dateONE')">
-          <div class="prompt">联系手机</div>
-          <div class="write no-prompt empty">通知出票信息</div>
-        </div>
-      </div>
-      <div class="space">
-        <div class="group no-border" @click="time('dateONE')">
-          <div class="prompt">套餐类型</div>
-          <div class="write empty">{{dateONE}}</div>
-        </div>
+        <div class="cancel">取消订单</div>
       </div>
       <div class="submit">
         <div class="detail">
@@ -149,6 +117,7 @@
     margin-bottom: 5px;
     overflow: hidden;
     position: relative;
+    border-bottom: 1px dotted #f5f5f5;
     &.no-padding {
       padding: 0;
     }
@@ -192,6 +161,43 @@
       color: #1ca0e2;
       font-weight: bold;
     }
+  }
+
+  .man-info {
+    background-color: #FFF;
+    padding: 10px 0;
+    overflow: hidden;
+    .left {
+      float: left;
+      text-align: left;
+    }
+    .right {
+      float: right;
+      text-align: right;
+    }
+    .big {
+      line-height: 26px;
+      font-size: 15px;
+      color: #111;
+    }
+    .small {
+      line-height: 20px;
+      font-size: 12px;
+      color: #999;
+    }
+    .red {
+      line-height: 20px;
+      font-size: 12px;
+      color: #fe6969;
+    }
+  }
+
+  .cancel {
+    width: 100%;
+    height: 50%;
+    line-height: 50px;
+    font-size: 15px;
+    color: #1ca0e2;
   }
 
   .from {

@@ -125,7 +125,15 @@ public class FusionController extends BaseController {
     public ResponseEntityBase<JSONObject> toPay() throws IOException {
         final ResponseEntityBase<JSONObject> result = new ResponseEntityBase<>();
         JSONObject jo = super.getRequestJsonParams();
-        authenService.toPay(jo);
+        Map<String, Object> map = authenService.toPay(jo);
+        if ("true".equals(map.get("retCode").toString())) {
+            result.setCode(2000);
+            result.setData((JSONObject)map.get("retData"));
+            result.setMessage("支付成功");
+        }else {
+            result.setCode(2001);
+            result.setMessage(map.get("retMsg").toString());
+        }
         return result;
     }
     /**

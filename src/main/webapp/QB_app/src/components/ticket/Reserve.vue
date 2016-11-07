@@ -10,14 +10,14 @@
           <div class="right">到达城市</div>
         </div>
         <div class="side write">
-          <div class="left" @click="station">北京</div>
+          <div class="left" @click="station">{{$data.form}}</div>
           <img class="middle" src="../../assets/exchange.png">
 
-          <div class="right" @click="station">上海</div>
+          <div class="right" @click="station">{{$data.to}}</div>
         </div>
       </div>
       <div class="time" @click="time('dateONE')">
-        <div class="show">{{dateONE}}</div>
+        <div class="show">{{$data.date}}</div>
       </div>
       <div class="option">
         <div class="show">只看高铁/动车</div>
@@ -25,7 +25,8 @@
           <div class="btn"></div>
         </div>
       </div>
-      <router-link class="submit" to="/ticket/train-menu/train">查询</router-link>
+      <router-link class="submit" :to="{path:'/ticket/train-menu/train',query:{date:$from.date}}">查询
+      </router-link>
       <div class="history">
         <div>查询历史</div>
         <div>清空</div>
@@ -60,8 +61,17 @@
       }
     },
     computed: {
-      dateONE () {
-        return this.$store.state.date.scope.dateONE.time;
+      $data: function () {
+        return {
+          date: this.$store.state.date.scope.dateONE.time,
+          form: this.$store.state.station.scope.stationONE.station,
+          to: this.$store.state.station.scope.stationTWO.station
+        }
+      },
+      $from: function () {
+        return {
+          date: '2016-12-06'
+        };
       }
     }
   }

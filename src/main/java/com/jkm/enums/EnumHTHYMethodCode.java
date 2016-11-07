@@ -23,7 +23,9 @@ public enum EnumHTHYMethodCode {
 
     CANCEL_POLICY_ORDER(7 , "CancelPolicyOrder", "撤消保险单"),
 
-    QUERY_POLICY_ORDER(8, "QueryPolicyOrder", "查询投保单状态");
+    QUERY_POLICY_ORDER(8, "QueryPolicyOrder", "查询投保单状态"),
+
+    QIANG_PIAO_ORDER(9, "qiangPiaoOrder", "抢票下单");
 
     @Getter
     private int id;

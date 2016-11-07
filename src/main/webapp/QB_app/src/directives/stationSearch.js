@@ -11,6 +11,7 @@ export default {
       let parsing_middleware = station_names.split('@')[i].split('|');
       stationList[parsing_middleware[5]] = {};
       stationList[parsing_middleware[5]].city = parsing_middleware[1];
+      stationList[parsing_middleware[5]].code = parsing_middleware[2];
       stationList[parsing_middleware[5]].fullname = parsing_middleware[3];
       stationList[parsing_middleware[5]].shortname = parsing_middleware[4];
       stationList['length'] = i;
