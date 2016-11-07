@@ -51,4 +51,10 @@ public interface UserInfoService {
      *
      **/
     int updateByPrimaryKey ( UserInfo record );
+
+    /**
+     * 添加用户信息
+     * @param uid
+     */
+    void insertUser(String uid);
 }
