@@ -110,4 +110,15 @@ public class OrderFormServiceImpl implements OrderFormService {
     public Optional<OrderForm> selectByReqSn(final String reqSn) {
         return Optional.fromNullable(this.orderFormDao.selectByReqSn(reqSn));
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderForm
+     * @return
+     */
+    @Override
+    public int updateStatus(final OrderForm orderForm) {
+        return this.orderFormDao.updateStatus(orderForm);
+    }
 }

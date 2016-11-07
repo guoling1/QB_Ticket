@@ -1,5 +1,8 @@
 package com.jkm.service.impl;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.jkm.entity.OrderForm;
 import com.jkm.entity.PayResultRecord;
 import com.jkm.entity.RefundResultRecord;
 import com.jkm.entity.fusion.*;
@@ -10,10 +13,8 @@ import com.jkm.entity.fusion.detail.RequestDetail100003;
 import com.jkm.entity.fusion.detail.RequestDetail100004;
 import com.jkm.entity.fusion.detail.RequestDetail100005;
 import com.jkm.entity.fusion.head.RequestHead;
-import com.jkm.service.AuthenService;
-import com.jkm.service.PayResultRecordService;
-import com.jkm.service.RefundResultRecordService;
-import com.jkm.service.SignatureService;
+import com.jkm.enums.EnumOrderFormStatus;
+import com.jkm.service.*;
 import com.jkm.util.SnGenerator;
 import com.jkm.util.fusion.*;
 import net.sf.json.JSONObject;
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +41,10 @@ public class AuthenServiceImpl implements AuthenService {
 	private PayResultRecordService payResultRecordService;
 	@Autowired
 	private RefundResultRecordService refundResultRecordService;
+	@Autowired
+	private OrderFormService orderFormService;
+	@Autowired
+	private TicketService ticketService;
 
 	/**
 	 * 快捷支付
@@ -348,6 +354,8 @@ public class AuthenServiceImpl implements AuthenService {
 		}
 		return ret;
 	}
+
+
 	private Request100004 createCardAuth(CardAuthData requestData) {
 		Request100004 cardAuth = new Request100004();
 		RequestHead head = new RequestHead();
@@ -375,5 +383,30 @@ public class AuthenServiceImpl implements AuthenService {
 		cardAuth.setBody(body);
 		cardAuth.setInfo(head);
 		return cardAuth;
+	}
+
+	@Override
+	public Map<String, Object> toPay(JSONObject requestData) {
+		JSONObject jo = new JSONObject();
+		Optional<OrderForm>  orderFormOptional = orderFormService.selectById(requestData.getLong("orderId"));
+		Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + orderFormOptional.get().getId() + "]不存在");
+		BigDecimal amount = orderFormOptional.get().getTotalPrice();
+		AuthenData authenData = new AuthenData();
+		authenData.setAmount(amount+"");
+		authenData.setPhoneNo(requestData.getString("phoneNo"));
+		authenData.setCrdNo(requestData.getString("crdNo"));
+		authenData.setCapCrdNm(requestData.getString("capCrdNm"));
+		authenData.setIdNo(requestData.getString("idNo"));
+		Map<String, Object> result = new HashMap<String, Object>();
+		orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId());
+		orderFormService.updateStatus(orderFormOptional.get());
+		Map<String, Object> ret = this.fastPay(authenData);
+		if(ret.get("retCode")==true){//支付成功
+			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),ret.get("reqSn").toString(),true);
+		}else{//支付失败
+			orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId());
+			orderFormService.updateStatus(orderFormOptional.get());
+		}
+		return ret;
 	}
 }
