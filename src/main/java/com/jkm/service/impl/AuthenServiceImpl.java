@@ -2,6 +2,7 @@ package com.jkm.service.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.jkm.entity.GetParamRecord;
 import com.jkm.entity.OrderForm;
 import com.jkm.entity.PayResultRecord;
 import com.jkm.entity.RefundResultRecord;
@@ -45,6 +46,8 @@ public class AuthenServiceImpl implements AuthenService {
 	private OrderFormService orderFormService;
 	@Autowired
 	private TicketService ticketService;
+	@Autowired
+	private GetParamRecordService getParamRecordService;
 
 	/**
 	 * 快捷支付
@@ -55,6 +58,17 @@ public class AuthenServiceImpl implements AuthenService {
 	public Map<String, Object> fastPay(AuthenData requestData) {
 		Map<String, Object> ret = new HashMap<String, Object>();
 		try {
+			GetParamRecord gr = new GetParamRecord();
+			gr.setStatus(0);
+			gr.setAppId(requestData.getAppId());
+			gr.setNonceStr(requestData.getNonceStr());
+			int count = getParamRecordService.selectByCondition(gr);
+			if(count>0){
+				ret.put("retCode", false);
+				ret.put("retMsg", "请不要重复提交订单");
+			}else{
+				getParamRecordService.insertSelective(gr);
+			}
 			Request100005 request100005 = createFastPay(requestData);
 			String xml = XmlUtil.toXML(request100005);
 			logger.debug("****************xml生成authen*********************-"
@@ -144,7 +158,7 @@ public class AuthenServiceImpl implements AuthenService {
 //		if ("1".equals(requestData.getStep())) {
 //			head.setReqSn(requestData.getReqSn());
 //		} else {
-			head.setReqSn(SnGenerator.generate());
+			head.setReqSn(requestData.getReqSn());
 //		}
 		head.setSignedMsg("signedMsg");
 		RequestBody100005 body = new RequestBody100005();
@@ -397,7 +411,7 @@ public class AuthenServiceImpl implements AuthenService {
 		authenData.setCrdNo(requestData.getString("crdNo"));
 		authenData.setCapCrdNm(requestData.getString("capCrdNm"));
 		authenData.setIdNo(requestData.getString("idNo"));
-		Map<String, Object> result = new HashMap<String, Object>();
+		authenData.setReqSn(SnGenerator.generate());
 		orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId());
 		orderFormService.updateStatus(orderFormOptional.get());
 		Map<String, Object> ret = this.fastPay(authenData);
