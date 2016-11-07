@@ -1,6 +1,9 @@
 package com.jkm.controller.api;
 
 import com.jkm.controller.common.BaseController;
+import com.jkm.controller.helper.ResponseEntityBase;
+import com.jkm.controller.helper.request.RequestTicketRefund;
+import com.jkm.controller.helper.response.ResponseTicketRefund;
 import com.jkm.entity.fusion.AuthenData;
 import com.jkm.entity.fusion.SingleRefundData;
 import com.jkm.service.AuthenService;
@@ -9,10 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
@@ -122,9 +122,10 @@ public class FusionController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/toPay", method = RequestMethod.POST)
-    public JSONObject toPay() throws IOException {
-        JSONObject result = new JSONObject();
-        JSONObject requestJson = super.getRequestJsonParams();
+    public ResponseEntityBase<JSONObject> toPay() throws IOException {
+        final ResponseEntityBase<JSONObject> result = new ResponseEntityBase<>();
+        JSONObject jo = super.getRequestJsonParams();
+        authenService.toPay(jo);
         return result;
     }
     /**

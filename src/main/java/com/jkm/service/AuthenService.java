@@ -3,6 +3,7 @@ package com.jkm.service;
 import com.jkm.entity.fusion.AuthenData;
 import com.jkm.entity.fusion.CardAuthData;
 import com.jkm.entity.fusion.SingleRefundData;
+import net.sf.json.JSONObject;
 
 import java.util.Map;
 
@@ -29,4 +30,11 @@ public interface AuthenService {
 	 * @return
 	 */
 	public Map<String, Object> cardAuth(CardAuthData requestData);
+
+	/**
+	 * 立即支付
+	 * @param requestData
+	 * @return
+	 */
+	public Map<String, Object> toPay(JSONObject requestData);
 }

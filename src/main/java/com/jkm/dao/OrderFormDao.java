@@ -73,4 +73,11 @@ public interface OrderFormDao {
      * @return
      */
     OrderForm selectByReqSn(@Param("reqSn") String reqSn);
+    /**
+     * 更新订单状态
+     *
+     * @param orderForm
+     * @return
+     */
+    int updateStatus(OrderForm orderForm);
 }

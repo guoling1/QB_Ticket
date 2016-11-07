@@ -133,5 +133,10 @@
   <select id="selectByReqSn" resultType="com.jkm.entity.OrderForm">
     SELECT * FROM tb_order_form WHERE req_sn = #{reqSn}
   </select>
-
+  <update id="updateStatus">
+    UPDATE tb_order_form
+    SET
+    status = #{status}
+    WHERE id = #{id}
+  </update>
 </mapper>
