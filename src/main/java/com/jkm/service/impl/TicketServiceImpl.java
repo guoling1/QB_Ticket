@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.jkm.controller.helper.request.RequestGrabTicket;
 import com.jkm.controller.helper.request.RequestSubmitOrder;
 import com.jkm.entity.*;
 import com.jkm.entity.fusion.SingleRefundData;
@@ -34,9 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by yuxiang on 2016-10-27.
@@ -79,6 +78,9 @@ public class TicketServiceImpl implements TicketService {
 
     @Autowired
     private RefundOrderFlowService refundOrderFlowService;
+
+    @Autowired
+    private QueryTicketPriceService queryTicketPriceService;
 
     /**
      * {@inheritDoc}
@@ -368,6 +370,7 @@ public class TicketServiceImpl implements TicketService {
      * @return
      */
     @Override
+    @Transactional
     public Pair<Boolean, String> refund(final long orderFormDetailId) {
         final Optional<OrderFormDetail> orderFormDetailOptional = this.orderFormDetailService.selectById(orderFormDetailId);
         Preconditions.checkArgument(orderFormDetailOptional.isPresent() , "订单不存在");
@@ -642,6 +645,75 @@ public class TicketServiceImpl implements TicketService {
             chargeMoneyOrder.setStatus(EnumChargeMoneyOrderStatus.PAYMENT_TICKET_FAIL.getId());
         }
         this.chargeMoneyOrderService.update(chargeMoneyOrder);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return
+     */
+    @Override
+    public Pair<Boolean, String> grabTicket(final RequestGrabTicket req) {
+
+        final JSONObject jsonObject = this.queryTicketPriceService.queryTicket(HySdkConstans.QUERY_PARTNER_ID, "train_query", "", "", "", "ADULT");
+        //获取列车信息
+        final JSONArray jsonArray = jsonObject.getJSONArray("data");
+        //获取车次信息
+        Map<String, JSONObject> trainCodes = this.getMaps(req.getTrainCodes(), jsonArray);
+        //获取座位类型
+        final String[] seatType = req.getSeatTypes().split(",");
+        //获取最高价格
+        final double grabPrice = this.getPriceMap(trainCodes, seatType);
+        //创建抢票单
+        //判断用户购买没购买套餐, 如果购买了则抢, 没购买则不请求, 创建定时任务
+        final boolean flag = (req.getBuyTicketPackageId() == EnumBuyTicketPackageType.TICKET_PACKAGE_FIRST.getId()) &&
+                (req.getGrabTicketPackageId() == EnumGrabTicketPackageType.TICKET_PACKAGE_FIRST.getId());
+        final GrabTicketForm grabTicketForm = new GrabTicketForm();
+        grabTicketForm.setUid(req.getUid());
+        grabTicketForm.setPhone(req.getPhone());
+        grabTicketForm.setGrabPrice(new BigDecimal(grabPrice));
+        final BigDecimal multiply = new BigDecimal(grabPrice).multiply(new BigDecimal(req.getPassengers().size()));
+        grabTicketForm.setGrabTicketTotalPrice(multiply);
+       // final BigDecimal grabTotalPrice
+        //grabTicketForm.setGrabTotalPrice();
+        return null;
+    }
+
+
+    private double getPriceMap(Map<String, JSONObject> trainCodes, String[] seatType) {
+
+        Map<String, Double> map = new HashMap<>();
+        for (String string : seatType){
+            map.put(EnumTrainTicketSeatType.getName(string), 0.00);
+        }
+        for (Map.Entry<String, JSONObject> entry: trainCodes.entrySet()){
+            for (Map.Entry<String, Double> mapEntry : map.entrySet()){
+                final Double seatPrice = entry.getValue().getDouble(mapEntry.getKey());
+                if(mapEntry.getValue().compareTo(seatPrice) == -1){
+                    map.put(mapEntry.getKey(), seatPrice);
+                }
+            }
+        }
+
+        final List<Double> list = (List<Double>)map.values();
+        Collections.sort(list);
+        return list.get(list.size()-1);
+    }
+
+    private Map<String, JSONObject> getMaps(String str, JSONArray jsonArray) {
+        final String[] strings = str.split(",");
+        //获取车次信息
+        Map<String, JSONObject>  map = new HashMap<>();
+        for (Object obj : jsonArray){
+            JSONObject jsonObject = JSONObject.fromObject(obj);
+            for (String string : strings){
+                if(string.equals(jsonObject.getString("train_code"))){
+                    map.put("string", jsonObject);
+                }
+            }
+        }
+
+        return map;
     }
 
 

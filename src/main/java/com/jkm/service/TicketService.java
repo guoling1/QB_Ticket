@@ -1,5 +1,6 @@
 package com.jkm.service;
 
+import com.jkm.controller.helper.request.RequestGrabTicket;
 import com.jkm.controller.helper.request.RequestSubmitOrder;
 import com.jkm.entity.OrderForm;
 import com.jkm.service.hy.entity.HyRefundCallbackResponse;
@@ -74,5 +75,9 @@ public interface TicketService {
      */
     void handleCustomerPayMsg(long orderFormId, String paymentSn, boolean isPaySuccess);
 
-
+    /**
+     * 抢票受理
+     * @return
+     */
+    Pair<Boolean,String> grabTicket(final RequestGrabTicket req);
 }

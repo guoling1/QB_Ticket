@@ -10,6 +10,7 @@ import com.jkm.service.hy.entity.*;
 import com.jkm.service.hy.entity.HyReturnTicketRequest;
 import com.jkm.service.hy.entity.HyReturnTicketResponse;
 import com.jkm.service.hy.helper.HySdkConstans;
+import com.jkm.util.DateFormatUtil;
 import com.jkm.util.HttpMethod;
 import com.jkm.util.MD5Util;
 import com.jkm.util.http.client.HttpClientFacade;
@@ -234,7 +235,7 @@ public class HySdkServiceImpl implements HySdkService{
         JSONArray jsonArray = new JSONArray();
         String sign = null;
         try {
-            sign = MD5Util.MD5(request.getUsername() + request.getMethod() + request.getReqtime() + MD5Util.MD5(HySdkConstans.SIGN_KEY));
+            sign = MD5Util.MD5(request.getUsername() + request.getMethod() + request.getReqtime() + MD5Util.MD5(HySdkConstans.POLICY_SIGN_KEY));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -278,7 +279,7 @@ public class HySdkServiceImpl implements HySdkService{
     public JSONObject cancelPolicyOrder(HyCancelPolicyOrderRequest request) {
         JSONObject jsonObject = null;
         try {
-            String sign = MD5Util.MD5(request.getUsername() + request.getMethod() + request.getReqtime() + MD5Util.MD5(HySdkConstans.QUERY_SIGN_KEY));
+            String sign = MD5Util.MD5(request.getUsername() + request.getMethod() + request.getReqtime() + MD5Util.MD5(HySdkConstans.POLICY_SIGN_KEY));
             jsonObject = new JSONObject();
             jsonObject.put("sign", sign);
             jsonObject.put("username", request.getUsername());
@@ -312,6 +313,25 @@ public class HySdkServiceImpl implements HySdkService{
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param jsonObject
+     * @return
+     */
+    @Override
+    public JSONObject grabTickets(JSONObject jsonObject) {
+        final StopWatch stopWatch = new StopWatch();
+        final JSONObject json = requestImpl(jsonObject,  HySdkConstans.POLICY_GATEWAY_URL, "", EnumHTHYMethodCode.QIANG_PIAO_ORDER.getCode(), stopWatch);
+        this.postHandle("",
+                EnumHTHYMethodCode.QIANG_PIAO_ORDER.getCode(),
+                json.getInt("code"),
+                json.toString(),
+                json.toString(),
+                stopWatch.getTime());
+        return json;
+    }
+
 
     private void postHandle(final String orderId,
                             final String method,
@@ -322,6 +342,10 @@ public class HySdkServiceImpl implements HySdkService{
         final HyChannelRequestRecord record = HyChannelRequestRecord.builder().orderId(orderId).method(method).retCode(retCode).request(requestParams).response(returnParams).time(millisecond).build();
         this.hySdkRequestRecordService.record(record);
     }
+
+    //////////////////*************抢票业务***********////////////////////
+
+
 
     private JSONObject requestImpl(final JSONObject jsonObject,
                                final String requestUrl,
@@ -373,4 +397,5 @@ public class HySdkServiceImpl implements HySdkService{
         SimpleDateFormat date = new SimpleDateFormat("yyyyMMddHHmmss");
         return date.format(new Date());
     }
+
 }

@@ -2,22 +2,13 @@ package com.jkm.controller.api;
 
 import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
-import com.jkm.controller.helper.request.RequestSubmitOrder;
-import com.jkm.controller.helper.request.RequestCancelOrder;
-import com.jkm.controller.helper.request.RequestTicketRefund;
-import com.jkm.controller.helper.request.RequestTrainTripsQuery;
-import com.jkm.controller.helper.response.ResponseSubmitOrder;
-import com.jkm.controller.helper.response.ResponseCancelOrder;
-import com.jkm.controller.helper.response.ResponseTicketRefund;
-import com.jkm.controller.helper.response.ResponseTrainTripsQuery;
+import com.jkm.controller.helper.request.*;
+import com.jkm.controller.helper.response.*;
 import com.jkm.service.TicketService;
 import com.jkm.service.TrainTripsQueryService;
-import net.sf.json.JSON;
-import net.sf.json.JSONObject;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.log4j.Logger;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -118,7 +109,8 @@ public class TicketController extends BaseController{
      * @return
      */
     @RequestMapping(value = "/refund", method = RequestMethod.POST)
-    public ResponseEntityBase<ResponseTicketRefund> refund(@RequestBody final RequestTicketRefund req) {
+    @ResponseBody
+    public ResponseEntityBase<ResponseTicketRefund> refund(final RequestTicketRefund req) {
         final ResponseEntityBase<ResponseTicketRefund> result = new ResponseEntityBase<>();
 
         try{
@@ -134,9 +126,36 @@ public class TicketController extends BaseController{
             result.setCode(-1);
             result.setMessage("退票失败");
         }
+        return result;
+    }
+
+    /**
+     * 火车车票抢票受理
+     * @param req
+     * @return
+     */
+    @RequestMapping(value = "/grap", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntityBase<ResponseGrabTicket> grabTicket(final RequestGrabTicket req) {
+        final ResponseEntityBase<ResponseGrabTicket> result = new ResponseEntityBase<>();
+
+        try{
+            Pair<Boolean,String> pair = this.ticketService.grabTicket(req);
+            if(pair.getLeft()){
+                result.setCode(0);
+                result.setMessage(pair.getRight());
+            }else{
+                result.setCode(-2);
+                result.setMessage(pair.getRight());
+            }
+        }catch(final Throwable throwable){
+            result.setCode(-1);
+            result.setMessage("退票失败");
+        }
 
         return result;
 
     }
+
 
 }

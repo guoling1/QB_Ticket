@@ -1,15 +1,17 @@
 package com.jkm.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
 /**
  * Created by yuxiang on 2016-11-02.
  * tb_refund_ticket_flow
- * {@}
+ *
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class RefundTicketFlow extends BaseEntity{
 
     private long orderFormId;

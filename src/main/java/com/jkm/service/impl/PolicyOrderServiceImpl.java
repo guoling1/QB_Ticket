@@ -85,6 +85,11 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
     @Override
     public void batchBuyPolicy(long orderFormId) {
         final OrderForm orderForm = this.orderFormService.selectById(orderFormId).get();
+        //没买套餐,不买保险
+        if(orderForm.getBuyTicketPackageId() == EnumBuyTicketPackageType.TICKET_PACKAGE_FIRST.getId()){
+            return;
+        }
+
         final List<OrderFormDetail> orderFormDetails = this.orderFormDetailService.selectByOrderFormId(orderFormId);
 
         //创建保险单
