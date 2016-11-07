@@ -49,13 +49,13 @@ public class ContactInfoController extends BaseController {
                 responseJson.put("message", jo.getString("message"));
             }else{
                 responseJson.put("result", false);
-                responseJson.put("data", null);
+                responseJson.put("data", 0);
                 responseJson.put("message", jo.getString("message"));
             }
         }catch (Exception e){
             log.info(e.getMessage());
             responseJson.put("result", false);
-            responseJson.put("data", null);
+            responseJson.put("data", 0);
             responseJson.put("message", "添加异常");
         }
         return responseJson;

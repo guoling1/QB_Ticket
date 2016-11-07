@@ -45,9 +45,15 @@ public class BindCardServiceImpl implements BindCardService{
             jo.put("result",false);
             jo.put("message","该银行卡已绑定");
         }else{
-            jo.put("result",true);
-            jo.put("data",bindCardDao.insertSelective(record));
-            jo.put("message","绑定成功");
+            long l = bindCardDao.insertSelective(record);
+            if(l>0){
+                jo.put("result",true);
+                jo.put("data",record.getId());
+                jo.put("message","绑定成功");
+            }else{
+                jo.put("result",false);
+                jo.put("message","绑定失败");
+            }
         }
         return jo;
     }
