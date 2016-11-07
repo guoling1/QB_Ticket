@@ -1,6 +1,7 @@
 package com.jkm.controller.api;
 
 import com.jkm.controller.common.BaseController;
+import com.jkm.controller.helper.ResponseEntityBase;
 import com.jkm.service.QueryTicketPriceService;
 import com.jkm.service.hy.helper.HySdkConstans;
 import net.sf.json.JSONObject;
@@ -24,12 +25,12 @@ public class QueryTicketPriceController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/query", method = RequestMethod.POST)
-    public JSONObject query(){
+    public ResponseEntityBase<JSONObject> query() throws IOException {
 
         JSONObject responseJson = new JSONObject();
 
         JSONObject requestJson = null;
-        try {
+//        try {
             requestJson = super.getRequestJsonParams();
             String partnerid = HySdkConstans.QUERY_PARTNER_ID;
             String method = "train_query";
@@ -38,19 +39,20 @@ public class QueryTicketPriceController extends BaseController {
             String train_date = requestJson.getString("train_date");
             String purpose_codes = "ADULT";
             responseJson = this.queryTicketPriceService.queryTicket(partnerid, method, from_station, to_station, train_date, purpose_codes);
-
-            if(responseJson.getBoolean("success")) {
-                requestJson.put("success", true);
-                requestJson.put("code", responseJson.getLong("code"));
-                requestJson.put("msg", responseJson.getString("msg"));
-            }
-
-            responseJson.put("success", false);
-            responseJson.put("code",responseJson.getLong("code"));
-            responseJson.put("msg", responseJson.getString("msg"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return responseJson;
+            final ResponseEntityBase<JSONObject> results = new ResponseEntityBase<>();
+            results.setData(responseJson);
+//            if(responseJson.getBoolean("success")) {
+//                requestJson.put("success", true);
+//                requestJson.put("code", responseJson.getLong("1"));
+//                requestJson.put("msg", responseJson.getString("msg"));
+//            }
+//
+//            responseJson.put("success", false);
+//            responseJson.put("code",responseJson.getLong("-1"));
+//            responseJson.put("msg", responseJson.getString("msg"));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        return results;
     }
 }
