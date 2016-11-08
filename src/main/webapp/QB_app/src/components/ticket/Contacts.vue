@@ -343,8 +343,8 @@ ul{
       line-height:42.5px;
 
       .del{
-        position: relative;
-        right: 140px;
+        height: 0;
+        float: left;
         font-size: 15px;
         color: #b9b9b9;
 

@@ -1128,3 +1128,9 @@
 [INFO] [2016-11-08 17:52:54][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
 [INFO] [2016-11-08 17:52:55][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
 [INFO] [2016-11-08 17:52:55][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 17:57:44][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 17:57:44][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 17:58:21][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 17:58:21][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 18:05:12][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 18:05:12][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
