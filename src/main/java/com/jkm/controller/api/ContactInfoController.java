@@ -33,22 +33,29 @@ public class ContactInfoController extends BaseController {
         JSONObject responseJson = new JSONObject();
         try{
             JSONObject requestJson = super.getRequestJsonParams();
-            requestJson.put("uid",super.getUid(requestJson.getString("appid"),requestJson.getString("uid")));
             log.info("联系人参数："+requestJson.toString());
-            JSONObject jo = contactInfoService.insert((TbContactInfo)JSONObject.toBean(requestJson));
-            if(jo.getBoolean("success")){
+            TbContactInfo ti = new TbContactInfo();
+            ti.setUid(super.getUid(requestJson.getString("appid"),requestJson.getString("uid")));
+            ti.setName(requestJson.getString("name"));
+            ti.setSex(requestJson.getInt("sex"));
+            ti.setIdentyType(requestJson.getString("identyType"));
+            ti.setIdenty(requestJson.getString("identy"));
+            ti.setTel(requestJson.getString("tel"));
+            ti.setPersonType(requestJson.getInt("personType"));
+            JSONObject jo = contactInfoService.insert(ti);
+            if(jo.getBoolean("result")){
                 responseJson.put("result", true);
                 responseJson.put("data",jo.getLong("data"));
                 responseJson.put("message", jo.getString("message"));
             }else{
                 responseJson.put("result", false);
-                responseJson.put("data", null);
+                responseJson.put("data", 0);
                 responseJson.put("message", jo.getString("message"));
             }
         }catch (Exception e){
             log.info(e.getMessage());
             responseJson.put("result", false);
-            responseJson.put("data", null);
+            responseJson.put("data", 0);
             responseJson.put("message", "添加异常");
         }
         return responseJson;

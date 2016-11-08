@@ -53,6 +53,14 @@ public class AuthenData {
 	 * 令牌
 	 */
 	private String token;
+	/**
+	 * 随机字符串
+	 */
+	private String nonceStr;
+	/**
+	 * 商户appid
+	 */
+	private String appId;
 
 	public String getMercId() {
 		return mercId;
@@ -158,4 +166,19 @@ public class AuthenData {
 		this.token = token;
 	}
 
+	public String getNonceStr() {
+		return nonceStr;
+	}
+
+	public void setNonceStr(String nonceStr) {
+		this.nonceStr = nonceStr;
+	}
+
+	public String getAppId() {
+		return appId;
+	}
+
+	public void setAppId(String appId) {
+		this.appId = appId;
+	}
 }

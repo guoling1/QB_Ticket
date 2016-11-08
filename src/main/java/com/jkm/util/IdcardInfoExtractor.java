@@ -100,8 +100,11 @@ public class IdcardInfoExtractor {
 
                 // 获取出生日期
                 String birthday = idcard.substring(6, 14);
-                Date birthdate = new SimpleDateFormat("yyyy-MM-dd")
-                        .parse(birthday);
+                birthday = birthday.substring(0,4)+"-"+birthday.substring(4,6)+"-"+birthday.substring(6,8);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+                Date birthdate = sdf.parse(birthday);
+
                 this.birthday = birthdate;
                 GregorianCalendar currentDay = new GregorianCalendar();
                 currentDay.setTime(birthdate);
@@ -183,7 +186,7 @@ public class IdcardInfoExtractor {
     }
 
     public static void main(String[] args) {
-        String idcard = "";
+        String idcard = "411085498605163658";
         IdcardInfoExtractor ie = new IdcardInfoExtractor(idcard);
         System.out.println(ie.toString());
     }
