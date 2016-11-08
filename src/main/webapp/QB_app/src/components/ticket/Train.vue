@@ -59,7 +59,7 @@
     name: 'menu',
     data () {
       return {
-        msg: 'Welcome to Your Vue.js App',
+        only: false,
         initStations: []
       }
     },
@@ -73,6 +73,7 @@
         train_date: date //乘车日期（yyyy-MM-dd）
       }).then(function (res) {
         next(function (vm) {
+          vm.$data.only = to.query.only;
           vm.$data.initStations = res.body.data;
         });
       }, function (err) {

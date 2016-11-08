@@ -10,23 +10,24 @@
           <div class="right">到达城市</div>
         </div>
         <div class="side write">
-          <div class="left" @click="station('stationONE')">{{$data.from}}</div>
+          <div class="left" @click="station('stationONE')">{{$dataT.from}}</div>
           <img class="middle" src="../../assets/exchange.png">
 
-          <div class="right" @click="station('stationTWO')">{{$data.to}}</div>
+          <div class="right" @click="station('stationTWO')">{{$dataT.to}}</div>
         </div>
       </div>
       <div class="time" @click="time('dateONE')">
-        <div class="show">{{$data.date}}</div>
+        <div class="show">{{$dataT.date}}</div>
       </div>
       <div class="option">
         <div class="show">只看高铁/动车</div>
-        <div class="check active">
+        <div class="check" v-bind:class="{active:$onlyG}" @click="onlyU">
           <div class="btn"></div>
         </div>
       </div>
       <router-link class="submit"
-                   :to="{path:'/ticket/train-menu/train',query:{date:$from.date,from:$from.from,to:$from.to}}">查询
+                   :to="{path:'/ticket/train-menu/train',query:{date:$from.date,from:$from.from,to:$from.to,only:$onlyG}}">
+        查询
       </router-link>
       <div class="history">
         <div>查询历史</div>
@@ -50,7 +51,7 @@
     },
     data: function () {
       return {
-        msg: 'Welcome to Your Vue.js App'
+        onlyG: false
       }
     },
     methods: {
@@ -65,10 +66,16 @@
           name: name,
           ctrl: true
         });
+      },
+      onlyU: function () {
+        this.$data.onlyG = !this.$data.onlyG;
       }
     },
     computed: {
-      $data: function () {
+      $onlyG: function () {
+        return this.$data.onlyG
+      },
+      $dataT: function () {
         return {
           date: this.$store.state.date.scope.dateONE.time,
           from: this.$store.state.station.scope.stationONE.station,

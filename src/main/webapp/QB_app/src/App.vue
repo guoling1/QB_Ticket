@@ -24,8 +24,8 @@
       }
     },
     methods: {
-      back: function (event) {
-        console.log('返回');
+      back: function () {
+        this.$router.go(-1);
       }
     },
     computed: {
