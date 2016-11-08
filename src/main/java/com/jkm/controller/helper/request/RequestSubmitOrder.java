@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +20,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestSubmitOrder {
+
+    /**
+     * appId
+     */
+    private String appId;
 
     /**
      * 用户id
@@ -101,7 +107,9 @@ public class RequestSubmitOrder {
     private List<Passenger> passengers;
 
     @Data
-    public class Passenger {
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Passenger {
         /**
          * 联系人id
          */

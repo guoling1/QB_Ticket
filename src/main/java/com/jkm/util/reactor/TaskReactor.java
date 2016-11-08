@@ -3,7 +3,7 @@ package com.jkm.util.reactor;
 import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.dsl.ProducerType;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import reactor.core.Environment;
@@ -25,8 +25,9 @@ import java.util.List;
  */
 @Component("taskReactor")
 @Scope("singleton")
-@Slf4j
 public class TaskReactor implements AutoCloseable {
+    private static Logger log = Logger.getLogger(TaskReactor.class);
+
     private final static int DEFAULT_EVENT_BACK_LOG = 4096;
     private final static int DEFAULT_THREAD_POOL_SIZE = 32;
     private final Reactor reactor;
@@ -51,7 +52,7 @@ public class TaskReactor implements AutoCloseable {
                      */
                     @Override
                     public void accept(final Throwable throwable) {
-                        log.error("AccountTaskReactor error:{}", throwable.getMessage(), throwable);
+                        log.error("taskReactor error:" + throwable.getMessage(), throwable);
                     }
                 }, ProducerType.MULTI, new BlockingWaitStrategy()));
     }
@@ -71,22 +72,22 @@ public class TaskReactor implements AutoCloseable {
     /**
      * 添加待处理事件
      *
-     * @param accountEvent 事件
+     * @param event 事件
      * @param <T>          事件类型
      */
-    public <T extends TaskEvent> void addEvent(final T accountEvent) {
-        this.reactor.notify(accountEvent.getClass(), Event.wrap(accountEvent));
+    public <T extends TaskEvent> void addEvent(final T event) {
+        this.reactor.notify(event.getClass(), Event.wrap(event));
     }
 
     /**
      * 添加待处理事件
      *
-     * @param accountEvent    事件
+     * @param event    事件
      * @param completeHandler 事件处理完的回调函数
      * @param <T>             事件类型
      */
-    public <T extends TaskEvent> void addEvent(final T accountEvent, final AbstractTaskProcessor<T> completeHandler) {
-        this.reactor.notify(accountEvent.getClass(), Event.wrap(accountEvent), completeHandler);
+    public <T extends TaskEvent> void addEvent(final T event, final AbstractTaskProcessor<T> completeHandler) {
+        this.reactor.notify(event.getClass(), Event.wrap(event), completeHandler);
     }
 
     /**
@@ -94,7 +95,6 @@ public class TaskReactor implements AutoCloseable {
      */
     @PostConstruct
     public void initialize() {
-        //TODO
         log.debug("开始注册reactor事件处理器");
         for (final ProcessorRegister processorRegister : this.processorRegisters) {
             processorRegister.register(this);
@@ -110,7 +110,7 @@ public class TaskReactor implements AutoCloseable {
             this.reactor.getDispatcher().awaitAndShutdown();
             //shutdownImpl();
         } catch (final Exception e) {
-            log.error("shutdown AccountTaskReactor error:{}", e.getMessage(), e);
+            log.error("shutdown taskReactor error:" + e.getMessage(), e);
         }
     }
 
@@ -133,7 +133,7 @@ public class TaskReactor implements AutoCloseable {
             if (dispatcher.awaitAndShutdown(DEFAULT_SHUTDOWN_WAIT_TIME, TimeUnit.SECONDS)) {
                 break;
             } else {
-                log.info("AccountTaskReactor shutdown time out");
+                log.info("taskReactor shutdown time out");
                 ++count;
                 if (count == TRY_SHUTDOWN_MAX_COUNT) {
                     forceShutdown(dispatcher);
@@ -143,7 +143,7 @@ public class TaskReactor implements AutoCloseable {
     }
 
     private void forceShutdown(final Dispatcher dispatcher) {
-        log.info("force shutdown AccountTaskReactor");
+        log.info("force shutdown taskReactor");
         dispatcher.halt();
         dispatcher.shutdown();
     }*/

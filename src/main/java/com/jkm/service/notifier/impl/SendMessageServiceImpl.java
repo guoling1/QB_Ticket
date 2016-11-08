@@ -18,8 +18,8 @@ import com.jkm.util.DateFormatUtil;
 import com.jkm.util.VelocityStringTemplate;
 import com.jkm.util.reactor.AbstractTaskProcessor;
 import com.jkm.util.reactor.TaskReactor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +31,11 @@ import java.util.List;
 /**
  * Created by konglingxin on 15/10/9.
  */
-@Slf4j
+
 @Service
 public class SendMessageServiceImpl implements SendMessageService, InitializingBean, DisposableBean {
+    private static Logger log = Logger.getLogger(SendMessageServiceImpl.class);
+
     @Autowired
     private SendMessageRecordDao sendMessageRecordDao;
 
@@ -213,15 +215,15 @@ public class SendMessageServiceImpl implements SendMessageService, InitializingB
 
         final String content = VelocityStringTemplate.process(messageTemplate.getMessageTemplate(), params.getData());
 
-        log.info("send msg[{}] to user[{}],mobile[{}]", content, params.getUid(), params.getMobile());
+        log.info("send msg[" + content + "] to user[" + params.getUid() + "],mobile[" + params.getMobile() + "]");
         try {
             this.ymSmsSdkService.sendInstantSms(SendInstantSmsParams.builder()
                     .message(content)
                     .phone(params.getMobile())
                     .build());
-            log.debug("用户[id={},mobile={}]发送短信[content={}]成功:{}", params.getUid(), params.getMobile(), content);
+            log.debug("用户[id=" + params.getUid() + ",mobile=" + params.getMobile() + "]发送短信[content=" + content + "]成功");
         } catch (final Throwable e) {
-            log.error("用户[" + params.getUid() + "]发送短信失败:{}", e.getMessage(), e);
+            log.error("用户[" + params.getUid() + "]发送短信失败:" + e.getMessage());
             throw new NoticeSendException("短信消息发送失败，失败原因:" + e.getMessage(), e);
         }
         final SendMessageRecord sendMessageRecord = recordSendMessage(params.getUid(),
@@ -240,7 +242,7 @@ public class SendMessageServiceImpl implements SendMessageService, InitializingB
 
         final String content = VelocityStringTemplate.process(messageTemplate.getMessageTemplate(), params.getData());
 
-        log.info("send msg[{}] to user[{}],mobile[{}]", content, params.getUid(), params.getMobile());
+        log.info("send msg[" + content + "] to user[" + params.getUid() + "],mobile[" + params.getMobile() + "]");
         try {
             final String sendtime = DateFormatUtil.format(params.getSendTime(), DateFormatUtil.yyyyMMddHHmmss);
             this.ymSmsSdkService.sendTimedSms(SendTimedSmsParams.builder()
@@ -248,10 +250,9 @@ public class SendMessageServiceImpl implements SendMessageService, InitializingB
                     .phone(params.getMobile())
                     .sendtime(sendtime)
                     .build());
-            log.debug("用户[id={},mobile={}]发送定时短信[content={},time={}]成功:{}",
-                    params.getUid(), params.getMobile(), sendtime, content);
+            log.debug("用户[id=" + params.getUid() + ",mobile=" + params.getMobile() + "]发送定时短信[content=" + content+ ",time=" + sendtime + "]成功");
         } catch (final Throwable e) {
-            log.error("用户[" + params.getUid() + "]发送短信失败:{}", e.getMessage(), e);
+            log.error("用户[" + params.getUid() + "]发送短信失败:" + e.getMessage());
             throw new NoticeSendException("短信消息发送失败，失败原因:" + e.getMessage(), e);
         }
         final SendMessageRecord sendMessageRecord = recordSendMessage(params.getUid(),

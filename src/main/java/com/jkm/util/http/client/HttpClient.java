@@ -2,7 +2,6 @@ package com.jkm.util.http.client;
 
 import com.google.common.base.Throwables;
 import com.jkm.util.http.client.factory.HttpClientAbstractFactory;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -16,6 +15,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
 
 import java.io.Closeable;
 import java.nio.charset.Charset;
@@ -26,8 +26,9 @@ import java.util.Map;
  * Created by hutao on 15/6/23.
  * 下午4:02
  */
-@Slf4j
 public class HttpClient implements Closeable {
+
+    private static Logger log = Logger.getLogger(HttpClient.class);
     /**
      * apache http client辅助抽象工厂
      */

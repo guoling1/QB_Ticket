@@ -5,7 +5,10 @@ import com.jkm.helper.notifier.SendMessageParams;
 import com.jkm.service.notifier.NoticeTemplateInitService;
 import com.jkm.service.notifier.SendMessageService;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +33,7 @@ public class SendMessageServiceImplTest {
 //                .uid(1)
 //                .noticeType(EnumNoticeType.BIND_MOBILE)
 //                .userType(EnumUserType.BACKGROUND_USER)
-//                .mobile("13096313005")
+//                .mobile("18640426296")
 //                .addMapData("code", "323233")
 //                .build();
 //        this.sendMessageService.sendMessage(sendMessageParams);

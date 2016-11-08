@@ -2,7 +2,6 @@ package com.jkm.util.http.client.factory;
 
 import com.google.common.base.Throwables;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.pool.BasePoolableObjectFactory;
 import org.apache.commons.pool.ObjectPool;
 import org.apache.commons.pool.impl.StackObjectPool;
@@ -17,6 +16,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContexts;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.net.ssl.HostnameVerifier;
@@ -31,8 +31,9 @@ import java.security.cert.X509Certificate;
  * TODO 后期用连接池做性能优化
  */
 @Component
-@Slf4j
 public class DefaultHttpClientAbstractFactory implements HttpClientAbstractFactory {
+    private static Logger log = Logger.getLogger(DefaultHttpClientAbstractFactory.class);
+
     /**
      * http client pool
      */

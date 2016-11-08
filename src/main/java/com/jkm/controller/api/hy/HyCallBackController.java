@@ -83,7 +83,7 @@ public class HyCallBackController extends BaseController {
         log.info("收到订单提交的异步通知:[" + jsonParams + "],签名结果[" + signCorrect + "]");
         this.postHandle("", "订单提交回调", 0, response.toString(), "", 0);
         if (signCorrect) {
-            this.ticketService.handleSubmitOrderCallbackResponse(this.getRequestJsonParams());
+            this.ticketService.handleSubmitOrderCallbackResponse(jsonParams);
             ResponseWriter.writeTxtResponse(response, "success");
             log.info("订单提交异步通知处理结束！！ 已经发送[success]");
         } else {
@@ -106,7 +106,7 @@ public class HyCallBackController extends BaseController {
         log.info("收到确认订单的异步通知:[" + jsonParams + "],签名结果[" + signCorrect + "]");
         this.postHandle("", "确认订单回调", 0, response.toString(), "", 0);
         if (signCorrect) {
-            this.ticketService.handleConfirmOrderCallbackResponse(this.getRequestJsonParams());
+            this.ticketService.handleConfirmOrderCallbackResponse(jsonParams);
             ResponseWriter.writeTxtResponse(response, "success");
             log.info("确认订单的异步通知处理结束！！ 已经发送[success]");
         } else {

@@ -10,7 +10,6 @@ import com.jkm.service.ys.helper.serialize.converter.ConverterLookUp;
 import com.jkm.service.ys.helper.serialize.converter.DefaultConverterLookUp;
 import com.jkm.service.ys.helper.serialize.converter.YsSdkSerializeConverter;
 import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.lang.reflect.Field;
@@ -22,7 +21,6 @@ import java.util.Map;
  * Created by yulong.zhang on 2016/9/29.
  */
 @UtilityClass
-@Slf4j
 public class YsSdkSerializeUtil {
 
     private static final ConverterLookUp converterLookUp = new DefaultConverterLookUp();

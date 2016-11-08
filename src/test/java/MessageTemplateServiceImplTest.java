@@ -4,7 +4,10 @@ import com.jkm.enums.notifier.EnumNoticeType;
 import com.jkm.helper.notifier.NotifierConstants;
 import com.jkm.service.notifier.MessageTemplateService;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -28,7 +31,7 @@ public class MessageTemplateServiceImplTest {
 //        assertThat(this.messageTemplateService.getTemplateByType(EnumNoticeType.MODIFY_PASSWORD).getId() > 0, is(true));
 //
 //    }
-
+//
 //    @Test
 //    public void testGetMessageTemplate() throws Exception {
 //

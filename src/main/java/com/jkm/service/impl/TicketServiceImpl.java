@@ -92,6 +92,7 @@ public class TicketServiceImpl implements TicketService {
     public Triple<Boolean, String, Long> submitOrder(final RequestSubmitOrder requestSubmitOrder) {
         log.info("开始创建订单！！");
         final OrderForm orderForm = new OrderForm();
+        this.userInfoService.insertUser(requestSubmitOrder.getUid());
         final Optional<TbContactInfo> contactInfoOptional = this.contactInfoService.selectByUid(requestSubmitOrder.getUid());
         Preconditions.checkState(contactInfoOptional.isPresent(), "订票人uid[" + requestSubmitOrder.getUid() + "]不存在");
         final UserInfo userInfo = this.userInfoService.selectByUid(requestSubmitOrder.getUid());
@@ -162,13 +163,13 @@ public class TicketServiceImpl implements TicketService {
 //        final String code = jsonObject.getString("code");
         final boolean success = jsonObject.getBoolean("success");
         if (success) {// && ("802".equals(code) || "905".equals(code))
-            log.info("订单提交受理成功(占座成功)--等待回调！！！");
+            log.info("订单提交受理成功(占座请求成功)--等待回调！！！");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_REQUESTING.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_REQUESTING.getValue());
             this.orderFormService.update(orderForm);
             return Triple.of(true, jsonObject.getString("msg"), orderForm.getId());
         } else {
-            log.info("占座失败!request:[" + jsonObject.toString() + "]");
+            log.info("占座请求失败!request:[" + jsonObject.toString() + "]");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_FAIL.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_FAIL.getValue());
             this.orderFormService.update(orderForm);

@@ -2,7 +2,6 @@ package com.jkm.controller.api;
 
 import com.google.common.base.Preconditions;
 import com.jkm.controller.common.BaseController;
-import com.jkm.entity.BindCard;
 import com.jkm.entity.TbContactInfo;
 import com.jkm.service.ContactInfoService;
 import net.sf.json.JSONObject;
@@ -34,14 +33,27 @@ public class ContactInfoController extends BaseController {
         try{
             JSONObject requestJson = super.getRequestJsonParams();
             log.info("联系人参数："+requestJson.toString());
+
             TbContactInfo ti = new TbContactInfo();
             ti.setUid(super.getUid(requestJson.getString("appid"),requestJson.getString("uid")));
-            ti.setName(requestJson.getString("name"));
-            ti.setSex(requestJson.getInt("sex"));
-            ti.setIdentyType(requestJson.getString("identyType"));
-            ti.setIdenty(requestJson.getString("identy"));
-            ti.setTel(requestJson.getString("tel"));
-            ti.setPersonType(requestJson.getInt("personType"));
+            if(requestJson.get("name")!=null){
+                ti.setName(requestJson.getString("name"));
+            }
+            if(requestJson.get("sex")!=null){
+                ti.setSex(requestJson.getInt("sex"));
+            }
+            if(requestJson.get("identyType")!=null){
+                ti.setIdentyType(requestJson.getString("identyType"));
+            }
+            if(requestJson.get("identy")!=null){
+                ti.setIdenty(requestJson.getString("identy"));
+            }
+            if(requestJson.get("tel")!=null){
+                ti.setTel(requestJson.getString("tel"));
+            }
+            if(requestJson.get("personType")!=null){
+                ti.setPersonType(requestJson.getInt("personType"));
+            }
             JSONObject jo = contactInfoService.insert(ti);
             if(jo.getBoolean("result")){
                 responseJson.put("result", true);
@@ -126,7 +138,30 @@ public class ContactInfoController extends BaseController {
         try{
             JSONObject requestJson = super.getRequestJsonParams();
             log.info("联系人参数："+requestJson.toString());
-            int rowNum = contactInfoService.updateByPrimaryKeySelective((TbContactInfo)JSONObject.toBean(requestJson));
+            TbContactInfo ti = new TbContactInfo();
+            ti.setUid(super.getUid(requestJson.getString("appid"),requestJson.getString("uid")));
+            if(requestJson.get("name")!=null){
+                ti.setName(requestJson.getString("name"));
+            }
+            if(requestJson.get("sex")!=null){
+                ti.setSex(requestJson.getInt("sex"));
+            }
+            if(requestJson.get("identyType")!=null){
+                ti.setIdentyType(requestJson.getString("identyType"));
+            }
+            if(requestJson.get("identy")!=null){
+                ti.setIdenty(requestJson.getString("identy"));
+            }
+            if(requestJson.get("tel")!=null){
+                ti.setTel(requestJson.getString("tel"));
+            }
+            if(requestJson.get("personType")!=null){
+                ti.setPersonType(requestJson.getInt("personType"));
+            }
+            if(requestJson.get("id")!=null){
+                ti.setId(requestJson.getLong("id"));
+            }
+            int rowNum = contactInfoService.updateByPrimaryKeySelective(ti);
             responseJson.put("result", true);
             responseJson.put("data",rowNum);
             responseJson.put("message", "修改成功");

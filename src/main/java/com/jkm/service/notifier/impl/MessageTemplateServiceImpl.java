@@ -4,7 +4,6 @@ import com.jkm.dao.notifier.MessageTemplateDao;
 import com.jkm.entity.notifier.SmsTemplate;
 import com.jkm.enums.notifier.EnumNoticeType;
 import com.jkm.service.notifier.MessageTemplateService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,7 @@ import java.util.List;
  * Created by konglingxin on 15/11/4.
  */
 
-@Slf4j
+
 @Service
 public class MessageTemplateServiceImpl implements MessageTemplateService {
     @Autowired

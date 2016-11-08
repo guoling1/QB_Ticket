@@ -1,7 +1,8 @@
 package com.jkm.entity.fusion;
 
-import com.jkm.entity.fusion.body.RequestBody100005;
+import com.jkm.entity.fusion.body.RequestBody200005;
 import com.jkm.entity.fusion.head.RequestHead;
+import com.jkm.entity.fusion.head.RequestHead20005;
 
 import javax.xml.bind.annotation.*;
 
@@ -11,26 +12,25 @@ import javax.xml.bind.annotation.*;
 @XmlType(name = "AIPG",propOrder={"info", "body"})
 @XmlRootElement(name="AIPG")
 public class Request200005 {
-		@XmlElement(name="INFO")
-		private RequestHead info;
-		@XmlElement(name="BODY")
-		private RequestBody100005 body;
+	@XmlElement(name="INFO")
+	private RequestHead20005 info;
+	@XmlElement(name="BODY")
+	private RequestBody200005 body;
 
-		public RequestHead getInfo() {
-			return info;
-		}
+	public RequestHead20005 getInfo() {
+		return info;
+	}
 
-		public void setInfo(RequestHead info) {
-			this.info = info;
-		}
+	public void setInfo(RequestHead20005 info) {
+		this.info = info;
+	}
 
-		public RequestBody100005 getBody() {
-			return body;
-		}
+	public RequestBody200005 getBody() {
+		return body;
+	}
 
-		public void setBody(RequestBody100005 body) {
-			this.body = body;
-		}
-
+	public void setBody(RequestBody200005 body) {
+		this.body = body;
+	}
 }
 

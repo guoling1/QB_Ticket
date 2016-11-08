@@ -1,6 +1,6 @@
 package com.jkm.util;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.log4j.Logger;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -16,8 +16,10 @@ import java.security.NoSuchAlgorithmException;
  * Created by huangwei on 11/9/15.
  * AES 加解密
  */
-@Slf4j
 public final class AES {
+
+    private static Logger log = Logger.getLogger(AES.class);
+
     private AES() {
     }
 
