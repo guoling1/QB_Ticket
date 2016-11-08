@@ -77,7 +77,7 @@
       },
       $from: function () {
         return {
-          date: '2016-12-06',
+          date: this.$store.state.date.scope.dateONE.code,
           from: this.$store.state.station.scope.stationONE.code,
           to: this.$store.state.station.scope.stationTWO.code
         };

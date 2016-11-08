@@ -15,8 +15,16 @@
           <div>五</div>
           <div class="weekend">六</div>
         </div>
-        <div>
-          123
+        <div class="day">
+          <div class="module" v-for="month in calendar">
+            <div>{{month.year}}年{{month.month}}月</div>
+            <ul>
+              <li v-for="(day,index) in month.days" v-if="index < month.firstDay"></li>
+              <li v-for="(day,index) in month.days" @click="close(month.year,month.month,index+1)"
+                  v-bind:class="{lost:!day.active,weekend:day.weekend}">{{day.day}}
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -58,7 +66,9 @@
     let maxDay = getMaxDayOfMonth(year, month);
     let days = [];
     for (let i = 1; i <= maxDay; i++) {
+      let week = (new Date(year, month - 1, i)).getDay();
       let info = {
+        weekend: (week == 0 || week == 6),
         active: false,
         day: i
       };
@@ -68,19 +78,18 @@
   };
 
   // 转换方法
-  const transform = function (days, now, openTime) {
+  const transform = function (middleware, now, openTime) {
     let activeDay = 0;
-    for (let i = 1; i < days.length - 1; i++) {
-      console.log(days);
-      for (let m = 0; m < days[i].length; m++) {
-        if (days[i][m]['day'] == now) {
-          days[i][m]['active'] = true;
+    for (let i = 0; i < middleware.length; i++) {
+      for (let m = 0; m < middleware[i]['days'].length; m++) {
+        if (middleware[i]['days'][m]['day'] == now || activeDay > 0) {
+          middleware[i]['days'][m]['active'] = true;
           activeDay++;
         }
         if (activeDay == openTime)break;
       }
     }
-    return days;
+    return middleware;
   };
 
   // 基础数据/方法
@@ -88,7 +97,6 @@
   // 生成 日历 所需要的的数据 从当前月份开始
   const createCalendar = function (maxMonth) {
     let calendarData = [];
-    calendarData.push(openTime);
     // 基础数据
     let now = getNowDate();
     for (let i = 0; i < maxMonth; i++) {
@@ -104,27 +112,29 @@
       // 计算 月份第一天是星期几
       middleware['firstDay'] = getFirstDayIsWeek(middleware.year, middleware.month);
       middleware['days'] = getDayOfMonth(middleware.year, middleware.month);
-      middleware['days'] = transform(middleware['days'], now.day, openTime);
-      // 转换 days 添加参数是否激活
       calendarData.push(middleware);
     }
+    // 转换 days 添加参数是否激活
+    calendarData = transform(calendarData, now.day, openTime);
     return calendarData;
   };
-
-  console.log(createCalendar(3));
 
   export default {
     name: 'Datetime',
     data () {
       return {
-        datetime: '今天'
+        datetime: '今天',
+        calendar: createCalendar(3)
       }
     },
     methods: {
-      close: function () {
+      close: function (year, month, day) {
+        let week = (new Date(year, month - 1, day)).getDay();
+        let weekWord = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
         this.$store.commit('TIME_CLOSE', {
           ctrl: false,
-          time: '12月30日 周几?'
+          code: year + '-' + month + '-' + day,
+          time: year + '年' + month + '月' + day + '日 ' + weekWord[week]
         });
       }
     },
@@ -204,6 +214,39 @@
         float: left;
         &.weekend {
           color: orange;
+        }
+      }
+    }
+    .day {
+      width: 100%;
+      overflow: auto;
+      .module {
+        div {
+          width: 100%;
+          height: 35px;
+          line-height: 35px;
+          font-size: 15px;
+          color: #111;
+          text-align: center;
+        }
+        ul {
+          width: 100%;
+          overflow: hidden;
+          li {
+            width: 14.285%;
+            height: 35px;
+            line-height: 35px;
+            font-size: 14px;
+            color: #111;
+            text-align: center;
+            float: left;
+            &.weekend {
+              color: orange;
+            }
+            &.lost {
+              color: #999;
+            }
+          }
         }
       }
     }
