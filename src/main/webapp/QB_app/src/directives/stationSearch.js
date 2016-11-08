@@ -17,11 +17,18 @@ export default {
       stationList[parsing_middleware[5]].code = parsing_middleware[2];
       stationList[parsing_middleware[5]].fullname = parsing_middleware[3];
       stationList[parsing_middleware[5]].shortname = parsing_middleware[4];
-      stationList['length'] = i;
+      stationList['length'] = i + 1;
     }
-    // 添加 搜索input 和 模糊匹配显示区ul
+    // 添加 搜索input 和 模糊匹配显示区ul (包括主体样式)
+    var header = document.createElement('div');
+    header.className = 'header';
+    var close = document.createElement('div');
+    close.className = 'close';
+
     var input = document.createElement('input');
     var ul = document.createElement('ul');
+
+    // 车站检索事件
     input.addEventListener('input', function () {
       let val = input.value;
       let matchList = [];
@@ -53,13 +60,15 @@ export default {
       for (let i = 0; i < matchList.length; i++) {
         var li = document.createElement('li');
         li.addEventListener('click', function () {
-          binding.value.closeEvent(matchList[i].code, matchList[i].city);
+          binding.value.closeEvent(event, matchList[i].code, matchList[i].city);
         });
         li.innerHTML = matchList[i].city;
         ul.appendChild(li);
       }
       el.appendChild(ul);
     });
-    el.appendChild(input);
+    header.appendChild(close);
+    header.appendChild(input);
+    el.appendChild(header);
   }
 }
