@@ -9,76 +9,47 @@
       </div>
       <span class="next show">后一天</span>
     </div>
-    <ul>
-      <li>
+    <div v-if="stations.empty">没有符合查询条件的车次</div>
+    <ul v-if="!stations.empty">
+      <li v-for="station in stations.data">
         <div class="top">
-          <span class="checi">G307</span>
+          <span class="checi">{{station.train_code}}</span>
 
           <div class="topRight">
-            <p>￥850<span>起</span></p>
-            <span class="time">7小时25分</span>
+            <p>￥{{station.low_price}}<span>起</span></p>
+            <span class="time">{{station.run_time}}</span>
           </div>
           <div class="topMiddle">
             <div class="form">
-              <span class="static">北京西</span>
-              <span class="formTime">19:24</span>
+              <span class="static">{{station.start_station_name}}</span>
+              <span class="formTime">{{station.start_time}}</span>
             </div>
-            <div class="line">
-              <span class="icon"></span>
-              <img src="../../assets/jiantou.png" alt=""/>
-            </div>
+            <div class="line"></div>
             <div class="to">
-              <span class="static">深圳</span>
-              <span class="toTime">14:00</span>
+              <span class="static">{{station.to_station_name}}</span>
+              <span class="toTime">{{station.arrive_time}}</span>
             </div>
           </div>
         </div>
         <div class="bottom">
-          <p>
-            二等座:<span class="num">12</span>张
-          </p>
+          <p v-if="station.edz_num!='--'">二等座:<span class="num">{{station.edz_num}}</span>张</p>
 
-          <p>
-            二等座:<span class="num">12</span>张
-          </p>
+          <p v-if="station.ydz_num!='--'">一等座:<span class="num">{{station.ydz_num}}</span>张</p>
+
+          <p v-if="station.swz_num!='--'">商务座:<span class="num">{{station.swz_num}}</span>张</p>
+
+          <p v-if="station.yz_num!='--'">硬座:<span class="num">{{station.yz_num}}</span>张</p>
+
+          <p v-if="station.rz_num!='--'">软座:<span class="num">{{station.rz_num}}</span>张</p>
+
+          <p v-if="station.yw_num!='--'">硬卧:<span class="num">{{station.yw_num}}</span>张</p>
+
+          <p v-if="station.rw_num!='--'">软卧:<span class="num">{{station.rw_num}}</span>张</p>
+
+          <p v-if="station.wz_num!='--'">无座:<span class="num">{{station.wz_num}}</span>张</p>
         </div>
       </li>
-      <li class="select">
-        <div class="top">
-          <span class="checi">G307</span>
-
-          <div class="topRight">
-            <p>￥850<span>起</span></p>
-            <span class="time">7小时25分</span>
-          </div>
-          <div class="topMiddle">
-            <div class="form">
-              <span class="static">北京西</span>
-              <span class="formTime">19:24</span>
-            </div>
-            <div class="line">
-              <span class="icon"></span>
-              <img src="../../assets/jiantou.png" alt=""/>
-            </div>
-            <div class="to">
-              <span class="static">深圳</span>
-              <span class="toTime">14:00</span>
-            </div>
-          </div>
-        </div>
-        <div class="bottom">
-          <p>
-            二等座:<span class="num">12</span>张
-          </p>
-
-          <p>
-            二等座:<span class="num">12</span>张
-          </p>
-        </div>
-      </li>
-      {{stations}}
     </ul>
-
   </div>
 </template>
 
@@ -101,7 +72,6 @@
         to_station: tos, //到达站简码
         train_date: date //乘车日期（yyyy-MM-dd）
       }).then(function (res) {
-        console.log(res);
         next(function (vm) {
           vm.$data.initStations = res.body.data;
         });
@@ -112,7 +82,28 @@
     },
     computed: {
       stations () {
-        return this.initStations
+        if (this.initStations) {
+          // 计算最低价
+          let checkPrice = ['edz_price', 'gjrw_price', 'gjrws_price', 'qtxb_price', 'rw_price', 'rwx_price', 'rz_price', 'swz_price', 'tdz_price', 'wz_price', 'ydz_price', 'yw_price', 'ywx_price', 'ywz_price', 'yz_price'];
+          for (let i = 0; i < this.initStations.length; i++) {
+            let lowPrice = 1000000000;
+            for (let m = 0; m < checkPrice.length; m++) {
+              if (this.initStations[i][checkPrice[m]] != 0) {
+                if (lowPrice >= this.initStations[i][checkPrice[m]]) {
+                  lowPrice = this.initStations[i][checkPrice[m]]
+                }
+              }
+            }
+            this.initStations[i]['low_price'] = lowPrice;
+          }
+          return {
+            empty: false,
+            data: this.initStations
+          };
+        }
+        return {
+          empty: true
+        };
       }
     }
   }
@@ -132,7 +123,7 @@
   .main {
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
     background: #f6f6f6;
     .flexItem(1, 100%);
 
@@ -225,12 +216,11 @@
         .topMiddle {
           margin: 0 auto;
           height: 34px;
-          width: 138px;
-
+          width: 184px;
+          position: relative;
           .form {
             float: left;
             font-size: 16px;
-            width: 50px;
             height: 34px;
             line-height: 17px;
             .static {
@@ -244,27 +234,17 @@
             }
           }
           .line {
-            float: left;
-            position: relative;
-            left: 10px;
-
-            .icon {
-              overflow: hidden;
-              display: inline-block;
-              vertical-align: 10px;
-              border-bottom: 2px solid #000;
-              width: 24px;
-            }
-            img {
-              position: relative;
-              top: -12px;
-              left: -11px;
-            }
+            width: 24px;
+            height: 4px;
+            background: url("../../assets/jiantou.png") no-repeat center;
+            background-size: 24px 4px;
+            position: absolute;
+            left: 80px;
+            top: 10px;
           }
           .to {
             float: right;
             font-size: 16px;
-            width: 50px;
             height: 34px;
             line-height: 17px;
             .static {
@@ -277,7 +257,9 @@
               top: 4px;
             }
           }
-
+          span {
+            display: block;
+          }
         }
       }
 
