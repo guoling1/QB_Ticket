@@ -19,7 +19,7 @@
     <update id="updateStatus">
         UPDATE tb_verification_code SET status = #{status} WHERE id = #{id} AND status != #{status}
     </update>
-    <select id="selectLast" resultType="com.jkm.lenovo.notifier.entity.VerificationCode">
+    <select id="selectLast" resultType="com.jkm.entity.notifier.VerificationCode">
         SELECT * FROM tb_verification_code WHERE mobile = #{mobile} AND type = #{type}
         ORDER BY id DESC LIMIT 1
     </select>
