@@ -126,7 +126,16 @@ public class ContactInfoController extends BaseController {
         try{
             JSONObject requestJson = super.getRequestJsonParams();
             log.info("联系人参数："+requestJson.toString());
-            int rowNum = contactInfoService.updateByPrimaryKeySelective((TbContactInfo)JSONObject.toBean(requestJson));
+            TbContactInfo ti = new TbContactInfo();
+            ti.setUid(super.getUid(requestJson.getString("appid"),requestJson.getString("uid")));
+            ti.setName(requestJson.getString("name"));
+            ti.setSex(requestJson.getInt("sex"));
+            ti.setIdentyType(requestJson.getString("identyType"));
+            ti.setIdenty(requestJson.getString("identy"));
+            ti.setTel(requestJson.getString("tel"));
+            ti.setPersonType(requestJson.getInt("personType"));
+            ti.setId(requestJson.getLong("id"));
+            int rowNum = contactInfoService.updateByPrimaryKeySelective(ti);
             responseJson.put("result", true);
             responseJson.put("data",rowNum);
             responseJson.put("message", "修改成功");

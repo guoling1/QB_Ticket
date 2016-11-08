@@ -37,4 +37,17 @@ public interface AuthenService {
 	 * @return
 	 */
 	public Map<String, Object> toPay(JSONObject requestData);
+
+	/**
+	 * 支付订单查询
+	 * @param requestData
+	 * @return
+	 */
+	public Map<String, Object> queryQuickPay(JSONObject requestData);
+	/**
+	 * 单笔退款结果查询
+	 * @param requestData
+	 * @return
+	 */
+	public Map<String, Object> queryRefund(JSONObject requestData);
 }

@@ -127,7 +127,8 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     @Override
     public int updateByPrimaryKeySelective(TbContactInfo tbContactInfo) {
         if("1".equals(tbContactInfo.getIdentyType())){
-            IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(tbContactInfo.getIdenty());
+            TbContactInfo ti = contactInfoDao.selectById(tbContactInfo.getId());
+            IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(ti.getIdenty());
             tbContactInfo.setBirthday(idcardInfo.getYear()+"-"+idcardInfo.getMonth()+"-"+idcardInfo.getDay());
         }
         return contactInfoDao.updateByPrimaryKeySelective(tbContactInfo);

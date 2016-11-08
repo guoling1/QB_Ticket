@@ -423,4 +423,24 @@ public class AuthenServiceImpl implements AuthenService {
 		}
 		return ret;
 	}
+
+	/**
+	 * 支付订单查询
+	 * @param requestData
+	 * @return
+	 */
+	@Override
+	public Map<String, Object> queryQuickPay(JSONObject requestData) {
+		return null;
+	}
+
+	/**
+	 * 退款单查询
+	 * @param requestData
+	 * @return
+	 */
+	@Override
+	public Map<String, Object> queryRefund(JSONObject requestData) {
+		return null;
+	}
 }
