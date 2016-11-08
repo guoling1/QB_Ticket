@@ -2,7 +2,6 @@ package com.jkm.controller.api;
 
 import com.google.common.base.Preconditions;
 import com.jkm.controller.common.BaseController;
-import com.jkm.entity.BindCard;
 import com.jkm.entity.TbContactInfo;
 import com.jkm.service.ContactInfoService;
 import net.sf.json.JSONObject;
