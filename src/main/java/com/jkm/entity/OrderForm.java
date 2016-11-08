@@ -203,7 +203,8 @@ public class OrderForm extends BaseEntity {
      * @return
      */
     public boolean isCanCancelOrder() {
-        return  this.getStatus() == EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId();
+        return  this.getStatus() == EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId()
+                || this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId();
     }
 
     /**
@@ -242,5 +243,15 @@ public class OrderForm extends BaseEntity {
      */
     public boolean isBuyInsuance(){
         return this.buyTicketPackageId > 0;
+    }
+
+    /**
+     * 是否是 退款中或者退款失败
+     *
+     * @return
+     */
+    public boolean isRefundIngOrRefundFail() {
+        return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_REFUND_ING.getId()
+                || this.getStatus() == EnumOrderFormStatus.ORDER_FORM_REFUND_FAIL.getId();
     }
 }

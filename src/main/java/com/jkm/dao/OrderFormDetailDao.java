@@ -62,12 +62,12 @@ public interface OrderFormDetailDao {
     /**
      * 按订单号和乘客id,票类型
      *
-     * @param orderId
+     * @param orderFormId
      * @param passengerId
      * @param piaoType
      * @return
      */
-    OrderFormDetail selectByOrderFormIdAndPassengerIdAndPiaoType(@Param("orderId") String orderId, @Param("passengerId") int passengerId, @Param("piaoType") String piaoType);
+    OrderFormDetail selectByOrderFormIdAndPassengerIdAndPiaoType(@Param("orderFormId") long orderFormId, @Param("passengerId") int passengerId, @Param("piaoType") String piaoType);
 
     /**
      *

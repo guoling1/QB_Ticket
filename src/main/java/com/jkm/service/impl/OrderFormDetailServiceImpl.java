@@ -96,16 +96,16 @@ public class OrderFormDetailServiceImpl implements OrderFormDetailService {
     /**
      * {@inheritDoc}
      *
-     * @param orderId
+     * @param orderFormId
      * @param passengerId
      * @param piaoType
      * @return
      */
     @Override
-    public Optional<OrderFormDetail> selectByOrderFormIdAndPassengerIdAndPiaoType(final String orderId,
+    public Optional<OrderFormDetail> selectByOrderFormIdAndPassengerIdAndPiaoType(final long orderFormId,
                                                                                   final int passengerId, final String piaoType) {
         return Optional.fromNullable(
-                this.orderFormDetailDao.selectByOrderFormIdAndPassengerIdAndPiaoType(orderId, passengerId, piaoType));
+                this.orderFormDetailDao.selectByOrderFormIdAndPassengerIdAndPiaoType(orderFormId, passengerId, piaoType));
     }
 
     /**

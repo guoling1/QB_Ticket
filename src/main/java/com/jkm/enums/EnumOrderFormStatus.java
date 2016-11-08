@@ -81,7 +81,22 @@ public enum EnumOrderFormStatus {
     /**
      * 订单取消
      */
-    ORDER_FORM_CANCEL(13, "订单取消");
+    ORDER_FORM_CANCEL(13, "订单取消"),
+
+    /**
+     * 退款中
+     */
+    ORDER_FORM_REFUND_ING(14, "退款中"),
+
+    /**
+     * 退款成功
+     */
+    ORDER_FORM_REFUND_SUCCESS(15, "退款成功"),
+
+    /**
+     * 退款失败
+     */
+    ORDER_FORM_REFUND_FAIL(16, "退款失败");
 
     @Getter
     private int id;

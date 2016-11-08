@@ -3,6 +3,7 @@ package com.jkm.dao;
 import com.jkm.entity.OrderForm;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -80,4 +81,13 @@ public interface OrderFormDao {
      * @return
      */
     int updateStatus(OrderForm orderForm);
+
+    /**
+     * 查询过了支付时间的订单
+     *
+     * @param expireDate
+     * @param statusList
+     * @return
+     */
+    List<OrderForm> selectExpiredOrderForms(@Param("expireDate") Date expireDate, @Param("statusList") List<Integer> statusList);
 }

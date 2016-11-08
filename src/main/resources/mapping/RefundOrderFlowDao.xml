@@ -10,6 +10,7 @@
         refund_amount,
         original_amount,
         refund_reason,
+        msg,
         status
         )
         VALUES
@@ -20,6 +21,7 @@
         #{refundAmount},
         #{originalAmount},
         #{refundReason},
+        #{msg},
         #{status}
         );
     </insert>
@@ -33,6 +35,7 @@
         refund_amount = #{refundAmount},
         original_amount = #{originalAmount},
         refund_reason = #{refundReason},
+        msg = #{msg},
         status = #{status}
         WHERE id = #{id}
     </update>

@@ -46,6 +46,11 @@ public class RefundOrderFlow extends BaseEntity {
     private String refundReason;
 
     /**
+     * 退款结果
+     */
+    private String msg;
+
+    /**
      * 是否是 退款已成功
      *
      * @return

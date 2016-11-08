@@ -18,7 +18,7 @@ public class TicketScheduled {
     /**
      * 处理超时支付的订单
      */
-    @Scheduled(cron = "* 0/1 * * * ?")
+    @Scheduled(cron = "* 0/15 * * * ?")
     public void handleExpiredOrderForm() {
         this.orderFormService.handleExpiredOrderForm();
     }
