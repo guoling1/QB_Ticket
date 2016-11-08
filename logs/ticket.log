@@ -1,34 +1,190 @@
-[INFO] [2016-11-03 20:18:56][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-03 20:18:58][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-03 20:19:08][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-03 20:19:14][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-03 20:19:16][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-03 20:19:33][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-03 20:28:14][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-03 20:29:32][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-03 20:40:12][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-03 20:40:16][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-03 20:40:44][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-03 20:41:30][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-03 21:05:58][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-04 14:53:29][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"HBB","train_date":"2016-12-06"}
-[INFO] [2016-11-04 14:54:24][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"HBB","train_date":"2016-12-06"}
-[INFO] [2016-11-04 14:54:34][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"HBB","train_date":"2016-12-06"}
-[INFO] [2016-11-04 14:54:44][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"HBB","train_date":"2016-12-06"}
-[INFO] [2016-11-04 14:54:55][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"HBB","train_date":"2016-12-06"}
-[INFO] [2016-11-04 14:55:05][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"HBB","train_date":"2016-12-06"}
-[INFO] [2016-11-04 14:55:24][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"HBB","train_date":"2016-12-06"}
-[INFO] [2016-11-04 14:55:54][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"HBB","train_date":"2016-12-06"}
-[INFO] [2016-11-04 14:56:28][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-04 15:18:16][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-04 15:19:05][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-04 15:24:09][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-04 15:28:18][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-04 15:28:49][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-04 15:28:54][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-04 15:30:13][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-04 15:30:37][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-04 15:30:51][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-04 15:31:10][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-04 15:31:42][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"VAP","to_station":"VNP","train_date":"2016-12-06"}
-[INFO] [2016-11-04 19:41:28][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"SHH","train_date":"2016-12-06"}
+[INFO] [2016-11-08 00:01:46][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:01:46][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:01:47][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:01:47][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:02:04][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:02:04][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:02:14][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:02:14][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:07:01][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:07:01][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:07:02][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:07:02][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:07:18][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:07:18][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:09:48][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:09:48][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:09:56][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"","sex":1,"identyType":"","identy":"","tel":13146716739,"personType":""}
+[INFO] [2016-11-08 00:09:56][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"","sex":1,"identyType":"","identy":"","tel":13146716739,"personType":""}
+[INFO] [2016-11-08 00:09:56][com.jkm.controller.api.ContactInfoController]JSONObject["personType"] is not a number.
+[INFO] [2016-11-08 00:10:01][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:10:01][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:10:10][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:10:10][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:11:15][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:11:15][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:11:16][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:11:16][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:11:23][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"2张三","sex":1,"identyType":"二代身份证","identy":"211082198605163634","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:11:23][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"2张三","sex":1,"identyType":"二代身份证","identy":"211082198605163634","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:11:23][com.jkm.controller.api.ContactInfoController]JSONObject["personType"] is not a number.
+[INFO] [2016-11-08 00:11:26][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"2张三","sex":1,"identyType":"二代身份证","identy":"211082198605163634","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:11:26][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"2张三","sex":1,"identyType":"二代身份证","identy":"211082198605163634","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:11:26][com.jkm.controller.api.ContactInfoController]JSONObject["personType"] is not a number.
+[INFO] [2016-11-08 00:11:30][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:11:30][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:12:05][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:12:05][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:12:57][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:12:57][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:13:17][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:13:17][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:18:46][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:18:46][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:18:46][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:18:46][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:18:58][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"1","sex":1,"identyType":"二代身份证","identy":"11","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:18:58][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"1","sex":1,"identyType":"二代身份证","identy":"11","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:18:58][com.jkm.controller.api.ContactInfoController]JSONObject["personType"] is not a number.
+[INFO] [2016-11-08 00:19:07][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"1","sex":1,"identyType":"二代身份证","identy":"11","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:19:07][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"1","sex":1,"identyType":"二代身份证","identy":"11","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:19:07][com.jkm.controller.api.ContactInfoController]JSONObject["personType"] is not a number.
+[INFO] [2016-11-08 00:19:12][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:19:12][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:19:14][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"","sex":1,"identyType":"","identy":"","tel":13146716739,"personType":""}
+[INFO] [2016-11-08 00:19:14][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"","sex":1,"identyType":"","identy":"","tel":13146716739,"personType":""}
+[INFO] [2016-11-08 00:19:14][com.jkm.controller.api.ContactInfoController]JSONObject["personType"] is not a number.
+[INFO] [2016-11-08 00:19:56][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:19:56][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:19:57][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:19:57][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:21:35][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:21:35][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:21:56][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:21:56][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:23:03][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:23:03][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:28:33][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:28:33][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:28:46][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"","sex":1,"identyType":"","identy":"","tel":13146716739,"personType":""}
+[INFO] [2016-11-08 00:28:46][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"","sex":1,"identyType":"","identy":"","tel":13146716739,"personType":""}
+[INFO] [2016-11-08 00:28:46][com.jkm.controller.api.ContactInfoController]JSONObject["personType"] is not a number.
+[INFO] [2016-11-08 00:28:57][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:28:57][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:29:03][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"2张三","sex":1,"identyType":"二代身份证","identy":"211082198605163634","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:29:03][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"2张三","sex":1,"identyType":"二代身份证","identy":"211082198605163634","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:29:03][com.jkm.controller.api.ContactInfoController]JSONObject["personType"] is not a number.
+[INFO] [2016-11-08 00:30:21][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:30:22][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:30:22][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:30:22][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:30:31][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"1","sex":1,"identyType":"二代身份证","identy":"11","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:30:31][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"1","sex":1,"identyType":"二代身份证","identy":"11","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:30:31][com.jkm.controller.api.ContactInfoController]JSONObject["personType"] is not a number.
+[INFO] [2016-11-08 00:31:37][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:31:37][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:31:41][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"2张三","sex":1,"identyType":"二代身份证","identy":"211082198605163634","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:31:41][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"2张三","sex":1,"identyType":"二代身份证","identy":"211082198605163634","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:31:41][com.jkm.controller.api.ContactInfoController]JSONObject["personType"] is not a number.
+[INFO] [2016-11-08 00:33:36][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:33:36][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:33:37][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:33:37][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:33:40][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"1","sex":1,"identyType":"二代身份证","identy":"11","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:33:40][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"1","sex":1,"identyType":"二代身份证","identy":"11","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:33:40][com.jkm.controller.api.ContactInfoController]JSONObject["personType"] is not a number.
+[INFO] [2016-11-08 00:34:56][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"1","sex":1,"identyType":"二代身份证","identy":"11","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:34:56][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"1","sex":1,"identyType":"二代身份证","identy":"11","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:34:56][com.jkm.controller.api.ContactInfoController]JSONObject["personType"] is not a number.
+[INFO] [2016-11-08 00:35:34][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:35:34][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:35:39][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"","sex":1,"identyType":"","identy":"","tel":13146716739,"personType":""}
+[INFO] [2016-11-08 00:35:39][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"","sex":1,"identyType":"","identy":"","tel":13146716739,"personType":""}
+[INFO] [2016-11-08 00:35:39][com.jkm.controller.api.ContactInfoController]JSONObject["personType"] is not a number.
+[INFO] [2016-11-08 00:35:42][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:35:42][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:35:48][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"2张三","sex":1,"identyType":"二代身份证","identy":"211082198605163634","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:35:48][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"2张三","sex":1,"identyType":"二代身份证","identy":"211082198605163634","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:35:48][com.jkm.controller.api.ContactInfoController]JSONObject["personType"] is not a number.
+[INFO] [2016-11-08 00:35:50][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:35:50][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:35:54][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:35:54][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:36:04][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"111","sex":1,"identyType":"1","identy":"254","tel":13146716739,"personType":"1"}
+[INFO] [2016-11-08 00:36:04][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"111","sex":1,"identyType":"1","identy":"254","tel":13146716739,"personType":"1"}
+[INFO] [2016-11-08 00:36:07][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:36:07][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:40:45][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:40:45][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:40:53][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:40:53][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:40:58][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:40:58][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:42:42][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:42:42][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:42:43][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:42:43][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:46:13][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:46:13][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:46:14][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:46:14][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:46:24][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"12321","sex":1,"identyType":"二代身份证","identy":"11","tel":13146716739,"personType":"成人","id":21}
+[INFO] [2016-11-08 00:46:24][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"12321","sex":1,"identyType":"二代身份证","identy":"11","tel":13146716739,"personType":"成人","id":21}
+[INFO] [2016-11-08 00:46:24][com.jkm.controller.api.ContactInfoController]net.sf.ezmorph.bean.MorphDynaBean cannot be cast to com.jkm.entity.TbContactInfo
+[INFO] [2016-11-08 00:46:27][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"12321","sex":1,"identyType":"二代身份证","identy":"11","tel":13146716739,"personType":"成人","id":21}
+[INFO] [2016-11-08 00:46:27][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"12321","sex":1,"identyType":"二代身份证","identy":"11","tel":13146716739,"personType":"成人","id":21}
+[INFO] [2016-11-08 00:46:27][com.jkm.controller.api.ContactInfoController]net.sf.ezmorph.bean.MorphDynaBean cannot be cast to com.jkm.entity.TbContactInfo
+[INFO] [2016-11-08 00:47:50][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"123211213213","sex":1,"identyType":"二代身份证","identy":"11","tel":13146716739,"personType":"成人","id":21}
+[INFO] [2016-11-08 00:47:50][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"123211213213","sex":1,"identyType":"二代身份证","identy":"11","tel":13146716739,"personType":"成人","id":21}
+[INFO] [2016-11-08 00:47:50][com.jkm.controller.api.ContactInfoController]net.sf.ezmorph.bean.MorphDynaBean cannot be cast to com.jkm.entity.TbContactInfo
+[INFO] [2016-11-08 00:50:01][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:50:01][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:50:04][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"2张三","sex":1,"identyType":"二代身份证","identy":"211082198605163634","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:50:04][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"2张三","sex":1,"identyType":"二代身份证","identy":"211082198605163634","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:50:04][com.jkm.controller.api.ContactInfoController]JSONObject["personType"] is not a number.
+[INFO] [2016-11-08 00:50:14][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:50:14][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:50:16][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"","sex":1,"identyType":"","identy":"","tel":13146716739,"personType":""}
+[INFO] [2016-11-08 00:50:16][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"","sex":1,"identyType":"","identy":"","tel":13146716739,"personType":""}
+[INFO] [2016-11-08 00:50:16][com.jkm.controller.api.ContactInfoController]JSONObject["personType"] is not a number.
+[INFO] [2016-11-08 00:51:23][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:51:23][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:51:26][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"1","sex":1,"identyType":"二代身份证","identy":"1111","tel":13146716739,"personType":"成人","id":22}
+[INFO] [2016-11-08 00:51:26][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"1","sex":1,"identyType":"二代身份证","identy":"1111","tel":13146716739,"personType":"成人","id":22}
+[INFO] [2016-11-08 00:51:26][com.jkm.controller.api.ContactInfoController]net.sf.ezmorph.bean.MorphDynaBean cannot be cast to com.jkm.entity.TbContactInfo
+[INFO] [2016-11-08 00:51:31][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:51:31][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:51:34][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"","sex":1,"identyType":"","identy":"","tel":13146716739,"personType":""}
+[INFO] [2016-11-08 00:51:34][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"","sex":1,"identyType":"","identy":"","tel":13146716739,"personType":""}
+[INFO] [2016-11-08 00:51:34][com.jkm.controller.api.ContactInfoController]JSONObject["personType"] is not a number.
+[INFO] [2016-11-08 00:51:44][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:51:44][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:51:53][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"2张","sex":1,"identyType":"二代身份证","identy":"211082198605163634","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:51:53][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"2张","sex":1,"identyType":"二代身份证","identy":"211082198605163634","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:51:53][com.jkm.controller.api.ContactInfoController]JSONObject["personType"] is not a number.
+[INFO] [2016-11-08 00:52:10][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"2张","sex":1,"identyType":"二代身份证","identy":"211082198605163634","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:52:10][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"2张","sex":1,"identyType":"二代身份证","identy":"211082198605163634","tel":13146716739,"personType":"成人"}
+[INFO] [2016-11-08 00:52:10][com.jkm.controller.api.ContactInfoController]JSONObject["personType"] is not a number.
+[INFO] [2016-11-08 00:53:11][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:53:11][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:53:23][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"22","sex":1,"identyType":"2","identy":"222","tel":13146716739,"personType":"2"}
+[INFO] [2016-11-08 00:53:23][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"22","sex":1,"identyType":"2","identy":"222","tel":13146716739,"personType":"2"}
+[INFO] [2016-11-08 00:53:47][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:53:47][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 00:53:56][com.jkm.controller.common.BaseController]请求参数为：{"uid":1,"appid":1,"name":"1222","sex":1,"identyType":"二代身份证","identy":"1111","tel":13146716739,"personType":"成人","id":22}
+[INFO] [2016-11-08 00:53:56][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":1,"appid":1,"name":"1222","sex":1,"identyType":"二代身份证","identy":"1111","tel":13146716739,"personType":"成人","id":22}
+[INFO] [2016-11-08 00:53:56][com.jkm.controller.api.ContactInfoController]net.sf.ezmorph.bean.MorphDynaBean cannot be cast to com.jkm.entity.TbContactInfo
+[INFO] [2016-11-08 00:56:25][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1","id":21,"name":"张三","sex":0,"identyType":"1","identy":"411082158605163634","tel":"13146716739","personType":"1"}
+[INFO] [2016-11-08 00:56:25][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1","id":21,"name":"张三","sex":0,"identyType":"1","identy":"411082158605163634","tel":"13146716739","personType":"1"}
+[INFO] [2016-11-08 00:56:25][com.jkm.controller.api.ContactInfoController]net.sf.ezmorph.bean.MorphDynaBean cannot be cast to com.jkm.entity.TbContactInfo
+[INFO] [2016-11-08 01:00:09][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1","id":21}
+[INFO] [2016-11-08 01:00:09][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1","id":21}
+[INFO] [2016-11-08 01:00:09][com.jkm.controller.api.ContactInfoController]
+### Error updating database.  Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'WHERE id = 21' at line 4
+### The error may involve com.jkm.dao.ContactInfoDao.updateStatus-Inline
+### The error occurred while setting parameters
+### SQL: UPDATE tb_contact_info         SET         status =1,         WHERE id = ?
+### Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'WHERE id = 21' at line 4
+; bad SQL grammar []; nested exception is com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'WHERE id = 21' at line 4
+[INFO] [2016-11-08 01:01:46][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
+[INFO] [2016-11-08 01:01:46][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}

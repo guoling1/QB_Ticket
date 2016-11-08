@@ -2,10 +2,7 @@ package com.jkm.service.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.jkm.entity.GetParamRecord;
-import com.jkm.entity.OrderForm;
-import com.jkm.entity.PayResultRecord;
-import com.jkm.entity.RefundResultRecord;
+import com.jkm.entity.*;
 import com.jkm.entity.fusion.*;
 import com.jkm.entity.fusion.body.RequestBody100003;
 import com.jkm.entity.fusion.body.RequestBody100004;
@@ -48,7 +45,8 @@ public class AuthenServiceImpl implements AuthenService {
 	private TicketService ticketService;
 	@Autowired
 	private GetParamRecordService getParamRecordService;
-
+	@Autowired
+	private BindCardService bindCardService;
 	/**
 	 * 快捷支付
 	 * @param requestData
@@ -417,10 +415,38 @@ public class AuthenServiceImpl implements AuthenService {
 		Map<String, Object> ret = this.fastPay(authenData);
 		if((boolean)ret.get("retCode")==true){//支付成功
 			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),ret.get("reqSn").toString(),true);
+			BindCard bindCard = new BindCard();
+			bindCard.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+			bindCard.setCardNo(requestData.getString("crdNo"));
+			bindCard.setAccountName(requestData.getString("capCrdNm"));
+			bindCard.setCardType("00");
+			bindCard.setCardId(requestData.getString("idNo"));
+			bindCard.setPhone(requestData.getString("phoneNo"));
+			bindCardService.insertSelective(bindCard);
 		}else{//支付失败
 			orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId());
 			orderFormService.updateStatus(orderFormOptional.get());
 		}
 		return ret;
+	}
+
+	/**
+	 * 支付订单查询
+	 * @param requestData
+	 * @return
+	 */
+	@Override
+	public Map<String, Object> queryQuickPay(JSONObject requestData) {
+		return null;
+	}
+
+	/**
+	 * 退款单查询
+	 * @param requestData
+	 * @return
+	 */
+	@Override
+	public Map<String, Object> queryRefund(JSONObject requestData) {
+		return null;
 	}
 }
