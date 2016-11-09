@@ -2,7 +2,5 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.dao.QueryHistoryDao">
 
-    <select id="loadByBinNo" resultType="com.jkm.entity.BankCardBin">
-        SELECT * from tb_bank_card_bin where bin_no=#{binNo}
-    </select>
+
 </mapper>
