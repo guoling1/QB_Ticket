@@ -31,20 +31,12 @@
         </div>
       </div>
       <div class="space no-border">
-        <div class="group no-border">
+        <div class="group no-border" v-for="passenger in passengers">
           <div class="list"></div>
           <div class="write no-prompt">
-            <span class="name">成龙</span>
-            120********1234
-            <span class="info">成人票</span>
-          </div>
-        </div>
-        <div class="group no-border">
-          <div class="list"></div>
-          <div class="write no-prompt">
-            <span class="name">成凤</span>
-            120********4321
-            <span class="info">成人票</span>
+            <span class="name">{{passenger.name}}</span>
+            {{passenger.identy}}
+            <span class="info">{{passenger.personType}}票</span>
           </div>
         </div>
       </div>
@@ -132,10 +124,10 @@
           runTime: "",           //运行分钟
           checi: "",           //车次
           buyTicketPackageId: 1,    //出票套餐
-          passengers: {         //乘客
+          passengers: [{         //乘客
             id: 1,       //乘客id
             piaoType: 1  //乘客类型
-          }
+          }]
         },
         otherData: {
           table: ''
@@ -173,6 +165,17 @@
       }
     },
     computed: {
+      passengers: function () {
+        let storeDate = this.$store.state.contact.info;
+        let data = [];
+        for (let i in storeDate) {
+          if (storeDate[i]) {
+            data.push(storeDate[i]);
+          }
+        }
+        this.$data.sureOrder.passengers = data;
+        return data;
+      },
       pageInfo () {
         return {
           table: this.$data.otherData.table,
@@ -197,7 +200,7 @@
   .main {
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
     .flexItem(1, 100%);
     background-color: #f5f5f5;
   }

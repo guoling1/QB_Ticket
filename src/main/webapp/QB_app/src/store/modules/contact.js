@@ -4,7 +4,7 @@
 
 const state = {
   ctrl: false,
-  scope: {}
+  info: {}
 };
 
 const mutations = {
@@ -13,6 +13,7 @@ const mutations = {
   },
   CONTACT_CLOSE (state, obj) {
     state.ctrl = obj.ctrl;
+    state.info = obj.info;
   }
 };
 
