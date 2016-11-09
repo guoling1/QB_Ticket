@@ -54,9 +54,9 @@ public class MessageListenerImpl implements MessageListener {
     @Override
     public Action consume(Message message, ConsumeContext consumeContext) {
         try {
-            System.out.println(new Date() + " Receive message, Topic is:" +
-                    message.getTopic() + ", MsgId is:" + message.getMsgID()+",body is:"+new String(message.getBody(),"UTF-8")+" tags is:"
-                    +message.getTag());
+//            System.out.println(new Date() + " Receive message, Topic is:" +
+//                    message.getTopic() + ", MsgId is:" + message.getMsgID()+",body is:"+new String(message.getBody(),"UTF-8")+" tags is:"
+//                    +message.getTag());
 
             if(MqConfig.FAST_PAY_QUERY.equals(message.getTag())){//快捷支付
                 String body = new String(message.getBody(),"UTF-8");
@@ -81,6 +81,7 @@ public class MessageListenerImpl implements MessageListener {
                     MqProducer.sendMessage(jo,MqConfig.FAST_PAY_QUERY,10000);//再次发请求
                 }
             }else if(MqConfig.SINGLE_REFUND_QUERY.equals(message.getTag())){//退款
+                System.out.println("msgId ====="+message.getMsgID());
                 String body = new String(message.getBody(),"UTF-8");
                 JSONObject jo = JSONObject.fromObject(body);
                 QueryRefundData queryRefundData = new QueryRefundData();
@@ -107,7 +108,6 @@ public class MessageListenerImpl implements MessageListener {
                 this.orderFormService.handleExpiredOrderForm(jo.getLong("orderFormId"));
             }
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
         }
         //如果想测试消息重投的功能,可以将Action.CommitMessage 替换成Action.ReconsumeLater
         return Action.CommitMessage;
