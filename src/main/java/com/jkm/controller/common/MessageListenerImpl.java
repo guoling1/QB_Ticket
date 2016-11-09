@@ -50,6 +50,7 @@ public class MessageListenerImpl implements MessageListener {
     private TicketService ticketService;
     @Autowired
     private OrderFormService orderFormService;
+
     @Override
     public Action consume(Message message, ConsumeContext consumeContext) {
         try {
@@ -100,6 +101,10 @@ public class MessageListenerImpl implements MessageListener {
                 }else if("-1000".equals(resultMap.get("retCode").toString())){
                     MqProducer.sendMessage(jo,MqConfig.SINGLE_REFUND_QUERY,10000);//再次发请求
                 }
+            } else if (MqConfig.TICKET_CANCEL_EXPIRED_ORDER.equals(message.getTag())) {//取消订单
+                String body = new String(message.getBody(),"UTF-8");
+                JSONObject jo = JSONObject.fromObject(body);
+                this.orderFormService.handleExpiredOrderForm(jo.getLong("orderFormId"));
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

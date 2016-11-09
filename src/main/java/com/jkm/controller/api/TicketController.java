@@ -1,6 +1,7 @@
 package com.jkm.controller.api;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
 import com.jkm.controller.helper.request.*;
@@ -9,6 +10,7 @@ import com.jkm.entity.OrderForm;
 import com.jkm.service.OrderFormService;
 import com.jkm.service.TicketService;
 import com.jkm.service.TrainTripsQueryService;
+import com.jkm.util.ValidateUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.log4j.Logger;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 /**
@@ -73,6 +76,7 @@ public class TicketController extends BaseController{
     public ResponseEntityBase<ResponseSubmitOrder> submitOrder(@RequestBody final RequestSubmitOrder request) {
         final ResponseEntityBase<ResponseSubmitOrder> results = new ResponseEntityBase<>();
         request.setUid(super.getUid(request.getAppId(), request.getUid()));
+        Preconditions.checkState(ValidateUtils.isMobile(request.getMobile()));
         final Triple<Boolean, String, Long> submitOrderResult = this.ticketService.submitOrder(request);
         final ResponseSubmitOrder responseBookTicket = new ResponseSubmitOrder();
         if (submitOrderResult.getLeft()) {
