@@ -10,7 +10,7 @@ const now = function () {
     day = '0' + day;
   }
   return {
-    time: date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + day + '日 ' + weekWord[date.getDay()],
+    time: (date.getMonth() + 1) + '月' + day + '日 ' + weekWord[date.getDay()],
     code: date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + day
   }
 };

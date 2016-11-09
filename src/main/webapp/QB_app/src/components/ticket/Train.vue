@@ -7,7 +7,7 @@
         10月31日 周五
         <img src="../../assets/calendar.png" alt=""/>
       </div>
-      <span class="next show" @click="test">后一天</span>
+      <span class="next show">后一天</span>
     </div>
     <div v-if="stations.empty">没有符合查询条件的车次</div>
     <ul v-if="!stations.empty">
@@ -61,8 +61,8 @@
       return {
         only: false,
         initStations: [],
-        stations: [],
-        screenConfig: 1
+        // 火车票筛选信息
+        screenConfig: this.$store.state.screen.config
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -82,11 +82,6 @@
         console.log(err);
         next(false);
       })
-    },
-    methods: {
-      test: function () {
-        this.$data.screenConfig++;
-      }
     },
     computed: {
       stations () {

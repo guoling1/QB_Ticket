@@ -137,7 +137,7 @@
         this.$store.commit('TIME_CLOSE', {
           ctrl: false,
           code: year + '-' + month + '-' + day,
-          time: year + '年' + month + '月' + day + '日 ' + weekWord[week]
+          time: month + '月' + day + '日 ' + weekWord[week]
         });
       }
     },
