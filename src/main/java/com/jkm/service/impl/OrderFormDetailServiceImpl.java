@@ -70,6 +70,16 @@ public class OrderFormDetailServiceImpl implements OrderFormDetailService {
 
     /**
      * {@inheritDoc}
+     * @param id
+     * @return
+     */
+    @Override
+    public Optional<OrderFormDetail> selectByIdWithLock(long id) {
+        return Optional.fromNullable(this.orderFormDetailDao.selectByIdWithLock(id));
+    }
+
+    /**
+     * {@inheritDoc}
      *
      * @param orderFormId
      * @return

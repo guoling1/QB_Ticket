@@ -79,7 +79,6 @@ public class BindCardController extends BaseController {
         }catch (Exception e){
             log.info(e.getMessage());
             responseJson.put("result", false);
-            responseJson.put("data",null);
             responseJson.put("message", "调用失败");
         }
         return responseJson;
@@ -105,13 +104,11 @@ public class BindCardController extends BaseController {
                 responseJson.put("message", "删除成功");
             }else{
                 responseJson.put("result", false);
-                responseJson.put("data",null);
                 responseJson.put("message", "删除失败");
             }
         }catch (Exception e){
             log.info(e.getMessage());
             responseJson.put("result", false);
-            responseJson.put("data",null);
             responseJson.put("message", "删除失败");
         }
         return responseJson;

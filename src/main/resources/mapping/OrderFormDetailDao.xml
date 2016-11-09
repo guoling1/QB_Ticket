@@ -99,5 +99,8 @@
     <select id="selectByGrabTicketFormId" resultType="com.jkm.entity.OrderFormDetail">
         SELECT * FROM tb_order_form_detail WHERE grab_ticket_form_id = #{grabTicketFormId}
     </select>
+    <select id="selectByIdWithLock" resultType="com.jkm.entity.OrderFormDetail">
+        SELECT * FROM tb_order_form_detail WHERE id = #{id}  FOR UPDATE
+    </select>
 
 </mapper>

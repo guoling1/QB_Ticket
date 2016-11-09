@@ -414,6 +414,10 @@ public class TicketServiceImpl implements TicketService {
         final Optional<OrderFormDetail> orderFormDetailOptional = this.orderFormDetailService.selectById(orderFormDetailId);
         Preconditions.checkArgument(orderFormDetailOptional.isPresent() , "订单不存在");
         final OrderFormDetail orderFormDetail = orderFormDetailOptional.get();
+        //判断订单的状态是否可退
+        if(orderFormDetail.getStatus() != EnumOrderFormDetailStatus.TICKET_BUY_SUCCESS.getId()){
+            return Pair.of(false, "此订单不能退票");
+        }
         //判断是否是 代购票还是抢购票
         if (orderFormDetail.getIsGrab() == 0){
             //是代购票
@@ -432,6 +436,7 @@ public class TicketServiceImpl implements TicketService {
             this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_REQUESTING);
             final RefundTicketFlow flow = new RefundTicketFlow();
             flow.setOrderFormId(orderForm.getId());
+            flow.setGrabTicketFormId(0);
             flow.setOrderFormDetailId(orderFormDetailId);
             flow.setApplyTime(applyTime);
             flow.setTicketNo(orderFormDetail.getTicketNo());
@@ -459,6 +464,7 @@ public class TicketServiceImpl implements TicketService {
             JSONArray jsonArray = new JSONArray();
             jsonArray.add(obj);
             try{
+                //
                 final HyReturnTicketResponse response = this.hySdkService.returnTicket(request, jsonArray);
                 if(response.getSuccess().equals("true")){
                     this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_REQUEST_SUCCESS);
@@ -587,7 +593,7 @@ public class TicketServiceImpl implements TicketService {
                 returnMoneyOrder.setOrderFormDetailId(orderFormDetail.getId());
                 returnMoneyOrder.setOrderFormSn(paymentSn);
                 returnMoneyOrder.setRemark("线上退票退款");
-                if (object.getInt("ResultId") == 0) {
+                if (object.getInt("resultId") == 0) {
                     //退保成功 , 计算退款金额, 退款金额 = 该乘客票款实退金额 + 出票套餐
                     //更新保险单状态
                     this.policyOrderService.updateStatusById(policyOrder.getId(), EnumPolicyOrderStatus.POLICY_RETURN_SUCCESS);
@@ -608,7 +614,7 @@ public class TicketServiceImpl implements TicketService {
                     //有出票套餐
                     if (buyTicketPackageId != EnumBuyTicketPackageType.TICKET_PACKAGE_FIRST.getId()) {
                         returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()));
-                        returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(0));
+                        returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice()));
                     } else {
                         //无出票套餐
                         returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()));

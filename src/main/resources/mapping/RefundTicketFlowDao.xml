@@ -19,10 +19,10 @@
         SET order_form_id = #{orderFormId},
         grab_ticket_form_id = #{grabTicketFormId},
         order_form_detail_id =#{orderFormDetailId},
-        ticket_no = #{applyTime},
+        ticket_no = #{ticketNo},
         apply_time = #{applyTime},
         success_time=#{successTime},
-        return_money =#{returnmoney},
+        returnmoney =#{returnmoney},
         remark = #{remark},
         status = #{status} where id = #{id}
     </update>

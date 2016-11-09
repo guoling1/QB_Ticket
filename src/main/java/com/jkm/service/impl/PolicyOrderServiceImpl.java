@@ -16,8 +16,6 @@ import com.jkm.util.IdcardInfoExtractor;
 import com.jkm.util.SnGenerator;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.apache.regexp.RE;
-import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,13 +23,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 
-import static java.awt.SystemColor.info;
-
 /**
  * Created by yuxiang on 2016-11-02.
  */
 @Service
 public class PolicyOrderServiceImpl implements PolicyOrderService {
+
+    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(PolicyOrderServiceImpl.class);
 
     @Autowired
     private PolicyOrderDao policyOrderDao;
@@ -85,6 +83,7 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
     @Override
     @Transactional
     public void batchBuyPolicy(long orderFormId) {
+        log.info("订单orderFromId:" + orderFormId + "申请购买保险!!!");
         final OrderForm orderForm = this.orderFormService.selectById(orderFormId).get();
         //没买套餐,不买保险
         if(orderForm.getBuyTicketPackageId() == EnumBuyTicketPackageType.TICKET_PACKAGE_FIRST.getId()){
@@ -176,10 +175,12 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
             request.setCardNo(input.getCardNo());
             request.setBirthday(DateFormatUtil.format(input.getBirthday() , DateFormatUtil.yyyy_MM_dd));
             request.setPhone(input.getPhone());
+            log.info("订单orderFromId:" + orderFormId + "小订单:"+ input.getOrderFormDetailId() + "申请购买保险!!!发送请求中...........");
             final JSONArray jsonArray = this.hySdkService.postPolicyOrder(request);
             final JSONObject jsonObject = jsonArray.getJSONObject(0);
 
             if(jsonObject.getInt("resultId") == 0){
+                log.info("订单orderFromId:" + orderFormId + "小订单:"+ input.getOrderFormDetailId() + "申请购买保险!!!保险购买成功...........");
                 //成功
                 input.setPolicyNo(jsonObject.getString("policyNo"));
                 input.setRemark(jsonObject.getString("resultErrDesc"));
@@ -187,6 +188,8 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
                 input.setApplyNo(jsonObject.getString("applyNo"));
                 input.setStatus(EnumPolicyOrderStatus.POLICY_BUY_SUCCESS.getId());
             }else{
+                log.error("订单orderFromId:" + orderFormId + "小订单:"+ input.getOrderFormDetailId() +
+                        "申请购买保险!!!保险购买失败......失败原因:" + jsonObject.getString("resultErrDesc"));
                 input.setPolicyNo(jsonObject.getString("policyNo"));
                 input.setRemark(jsonObject.getString("resultErrDesc"));
                 input.setStatus(EnumPolicyOrderStatus.POLICY_BUY_FAIL.getId());
@@ -204,6 +207,7 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
     @Transactional
     @Override
     public void batchBuyGrabPolicy(long grabTicketFormId) {
+        log.info("抢票单grabTicketFormId:" + grabTicketFormId + "申请购买保险!!!");
         final GrabTicketForm orderForm = this.grabTicketFromService.selectById(grabTicketFormId).get();
         //没买套餐,不买保险
         if(orderForm.getBuyTicketPackage() == EnumBuyTicketPackageType.TICKET_PACKAGE_FIRST.getId()){
@@ -246,7 +250,7 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
                         policyOrder.setInsProductNo(HySdkConstans.PERSON);
                     }
                     // 如果是身份证, 则截取
-                    if(input.getPassportTypeSeId() == EnumCertificatesType.SECOND_ID_CARD.getId()){
+                    if(input.getPassportTypeSeId() .equals( EnumCertificatesType.SECOND_ID_CARD.getId())){
                         final IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(input.getPassportSeNo());
                         policyOrder.setGender(idcardInfo.getGender());
                         policyOrder.setCardType(EnumCardType.SECOND_ID_CARD.getId());
@@ -294,16 +298,22 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
             request.setCardNo(input.getCardNo());
             request.setBirthday(DateFormatUtil.format(input.getBirthday() , DateFormatUtil.yyyy_MM_dd));
             request.setPhone(input.getPhone());
+            log.info("抢票单grabTicketFormId:" + grabTicketFormId + "小订单:"+ input.getOrderFormDetailId() + "申请购买保险!!!发送请求中...........");
             final JSONArray jsonArray = this.hySdkService.postPolicyOrder(request);
             final JSONObject jsonObject = jsonArray.getJSONObject(0);
-            input.setPolicyNo(jsonObject.getString("policyNo"));
-            input.setRemark(jsonObject.getString("resultErrDesc"));
-            input.setPrintNo(jsonObject.getString("printNo"));
-            input.setApplyNo(jsonObject.getString("applyNo"));
             if(jsonObject.getInt("resultId") == 0){
                 //成功
+                log.info("抢票单grabTicketFormId:" + grabTicketFormId + "小订单:"+ input.getOrderFormDetailId() + "申请购买保险!!!保险购买成功...........");
+                input.setPolicyNo(jsonObject.getString("policyNo"));
+                input.setRemark(jsonObject.getString("resultErrDesc"));
+                input.setPrintNo(jsonObject.getString("printNo"));
+                input.setApplyNo(jsonObject.getString("applyNo"));
                 input.setStatus(EnumPolicyOrderStatus.POLICY_BUY_SUCCESS.getId());
             }else{
+                log.error("抢票单grabTicketFormId:" + grabTicketFormId + "小订单:"+ input.getOrderFormDetailId() +
+                        "申请购买保险!!!保险购买失败......失败原因:" + jsonObject.getString("resultErrDesc"));
+                input.setPolicyNo(jsonObject.getString("policyNo"));
+                input.setRemark(jsonObject.getString("resultErrDesc"));
                 input.setStatus(EnumPolicyOrderStatus.POLICY_BUY_FAIL.getId());
             }
             this.policyOrderDao.update(input);

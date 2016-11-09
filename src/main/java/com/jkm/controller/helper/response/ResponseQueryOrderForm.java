@@ -154,5 +154,9 @@ public class ResponseQueryOrderForm {
          */
         private BigDecimal price;
 
+        /**
+         * 状态
+         */
+        private int status;
     }
 }
