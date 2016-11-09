@@ -15,17 +15,22 @@
         <div class="icon icon-still"></div>
         <p>只看有票</p>
       </div>
-      <div class="btn" :class="">
+      <div class="btn" :class="" @click="open">
         <div class="icon icon-screen"></div>
-        <p>综合筛选</p>
+        <p>综合筛选1</p>
       </div>
     </div>
+    <screen></screen>
   </div>
 </template>
 
 <script lang="babel">
+  import Screen from './Screen.vue';
   export default {
     name: 'menu',
+    components: {
+      Screen
+    },
     data () {
       return {
         pathName: this.$route.name
@@ -34,6 +39,13 @@
     watch: {
       $route: function (val) {
         this.$data.pathName = val.name;
+      }
+    },
+    methods: {
+      open: function () {
+        this.$store.commit('SCREEN_OPEN', {
+          ctrl: true
+        });
       }
     }
   }
