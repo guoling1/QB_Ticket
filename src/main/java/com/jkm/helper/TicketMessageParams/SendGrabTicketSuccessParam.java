@@ -34,12 +34,12 @@ public class SendGrabTicketSuccessParam {
     private String trainNo;
 
     /**
-     * 出发日期
+     * 出发日期 yyyy-MM-dd
      */
     private String startDate;
 
     /**
-     * 出发时间
+     * 出发时间  HH:mm
      */
     private String startTime;
 
