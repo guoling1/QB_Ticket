@@ -81,4 +81,6 @@ public interface OrderFormDetailDao {
      * @return
      */
     List<OrderFormDetail> selectByGrabTicketFormId(long grabTicketFormId);
+
+    OrderFormDetail selectByIdWithLock(long id);
 }

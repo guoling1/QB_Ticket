@@ -45,6 +45,14 @@ public interface OrderFormDetailService {
     Optional<OrderFormDetail> selectById(long id);
 
     /**
+     *按id查询车票
+     *
+     * @param id
+     * @return
+     */
+    Optional<OrderFormDetail> selectByIdWithLock(long id);
+
+    /**
      * 按订单id查询所有车票
      *
      * @return
