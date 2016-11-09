@@ -78,7 +78,7 @@
             <div class="amount">实付款<span class="red">￥</span><span class="red big">128.5</span></div>
             <div class="i"></div>
           </div>
-          <div class="right">提交订单</div>
+          <div class="right" @click="submit">提交订单</div>
         </div>
       </div>
     </div>
@@ -109,8 +109,8 @@
     data: function () {
       return {
         sureOrder: {
-          appId: "wnl",     //appid
-          uid: "123456",  //用户id
+          appId: "1",     //appid
+          uid: "1",  //用户id
           mobile: '15010607970',   //联系手机号
           price: 00.0,    //票价
           fromStationName: "",  //出发站
@@ -125,16 +125,14 @@
           runTime: "",           //运行分钟
           checi: "",           //车次
           buyTicketPackageId: 1,    //出票套餐
-          passengers: [{         //乘客
-            id: 1,       //乘客id
-            piaoType: 1  //乘客类型
-          }]
+          passengers: [] // 乘客信息
         },
         otherData: {
           table: '',
           startShow: '',
           arriveShow: '',
-          runShow: ''
+          runShow: '',
+          passengers: []
         }
       }
     },
@@ -164,6 +162,14 @@
       login: function () {
         this.$router.push({path: '/ticket/login'});
       },
+      submit: function () {
+        console.log(this.$data.sureOrder);
+        this.$http.post('/ticket/submitOrder', this.$data.sureOrder).then(function (res) {
+          console.log(res);
+        }, function (err) {
+          console.log(err);
+        });
+      },
       contact: function () {
         this.$store.commit("CONTACT_OPEN", {
           ctrl: true
@@ -177,12 +183,20 @@
       passengers: function () {
         let storeDate = this.$store.state.contact.info;
         let data = [];
+        this.$data.sureOrder.passengers = [];
+        let type = {
+          '成人': 1, '儿童': 2, '学生': 3, '伤残军人': 4
+        };
         for (let i in storeDate) {
           if (storeDate[i]) {
             data.push(storeDate[i]);
+            console.log(storeDate[i]);
+            this.$data.sureOrder.passengers.push({
+              id: storeDate[i].id,
+              piaoType: type[storeDate[i].personType]
+            })
           }
         }
-        this.$data.sureOrder.passengers = data;
         return data;
       },
       pageInfo () {
