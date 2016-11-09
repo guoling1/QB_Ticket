@@ -20,6 +20,6 @@ public class TicketScheduled {
      */
     @Scheduled(cron = "* 0/15 * * * ?")
     public void handleExpiredOrderForm() {
-        this.orderFormService.handleExpiredOrderForm();
+//        this.orderFormService.handleExpiredOrderForm();
     }
 }

@@ -57,9 +57,9 @@ public class TicketController extends BaseController{
         return result;
     }
 
-    @RequestMapping(value = "/test", method =RequestMethod.POST)
-    public void select(){
-        final Optional<OrderForm> orderFormOptional = this.orderFormService.selectById(125);
+    @RequestMapping(value = "/test", method =RequestMethod.GET)
+    public void select(final long id){
+        final Optional<OrderForm> orderFormOptional = this.orderFormService.selectById(id);
         this.ticketService.confirmOrder(orderFormOptional.get());
     }
     /**

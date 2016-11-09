@@ -230,7 +230,7 @@ public class TicketServiceImpl implements TicketService {
             }
 
             //########################## 处理保险策略 ################################
-            if (InsurancePolicyUtil.isOpenPolicy && !orderForm.isBuyInsuance()) {
+            if (InsurancePolicyUtil.isOpenPolicy && !orderForm.isBuyInsurance()) {
                 this.handleInsurancePolicy(orderForm);
                 return;
             }
@@ -297,9 +297,8 @@ public class TicketServiceImpl implements TicketService {
     @Transactional
     public void handleConfirmOrderCallbackResponse(final JSONObject jsonObject) {
         log.info("确认订单--回调函数处理中");
-        final String orderId = jsonObject.getString("orderId");
+        final String orderId = jsonObject.getString("orderid");
         final String isSuccess = jsonObject.getString("isSuccess");
-        final String code = jsonObject.getString("code");
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByOrderId(orderId);
         Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + orderId + "]不存在");
         if (orderFormOptional.get().isBuySuccessOrFail()) {//处理多次回调
@@ -309,7 +308,7 @@ public class TicketServiceImpl implements TicketService {
         final Optional<OrderForm> orderFormOptional1 = this.orderFormService.selectByIdWithLock(orderFormOptional.get().getId());
         final OrderForm orderForm = orderFormOptional1.get();
         Preconditions.checkState(orderForm.confirmTicketRequestSuccess(), "订单[" + orderId + "]状态不正确");
-        if ("Y".equals(isSuccess)) {// && "100".equals(code)
+        if ("Y".equals(isSuccess)) {
             log.info("确认订单回调函数--出票成功");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_TICKET_SUCCESS.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_TICKET_SUCCESS.getValue());
@@ -347,9 +346,8 @@ public class TicketServiceImpl implements TicketService {
         Preconditions.checkState(orderForm.isCanCancelOrder(), "订单[" + orderFormId + "]状态不正确");
 
         final JSONObject jsonObject = this.hySdkService.cancelOrder(orderForm.getOrderId(), orderForm.getOutOrderId());
-        final String code = jsonObject.getString("code");
         final boolean success = jsonObject.getBoolean("success");
-        if (success) { //  && "100".equals(code)
+        if (success) {
             log.info("订单[" + orderFormId + "]取消请求成功！！");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CANCEL.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_CANCEL.getValue());
@@ -698,10 +696,12 @@ public class TicketServiceImpl implements TicketService {
         final RefundOrderFlow refundOrderFlow = refundOrderFlowOptional.get();
         if (isRefundSuccess) {
             refundOrderFlow.setMsg("退款成功");
+            refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.REFUND_SUCCESS.getId());
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_REFUND_SUCCESS.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_REFUND_SUCCESS.getValue());
         } else {
             refundOrderFlow.setMsg(msg);
+            refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.REFUND_FAIL.getId());
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_REFUND_FAIL.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_REFUND_FAIL.getValue());
         }

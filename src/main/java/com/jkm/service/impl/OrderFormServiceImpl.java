@@ -34,9 +34,6 @@ public class OrderFormServiceImpl implements OrderFormService {
     private TicketService ticketService;
 
     @Autowired
-    private OrderFormService orderFormService;
-
-    @Autowired
     private OrderFormDetailService orderFormDetailService;
 
     /**
@@ -158,7 +155,7 @@ public class OrderFormServiceImpl implements OrderFormService {
                     log.info("定时处理过期未支付的订单[" + orderForm.getId() + "]，请求第三方取消订单失败，主动取消订单---begin");
                     orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CANCEL.getId());
                     orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_CANCEL.getValue());
-                    this.orderFormService.update(orderForm);
+                    this.orderFormDao.update(orderForm);
                     this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_ORDER_CANCEL.getValue(),
                             EnumOrderFormDetailStatus.TICKET_ORDER_CANCEL.getId(), orderForm.getId());
                     log.info("定时处理过期未支付的订单[" + orderForm.getId() + "]，请求第三方取消订单失败，主动取消订单---done");

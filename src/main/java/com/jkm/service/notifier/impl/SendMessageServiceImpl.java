@@ -270,7 +270,7 @@ public class SendMessageServiceImpl implements SendMessageService, InitializingB
      * @param content
      * @param sn              @return
      */
-    private SendMessageRecord recordSendMessage(final long uid,
+    private SendMessageRecord recordSendMessage(final String uid,
                                                 final EnumUserType userType,
                                                 final String mobile,
                                                 final SmsTemplate messageTemplate,

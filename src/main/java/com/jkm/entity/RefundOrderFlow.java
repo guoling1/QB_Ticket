@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 /**
  * Created by yulong.zhang on 2016/11/3.
  *
+ * {@link EnumRefundOrderFlowStatus}
+ *
  * 订单退款单
  */
 @Data

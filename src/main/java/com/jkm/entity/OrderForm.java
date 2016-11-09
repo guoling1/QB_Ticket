@@ -1,5 +1,6 @@
 package com.jkm.entity;
 
+import com.jkm.enums.EnumBuyTicketPackageType;
 import com.jkm.enums.EnumOrderFormStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -232,8 +233,8 @@ public class OrderForm extends BaseEntity {
      * @return
      */
     public boolean isBuySuccessOrFail() {
-        return  this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUEST_FAIL.getId()
-                || this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUEST_SUCCESS.getId();
+        return  this.getStatus() == EnumOrderFormStatus.ORDER_FORM_TICKET_SUCCESS.getId()
+                || this.getStatus() == EnumOrderFormStatus.ORDER_FORM_TICKET_FAIL.getId();
     }
 
     /**
@@ -241,8 +242,8 @@ public class OrderForm extends BaseEntity {
      *
      * @return
      */
-    public boolean isBuyInsuance(){
-        return this.buyTicketPackageId > 0;
+    public boolean isBuyInsurance(){
+        return this.buyTicketPackageId > EnumBuyTicketPackageType.TICKET_PACKAGE_FIRST.getId();
     }
 
     /**
