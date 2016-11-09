@@ -111,7 +111,7 @@ public class TicketController extends BaseController{
         try{
             Pair<Boolean,String> pair = this.ticketService.refund(req.getOrderFormDetailId());
             if(pair.getLeft()){
-                result.setCode(0);
+                result.setCode(1);
                 result.setMessage(pair.getRight());
             }else{
                 result.setCode(-2);
@@ -137,7 +137,7 @@ public class TicketController extends BaseController{
         try{
             Pair<Boolean,String> pair = this.ticketService.grabTicket(req);
             if(pair.getLeft()){
-                result.setCode(0);
+                result.setCode(1);
                 result.setMessage(pair.getRight());
             }else{
                 result.setCode(-2);
@@ -147,9 +147,33 @@ public class TicketController extends BaseController{
             result.setCode(-1);
             result.setMessage("退票失败");
         }
-
         return result;
+    }
 
+    /**
+     * 火车车票取消抢票受理
+     * @param req
+     * @return
+     */
+    @RequestMapping(value = "/cancel/grap", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntityBase<Object> cancelGrabTicket(final RequestCancelGrabTicket req) {
+        final ResponseEntityBase<Object> result = new ResponseEntityBase<>();
+
+        try{
+            Pair<Boolean,String> pair = this.ticketService.cancelGrabTicket(req.getGrabTicketFormId());
+            if(pair.getLeft()){
+                result.setCode(1);
+                result.setMessage(pair.getRight());
+            }else{
+                result.setCode(-2);
+                result.setMessage(pair.getRight());
+            }
+        }catch(final Throwable throwable){
+            result.setCode(-1);
+            result.setMessage("退票失败");
+        }
+        return result;
     }
 
 

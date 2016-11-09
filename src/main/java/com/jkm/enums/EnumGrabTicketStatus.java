@@ -20,7 +20,7 @@ public enum EnumGrabTicketStatus {
     GRAB_FORM_INIT(1, "订单初始化"),
 
     /**
-     * 客户付款成功
+     * 等待客户付款中
      */
     GRAB_FORM_PAY_WAIT(2, "等待客户付款中"),
 
@@ -42,12 +42,12 @@ public enum EnumGrabTicketStatus {
     /**
      * 抢票订单下单请求成功
      */
-    GRAB_FORM_REQUEST_SUCCESS(6, "抢票下单成功"),
+    GRAB_FORM_REQUEST_SUCCESS(6, "抢票下单成功,抢票进行中"),
 
     /**
      * 抢票订单下单请求失败
      */
-    GRAB_FORM_REQUEST_FAIL(7, "抢票下单失败"),
+    GRAB_FORM_REQUEST_FAIL(7, "抢票下单失败,等待到期退款"),
 
     /**
      * 抢票失败
@@ -62,7 +62,12 @@ public enum EnumGrabTicketStatus {
     /**
      * 抢票订单取消
      */
-    ORDER_FORM_CANCEL(10, "订单取消");
+    ORDER_FORM_CANCEL(10, "订单取消"),
+
+    /**
+     * 未购买套餐,等待到期退款
+     */
+    WAIT_FOR_REFUND(11, "未购买套餐,等待到期退款");
 
     @Getter
     private int id;

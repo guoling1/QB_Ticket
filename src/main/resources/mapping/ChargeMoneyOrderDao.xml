@@ -3,9 +3,9 @@
 <mapper namespace="com.jkm.dao.ChargeMoneyOrderDao">
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_charge_money_order
-        (order_form_id, total_amount, buy_ticket_package, grab_ticket_package, status
+        (order_form_id, grab_ticket_form_id ,total_amount, buy_ticket_package, grab_ticket_package, status
         )VALUES(
-        #{orderFormId}, #{totalAmount}, #{buyTicketPackage}, #{grabTicketPackage}, #{status}
+        #{orderFormId},#{grabTicketFormId}, #{totalAmount}, #{buyTicketPackage}, #{grabTicketPackage}, #{status}
         )
     </insert>
 
@@ -13,6 +13,7 @@
         UPDATE tb_charge_money_order
         SET
         order_form_id = #{orderFormId},
+        grab_ticket_form_id = #{grabTicketFormId},
         total_amount = #{totalAmount},
         buy_ticket_package = #{buyTicketPackage},
         grab_ticket_package = #{grabTicketPackage},
@@ -30,6 +31,9 @@
 
     <select id="selectByOrderFormId" resultType="com.jkm.entity.ChargeMoneyOrder">
         SELECT * FROM tb_charge_money_order WHERE order_form_id = #{orderFormId};
+    </select>
+    <select id="selectByGrabTicketFormId" resultType="com.jkm.entity.ChargeMoneyOrder">
+        SELECT * FROM tb_charge_money_order WHERE grab_ticket_form_id = #{grabTicketFormId};
     </select>
 
 </mapper>

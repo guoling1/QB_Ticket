@@ -46,4 +46,12 @@ public interface ChargeMoneyOrderService {
      * @return
      */
     Optional<ChargeMoneyOrder> selectByOrderFormId(long orderFormId);
+
+    /**
+     * 按抢票单id查询收款记录
+     *
+     * @param grabTicketFormId
+     * @return
+     */
+    Optional<ChargeMoneyOrder> selectByGrabTicketFormId(long grabTicketFormId);
 }

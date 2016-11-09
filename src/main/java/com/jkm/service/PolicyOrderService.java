@@ -26,9 +26,16 @@ public interface PolicyOrderService {
     void updateStatusById(long id , EnumPolicyOrderStatus status);
 
     /**
-     * 批量购买保险单
+     * 批量购买保险单(正常代购)
      *
      * @param orderFormId
      */
     void batchBuyPolicy(long orderFormId);
+
+    /**
+     * 批量购买保险单(抢票)
+     *
+     * @param grabTicketFormId
+     */
+    void batchBuyGrabPolicy(long grabTicketFormId);
 }

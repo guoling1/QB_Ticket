@@ -21,6 +21,10 @@ public class ChargeMoneyOrder extends BaseEntity{
      */
     private long orderFormId;
     /**
+     * 抢票单id
+     */
+    private long grabTicketFormId;
+    /**
      * 用户总付款金额(每个订单)
      */
     private BigDecimal totalAmount;

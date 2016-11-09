@@ -80,4 +80,26 @@ public interface TicketService {
      * @return
      */
     Pair<Boolean,String> grabTicket(final RequestGrabTicket req);
+
+    /**
+     * 抢票客户支付结果处理接口
+     *
+     * @param grabTicketFormId
+     * @param paymentSn
+     * @param isPaySuccess
+     */
+    void handleGrabCustomerPayMsg(long grabTicketFormId, String paymentSn, boolean isPaySuccess) throws Exception;
+
+    /**
+     * 处理抢票回调通知
+     * @param jsonParams
+     */
+    void handleGrabCallBackMsg(JSONObject jsonParams);
+
+    /**
+     * 取消抢票
+     * @param grabTicketFormId
+     * @return
+     */
+    Pair<Boolean,String> cancelGrabTicket(long grabTicketFormId) throws Exception;
 }

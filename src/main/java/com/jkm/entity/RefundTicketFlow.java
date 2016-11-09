@@ -13,9 +13,17 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class RefundTicketFlow extends BaseEntity{
-
+    /**
+     * 大订单
+     */
     private long orderFormId;
-
+    /**
+     * 抢票单
+     */
+    private long grabTicketFormId;
+    /**
+     * 小订单
+     */
     private long orderFormDetailId;
 
     private String ticketNo;

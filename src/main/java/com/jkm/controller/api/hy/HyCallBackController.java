@@ -38,6 +38,28 @@ public class HyCallBackController extends BaseController {
     private HySdkRequestRecordService hySdkRequestRecordService;
 
     /**
+     * 处理抢票回调通知
+     *
+     * @return
+     */
+    @RequestMapping(value = "/grab/ticket", method = RequestMethod.POST)
+    public void handleGrabCallBackMsg(final HttpServletRequest request,
+                                        final HttpServletResponse httpServletResponse) throws Exception {
+        final JSONObject jsonParams = this.getRequestJsonParams();
+        final boolean flag = this.isSignCorrect(jsonParams);
+        log.info("收到hy抢票回调通知:" + jsonParams.toString() + "签名结果:" + flag);
+        //记录回调请求
+        this.postHandle("", "抢票回调通知", 0, jsonParams.toString(), "", 0);
+        if (flag) {
+            this.ticketService.handleGrabCallBackMsg(jsonParams);
+            ResponseWriter.writeTxtResponse(httpServletResponse, "SUCCESS");
+        } else {
+            log.error("######收到hy抢票回调通知 sign check error,request[" + request.getParameterMap() + "]");
+            ResponseWriter.writeTxtResponse(response, "false");
+        }
+    }
+
+    /**
      * 处理线上线下退票结果推送
      *
      * @return
@@ -55,9 +77,8 @@ public class HyCallBackController extends BaseController {
             ResponseWriter.writeTxtResponse(httpServletResponse, "SUCCESS");
         } else {
             log.error("######收到一个hy代发异步通知 sign check error,request[" + request.getParameterMap() + "]");
+            ResponseWriter.writeTxtResponse(response, "false");
         }
-        ResponseWriter.writeTxtResponse(httpServletResponse, "success");
-
     }
         private void postHandle(final String orderId,
                                 final String method,

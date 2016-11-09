@@ -72,4 +72,11 @@ public interface OrderFormDetailService {
      * 根新状态
      */
     void updateStatusById(long id , EnumOrderFormDetailStatus status);
+
+    /**
+     * 查询
+     * @param grabTicketFormId
+     * @return
+     */
+    List<OrderFormDetail> selectByGrabTicketFormId(long grabTicketFormId);
 }

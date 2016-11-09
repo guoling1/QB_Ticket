@@ -22,6 +22,16 @@ public class HySdkConstans {
     public static final String QUERY_SIGN_KEY;
 
     /**
+     * 抢票的帐号
+     */
+    public static final String GRAB_PARTNER_ID;
+
+    /**
+     * 抢票的签名密钥
+     */
+    public static final String GRAB_SIGN_KEY;
+
+    /**
      * 订单的帐号
      */
     public static final String ORDER_PARTNER_ID;
@@ -115,6 +125,8 @@ public class HySdkConstans {
         PERSON = hySdkConfig.person();
         POLICY_GATEWAY_URL = hySdkConfig.policyGatewayUrl();
         POLICY_SIGN_KEY = hySdkConfig.policySignKey();
+        GRAB_PARTNER_ID = hySdkConfig.grabPartnerId();
+        GRAB_SIGN_KEY = hySdkConfig.grabSignKey();
     }
 
     /**
@@ -184,6 +196,20 @@ public class HySdkConstans {
         @Key("third.channel.hy.order.sign.key")
         @DefaultValue("")
         String orderSignKey();
+
+        /**
+         * 抢票帐号
+         */
+        @Key("third.channel.hy.grab.partner.id")
+        @DefaultValue("")
+        String grabPartnerId();
+
+        /**
+         * 抢票签名秘钥
+         */
+        @Key("third.channel.hy.grab.sign.key")
+        @DefaultValue("")
+        String grabSignKey();
 
         /**
          * 保险签名秘钥

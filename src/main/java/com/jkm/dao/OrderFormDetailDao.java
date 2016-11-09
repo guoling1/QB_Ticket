@@ -74,4 +74,11 @@ public interface OrderFormDetailDao {
      * @param id
      */
     void updateStatusById(@Param("id") long id, @Param("status") int status, @Param("remark") String remark);
+
+    /**
+     * 查询
+     * @param grabTicketFormId
+     * @return
+     */
+    List<OrderFormDetail> selectByGrabTicketFormId(long grabTicketFormId);
 }

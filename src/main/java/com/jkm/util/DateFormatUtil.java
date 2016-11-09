@@ -18,6 +18,7 @@ public final class DateFormatUtil {
 
     public static final String yyyyMMddHHmmss = "yyyyMMddHHmmss";
     public static final String yyyy_MM_dd_HH_mm_ss = "yyyy-MM-dd HH:mm:ss";
+    public static final String yyyy_MM_dd_HH_mm = "yyyy-MM-dd HH:mm";
     public static final String yyyyMMdd = "yyyyMMdd";
     public static final String yyyy_MM_dd = "yyyy-MM-dd";
     /**
@@ -28,6 +29,7 @@ public final class DateFormatUtil {
             .put("yyyyMMdd", new SimpleDateFormat("yyyyMMdd", Locale.CHINA))
             .put("yyyy-MM-dd", new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA))
             .put("yyyy-MM-dd hh:mm:ss", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CHINA))
+            .put("yyyy-MM-dd hh:mm", new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.CHINA))
             .put("yyyy-MM-dd HH:mm:ss", new SimpleDateFormat(yyyy_MM_dd_HH_mm_ss, Locale.CHINA))
             .put("yyyyMMddHHmmssSSS", new SimpleDateFormat("yyyyMMddHHmmssSSS", Locale.CHINA))
             .put("MM-dd", new SimpleDateFormat("MM-dd", Locale.CHINA))

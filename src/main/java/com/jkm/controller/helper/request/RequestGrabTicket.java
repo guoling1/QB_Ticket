@@ -1,5 +1,6 @@
 package com.jkm.controller.helper.request;
 
+import com.jkm.enums.EnumGrabTimeType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,7 +42,19 @@ public class RequestGrabTicket {
      * 到达站简码
      */
     private String toStationCode;
-
+    /**
+     * 抢票出发日期 2015-09-09
+     */
+    private String grabStartTime;
+    /**
+     * 抢票时效类型
+     * {@link EnumGrabTimeType}
+     */
+    private int grabTimeType;
+    /**
+     * 最早发车时间
+     */
+    private String firstStartTime;
     /**
      * 抢票车次 (字符串拼接, 以,隔离)
      */

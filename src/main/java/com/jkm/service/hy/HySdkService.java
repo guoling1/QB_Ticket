@@ -76,4 +76,11 @@ public interface HySdkService {
      * 航天华有抢票下单
      */
     JSONObject grabTickets(final JSONObject jsonObject);
+
+    /**
+     * 取消抢票下单
+     * @param jsonObject
+     * @return
+     */
+    JSONObject cancelGrabTickets(final JSONObject jsonObject);
 }

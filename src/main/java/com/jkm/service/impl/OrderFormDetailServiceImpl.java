@@ -116,4 +116,15 @@ public class OrderFormDetailServiceImpl implements OrderFormDetailService {
     public void updateStatusById(final long id , final EnumOrderFormDetailStatus status) {
         this.orderFormDetailDao.updateStatusById(id , status.getId(), status.getValue());
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param grabTicketFormId
+     * @return
+     */
+    @Override
+    public List<OrderFormDetail> selectByGrabTicketFormId(long grabTicketFormId) {
+        return this.orderFormDetailDao.selectByGrabTicketFormId(grabTicketFormId);
+    }
 }

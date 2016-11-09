@@ -5,6 +5,8 @@
        INSERT INTO tb_order_form_detail
         (
         order_form_id,
+        grab_ticket_form_id,
+        is_grab,
         mobile,
         passenger_id,
         passenger_name,
@@ -22,6 +24,8 @@
        VALUES
        (
        #{orderFormId},
+        #{grabTicketFormId},
+        #{isGrab},
        #{mobile},
        #{passengerId},
        #{passengerName},
@@ -43,6 +47,8 @@
         UPDATE tb_order_form_detail
         SET
         order_form_id = #{orderFormId},
+        grab_ticket_form_id = #{grabTicketFormId},
+        is_grab = #{isGrab},
         mobile = #{mobile},
         passenger_id = #{passengerId},
         passenger_name = #{passengerName},
@@ -89,6 +95,9 @@
 
     <select id="selectByOrderFormIdAndPassengerIdAndPiaoType" resultType="com.jkm.entity.OrderFormDetail">
         SELECT * FROM tb_order_form_detail WHERE order_form_id = #{orderFormId} AND passenger_id = #{passengerId} AND piao_type = #{piaoType}
+    </select>
+    <select id="selectByGrabTicketFormId" resultType="com.jkm.entity.OrderFormDetail">
+        SELECT * FROM tb_order_form_detail WHERE grab_ticket_form_id = #{grabTicketFormId}
     </select>
 
 </mapper>
