@@ -165,7 +165,9 @@
       submit: function () {
         console.log(this.$data.sureOrder);
         this.$http.post('/ticket/submitOrder', this.$data.sureOrder).then(function (res) {
-          console.log(res);
+          if (res.code == 1) {
+            this.$router.push({path: '/ticket/pay-order', query:{id: res.data.orderFormId}});
+          }
         }, function (err) {
           console.log(err);
         });
