@@ -4,10 +4,12 @@ import com.jkm.dao.QueryHistoryServiceDao;
 import com.jkm.service.QueryHistoryService;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by Administrator on 2016/11/8.
  */
+@Service
 public class QueryHistoryServiceImpl implements QueryHistoryService {
 
     @Autowired

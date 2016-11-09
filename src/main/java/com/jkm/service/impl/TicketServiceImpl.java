@@ -740,6 +740,10 @@ public class TicketServiceImpl implements TicketService {
             log.info("订单[" + orderFormId + "]支付成功--调用确认订单接口！！");
             this.confirmOrder(orderForm);
         } else {
+            orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId());
+            orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getValue());
+            orderForm.setPaymentSn(paymentSn);
+            this.orderFormService.update(orderForm);
             chargeMoneyOrder.setStatus(EnumChargeMoneyOrderStatus.PAYMENT_TICKET_FAIL.getId());
         }
         this.chargeMoneyOrderService.update(chargeMoneyOrder);

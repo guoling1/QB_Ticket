@@ -91,11 +91,4 @@
             </props>
         </property>
     </bean>
-    <bean id="taskReactor" class="com.jkm.util.reactor.TaskReactor">
-        <property name="processorRegisters">
-            <list>
-                <ref bean="sendMsgEventProcessorRegister"/>
-            </list>
-        </property>
-    </bean>
 </beans>
