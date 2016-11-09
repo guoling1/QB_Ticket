@@ -20,21 +20,21 @@ public interface TicketSendMessageService {
      *
      * @param sendBuyTicketSuccessParam
      */
-    void buyTicketSuccessMessage(SendBuyTicketSuccessParam sendBuyTicketSuccessParam);
+    void sendBuyTicketSuccessMessage(SendBuyTicketSuccessParam sendBuyTicketSuccessParam);
 
     /**
      * 出票失败短信
      *
      * @param sendBuyTicketFailParam
      */
-    void buyTicketFailMessage(SendBuyTicketFailParam sendBuyTicketFailParam);
+    void sendBuyTicketFailMessage(SendBuyTicketFailParam sendBuyTicketFailParam);
 
     /**
      * 抢票成功短信（有余款）
      *
      * @param sendGrabTicketSuccessParam
      */
-    void grabTicketSuccessHaveResidueMessage(SendGrabTicketSuccessParam sendGrabTicketSuccessParam);
+    void sendGrabTicketSuccessHaveResidueMessage(SendGrabTicketSuccessParam sendGrabTicketSuccessParam);
 
 
     /**
@@ -42,12 +42,12 @@ public interface TicketSendMessageService {
      *
      * @param sendGrabTicketSuccessParam
      */
-    void grabTicketSuccessHaveNotResidueMessage(SendGrabTicketSuccessParam sendGrabTicketSuccessParam);
+    void sendGrabTicketSuccessHaveNotResidueMessage(SendGrabTicketSuccessParam sendGrabTicketSuccessParam);
 
     /**
      *抢票失败短信
      *
      * @param sendGrabTicketFailParam
      */
-    void grabTicketFailMessage(SendGrabTicketFailParam sendGrabTicketFailParam);
+    void sendGrabTicketFailMessage(SendGrabTicketFailParam sendGrabTicketFailParam);
 }
