@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class TicketSendMessageServiceImpl implements TicketSendMessageService {
 
     @Override
-    public void sendPaymentMessage(final SendPaymentParam1 sendPaymentParam1) {
+    public void sendPaymentMessage(final SendPaymentParam sendPaymentParam) {
 
     }
 
