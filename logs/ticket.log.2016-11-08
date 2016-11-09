@@ -1134,6 +1134,7 @@
 [INFO] [2016-11-08 17:58:21][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
 [INFO] [2016-11-08 18:05:12][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
 [INFO] [2016-11-08 18:05:12][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
+<<<<<<< HEAD
 [INFO] [2016-11-08 18:32:57][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
 [INFO] [2016-11-08 18:32:57][com.jkm.controller.api.ContactInfoController]联系人参数：{"uid":"1","appid":"1"}
 [INFO] [2016-11-08 18:32:57][com.jkm.controller.common.BaseController]请求参数为：{"uid":"1","appid":"1"}
@@ -1187,3 +1188,10 @@
 [INFO] [2016-11-08 19:08:53][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"SZQ","train_date":"2016-12-06"}
 [INFO] [2016-11-08 19:09:49][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"SZQ","train_date":"2016-12-06"}
 [INFO] [2016-11-08 19:09:50][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"SZQ","train_date":"2016-12-06"}
+=======
+[INFO] [2016-11-08 19:23:23][com.jkm.helper.notifier.SendMsgEventProcessorRegister]注册短信事件[SendMsgEvent]处理器[SendMsgEventProcessor]
+[INFO] [2016-11-08 19:23:59][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"SHH","train_date":"2016-12-6"}
+[INFO] [2016-11-08 19:24:20][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"SHH","train_date":"2016-12-6"}
+[INFO] [2016-11-08 19:24:38][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"SHH","train_date":"2016-12-7"}
+[INFO] [2016-11-08 19:24:48][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"SHH","train_date":"2016-12-7"}
+>>>>>>> eb3713c2a872855abf5f159caeb01f6a5e171702

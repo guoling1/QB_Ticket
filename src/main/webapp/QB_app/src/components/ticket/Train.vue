@@ -7,7 +7,7 @@
         10月31日 周五
         <img src="../../assets/calendar.png" alt=""/>
       </div>
-      <span class="next show">后一天</span>
+      <span class="next show" @click="test">后一天</span>
     </div>
     <div v-if="stations.empty">没有符合查询条件的车次</div>
     <ul v-if="!stations.empty">
@@ -59,8 +59,10 @@
     name: 'menu',
     data () {
       return {
-        msg: 'Welcome to Your Vue.js App',
-        initStations: []
+        only: false,
+        initStations: [],
+        stations: [],
+        screenConfig: 1
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -73,6 +75,7 @@
         train_date: date //乘车日期（yyyy-MM-dd）
       }).then(function (res) {
         next(function (vm) {
+          vm.$data.only = to.query.only;
           vm.$data.initStations = res.body.data;
         });
       }, function (err) {
@@ -80,9 +83,17 @@
         next(false);
       })
     },
+    methods: {
+      test: function () {
+        this.$data.screenConfig++;
+      }
+    },
     computed: {
       stations () {
+        console.log(1);
         if (this.initStations) {
+          // 优先筛选条件
+          let config = this.screenConfig;
           // 计算最低价
           let checkPrice = ['edz_price', 'gjrw_price', 'gjrws_price', 'qtxb_price', 'rw_price', 'rwx_price', 'rz_price', 'swz_price', 'tdz_price', 'wz_price', 'ydz_price', 'yw_price', 'ywx_price', 'ywz_price', 'yz_price'];
           for (let i = 0; i < this.initStations.length; i++) {
