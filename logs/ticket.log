@@ -37,3 +37,12 @@
 [INFO] [2016-11-09 11:26:59][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"SZQ","train_date":"2016-12-13"}
 [INFO] [2016-11-09 11:27:35][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"SZQ","train_date":"2016-12-13"}
 [INFO] [2016-11-09 11:28:22][com.jkm.controller.common.BaseController]请求参数为：{"from_station":"BJP","to_station":"SZQ","train_date":"2016-12-13"}
+[INFO] [2016-11-09 12:28:01][com.jkm.helper.notifier.SendMsgEventProcessorRegister]注册短信事件[SendMsgEvent]处理器[SendMsgEventProcessor]
+[INFO] [2016-11-09 12:35:07][com.jkm.helper.notifier.SendMsgEventProcessorRegister]注册短信事件[SendMsgEvent]处理器[SendMsgEventProcessor]
+[INFO] [2016-11-09 12:39:58][com.jkm.helper.notifier.SendMsgEventProcessorRegister]注册短信事件[SendMsgEvent]处理器[SendMsgEventProcessor]
+[INFO] [2016-11-09 12:49:32][com.jkm.helper.notifier.SendMsgEventProcessorRegister]注册短信事件[SendMsgEvent]处理器[SendMsgEventProcessor]
+[INFO] [2016-11-09 12:53:07][com.jkm.helper.notifier.SendMsgEventProcessorRegister]注册短信事件[SendMsgEvent]处理器[SendMsgEventProcessor]
+[INFO] [2016-11-09 13:30:19][com.jkm.helper.notifier.SendMsgEventProcessorRegister]注册短信事件[SendMsgEvent]处理器[SendMsgEventProcessor]
+[INFO] [2016-11-09 13:36:49][com.jkm.helper.notifier.SendMsgEventProcessorRegister]注册短信事件[SendMsgEvent]处理器[SendMsgEventProcessor]
+[INFO] [2016-11-09 13:46:54][com.jkm.helper.notifier.SendMsgEventProcessorRegister]注册短信事件[SendMsgEvent]处理器[SendMsgEventProcessor]
+[INFO] [2016-11-09 13:56:37][com.jkm.helper.notifier.SendMsgEventProcessorRegister]注册短信事件[SendMsgEvent]处理器[SendMsgEventProcessor]

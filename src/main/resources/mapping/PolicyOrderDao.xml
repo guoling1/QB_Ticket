@@ -32,7 +32,7 @@
         phone =#{phone},
         policy_no =#{policyNo},
         print_no = #{printNo},
-        apply_no =#{applyNo}
+        apply_no =#{applyNo},
         remark =#{remark},
         status =#{status} WHERE id = #{id}
     </update>

@@ -28,7 +28,7 @@ public interface PolicyOrderDao {
 
     /**
      *
-     * @param input
+     * @param policyOrder
      */
-    void update(PolicyOrder input);
+    void update(PolicyOrder policyOrder);
 }
