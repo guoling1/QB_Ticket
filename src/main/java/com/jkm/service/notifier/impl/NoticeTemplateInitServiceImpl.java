@@ -20,49 +20,19 @@ public class NoticeTemplateInitServiceImpl implements NoticeTemplateInitService 
     public void initTemplate() {
         final String platformName = NotifierConstants.getNotifierConfig().platformName();
 
-        addSmsTemplate(EnumNoticeType.LOGIN,
-                "【" + platformName + "】您的登录验证码为${code}，请勿泄漏。");
-        addSmsTemplate(EnumNoticeType.MODIFY_PASSWORD,
-                "【" + platformName + "】您的重设密码验证码为${code}，请勿泄漏。");
-        addSmsTemplate(EnumNoticeType.RETRIEVE_PASSWORD,
-                "【" + platformName + "】您的找回密码验证码为${code}，请勿泄漏。");
+        addSmsTemplate(EnumNoticeType.PAYMENT_CODE,
+                "支付验证码${code}，五分钟内有效。您本次支付${amount}元，千万不要把验证码告诉其他人【" + platformName + "】");
 
-        addSmsTemplate(EnumNoticeType.BIND_MOBILE,
-                "【" + platformName + "】您的绑定手机验证码为${code}，请勿泄漏。");
-        addSmsTemplate(EnumNoticeType.UNBIND_MOBILE,
-                "【" + platformName + "】您的解绑手机验证码为${code}，请勿泄漏。");
-        addSmsTemplate(EnumNoticeType.SET_TRADING_PASSWORD,
-                "【" + platformName + "】您的设置交易密码验证码为${code}，请勿泄漏。");
-        addSmsTemplate(EnumNoticeType.OPEN_NOPWD,
-                "【" + platformName + "】您的设置免密支付验证码为${code}，请勿泄漏。");
-        addSmsTemplate(EnumNoticeType.UNBIND_WEIXIN,
-                "【" + platformName + "】您的解绑微信验证码为${code}，请勿泄漏。");
-        addSmsTemplate(EnumNoticeType.UNBIND_BANK_CARD,
-                "【" + platformName + "】您的解绑银行卡验证码为${code}，请勿泄漏。");
-        addSmsTemplate(EnumNoticeType.WITHDRAW,
-                "【" + platformName + "】您的提现验证码为${code}，请勿泄漏。");
-
-        addSmsTemplate(EnumNoticeType.ADMIN_MODIFY_PASSWORD,
-                "【" + platformName + "】你的后台登录密码被修改为${code}，请勿泄漏。");
-        addSmsTemplate(EnumNoticeType.ADMIN_LOGIN,
-                "【" + platformName + "】后台登录验证码为${code}，请勿泄漏。");
-        addSmsTemplate(EnumNoticeType.ADMIN_CLOSE_TOTP,
-                "【" + platformName + "】关闭二次验证功能验证码为${code}，请勿泄漏。");
-
-        addSmsTemplate(EnumNoticeType.MANUAL_RECHARGE,
-                "【" + platformName + "】后台手工充值成功，充值金额${amount}。");
-        addSmsTemplate(EnumNoticeType.WITHDRAW_FAIL,
-                "【" + platformName + "】你的提现订单号为${sn}的提现订单提现失败。");
-        addSmsTemplate(EnumNoticeType.WITHDRAW_SUCCESS,
-                "【" + platformName + "】你的提现订单号为${sn}的提现订单提现成功。");
-        addSmsTemplate(EnumNoticeType.FAIL_BID,
-                "【" + platformName + "】很抱歉，您的${amount}元投资，因借款未达成流标，资金已退回至账户余额，请您选择其它标的进行投资。");
-        addSmsTemplate(EnumNoticeType.START_INTEREST,
-                "【" + platformName + "】您的${amount}元投资，已经于${valueDate}开始计息，请登录平台查看收款计划。");
-        addSmsTemplate(EnumNoticeType.REPAYMENT,
-                "【" + platformName + "】您的账户于${date}日收到本息回款共${amount}元，第${current}/${total}期。温馨提示，回款及时再投资，巧达收益最大化。");
-        addSmsTemplate(EnumNoticeType.INVITE_SUCCESS,
-                "【" + platformName + "】你对编号为${sn}的标的投资成功,投资金额为${amount}。");
+        addSmsTemplate(EnumNoticeType.BUY_TICKET_SUCCESS,
+                "您预订的${trainStationAndTrainNo}次列车出票成功，于${runTime}从${startStation}发车，12306取票号${ticketNo}【" + platformName + "】");
+        addSmsTemplate(EnumNoticeType.BUY_TICKET_FAIL,
+                "很抱歉，您预订的${trainStationAndTrainNo}次列车出票失败，资金已全额退至您支付银行卡，请注意查收【" + platformName + "】");
+        addSmsTemplate(EnumNoticeType.GRAB_TICKET_SUCCESS_HAVE_RESIDUE_YES,
+                "已抢到${trainStationAndTrainNo}次列车，于${runTime}从北京南站发车，12306订单号${ticketNo}。余款${residueAmount}元已退至您支付银行卡，请注意查收【" + platformName + "】");
+        addSmsTemplate(EnumNoticeType.GRAB_TICKET_SUCCESS_HAVE_RESIDUE_NO,
+                "已抢到${trainStationAndTrainNo}次列车，于${runTime}从北京南站发车，12306订单号${ticketNo}【" + platformName + "】");
+        addSmsTemplate(EnumNoticeType.GRAB_TICKET_FAIL,
+                "未抢到${dateAndTrainStation}的列车，系统已取消抢票。资金已全额退至您支付银行卡，请注意查收【" + platformName + "】");
     }
 
     private void addSmsTemplate(final EnumNoticeType noticeType,

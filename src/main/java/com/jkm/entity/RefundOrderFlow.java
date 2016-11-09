@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 /**
  * Created by yulong.zhang on 2016/11/3.
  *
+ * {@link EnumRefundOrderFlowStatus}
+ *
  * 订单退款单
  */
 @Data
@@ -44,6 +46,11 @@ public class RefundOrderFlow extends BaseEntity {
      * 退款理由
      */
     private String refundReason;
+
+    /**
+     * 退款结果
+     */
+    private String msg;
 
     /**
      * 是否是 退款已成功

@@ -98,19 +98,14 @@ public class HyCallBackController extends BaseController {
     @RequestMapping(value = "/submitOrder", method = RequestMethod.POST)
     public void handleSubmitOrderCallBackMsg(final HttpServletRequest request,
                                             final HttpServletResponse response) throws IOException {
-        this.checkParams(request);
-        final JSONObject jsonParams = this.getRequestJsonParams();
-        final boolean signCorrect = this.isSignCorrect(jsonParams);
-        log.info("收到订单提交的异步通知:[" + jsonParams + "],签名结果[" + signCorrect + "]");
+        log.info("callback request params : " + request.getParameter("data"));
+        final String data = request.getParameter("data");
+        final JSONObject jsonParams = JSONObject.fromObject(data);
+        log.info("收到订单提交的异步通知:[" + jsonParams + "]");
         this.postHandle("", "订单提交回调", 0, response.toString(), "", 0);
-        if (signCorrect) {
-            this.ticketService.handleSubmitOrderCallbackResponse(jsonParams);
-            ResponseWriter.writeTxtResponse(response, "success");
-            log.info("订单提交异步通知处理结束！！ 已经发送[success]");
-        } else {
-            log.error("#####receive a submitOrder asking, sign check error,request[" + request.getParameterMap() + "]");
-            ResponseWriter.writeTxtResponse(response, "false");
-        }
+        this.ticketService.handleSubmitOrderCallbackResponse(jsonParams);
+        ResponseWriter.writeTxtResponse(response, "success");
+        log.info("订单提交异步通知处理结束！！ 已经发送[success]");
     }
 
     /**
@@ -121,8 +116,13 @@ public class HyCallBackController extends BaseController {
     @RequestMapping(value = "/confirmOrder", method = RequestMethod.POST)
     public void handleConfirmOrderCallbackMsg(final HttpServletRequest request,
                                               final HttpServletResponse response) throws IOException {
-        this.checkParams(request);
-        final JSONObject jsonParams = this.getRequestJsonParams();
+        final JSONObject jsonParams = new JSONObject();
+        jsonParams.put("reqtime", request.getParameter("reqtime"));
+        jsonParams.put("sign", request.getParameter("sign"));
+        jsonParams.put("orderid", request.getParameter("orderid"));
+        jsonParams.put("transactionid", request.getParameter("transactionid"));
+        jsonParams.put("isSuccess", request.getParameter("isSuccess"));
+
         final boolean signCorrect = this.isSignCorrect(jsonParams);
         log.info("收到确认订单的异步通知:[" + jsonParams + "],签名结果[" + signCorrect + "]");
         this.postHandle("", "确认订单回调", 0, response.toString(), "", 0);
@@ -131,7 +131,7 @@ public class HyCallBackController extends BaseController {
             ResponseWriter.writeTxtResponse(response, "success");
             log.info("确认订单的异步通知处理结束！！ 已经发送[success]");
         } else {
-            log.error("##### receive a confirmOrder asking,  sign check error,request[" + request.getParameterMap() + "]");
+            log.error("##### receive a confirmOrder asking,  sign check error,request[" + jsonParams.toString() + "]");
             ResponseWriter.writeTxtResponse(response, "false");
         }
     }
@@ -146,15 +146,5 @@ public class HyCallBackController extends BaseController {
             e.printStackTrace();
         }
         return false;
-    }
-
-    private void checkParams(final HttpServletRequest request) {
-        final Map parameterMap = request.getParameterMap();
-        if (log.isDebugEnabled()) {
-            final Set keySet = parameterMap.keySet();
-            for (final Object key : keySet) {
-                log.debug("request param[" + key + "]:" + parameterMap.get(key));
-            }
-        }
     }
 }

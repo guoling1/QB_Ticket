@@ -8,6 +8,7 @@ import lombok.Getter;
  */
 @Getter
 public enum EnumSendType {
+
     INSTANT(1, "立即"),
 
     TIMED(2, "定时");

@@ -1,9 +1,12 @@
 package com.jkm.controller.api;
 
+import com.google.common.base.Optional;
 import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
 import com.jkm.controller.helper.request.*;
 import com.jkm.controller.helper.response.*;
+import com.jkm.entity.OrderForm;
+import com.jkm.service.OrderFormService;
 import com.jkm.service.TicketService;
 import com.jkm.service.TrainTripsQueryService;
 import org.apache.commons.lang3.tuple.Pair;
@@ -34,6 +37,9 @@ public class TicketController extends BaseController{
     @Autowired
     private TrainTripsQueryService trainTripsQueryService;
 
+    @Autowired
+    private OrderFormService orderFormService;
+
 
     /**
      * 火车车次查询
@@ -51,6 +57,11 @@ public class TicketController extends BaseController{
         return result;
     }
 
+    @RequestMapping(value = "/test", method =RequestMethod.GET)
+    public void select(final long id){
+        final Optional<OrderForm> orderFormOptional = this.orderFormService.selectById(id);
+        this.ticketService.confirmOrder(orderFormOptional.get());
+    }
     /**
      * 火车车票订票 - 提交订单
      *

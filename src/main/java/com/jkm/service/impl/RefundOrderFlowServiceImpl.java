@@ -34,7 +34,7 @@ public class RefundOrderFlowServiceImpl implements RefundOrderFlowService {
      */
     @Override
     public int update(final RefundOrderFlow refundOrderFlow) {
-        return this.update(refundOrderFlow);
+        return this.refundOrderFlowDao.update(refundOrderFlow);
     }
 
     /**

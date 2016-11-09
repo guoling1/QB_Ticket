@@ -22,7 +22,7 @@ import java.util.Map;
 @Builder
 @ToString
 public class SendMessageParams {
-    private long uid;
+    private String uid;
     private EnumUserType userType;
     private EnumNoticeType noticeType;
     private String mobile;
@@ -42,9 +42,9 @@ public class SendMessageParams {
             return Pair.of(false, "手机号不能为空");
         }
 
-        if (getUid() < 0) {
-            return Pair.of(false, "用户id不正确");
-        }
+//        if (getUid() < 0) {
+//            return Pair.of(false, "用户id不正确");
+//        }
 
         return Pair.of(true, "");
     }
