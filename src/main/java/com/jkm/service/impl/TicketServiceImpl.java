@@ -101,13 +101,13 @@ public class TicketServiceImpl implements TicketService {
         log.info("开始创建订单！！");
         final OrderForm orderForm = new OrderForm();
         this.userInfoService.insertUser(requestSubmitOrder.getUid());
-        final Optional<TbContactInfo> contactInfoOptional = this.contactInfoService.selectByUid(requestSubmitOrder.getUid());
-        Preconditions.checkState(contactInfoOptional.isPresent(), "订票人uid[" + requestSubmitOrder.getUid() + "]不存在");
+//        final Optional<TbContactInfo> contactInfoOptional = this.contactInfoService.selectByUid(requestSubmitOrder.getUid());
+//        Preconditions.checkState(contactInfoOptional.isPresent(), "订票人uid[" + requestSubmitOrder.getUid() + "]不存在");
         final UserInfo userInfo = this.userInfoService.selectByUid(requestSubmitOrder.getUid());
         final List<RequestSubmitOrder.Passenger> passengerList = requestSubmitOrder.getPassengers();
         Preconditions.checkState(!CollectionUtils.isEmpty(passengerList), "乘客列表为空");
         orderForm.setUid(requestSubmitOrder.getUid());
-        orderForm.setMobile(contactInfoOptional.get().getTel());
+        orderForm.setMobile(requestSubmitOrder.getMobile());
         orderForm.setPrice(requestSubmitOrder.getPrice());
         orderForm.setBuyTicketPackageId(requestSubmitOrder.getBuyTicketPackageId());
         orderForm.setBuyTicketPackagePrice(new BigDecimal(EnumBuyTicketPackageType.of(requestSubmitOrder.getBuyTicketPackageId()).getPrice())

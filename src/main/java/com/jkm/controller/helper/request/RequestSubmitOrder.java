@@ -32,6 +32,11 @@ public class RequestSubmitOrder {
     private String uid;
 
     /**
+     * mobile
+     */
+    private String mobile;
+
+    /**
      * 车票价格
      */
     private BigDecimal price;
