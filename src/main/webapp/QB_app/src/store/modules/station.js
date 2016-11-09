@@ -24,8 +24,10 @@ const mutations = {
   },
   STATION_CLOSE (state, obj) {
     state.ctrl = obj.ctrl;
-    state.scope[state.now].code = obj.code;
-    state.scope[state.now].station = obj.station;
+    if (obj.code) {
+      state.scope[state.now].code = obj.code;
+      state.scope[state.now].station = obj.station;
+    }
   }
 };
 

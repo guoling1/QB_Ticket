@@ -2,6 +2,7 @@ package com.jkm.entity.fusion;
 
 import com.jkm.entity.fusion.body.RequestBody200005;
 import com.jkm.entity.fusion.head.RequestHead;
+import com.jkm.entity.fusion.head.RequestHead20005;
 
 import javax.xml.bind.annotation.*;
 
@@ -12,15 +13,15 @@ import javax.xml.bind.annotation.*;
 @XmlRootElement(name="AIPG")
 public class Request200005 {
 	@XmlElement(name="INFO")
-	private RequestHead info;
+	private RequestHead20005 info;
 	@XmlElement(name="BODY")
 	private RequestBody200005 body;
 
-	public RequestHead getInfo() {
+	public RequestHead20005 getInfo() {
 		return info;
 	}
 
-	public void setInfo(RequestHead info) {
+	public void setInfo(RequestHead20005 info) {
 		this.info = info;
 	}
 
