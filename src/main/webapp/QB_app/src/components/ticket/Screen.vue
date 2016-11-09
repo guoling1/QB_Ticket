@@ -2,7 +2,7 @@
   <transition name="fade">
     <div class="main flex-box-column flexBox" v-show="show">
       <div class="result flex-box-column flexBox">
-        <div class="week" @click="close">
+        <div class="week" @click="enter">
           <div class="weekend">日</div>
           <div>一</div>
           <div>二</div>
