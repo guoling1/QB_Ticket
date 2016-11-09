@@ -8,5 +8,6 @@ import com.jkm.entity.BankCardBin;
  */
 public interface BaseBankCardBinService {
 
+
     Optional<BankCardBin> loadByBinNo(final String binNo);
 }

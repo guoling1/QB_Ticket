@@ -20,6 +20,11 @@ public class MqConfig {
     public static final String SINGLE_REFUND_QUERY = "singlRefundQuery";//单笔退款查询
     public static final String FAST_PAY_QUERY = "fastPayQuery";//快捷支付退款
 
+    /**
+     * 取消失去有效支付时间的订单
+     */
+    public static final String TICKET_CANCEL_EXPIRED_ORDER = "ticketCancelExpiredOrder";
+
     static {
         final MqConfigs mqConfigs = getMqConfigs();
         TOPIC = mqConfigs.topic();

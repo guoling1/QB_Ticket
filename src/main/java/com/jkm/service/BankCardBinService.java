@@ -8,10 +8,12 @@ import com.jkm.entity.BankCardBin;
  */
 public interface BankCardBinService {
 
+
+
     /**
      * 分析银行卡号的bin信息
      * @param cardNo
      * @return
      */
-    Optional<BankCardBin> CardNoInfo(final String cardNo);
+    Optional<BankCardBin> analyseCardNo(final String cardNo);
 }

@@ -84,5 +84,5 @@ public interface OrderFormService {
     /**
      * 处理超时支付的订单
      */
-    void handleExpiredOrderForm();
+    void handleExpiredOrderForm(long orderFormId);
 }

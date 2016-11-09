@@ -1,6 +1,7 @@
 package com.jkm.controller.api;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
 import com.jkm.controller.helper.request.*;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 /**
@@ -73,6 +75,7 @@ public class TicketController extends BaseController{
     public ResponseEntityBase<ResponseSubmitOrder> submitOrder(@RequestBody final RequestSubmitOrder request) {
         final ResponseEntityBase<ResponseSubmitOrder> results = new ResponseEntityBase<>();
         request.setUid(super.getUid(request.getAppId(), request.getUid()));
+        Preconditions.checkState(Pattern.compile("^[1][3,4,5,8][0-9]{9}$").matcher(request.getMobile()).matches());
         final Triple<Boolean, String, Long> submitOrderResult = this.ticketService.submitOrder(request);
         final ResponseSubmitOrder responseBookTicket = new ResponseSubmitOrder();
         if (submitOrderResult.getLeft()) {

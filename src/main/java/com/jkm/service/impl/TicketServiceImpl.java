@@ -21,6 +21,8 @@ import com.jkm.service.hy.entity.HyReturnTicketResponse;
 import com.jkm.service.hy.helper.HySdkConstans;
 import com.jkm.service.hy.HySdkService;
 import com.jkm.util.MD5Util;
+import com.jkm.util.mq.MqConfig;
+import com.jkm.util.mq.MqProducer;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
@@ -99,13 +101,13 @@ public class TicketServiceImpl implements TicketService {
         log.info("开始创建订单！！");
         final OrderForm orderForm = new OrderForm();
         this.userInfoService.insertUser(requestSubmitOrder.getUid());
-        final Optional<TbContactInfo> contactInfoOptional = this.contactInfoService.selectByUid(requestSubmitOrder.getUid());
-        Preconditions.checkState(contactInfoOptional.isPresent(), "订票人uid[" + requestSubmitOrder.getUid() + "]不存在");
+//        final Optional<TbContactInfo> contactInfoOptional = this.contactInfoService.selectByUid(requestSubmitOrder.getUid());
+//        Preconditions.checkState(contactInfoOptional.isPresent(), "订票人uid[" + requestSubmitOrder.getUid() + "]不存在");
         final UserInfo userInfo = this.userInfoService.selectByUid(requestSubmitOrder.getUid());
         final List<RequestSubmitOrder.Passenger> passengerList = requestSubmitOrder.getPassengers();
         Preconditions.checkState(!CollectionUtils.isEmpty(passengerList), "乘客列表为空");
         orderForm.setUid(requestSubmitOrder.getUid());
-        orderForm.setMobile(contactInfoOptional.get().getTel());
+        orderForm.setMobile(requestSubmitOrder.getMobile());
         orderForm.setPrice(requestSubmitOrder.getPrice());
         orderForm.setBuyTicketPackageId(requestSubmitOrder.getBuyTicketPackageId());
         orderForm.setBuyTicketPackagePrice(new BigDecimal(EnumBuyTicketPackageType.of(requestSubmitOrder.getBuyTicketPackageId()).getPrice())
@@ -192,7 +194,7 @@ public class TicketServiceImpl implements TicketService {
 
 
     /**
-     * 处理订票回调
+     * {@inheritDoc}
      *
      * @param jsonObject
      * @return
@@ -222,7 +224,8 @@ public class TicketServiceImpl implements TicketService {
             orderForm.setTicketTotalPrice(new BigDecimal(jsonObject.getString("orderamount")));
             orderForm.setTotalPrice(orderForm.getTicketTotalPrice().add(orderForm.getBuyTicketPackagePrice()).add(orderForm.getGrabTicketPackagePrice()));
             orderForm.setOutOrderId(jsonObject.getString("transactionid"));
-            orderForm.setExpireTime(new DateTime(new Date()).plusMinutes(PAYMENT_MINUTE).toDate());
+            final Date expiredTime = new DateTime(new Date()).plusMinutes(PAYMENT_MINUTE).toDate();
+            orderForm.setExpireTime(expiredTime);
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getValue());
             this.orderFormService.update(orderForm);
@@ -254,7 +257,10 @@ public class TicketServiceImpl implements TicketService {
             chargeMoneyOrder.setGrabTicketPackage(orderForm.getGrabTicketPackagePrice());
             chargeMoneyOrder.setStatus(EnumChargeMoneyOrderStatus.INIT.getId());
             chargeMoneyOrderService.init(chargeMoneyOrder);
-
+            //放入消息队列
+            JSONObject mqJo = new JSONObject();
+            mqJo.put("orderFormId",orderForm.getId());
+            MqProducer.sendMessage(mqJo, MqConfig.TICKET_CANCEL_EXPIRED_ORDER, 1000);
         } else {
             log.info("订单回调处理成功---占座失败");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_FAIL.getId());
@@ -393,10 +399,10 @@ public class TicketServiceImpl implements TicketService {
             this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_ORDER_CANCEL.getValue(),
                     EnumOrderFormDetailStatus.TICKET_ORDER_CANCEL.getId(), orderForm.getId());
             //如果客户支付成功，退款
-            if (orderForm.isCustomerPaySuccess()) {
-                final RefundOrderFlow refundOrderFlow = this.initRefundOrderFlow(orderForm);
-                this.orderRefund(refundOrderFlow, orderForm);
-            }
+//            if (orderForm.isCustomerPaySuccess()) {
+//                final RefundOrderFlow refundOrderFlow = this.initRefundOrderFlow(orderForm);
+//                this.orderRefund(refundOrderFlow, orderForm);
+//            }
             return Pair.of(true, jsonObject.getString("msg"));
         }
         log.error("订单[" + orderFormId + "]取消失败，原因：[" + jsonObject.getString("msg") + "]");

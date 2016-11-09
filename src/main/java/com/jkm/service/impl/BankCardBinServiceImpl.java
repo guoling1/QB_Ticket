@@ -25,7 +25,7 @@ public class BankCardBinServiceImpl implements BankCardBinService {
     );
 
     @Override
-    public Optional<BankCardBin> CardNoInfo(String cardNo) {
+    public Optional<BankCardBin> analyseCardNo(String cardNo) {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(cardNo) && cardNo.length() >= 10, "卡号不正确");
         for (final int binLength : BIN_LENGTH_LIST) {
             final Optional<BankCardBin> cardBinOptional = baseBankCardBinService.loadByBinNo(cardNo.substring(0, binLength));
@@ -33,6 +33,21 @@ public class BankCardBinServiceImpl implements BankCardBinService {
                 return cardBinOptional;
             }
         }
+
         return Optional.absent();
     }
+
+
+//    @Override
+//    public Optional<BankCardBin> cardNoInfo(String cardNo) {
+//        Preconditions.checkArgument(!Strings.isNullOrEmpty(cardNo) && cardNo.length() >= 10, "卡号不正确");
+//        for (final int binLength : BIN_LENGTH_LIST) {
+//            final Optional<BankCardBin> cardBinOptional = baseBankCardBinService.loadByBinNo(cardNo.substring(0, binLength));
+//            if (cardBinOptional.isPresent()) {
+//                return cardBinOptional;
+//            }
+//        }
+//        return Optional.absent();
+//    }
+
 }
