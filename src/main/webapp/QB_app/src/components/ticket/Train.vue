@@ -85,10 +85,10 @@
     },
     computed: {
       stations () {
-        console.log(1);
         if (this.initStations) {
           // 优先筛选条件
-          let config = this.screenConfig;
+          let config = this.$store.state.screen.config;
+          console.log(config);
           // 计算最低价
           let checkPrice = ['edz_price', 'gjrw_price', 'gjrws_price', 'qtxb_price', 'rw_price', 'rwx_price', 'rz_price', 'swz_price', 'tdz_price', 'wz_price', 'ydz_price', 'yw_price', 'ywx_price', 'ywz_price', 'yz_price'];
           for (let i = 0; i < this.initStations.length; i++) {

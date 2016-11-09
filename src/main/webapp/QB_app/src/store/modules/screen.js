@@ -34,7 +34,7 @@ const mutations = {
   },
   SCREEN_CLOSE (state, obj) {
     state.ctrl = obj.ctrl;
-    state.config = {};
+    state.config = obj.config;
   }
 };
 

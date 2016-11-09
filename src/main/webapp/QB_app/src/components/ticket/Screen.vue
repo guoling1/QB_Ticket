@@ -1,12 +1,8 @@
 <template lang="html">
   <transition name="fade">
     <div class="main flex-box-column flexBox" v-show="show">
-      <div class="header">
-        <div class="close" @click='close'></div>
-        <h1>日期选择</h1>
-      </div>
       <div class="result flex-box-column flexBox">
-        <div class="week">
+        <div class="week" @click="close">
           <div class="weekend">日</div>
           <div>一</div>
           <div>二</div>
@@ -14,17 +10,6 @@
           <div>四</div>
           <div>五</div>
           <div class="weekend">六</div>
-        </div>
-        <div class="day">
-          <div class="module" v-for="month in calendar">
-            <div>{{month.year}}年{{month.month}}月</div>
-            <ul>
-              <li v-for="(day,index) in month.days" v-if="index < month.firstDay"></li>
-              <li v-for="(day,index) in month.days" @click="close(month.year,month.month,index+1)"
-                  v-bind:class="{lost:!day.active,weekend:day.weekend}">{{day.day}}
-              </li>
-            </ul>
-          </div>
         </div>
       </div>
     </div>
@@ -37,19 +22,59 @@
     name: 'Datetime',
     data () {
       return {
-        datetime: '今天'
+        screenConfig: this.$store.state.screen.config,
+        pageConfig: {
+          table: {
+            edz: true,
+            ydz: true,
+            swz: true,
+            tdz: true,
+            yz: true,
+            yw: true,
+            rz: true,
+            rw: true,
+            wz: true,
+            dw: true
+          },
+          trains: {
+            D: true,
+            G: true,
+            Z: true,
+            K: true
+          },
+          // 用 0,1,2,3,4分别表示5个时间段,0表示全部
+          startTime: '0',
+          endTime: '0'
+        }
       }
     },
     methods: {
-      close: function () {
+      enter: function () {
+        // 根据pageConfig得出新的config,然后修改store数据
+        let newConfig = {};
+        // 必须整体重新赋值 config
         this.$store.commit('SCREEN_CLOSE', {
-          ctrl: false
+          ctrl: false,
+          config: newConfig
+        });
+      },
+      // 重置数据
+      reset: function () {
+        // 根据pageConfig得出新的config,然后修改store数据
+        let newConfig = {};
+        // 必须整体重新赋值 config
+        this.$store.commit('SCREEN_CLOSE', {
+          ctrl: false,
+          config: newConfig
         });
       }
     },
     computed: {
       show () {
         return this.$store.state.screen.ctrl
+      },
+      page () {
+        return this.$data.pageConfig
       }
     }
   }

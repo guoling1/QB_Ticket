@@ -17,11 +17,11 @@
       </div>
       <div class="btn" :class="" @click="open">
         <div class="icon icon-screen"></div>
-        <p>综合筛选</p>
+        <p>综合筛选1</p>
       </div>
     </div>
+    <screen></screen>
   </div>
-  <screen></screen>
 </template>
 
 <script lang="babel">
