@@ -150,7 +150,8 @@ public class AuthenServiceImpl implements AuthenService {
 					+ "*********************");
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			ret.put("retCode", false);
+			ret.put("retMsg", "参数有误");
 		}
 		return ret;
 	}
@@ -268,7 +269,9 @@ public class AuthenServiceImpl implements AuthenService {
 					+ "*********************");
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
+			ret.put("retCode", false);
+			ret.put("retMsg", "参数有误");
 		}
 		return ret;
 	}
@@ -453,7 +456,9 @@ public class AuthenServiceImpl implements AuthenService {
 					+ "*********************");
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
+			ret.put("retCode", "-1001");
+			ret.put("retMsg", "参数有误");
 		}
 		return ret;
 	}
@@ -535,7 +540,9 @@ public class AuthenServiceImpl implements AuthenService {
 					+ "*********************");
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
+			ret.put("retCode", "-1001");
+			ret.put("retMsg", "参数有误");
 		}
 		return ret;
 	}
