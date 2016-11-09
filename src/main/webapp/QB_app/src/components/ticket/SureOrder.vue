@@ -5,17 +5,17 @@
         <div class="left">
           <div class="time">{{sureOrder.startTime}}</div>
           <div class="place">{{sureOrder.fromStationName}}</div>
-          <div class="date">11-20 周五</div>
+          <div class="date">{{otherData.startShow}}</div>
         </div>
         <div class="middle">
           <div class="trains">{{sureOrder.checi}}</div>
           <div class="ch"></div>
-          <div class="date">耗时{{sureOrder.runTime}}分钟</div>
+          <div class="date">耗时{{otherData.runShow}}</div>
         </div>
         <div class="right">
           <div class="time">{{sureOrder.endTime}}</div>
           <div class="place">{{sureOrder.toStationName}}</div>
-          <div class="date">11-20 周五</div>
+          <div class="date">{{otherData.arriveShow}}</div>
         </div>
       </div>
       <div class="space">
@@ -111,14 +111,15 @@
         sureOrder: {
           appId: "wnl",     //appid
           uid: "123456",  //用户id
+          mobile: '15010607970',   //联系手机号
           price: 00.0,    //票价
           fromStationName: "",  //出发站
           fromStationCode: "",     //出发站code
           toStationName: "",     //到达站
           toStationCode: "",      //到达站code
           zwCode: "",               //坐席类型
-          startDate: "2016-11-09",   //发车日期
-          endDate: "2016-11-10",     //到达日期
+          startDate: "",   //发车日期
+          endDate: "",     //到达日期
           startTime: "",       //发车时间
           endTime: "",           //到达时间
           runTime: "",           //运行分钟
@@ -130,25 +131,33 @@
           }]
         },
         otherData: {
-          table: ''
+          table: '',
+          startShow: '',
+          arriveShow: '',
+          runShow: ''
         }
       }
     },
     beforeRouteEnter (to, from, next) {
-      console.log(JSON.parse(sessionStorage.getItem('preOrder')));
-      let sessionData = JSON.parse(sessionStorage.getItem('preOrder'));
+      let sessionPreOrder = JSON.parse(sessionStorage.getItem('preOrder'));
+      let sessionPreDate = JSON.parse(sessionStorage.getItem('preDate'));
       next(function (vm) {
         vm.$data.sureOrder.price = to.query.price;
         vm.$data.otherData.table = to.query.table;
-        vm.$data.sureOrder.fromStationName = sessionData.from_station_name;
-        vm.$data.sureOrder.fromStationCode = sessionData.from_station_code;
-        vm.$data.sureOrder.toStationName = sessionData.to_station_name;
-        vm.$data.sureOrder.toStationCode = sessionData.to_station_code;
+        vm.$data.sureOrder.fromStationName = sessionPreOrder.from_station_name;
+        vm.$data.sureOrder.fromStationCode = sessionPreOrder.from_station_code;
+        vm.$data.sureOrder.toStationName = sessionPreOrder.to_station_name;
+        vm.$data.sureOrder.toStationCode = sessionPreOrder.to_station_code;
         vm.$data.sureOrder.zwCode = zwCode[to.query.table];
-        vm.$data.sureOrder.startTime = sessionData.start_time;
-        vm.$data.sureOrder.endTime = sessionData.arrive_time;
-        vm.$data.sureOrder.runTime = sessionData.run_time_minute;
-        vm.$data.sureOrder.checi = sessionData.train_code;
+        vm.$data.sureOrder.startTime = sessionPreOrder.start_time;
+        vm.$data.sureOrder.endTime = sessionPreOrder.arrive_time;
+        vm.$data.sureOrder.runTime = sessionPreOrder.run_time_minute;
+        vm.$data.sureOrder.checi = sessionPreOrder.train_code;
+        vm.$data.sureOrder.startDate = sessionPreDate.startTime.post;
+        vm.$data.sureOrder.endDate = sessionPreDate.arriveTime.post;
+        vm.$data.otherData.startShow = sessionPreDate.startTime.show;
+        vm.$data.otherData.arriveShow = sessionPreDate.arriveTime.show;
+        vm.$data.otherData.runShow = sessionPreDate.runTime;
       });
     },
     methods: {
