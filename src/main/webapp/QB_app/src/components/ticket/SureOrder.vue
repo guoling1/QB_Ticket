@@ -3,35 +3,35 @@
     <div class="from">
       <div class="train-info">
         <div class="left">
-          <div class="time">07:10</div>
-          <div class="place">北京西</div>
+          <div class="time">{{sureOrder.startTime}}</div>
+          <div class="place">{{sureOrder.fromStationName}}</div>
           <div class="date">11-20 周五</div>
         </div>
         <div class="middle">
-          <div class="trains">G208</div>
+          <div class="trains">{{sureOrder.checi}}</div>
           <div class="ch"></div>
-          <div class="date">耗时1小时52分</div>
+          <div class="date">耗时{{sureOrder.runTime}}分钟</div>
         </div>
         <div class="right">
-          <div class="time">17:10</div>
-          <div class="place">北京东</div>
+          <div class="time">{{sureOrder.endTime}}</div>
+          <div class="place">{{sureOrder.toStationName}}</div>
           <div class="date">11-20 周五</div>
         </div>
       </div>
       <div class="space">
-        <div class="group no-border" @click="time('dateONE')">
-          <div class="prompt">二等座</div>
-          <div class="write right"><span class="price">￥123.85</span></div>
+        <div class="group no-border">
+          <div class="prompt">{{pageInfo.table}}</div>
+          <div class="write right"><span class="price">￥{{pageInfo.price}}</span></div>
         </div>
       </div>
       <div class="space">
-        <div class="group no-border" @click="time('dateONE')">
+        <div class="group no-border" @click="login">
           <div class="logo"></div>
           <div class="write">使用12306账号登录</div>
         </div>
       </div>
       <div class="space no-border">
-        <div class="group no-border" @click="time('dateONE')">
+        <div class="group no-border">
           <div class="list"></div>
           <div class="write no-prompt">
             <span class="name">成龙</span>
@@ -39,7 +39,7 @@
             <span class="info">成人票</span>
           </div>
         </div>
-        <div class="group no-border" @click="time('dateONE')">
+        <div class="group no-border">
           <div class="list"></div>
           <div class="write no-prompt">
             <span class="name">成凤</span>
@@ -50,21 +50,21 @@
       </div>
       <div class="space no-padding">
         <div class="handle">
-          <div class="btn">添加/编辑乘客</div>
+          <div class="btn" @click="contact">添加/编辑乘客</div>
           <div class="line"></div>
           <div class="btn">添加儿童</div>
         </div>
       </div>
       <div class="space">
-        <div class="group no-border" @click="time('dateONE')">
+        <div class="group no-border">
           <div class="prompt">联系手机</div>
           <div class="write no-prompt empty">通知出票信息</div>
         </div>
       </div>
       <div class="space">
-        <div class="group no-border" @click="time('dateONE')">
+        <div class="group no-border">
           <div class="prompt">套餐类型</div>
-          <div class="write empty">{{dateONE}}</div>
+          <div class="write empty">123</div>
         </div>
       </div>
       <div class="submit">
@@ -90,25 +90,81 @@
         </div>
       </div>
     </div>
+    <contacts></contacts>
   </div>
 </template>
 
 <script lang="babel">
-  import Datetime from './Datetime.vue';
+  import Contacts from './Contacts.vue'
+
+  const zwCode = {
+    '商务座': '9',
+    '特等座': 'P',
+    '一等座': 'M',
+    '二等座': 'O',
+    '高级软卧': '6',
+    '软卧': '4',
+    '硬卧': '3',
+    '软座': '2',
+    '硬座': '1'
+  };
+
   export default {
     name: 'menu',
     components: {
-      Datetime
+      Contacts
     },
     data: function () {
       return {
-        msg: 'Welcome to Your Vue.js App'
+        sureOrder: {
+          appId: "wnl",     //appid
+          uid: "123456",  //用户id
+          price: 00.0,    //票价
+          fromStationName: "",  //出发站
+          fromStationCode: "",     //出发站code
+          toStationName: "",     //到达站
+          toStationCode: "",      //到达站code
+          zwCode: "",               //坐席类型
+          startDate: "2016-11-09",   //发车日期
+          endDate: "2016-11-10",     //到达日期
+          startTime: "",       //发车时间
+          endTime: "",           //到达时间
+          runTime: "",           //运行分钟
+          checi: "",           //车次
+          buyTicketPackageId: 1,    //出票套餐
+          passengers: {         //乘客
+            id: 1,       //乘客id
+            piaoType: 1  //乘客类型
+          }
+        },
+        otherData: {
+          table: ''
+        }
       }
     },
+    beforeRouteEnter (to, from, next) {
+      console.log(JSON.parse(sessionStorage.getItem('preOrder')));
+      let sessionData = JSON.parse(sessionStorage.getItem('preOrder'));
+      next(function (vm) {
+        vm.$data.sureOrder.price = to.query.price;
+        vm.$data.otherData.table = to.query.table;
+        vm.$data.sureOrder.fromStationName = sessionData.from_station_name;
+        vm.$data.sureOrder.fromStationCode = sessionData.from_station_code;
+        vm.$data.sureOrder.toStationName = sessionData.to_station_name;
+        vm.$data.sureOrder.toStationCode = sessionData.to_station_code;
+        vm.$data.sureOrder.zwCode = zwCode[to.query.table];
+        vm.$data.sureOrder.startTime = sessionData.start_time;
+        vm.$data.sureOrder.endTime = sessionData.arrive_time;
+        vm.$data.sureOrder.runTime = sessionData.run_time_minute;
+        vm.$data.sureOrder.checi = sessionData.train_code;
+      });
+    },
     methods: {
-      time: function (name) {
-        this.$store.commit('TIME_OPEN', {
-          name: name,
+      login: function () {
+        this.$router.push({path: '/ticket/login'});
+      },
+      contact: function () {
+        this.$store.commit("CONTACT_OPEN", {
           ctrl: true
         });
       },
@@ -117,8 +173,11 @@
       }
     },
     computed: {
-      dateONE () {
-        return this.$store.state.date.scope.dateONE.time;
+      pageInfo () {
+        return {
+          table: this.$data.otherData.table,
+          price: this.$data.sureOrder.price
+        }
       }
     }
   }

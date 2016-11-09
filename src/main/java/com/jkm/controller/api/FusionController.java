@@ -5,6 +5,8 @@ import com.jkm.controller.helper.ResponseEntityBase;
 import com.jkm.controller.helper.request.RequestTicketRefund;
 import com.jkm.controller.helper.response.ResponseTicketRefund;
 import com.jkm.entity.fusion.AuthenData;
+import com.jkm.entity.fusion.QueryQuickPayData;
+import com.jkm.entity.fusion.QueryRefundData;
 import com.jkm.entity.fusion.SingleRefundData;
 import com.jkm.service.AuthenService;
 import net.sf.json.JSONObject;
@@ -146,10 +148,10 @@ public class FusionController extends BaseController {
     @RequestMapping(value = "/singlRefund", method = RequestMethod.POST)
     public JSONObject singlRefund(@ModelAttribute("requestData") SingleRefundData requestData) {
         JSONObject result = new JSONObject();
-        requestData.setOrgSn("20161031184113");
-        requestData.setOrgDate("20161031");
-        requestData.setOrgAmount("100");
-        requestData.setRefundAmount("100");
+//        requestData.setOrgSn("20161031184113");
+//        requestData.setOrgDate("20161031");
+//        requestData.setOrgAmount("100");
+//        requestData.setRefundAmount("100");
         Map<String, Object> map = authenService.singlRefund(requestData);
         if ("true".equals(map.get("retCode").toString())) {
             result.put("message", "支付成功");
@@ -163,4 +165,5 @@ public class FusionController extends BaseController {
         }
         return  result;
     }
+
 }

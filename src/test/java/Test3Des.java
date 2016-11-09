@@ -2,7 +2,6 @@ import com.google.common.collect.Lists;
 import com.jkm.entity.PolicyOrder;
 import com.jkm.enums.EnumHTHYMethodCode;
 import com.jkm.service.PolicyOrderService;
-import com.jkm.service.TicketService;
 import com.jkm.service.hy.HySdkService;
 import com.jkm.service.hy.entity.*;
 import com.jkm.service.hy.helper.HySdkConstans;
@@ -24,21 +23,19 @@ import java.util.List;
  * Created by yuxiang on 2016-10-31.
  */
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:spring-mybatis.xml","classpath:spring-mvc.xml"})
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(locations = {"classpath:spring-mybatis.xml","classpath:spring-mvc.xml"})
 public class Test3Des {
 
-   @Autowired
-    private HySdkService hySdkService;
-    @Autowired
-    private PolicyOrderService policyOrderService;
-    @Autowired
-    private TicketService ticketService;
-
-    @Test
-    public void test(){
-        this.ticketService.refund(81);
-        /*this.policyOrderService.batchBuyPolicy(127);*/
+//   @Autowired
+//    private HySdkService hySdkService;
+//    @Autowired
+//    private PolicyOrderService policyOrderService;
+//
+//    @Test
+//    public void test(){
+//
+//        this.policyOrderService.batchBuyPolicy(127);
    /*     HyPostPolicyOrderRequest request = new HyPostPolicyOrderRequest();
         request.setUsername(HySdkConstans.USERNAME);
         request.setReqtime(DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss));
@@ -106,6 +103,6 @@ public class Test3Des {
         jsonArray.add(obj);
         final HyReturnTicketResponse hyReturnTicketResponse = this.hySdkService.returnTicket(request ,jsonArray );*/
 
-    }
+//    }
 }
 

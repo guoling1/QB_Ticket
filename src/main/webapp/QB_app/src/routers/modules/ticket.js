@@ -89,11 +89,6 @@ export default {
       component: ticketPayOrder
     },
     {
-      path: 'contacts',
-      name: 'ticketContacts',
-      component: ticketContacts
-    },
-    {
       path: 'login',
       name: 'ticketLogin',
       component: ticketLogin

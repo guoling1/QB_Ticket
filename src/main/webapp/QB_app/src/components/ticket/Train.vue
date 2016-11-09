@@ -11,7 +11,7 @@
     </div>
     <div v-if="stations.empty">没有符合查询条件的车次</div>
     <ul v-if="!stations.empty">
-      <li v-for="station in stations.data">
+      <li v-for="station in stations.data" @click="router($event,station)">
         <div class="top">
           <span class="checi">{{station.train_code}}</span>
 
@@ -82,6 +82,13 @@
         console.log(err);
         next(false);
       })
+    },
+    methods: {
+      router: function (event, station) {
+        // 路由跳转前,查询信息必须被存储在 sessionStorage 存储时注意要转json
+        sessionStorage.setItem('preOrder', JSON.stringify(station));
+        this.$router.push({path: '/ticket/submit-order'});
+      }
     },
     computed: {
       stations () {

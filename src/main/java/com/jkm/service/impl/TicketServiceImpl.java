@@ -8,6 +8,8 @@ import com.jkm.entity.*;
 import com.jkm.entity.fusion.SingleRefundData;
 import com.jkm.enums.*;
 import com.jkm.helper.InsurancePolicyUtil;
+import com.jkm.helper.TicketMessageParams.SendBuyTicketFailParam;
+import com.jkm.helper.TicketMessageParams.SendBuyTicketSuccessParam;
 import com.jkm.service.*;
 import com.jkm.service.ContactInfoService;
 import com.jkm.service.OrderFormDetailService;
@@ -82,6 +84,9 @@ public class TicketServiceImpl implements TicketService {
 
     @Autowired
     private GrabTicketFromService grabTicketFromService;
+
+    @Autowired
+    private TicketSendMessageService ticketSendMessageService;
 
     /**
      * {@inheritDoc}
@@ -275,7 +280,7 @@ public class TicketServiceImpl implements TicketService {
         final JSONObject jsonObject = this.hySdkService.confirmTrainTicket(orderForm.getOrderId(), orderForm.getOutOrderId());
 //        final String code = jsonObject.getString("code");
         final boolean success = jsonObject.getBoolean("success");
-        if (success) {//  && "100".equals(code)
+        if (success) {
             log.info("订单[" + orderForm.getId() + "]--确认订单请求受理成功");
             orderForm.setOrderNumber(jsonObject.getString("ordernumber"));
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUEST_SUCCESS.getId());
@@ -321,7 +326,25 @@ public class TicketServiceImpl implements TicketService {
             this.orderFormService.update(orderForm);
             this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_BUY_SUCCESS.getValue(),
                     EnumOrderFormDetailStatus.TICKET_BUY_SUCCESS.getId(), orderForm.getId());
-            this.policyOrderService.batchBuyPolicy(orderForm.getId());
+            try {
+                this.policyOrderService.batchBuyPolicy(orderForm.getId());
+            } catch (final Throwable throwable) {
+                log.error("订单[" + orderForm.getId() + "] 买保险异常", throwable);
+            }
+            //短信通知
+            final List<OrderFormDetail> orderFormDetails = this.orderFormDetailService.selectByOrderFormId(orderForm.getId());
+            for (OrderFormDetail orderFormDetail : orderFormDetails) {
+                final SendBuyTicketSuccessParam sendBuyTicketSuccessParam = new SendBuyTicketSuccessParam();
+                sendBuyTicketSuccessParam.setUid(orderForm.getUid());
+                sendBuyTicketSuccessParam.setMobile(orderForm.getMobile());
+                sendBuyTicketSuccessParam.setStartStation(orderForm.getFromStationName());
+                sendBuyTicketSuccessParam.setEndStation(orderForm.getToStationName());
+                sendBuyTicketSuccessParam.setTrainNo(orderForm.getCheci());
+                sendBuyTicketSuccessParam.setStartDate(orderForm.getStartDate());
+                sendBuyTicketSuccessParam.setStartTime(orderForm.getStartTime());
+                sendBuyTicketSuccessParam.setTicketNo(orderFormDetail.getTicketNo());
+                this.ticketSendMessageService.sendBuyTicketSuccessMessage(sendBuyTicketSuccessParam);
+            }
         } else {
             log.info("确认订单回调函数--出票失败");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_TICKET_FAIL.getId());
@@ -332,6 +355,15 @@ public class TicketServiceImpl implements TicketService {
             //退款
             final RefundOrderFlow refundOrderFlow = this.initRefundOrderFlow(orderForm);
             this.orderRefund(refundOrderFlow, orderForm);
+            //短信通知
+            final SendBuyTicketFailParam sendBuyTicketFailParam = new SendBuyTicketFailParam();
+            sendBuyTicketFailParam.setUid(orderForm.getUid());
+            sendBuyTicketFailParam.setMobile(orderForm.getMobile());
+            sendBuyTicketFailParam.setStartStation(orderForm.getFromStationName());
+            sendBuyTicketFailParam.setEndStation(orderForm.getToStationName());
+            sendBuyTicketFailParam.setTrainNo(orderForm.getCheci());
+            this.ticketSendMessageService.sendBuyTicketFailMessage(sendBuyTicketFailParam);
+
         }
 
     }
@@ -737,7 +769,7 @@ public class TicketServiceImpl implements TicketService {
         final Optional<ChargeMoneyOrder> chargeMoneyOrderOptional = this.chargeMoneyOrderService.selectByOrderFormId(orderFormId);
         Preconditions.checkState(chargeMoneyOrderOptional.isPresent(), "订单[%s]对应的收款记录不存在", orderFormId);
         final ChargeMoneyOrder chargeMoneyOrder = this.chargeMoneyOrderService.selectByIdWithLock(chargeMoneyOrderOptional.get().getId()).get();
-        Preconditions.checkState(chargeMoneyOrder.isPaySuccess(), "订单[%s]对应的收款记录已经付款成功！！！！！！！");
+        Preconditions.checkState(!chargeMoneyOrder.isPaySuccess(), "订单[%s]对应的收款记录已经付款成功！！！！！！！");
         if (isPaySuccess) {
             log.info("订单[" + orderFormId + "]支付成功");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId());
@@ -748,6 +780,10 @@ public class TicketServiceImpl implements TicketService {
             log.info("订单[" + orderFormId + "]支付成功--调用确认订单接口！！");
             this.confirmOrder(orderForm);
         } else {
+            orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId());
+            orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getValue());
+            orderForm.setPaymentSn(paymentSn);
+            this.orderFormService.update(orderForm);
             chargeMoneyOrder.setStatus(EnumChargeMoneyOrderStatus.PAYMENT_TICKET_FAIL.getId());
         }
         this.chargeMoneyOrderService.update(chargeMoneyOrder);
@@ -1232,6 +1268,7 @@ public class TicketServiceImpl implements TicketService {
      * @return
      */
     private RefundOrderFlow initRefundOrderFlow(final OrderForm orderForm) {
+        log.info("订单[" + orderForm.getId() + "]初始化退款单");
         final Optional<RefundOrderFlow> refundOrderFlowOptional = this.refundOrderFlowService.selectByOrderFormId(orderForm.getId());
         Preconditions.checkState(!refundOrderFlowOptional.isPresent(), "订单[" + orderForm.getId() + "]已经生成退款单[" + refundOrderFlowOptional.get().getId() + "]");
         final RefundOrderFlow refundOrderFlow = new RefundOrderFlow();
@@ -1251,6 +1288,7 @@ public class TicketServiceImpl implements TicketService {
      * 客户订单退款
      */
     private void orderRefund(final RefundOrderFlow refundOrderFlow, final OrderForm orderForm) {
+        log.info("订单[" + orderForm.getId() + "]请求退款");
         Preconditions.checkState(refundOrderFlow.isRefundSuccess(), "订单[" + refundOrderFlow.getOrderFormId()  +
                 "]对应的退款单[" + refundOrderFlow.getId()+ "]已经退款");
         final SingleRefundData singleRefundData = new SingleRefundData();
@@ -1264,10 +1302,12 @@ public class TicketServiceImpl implements TicketService {
         this.orderFormService.update(orderForm);
         final Map<String, Object> resultMap = this.authenService.singlRefund(singleRefundData);
         if ((boolean) resultMap.get("retCode")) {
+            log.info("订单[" + orderForm.getId() + "]--退款单[" + refundOrderFlow.getId() + "]" + "退款成功");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_REFUND_SUCCESS.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_REFUND_SUCCESS.getValue());
             refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.REFUND_SUCCESS.getId());
         } else {
+            log.info("订单[" + orderForm.getId() + "]--退款单[" + refundOrderFlow.getId() + "]" + "退款失败");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_REFUND_FAIL.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_REFUND_FAIL.getValue());
             refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.REFUND_FAIL.getId());

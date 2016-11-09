@@ -219,7 +219,7 @@ public class OrderForm extends BaseEntity {
     }
 
     /**
-     * 订单是否是  占座成功或者失败状态
+     * 订单是否是  占座成功
      *
      * @return
      */

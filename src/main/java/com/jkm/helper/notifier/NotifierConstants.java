@@ -28,5 +28,23 @@ public class NotifierConstants {
         @Key("platform.name")
         @DefaultValue("钱包++")
         String platformName();
+
+        /**
+         * 序列号
+         *
+         * @return
+         */
+        @Key("entinfo.sms.sn")
+        @DefaultValue("SDK-SKY-010-02681")
+        String sn();
+
+        /**
+         * 序列号
+         *
+         * @return
+         */
+        @Key("entinfo.sms.password")
+        @DefaultValue("1CCD755D0C8F6B05ABEC110FE1A50EB8")
+        String password();
     }
 }

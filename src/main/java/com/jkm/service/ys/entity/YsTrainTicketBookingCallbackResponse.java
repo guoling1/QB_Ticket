@@ -8,7 +8,6 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by zhangbin on 2016/10/25.
