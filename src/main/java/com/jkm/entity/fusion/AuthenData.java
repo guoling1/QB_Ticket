@@ -181,4 +181,5 @@ public class AuthenData {
 	public void setAppId(String appId) {
 		this.appId = appId;
 	}
+
 }

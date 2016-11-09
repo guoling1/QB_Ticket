@@ -1,6 +1,7 @@
 package com.jkm.entity.fusion.body;
 
 import com.jkm.entity.fusion.detail.ResponseDetail100005;
+import com.jkm.entity.fusion.detail.ResponseDetail200005;
 
 import javax.xml.bind.annotation.*;
 
@@ -10,13 +11,13 @@ import javax.xml.bind.annotation.*;
 @XmlType(name = "BODY", propOrder={"retDetail"})
 public class ResponseBody200005 {
 	@XmlElement(name="RET_DETAIL")
-	private ResponseDetail100005 retDetail;
+	private ResponseDetail200005 retDetail;
 
-	public ResponseDetail100005 getRetDetail() {
+	public ResponseDetail200005 getRetDetail() {
 		return retDetail;
 	}
 
-	public void setRetDetail(ResponseDetail100005 retDetail) {
+	public void setRetDetail(ResponseDetail200005 retDetail) {
 		this.retDetail = retDetail;
 	}
 }

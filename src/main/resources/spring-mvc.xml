@@ -13,7 +13,15 @@
     <context:component-scan base-package="com.jkm" />
     <context:annotation-config />
     <mvc:annotation-driven />
-
+    <!-- 将多个配置文件读取到容器中，交给Spring管理 -->
+    <bean id="propertyMqConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:mq.properties</value>
+            </list>
+        </property>
+    </bean>
     <!-- 配置文件上传，如果没有使用文件上传可以不用配置，当然如果不配，那么配置文件中也不必引入上传组件包 -->
     <bean id="multipartResolver"
           class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
@@ -96,6 +104,49 @@
             <list>
                 <ref bean="sendMsgEventProcessorRegister"/>
             </list>
+        </property>
+    </bean>
+
+
+    <!--消费端-->
+    <bean id="consumer" class="com.aliyun.openservices.ons.api.bean.ConsumerBean"
+          init-method="start" destroy-method="shutdown">
+        <property name="properties">
+            <map>
+                <entry key="ConsumerId" value="${mq.consumerId}"/>
+                <entry key="AccessKey" value="${mq.accessKey}"/>
+                <entry key="SecretKey" value="${mq.secretKey}"/>
+                <entry key="ONSAddr" value="${mq.onsaddr}"/>
+            </map>
+        </property>
+
+        <property name="subscriptionTable">
+            <map>
+                <entry value-ref="messageListener">
+                    <key>
+                        <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
+                            <property name="topic" value="${mq.topic}"/> <!-- Topic,请替换 -->
+                            <property name="expression" value="*"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
+                        </bean>
+                    </key>
+                </entry>
+            </map>
+
+        </property>
+    </bean>
+
+    <!-- 消息处理器 -->
+    <bean id="messageListener" class="com.jkm.controller.common.MessageListenerImpl"/>
+    <!--生产端-->
+    <bean id="producer" class="com.aliyun.openservices.ons.api.bean.ProducerBean"
+          init-method="start" destroy-method="shutdown">
+        <property name="properties">
+            <map>
+                <entry key="ProducerId" value="${mq.producerId}" /> <!-- PID,请替换 -->
+                <entry key="AccessKey" value="${mq.accessKey}" /> <!-- ACCESS_KEY,请替换 -->
+                <entry key="SecretKey" value="${mq.secretKey}" /> <!-- SECRET_KEY,请替换 -->
+                <entry key="ONSAddr" value="${mq.onsaddr}"/>
+            </map>
         </property>
     </bean>
 </beans>
