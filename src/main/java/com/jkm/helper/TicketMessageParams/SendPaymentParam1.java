@@ -6,7 +6,7 @@ import lombok.Data;
  * Created by yulong.zhang on 2016/11/8.
  */
 @Data
-public class SendPaymentParam {
+public class SendPaymentParam1 {
 
     /**
      * 用户id

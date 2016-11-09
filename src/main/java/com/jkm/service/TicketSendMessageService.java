@@ -11,9 +11,9 @@ public interface TicketSendMessageService {
     /**
      * 支付发送验证码
      *
-     * @param sendPaymentParam
+     * @param sendPaymentParam1
      */
-    void sendPaymentMessage(SendPaymentParam sendPaymentParam);
+    void sendPaymentMessage(SendPaymentParam1 sendPaymentParam1);
 
     /**
      * 出票成功短信
