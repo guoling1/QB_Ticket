@@ -2,7 +2,6 @@ package com.jkm.controller.api;
 
 import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
-import com.jkm.service.QueryHistoryService;
 import com.jkm.service.QueryTicketPriceService;
 import com.jkm.service.hy.helper.HySdkConstans;
 import net.sf.json.JSONObject;
@@ -23,8 +22,7 @@ public class QueryTicketPriceController extends BaseController {
 
     @Autowired
     private QueryTicketPriceService queryTicketPriceService;
-    @Autowired
-    private QueryHistoryService queryHistoryService;
+
 
     @ResponseBody
     @RequestMapping(value = "/query", method = RequestMethod.POST)
@@ -46,24 +44,5 @@ public class QueryTicketPriceController extends BaseController {
         return results;
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/queryHistory", method = RequestMethod.POST)
-    public ResponseEntityBase<Object> queryHistory() throws IOException {
-        JSONObject responseJson = new JSONObject();
-        JSONObject requestJson = null;
-        requestJson = super.getRequestJsonParams();
-        String uid = super.getUid(requestJson.getString("appid"),requestJson.getString("uid"));
-        requestJson = queryHistoryService.queryHistory(uid);
-        if (requestJson.isEmpty()){
-            String from_station = requestJson.getString("fromStation");
-            String to_station = requestJson.getString("toStation");
-            String from_station_name = requestJson.getString("fromStationName");
-            String to_station_name = requestJson.getString("toStationName");
-            this.queryHistoryService.saveOrUpdate(from_station,to_station,from_station_name,to_station_name);
-        }
-        final ResponseEntityBase<Object> results = new ResponseEntityBase<>();
-        results.setData(requestJson);
 
-        return results;
-    }
 }
