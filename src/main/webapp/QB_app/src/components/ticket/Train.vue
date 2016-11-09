@@ -7,7 +7,7 @@
         10月31日 周五
         <img src="../../assets/calendar.png" alt=""/>
       </div>
-      <span class="next show">后一天</span>
+      <span class="next show" @click="test">后一天</span>
     </div>
     <div v-if="stations.empty">没有符合查询条件的车次</div>
     <ul v-if="!stations.empty">
@@ -60,7 +60,9 @@
     data () {
       return {
         only: false,
-        initStations: []
+        initStations: [],
+        stations: [],
+        screenConfig: 1
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -81,9 +83,17 @@
         next(false);
       })
     },
+    methods: {
+      test: function () {
+        this.$data.screenConfig++;
+      }
+    },
     computed: {
       stations () {
+        console.log(1);
         if (this.initStations) {
+          // 优先筛选条件
+          let config = this.screenConfig;
           // 计算最低价
           let checkPrice = ['edz_price', 'gjrw_price', 'gjrws_price', 'qtxb_price', 'rw_price', 'rwx_price', 'rz_price', 'swz_price', 'tdz_price', 'wz_price', 'ydz_price', 'yw_price', 'ywx_price', 'ywz_price', 'yz_price'];
           for (let i = 0; i < this.initStations.length; i++) {
