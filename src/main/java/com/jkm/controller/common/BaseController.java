@@ -1,6 +1,8 @@
 package com.jkm.controller.common;
 
 import com.google.common.base.Preconditions;
+import com.jkm.controller.helper.ResponseEntityBase;
+import com.jkm.entity.BankCardBin;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -123,7 +125,7 @@ public class BaseController {
      * @param data
      * @throws IOException
      */
-    public void returnJson(JSONObject data) throws IOException {
+    public void returnJson(ResponseEntityBase<BankCardBin> data) throws IOException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/json;charset=UTF-8");
         response.setHeader("cache-control", "max-age=7200");

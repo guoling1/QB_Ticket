@@ -16,8 +16,9 @@ public class BaseBankCardBinServiceImpl implements BaseBankCardBinService {
     @Autowired
     private BankCardBinDao bankCardBinDao;
 
+
     @Override
-    public Optional<BankCardBin> loadByBinNo(String binNo) {
-       return Optional.fromNullable(bankCardBinDao.loadByBinNo(binNo));
+    public Optional<BankCardBin> loadByBinNo(final String binNo) {
+        return Optional.fromNullable(bankCardBinDao.loadByBinNo(binNo));
     }
 }
