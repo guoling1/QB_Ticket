@@ -7,41 +7,80 @@
     </div>
     <div class="space">
       <div class="left">
-        <div class="time">07:10</div>
-        <div class="place">北京西</div>
+        <div class="time">{{orderInfo.start_time}}</div>
+        <div class="place">{{orderInfo.start_station_name}}</div>
         <div class="date">11-20 周五</div>
       </div>
       <div class="middle">
-        <div class="trains">G208</div>
+        <div class="trains">{{orderInfo.train_code}}</div>
         <div class="ch"></div>
-        <div class="date">耗时1小时52分</div>
+        <div class="date">耗时{{orderInfo.run_time}}</div>
       </div>
       <div class="right">
-        <div class="time">17:10</div>
-        <div class="place">北京东</div>
+        <div class="time">{{orderInfo.arrive_time}}</div>
+        <div class="place">{{orderInfo.to_station_name}}</div>
         <div class="date">11-20 周五</div>
       </div>
     </div>
     <div class="space no-padding">
-      <div class="group">
+      <div class="group" v-if="station.edz_num!='--'">
         <div class="left">二等座</div>
-        <div class="left"><span class="active">128.5</span>元</div>
-        <div class="left"><span>321</span>张</div>
+        <div class="left"><span class="active">{{orderInfo.edz_price}}</span>元</div>
+        <div class="left"><span>{{orderInfo.edz_num}}</span>张</div>
         <div class="right blue">预定</div>
+        <router-link class="right red" to="/ticket/main-menu/rob">抢票</router-link>
       </div>
-      <div class="group">
+      <div class="group" v-if="station.ydz_num!='--'">
         <div class="left">一等座</div>
-        <div class="left"><span>128.5</span>元</div>
-        <div class="left"><span>321</span>张</div>
+        <div class="left"><span>{{orderInfo.ydz_price}}</span>元</div>
+        <div class="left"><span>{{orderInfo.ydz_num}}</span>张</div>
         <div class="right blue">预定</div>
+        <router-link class="right red" to="/ticket/main-menu/rob">抢票</router-link>
       </div>
-      <div class="group no-border">
+      <div class="group" v-if="station.swz_num!='--'">
         <div class="left">商务座</div>
-        <div class="left"><span>128.5</span>元</div>
-        <div class="left"><span>0</span>张</div>
-        <div class="right red">抢票</div>
+        <div class="left"><span>{{orderInfo.swz_price}}</span>元</div>
+        <div class="left"><span>{{orderInfo.swz_num}}</span>张</div>
+        <div class="right blue">预定</div>
+        <router-link class="right red" to="/ticket/main-menu/rob">抢票</router-link>
+      </div>
+      <div class="group" v-if="station.yz_num!='--'">
+        <div class="left">硬座</div>
+        <div class="left"><span>{{orderInfo.yz_price}}</span>元</div>
+        <div class="left"><span>{{orderInfo.yz_num}}</span>张</div>
+        <div class="right blue">预定</div>
+        <router-link class="right red" to="/ticket/main-menu/rob">抢票</router-link>
+      </div>
+      <div class="group" v-if="station.rz_num!='--'">
+        <div class="left">软座</div>
+        <div class="left"><span>{{orderInfo.rz_price}}</span>元</div>
+        <div class="left"><span>{{orderInfo.rz_num}}</span>张</div>
+        <div class="right blue">预定</div>
+        <router-link class="right red" to="/ticket/main-menu/rob">抢票</router-link>
+      </div>
+      <div class="group" v-if="station.yw_num!='--'">
+        <div class="left">硬卧</div>
+        <div class="left"><span>{{orderInfo.yw_price}}</span>元</div>
+        <div class="left"><span>{{orderInfo.yw_num}}</span>张</div>
+        <div class="right blue">预定</div>
+        <router-link class="right red" to="/ticket/main-menu/rob">抢票</router-link>
+      </div>
+      <div class="group" v-if="station.rw_num!='--'">
+        <div class="left">软卧</div>
+        <div class="left"><span>{{orderInfo.rw_price}}</span>元</div>
+        <div class="left"><span>{{orderInfo.rw_num}}</span>张</div>
+        <div class="right blue">预定</div>
+        <router-link class="right red" to="/ticket/main-menu/rob">抢票</router-link>
+      </div>
+      <div class="group" v-if="station.wz_num!='--'">
+        <div class="left">无座</div>
+        <div class="left"><span>{{orderInfo.wz_price}}</span>元</div>
+        <div class="left"><span>{{orderInfo.wz_num}}</span>张</div>
+        <div class="right blue">预定</div>
+        <router-link class="right red" to="/ticket/main-menu/rob">抢票</router-link>
       </div>
     </div>
+    {{orderInfo}}
   </div>
 </template>
 
@@ -49,8 +88,10 @@
   export default {
     name: 'menu',
     data () {
+      console.log(JSON.parse(sessionStorage.getItem('preOrder')));
+      // 获取 sessionStorage 的数据 注意转回json
       return {
-        msg: 'Welcome to Your Vue.js App'
+        orderInfo: JSON.parse(sessionStorage.getItem('preOrder'))
       }
     }
   }
@@ -70,7 +111,7 @@
   .main {
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
     .flexItem(1, 100%);
     background-color: #f5f5f5;
   }
