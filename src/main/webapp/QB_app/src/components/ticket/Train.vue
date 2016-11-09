@@ -87,7 +87,7 @@
       router: function (event, station) {
         // 路由跳转前,查询信息必须被存储在 sessionStorage 存储时注意要转json
         sessionStorage.setItem('preOrder', JSON.stringify(station));
-        this.$router.push({path: '/ticket/submit-order'});
+        this.$router.push({path: '/ticket/submit-order', query: {startTime: '2016-12-06'}});
       }
     },
     computed: {

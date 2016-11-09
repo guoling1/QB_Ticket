@@ -9,17 +9,17 @@
       <div class="left">
         <div class="time">{{orderInfo.start_time}}</div>
         <div class="place">{{orderInfo.start_station_name}}</div>
-        <div class="date">11-20 周五</div>
+        <div class="date">{{time.startTime.show}}</div>
       </div>
       <div class="middle">
         <div class="trains">{{orderInfo.train_code}}</div>
         <div class="ch"></div>
-        <div class="date">耗时{{orderInfo.run_time}}</div>
+        <div class="date">耗时{{time.runTime}}</div>
       </div>
       <div class="right">
         <div class="time">{{orderInfo.arrive_time}}</div>
         <div class="place">{{orderInfo.to_station_name}}</div>
-        <div class="date">11-20 周五</div>
+        <div class="date">{{time.arriveTime.show}}</div>
       </div>
     </div>
     <div class="space no-padding">
@@ -105,15 +105,46 @@
     data () {
       // 获取 sessionStorage 的数据 注意转回json
       return {
-        orderInfo: JSON.parse(sessionStorage.getItem('preOrder'))
+        orderInfo: JSON.parse(sessionStorage.getItem('preOrder')),
+        startTime: ''
       }
     },
     beforeRouteEnter (to, from, next) {
       console.log(JSON.parse(sessionStorage.getItem('preOrder')));
       // 根据参数的出发日期,在此处计算到达日期
       next(function (vm) {
-        //
+        vm.$data.startTime = to.query.startTime;
       });
+    },
+    computed: {
+      time: function () {
+        let startD = (this.$data.startTime + '').split("-");
+        let startT = this.$data.orderInfo.start_time.split(":");
+        let start = new Date(startD[0], startD[1] - 1, startD[2], startT[0], startT[1]);
+        let runMin = this.$data.orderInfo.run_time_minute;
+        let runH = 0;
+        let runM = 0;
+        if (runMin >= 60) {
+          runH = parseInt(runMin / 60);
+          runM = runMin % 60;
+        }
+        let weekWord = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+        let arriveMs = start.getTime() + (runMin * 60 * 1000);
+        let arrive = new Date(arriveMs);
+        let sessionDate = {
+          startTime: {
+            post: this.$data.startTime,
+            show: (start.getMonth() + 1) + '月' + start.getDate() + '日 ' + weekWord[start.getDay()]
+          },
+          arriveTime: {
+            post: arrive.getFullYear() + '-' + (arrive.getMonth() + 1) + '-' + arrive.getDate(),
+            show: (arrive.getMonth() + 1) + '月' + arrive.getDate() + '日 ' + weekWord[arrive.getDay()]
+          },
+          runTime: runH + '小时' + runM + '分钟'
+        };
+        sessionStorage.setItem('preDate', JSON.stringify(sessionDate));
+        return sessionDate;
+      }
     }
   }
 </script>
