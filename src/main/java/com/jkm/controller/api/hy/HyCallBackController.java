@@ -78,7 +78,7 @@ public class HyCallBackController extends BaseController {
         if (jsonParams.getInt("returntype") == 1) {
             //线上 线上退票或线上改签数字签名
             //md5(partnerid+returntype+timestamp+apiorderid+trainorderid+token+returnmoney+returnstate+md5(key))
-             final String sign = MD5Util.MD5(HySdkConstans.ORDER_PARTNER_ID + jsonParams.getString("timestamp") +
+             final String sign = MD5Util.MD5(HySdkConstans.ORDER_PARTNER_ID + jsonParams.getString("returntype") +jsonParams.getString("timestamp") +
                   jsonParams.getString("apiorderid") + jsonParams.getString("trainorderid") + jsonParams.getString("token") +
                   jsonParams.getString("returnmoney") + jsonParams.getString("returnstate") + MD5Util.MD5(HySdkConstans.ORDER_SIGN_KEY));
             flag = sign.equals(jsonParams.getString("sign"));
