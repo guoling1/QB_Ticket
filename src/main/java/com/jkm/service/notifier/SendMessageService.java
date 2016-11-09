@@ -17,19 +17,19 @@ public interface SendMessageService {
      */
     long sendMessage(final SendMessageParams params);
 
-    long sendInstantMessage(final SendMessageParams params);
-
-    void asyncSendInstantMessage(final SendMessageParams params);
-
-    void sendInstantMessage(final List<SendMessageParams> paramsList);
-
-    void asyncSendInstantMessage(final List<SendMessageParams> paramsList);
-
-    long sendTimedMessage(final SendMessageParams params);
-
-    void asyncSendTimedMessage(final SendMessageParams params);
-
-    void sendTimedMessage(final List<SendMessageParams> paramsList);
-
-    void asyncSTimedMessage(final List<SendMessageParams> paramsList);
+//    long sendInstantMessage(final SendMessageParams params);
+//
+//    void asyncSendInstantMessage(final SendMessageParams params);
+//
+//    void sendInstantMessage(final List<SendMessageParams> paramsList);
+//
+//    void asyncSendInstantMessage(final List<SendMessageParams> paramsList);
+//
+//    long sendTimedMessage(final SendMessageParams params);
+//
+//    void asyncSendTimedMessage(final SendMessageParams params);
+//
+//    void sendTimedMessage(final List<SendMessageParams> paramsList);
+//
+//    void asyncSTimedMessage(final List<SendMessageParams> paramsList);
 }

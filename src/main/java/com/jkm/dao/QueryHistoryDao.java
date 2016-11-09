@@ -5,5 +5,5 @@ package com.jkm.dao;
  */
 public interface QueryHistoryDao {
 
-    void queryHistory(String uid);
+//    void queryHistory(String uid);
 }

@@ -3,7 +3,6 @@ package com.jkm.service;
 import com.jkm.controller.helper.request.RequestGrabTicket;
 import com.jkm.controller.helper.request.RequestSubmitOrder;
 import com.jkm.entity.OrderForm;
-import com.jkm.service.hy.entity.HyRefundCallbackResponse;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;

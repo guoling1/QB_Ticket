@@ -1,6 +1,6 @@
 package com.jkm.entity.fusion;
 
-public class QueryQuickPay {
+public class QueryQuickPayData {
 	/**
 	 * 商户号
 	 */

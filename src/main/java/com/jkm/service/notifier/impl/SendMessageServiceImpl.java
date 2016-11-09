@@ -5,35 +5,25 @@ import com.jkm.dao.notifier.MessageTemplateDao;
 import com.jkm.dao.notifier.SendMessageRecordDao;
 import com.jkm.entity.notifier.SendMessageRecord;
 import com.jkm.entity.notifier.SmsTemplate;
-import com.jkm.enums.notifier.EnumSendType;
 import com.jkm.enums.notifier.EnumUserType;
 import com.jkm.exception.NoticeSendException;
+import com.jkm.helper.notifier.NotifierConstants;
 import com.jkm.helper.notifier.SendMessageParams;
-import com.jkm.helper.notifier.SendMsgEvent;
-import com.jkm.notifiersdk.entity.SendInstantSmsParams;
-import com.jkm.notifiersdk.entity.SendTimedSmsParams;
-import com.jkm.notifiersdk.service.YmSmsSdkService;
 import com.jkm.service.notifier.SendMessageService;
-import com.jkm.util.DateFormatUtil;
 import com.jkm.util.VelocityStringTemplate;
-import com.jkm.util.reactor.AbstractTaskProcessor;
-import com.jkm.util.reactor.TaskReactor;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.http.client.fluent.Request;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by konglingxin on 15/10/9.
  */
 
 @Service
-public class SendMessageServiceImpl implements SendMessageService, InitializingBean, DisposableBean {
+public class SendMessageServiceImpl implements SendMessageService {
     private static Logger log = Logger.getLogger(SendMessageServiceImpl.class);
 
     @Autowired
@@ -42,252 +32,115 @@ public class SendMessageServiceImpl implements SendMessageService, InitializingB
     @Autowired
     private MessageTemplateDao messageTemplateDao;
 
-    @Autowired
-    private YmSmsSdkService ymSmsSdkService;
-
-    private TaskReactor taskReactor = new TaskReactor(30, 20000);
-
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        this.taskReactor = new TaskReactor(10, 20000);
-        this.taskReactor.addEventProcessor(SendMsgEvent.class, new AbstractTaskProcessor<SendMsgEvent>() {
-            @Override
-            protected void process(final SendMsgEvent event) {
-                if (isEventValid(event)) {
-                    switch (event.getSendType()) {
-                        case INSTANT:
-                            sendInstantMessage(event.getSendMessageParamsList());
-                            break;
-                        case TIMED:
-                            sendTimedMessage(event.getSendMessageParamsList());
-                            break;
-                    }
-                }
-            }
-
-            private boolean isEventValid(final SendMsgEvent event) {
-                return event.getSendType() != null
-                        && event.getSendMessageParamsList() != null
-                        && !event.getSendMessageParamsList().isEmpty();
-            }
-        });
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void destroy() throws Exception {
-        if (this.taskReactor != null) {
-            this.taskReactor.shutdown();
-        }
-    }
-/**
- * 发送短信消息
- *
- * @param uid
- * @param mobile
- * @param noticeType
- * @param params
- * @return
- */
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public long sendMessage(final SendMessageParams params) {
-        checkSendMessageParams(params);
-        final SmsTemplate messageTemplate = this.messageTemplateDao.getTemplateByType(params.getNoticeType().getId());
-        Preconditions.checkNotNull(messageTemplate, "[%s]消息模板为空", params.getNoticeType().getDesc());
-        return sendRealMessage(params, messageTemplate);
-    }
-
-    private void checkSendMessageParams(final SendMessageParams params) {
-        final Pair<Boolean, String> checkResult = params.checkParamsCorrect();
-        Preconditions.checkArgument(checkResult.getLeft(), checkResult.getRight());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public long sendInstantMessage(final SendMessageParams params) {
-        return sendMessage(params);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public long sendTimedMessage(final SendMessageParams params) {
-        checkSendMessageParams(params);
-        Preconditions.checkNotNull(params.getSendTime(), "发送时间不能为空");
-        final SmsTemplate messageTemplate = this.messageTemplateDao.getTemplateByType(params.getNoticeType().getId());
-        Preconditions.checkNotNull(messageTemplate, "[%s]消息模板为空", params.getNoticeType().getDesc());
-        return sendRealTimedMessage(params, messageTemplate);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void sendInstantMessage(final List<SendMessageParams> paramsList) {
-        for (final SendMessageParams params : paramsList) {
-            sendInstantMessage(params);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void asyncSendInstantMessage(final SendMessageParams params) {
-        checkSendMessageParams(params);
-        this.taskReactor.addEvent(SendMsgEvent.builder().addSendMessageParam(params)
-                .sendType(EnumSendType.INSTANT)
-                .build());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void asyncSendInstantMessage(final List<SendMessageParams> paramsList) {
-        if (!paramsList.isEmpty()) {
-            for (final SendMessageParams params : paramsList) {
-                checkSendMessageParams(params);
-            }
-            this.taskReactor.addEvent(SendMsgEvent.builder().sendMessageParamsList(paramsList)
-                    .sendType(EnumSendType.INSTANT)
-                    .build());
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void asyncSendTimedMessage(final SendMessageParams params) {
-        checkSendMessageParams(params);
-        Preconditions.checkNotNull(params.getSendTime(), "发送时间不能为空");
-        this.taskReactor.addEvent(SendMsgEvent.builder().addSendMessageParam(params)
-                .sendType(EnumSendType.TIMED)
-                .build());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void asyncSTimedMessage(final List<SendMessageParams> paramsList) {
-        if (!paramsList.isEmpty()) {
-            for (final SendMessageParams params : paramsList) {
-                checkSendMessageParams(params);
-                Preconditions.checkNotNull(params.getSendTime(), "发送时间不能为空");
-            }
-            this.taskReactor.addEvent(SendMsgEvent.builder().sendMessageParamsList(paramsList)
-                    .sendType(EnumSendType.TIMED)
-                    .build());
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void sendTimedMessage(final List<SendMessageParams> paramsList) {
-        for (final SendMessageParams params : paramsList) {
-            sendTimedMessage(params);
-        }
-    }
-
-    /**
-     * 调用第三方接口发送短信
-     *
-     * @param params
-     * @param messageTemplate @return
-     */
-    private long sendRealMessage(final SendMessageParams params,
-                                 final SmsTemplate messageTemplate) {
-
-        final String content = VelocityStringTemplate.process(messageTemplate.getMessageTemplate(), params.getData());
-
-        log.info("send msg[" + content + "] to user[" + params.getUid() + "],mobile[" + params.getMobile() + "]");
-        try {
-            this.ymSmsSdkService.sendInstantSms(SendInstantSmsParams.builder()
-                    .message(content)
-                    .phone(params.getMobile())
-                    .build());
-            log.debug("用户[id=" + params.getUid() + ",mobile=" + params.getMobile() + "]发送短信[content=" + content + "]成功");
-        } catch (final Throwable e) {
-            log.error("用户[" + params.getUid() + "]发送短信失败:" + e.getMessage());
-            throw new NoticeSendException("短信消息发送失败，失败原因:" + e.getMessage(), e);
-        }
-        final SendMessageRecord sendMessageRecord = recordSendMessage(params.getUid(),
-                params.getUserType(), params.getMobile(), messageTemplate, content, "", new Date(), 1);
-        return sendMessageRecord.getId();
-    }
-
-    /**
-     * 调用第三方接口发送短信
-     *
-     * @param params
-     * @param messageTemplate @return
-     */
-    private long sendRealTimedMessage(final SendMessageParams params,
-                                      final SmsTemplate messageTemplate) {
-
-        final String content = VelocityStringTemplate.process(messageTemplate.getMessageTemplate(), params.getData());
-
-        log.info("send msg[" + content + "] to user[" + params.getUid() + "],mobile[" + params.getMobile() + "]");
-        try {
-            final String sendtime = DateFormatUtil.format(params.getSendTime(), DateFormatUtil.yyyyMMddHHmmss);
-            this.ymSmsSdkService.sendTimedSms(SendTimedSmsParams.builder()
-                    .message(content)
-                    .phone(params.getMobile())
-                    .sendtime(sendtime)
-                    .build());
-            log.debug("用户[id=" + params.getUid() + ",mobile=" + params.getMobile() + "]发送定时短信[content=" + content+ ",time=" + sendtime + "]成功");
-        } catch (final Throwable e) {
-            log.error("用户[" + params.getUid() + "]发送短信失败:" + e.getMessage());
-            throw new NoticeSendException("短信消息发送失败，失败原因:" + e.getMessage(), e);
-        }
-        final SendMessageRecord sendMessageRecord = recordSendMessage(params.getUid(),
-                params.getUserType(), params.getMobile(), messageTemplate, content, "", params.getSendTime(), 1);
-        return sendMessageRecord.getId();
-    }
-
-    /**
-     * 记录发送消息内容
+     * 发送短信消息
      *
      * @param uid
-     * @param userType
      * @param mobile
-     * @param messageTemplate
-     * @param content
-     * @param sn              @return
+     * @param noticeType
+     * @param params
+     * @return
      */
-    private SendMessageRecord recordSendMessage(final String uid,
-                                                final EnumUserType userType,
-                                                final String mobile,
-                                                final SmsTemplate messageTemplate,
-                                                final String content,
-                                                final String sn,
-                                                final Date sendTime,
-                                                final int status) {
-        final SendMessageRecord sendRecord = new SendMessageRecord();
-        sendRecord.setUid(uid);
-        sendRecord.setUserType(userType.getId());
-        sendRecord.setMobile(mobile);
-        sendRecord.setContent(content);
-        sendRecord.setMessageTemplateId(messageTemplate.getId());
-        sendRecord.setSn(sn);
-        sendRecord.setSendTime(sendTime);
-        sendRecord.setStatus(status);
-        this.sendMessageRecordDao.insert(sendRecord);
-        return sendRecord;
-    }
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public long sendMessage(final SendMessageParams params) {
+            checkSendMessageParams(params);
+            final SmsTemplate messageTemplate = this.messageTemplateDao.getTemplateByType(params.getNoticeType().getId());
+            Preconditions.checkNotNull(messageTemplate, "[%s]消息模板为空", params.getNoticeType().getDesc());
+            return sendRealMessage(params.getUid(), params.getUserType(),
+                    params.getMobile(), params.getData(), messageTemplate);
+        }
+
+        private void checkSendMessageParams(final SendMessageParams params) {
+            final Pair<Boolean, String> checkResult = params.checkParamsCorrect();
+            Preconditions.checkArgument(checkResult.getLeft(), checkResult.getRight());
+        }
+
+
+        /**
+         * 调用第三方接口发送短信
+         *
+         * @param uid
+         * @param userType
+         *@param mobile
+         * @param data
+         * @param messageTemplate    @return
+         */
+        private long sendRealMessage(final String uid,
+                                     final EnumUserType userType,
+                                     final String mobile,
+                                     final Map data,
+                                     final SmsTemplate messageTemplate) {
+
+            final String content = VelocityStringTemplate.process(messageTemplate.getMessageTemplate(), data);
+
+            final String sn;
+            final String url = generateUrl(mobile, content);
+            log.info("uid[" + uid +"]" + "发送短信内容[" + content + "]");
+            try {
+                sn = Request.Get(url).execute().returnContent().asString();
+            } catch (Exception e) {
+                log.error("用户[" + uid + "]发送短信失败", e);
+                throw new NoticeSendException("短信消息发送失败，失败原因:" + e.getMessage(), e);
+            }
+
+            final SendMessageRecord sendMessageRecord = recordSendMessage(uid, userType, mobile, messageTemplate, content, sn, 1);
+            return sendMessageRecord.getId();
+        }
+
+        /**
+         * 记录发送消息内容
+         *
+         * @param uid
+         * @param userType
+         *@param mobile
+         * @param messageTemplate
+         * @param content
+         * @param sn     @return
+         */
+        private SendMessageRecord recordSendMessage(final String uid,
+                                                    final EnumUserType userType,
+                                                    final String mobile,
+                                                    final SmsTemplate messageTemplate,
+                                                    final String content,
+                                                    final String sn,
+                                                    final int status) {
+            final SendMessageRecord sendRecord = new SendMessageRecord();
+            sendRecord.setUid(uid);
+            sendRecord.setUserType(userType.getId());
+            sendRecord.setMobile(mobile);
+            sendRecord.setContent(content);
+            sendRecord.setMessageTemplateId(messageTemplate.getId());
+            sendRecord.setSn(sn);
+            sendRecord.setStatus(status);
+            sendMessageRecordDao.insert(sendRecord);
+            return sendRecord;
+        }
+
+        /**
+         * 生成短信发送的url
+         *
+         * @param mobile
+         * @param content
+         * @return
+         */
+        private String generateUrl(final String mobile, final String content) {
+            final String sn = NotifierConstants.getNotifierConfig().sn();
+            final String pwd = NotifierConstants.getNotifierConfig().password();
+
+
+            final Map<String, String> params = new HashMap<>();
+            params.put("sn", sn);
+            params.put("pwd", pwd);
+            params.put("mobile", mobile);
+            params.put("content", content);
+
+            final StringBuilder urlBuilder = new StringBuilder("http://sdk2.entinfo.cn:8061/mdsmssend.ashx?");
+            for (final Map.Entry<String, String> entry : params.entrySet()) {
+                urlBuilder.append(entry.getKey()).append('=').append(entry.getValue()).append('&');
+            }
+            return urlBuilder.substring(0, urlBuilder.length() - 1);
+        }
 }
