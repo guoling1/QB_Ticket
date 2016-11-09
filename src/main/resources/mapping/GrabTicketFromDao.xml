@@ -1,10 +1,122 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.dao.GrabTicketFromDao">
-    <insert id="init"></insert>
-    <update id="update"></update>
-    <update id="updateStatusById"></update>
-    <select id="selectByIdWithLock" resultType="com.jkm.entity.GrabTicketForm"></select>
-    <select id="selectByOrderIdWithLock" resultType="com.jkm.entity.GrabTicketForm"></select>
-    <select id="selectById" resultType="com.jkm.entity.GrabTicketForm"></select>
+    <insert id="init" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_grab_ticket_form
+        (uid,
+        order_id,
+        transaction_id,
+        phone,
+        payment_sn,
+        ticket_num,
+        grab_ticket_total_price,
+        grab_total_price,
+        ticket_total_price,
+        total_price,
+        grab_start_time,
+        grab_time_type,
+        first_start_time,
+        from_station_name,
+        from_station_code,
+        to_station_name,
+        to_station_code,
+        train_codes,
+        seat_types,
+        grab_ticket_package,
+        buy_ticket_package,
+        start_date,
+        end_date,
+        start_time,
+        end_time,
+        run_time,
+        checi,
+        order_number,
+        passenger_info,
+        remark,
+        status,
+        )VALUES(
+        #{uid},
+        #{orderId},
+        #{transactionId},
+        #{phone},
+        #{paymentSn},
+        #{ticketNum},
+        #{grabTicketTotalPrice},
+        #{grabTotalPrice},
+        #{ticketTotalPrice},
+        #{totalPrice},
+        #{grabStartTime},
+        #{grabTimeType},
+        #{firstStartTime},
+        #{fromStationName},
+        #{fromStationCode},
+        #{toStationName},
+        #{toStationCode},
+        #{trainCodes},
+        #{seatTypes},
+        #{grabTicketPackage},
+        #{buyTicketPackage},
+        #{startDate},
+        #{endDate},
+        #{startTime},
+        #{endTime},
+        #{runTime},
+        #{checi},
+        #{orderNumber},
+        #{passengerInfo},
+        #{remark},
+        #{status}
+        )
+    </insert>
+    <update id="update">
+       UPDATE  tb_grab_ticket_form
+        SET
+        uid = #{uid},
+        order_id = #{orderId},
+        transaction_id= #{transactionId},
+        phone= #{phone},
+        payment_sn= #{paymentSn},
+        ticket_num= #{ticketNum},
+        grab_ticket_total_price= #{grabTicketTotalPrice},
+        grab_total_price= #{grabTotalPrice},
+        ticket_total_price= #{ticketTotalPrice},
+        total_price= #{totalPrice},
+        grab_start_time= #{grabStartTime},
+        grab_time_type= #{grabTimeType},
+        first_start_time= #{firstStartTime},
+        from_station_name= #{fromStationName},
+        from_station_code= #{fromStationCode},
+        to_station_name= #{toStationName},
+        to_station_code= #{toStationCode},
+        train_codes= #{trainCodes},
+        seat_types= #{seatTypes},
+        grab_ticket_package= #{grabTicketPackage},
+        buy_ticket_package= #{buyTicketPackage},
+        start_date= #{startDate},
+        end_date= #{endDate},
+        start_time= #{startTime},
+        end_time= #{endTime},
+        run_time= #{runTime},
+        checi= #{checi},
+        order_number= #{orderNumber},
+        passenger_info= #{passengerInfo},
+        remark= #{remark},
+        status= #{status} WHERE id = #{id}
+    </update>
+    <update id="updateStatusById">
+        UPDATE tb_grab_ticket_form
+        SET status = #{status} WHERE id = #{id}
+    </update>
+    <select id="selectByIdWithLock" resultType="com.jkm.entity.GrabTicketForm">
+        SELECT * FROM tb_grab_ticket_form
+        WHERE id = #{id} FOR UPDATE
+    </select>
+    <select id="selectByOrderIdWithLock" resultType="com.jkm.entity.GrabTicketForm">
+        SELECT * FROM tb_grab_ticket_form
+        WHERE order_id = #{orderId} FOR UPDATE
+    </select>
+    <select id="selectById" resultType="com.jkm.entity.GrabTicketForm">
+        SELECT * FROM tb_grab_ticket_form
+        WHERE id = #{id}
+    </select>
 </mapper>

@@ -137,6 +137,8 @@ public class TicketServiceImpl implements TicketService {
             final OrderFormDetail orderFormDetail = new OrderFormDetail();
             final JSONObject passengerJsonObject = new JSONObject();
             orderFormDetail.setOrderFormId(orderForm.getId());
+            orderFormDetail.setGrabTicketFormId(0);
+            orderFormDetail.setIsGrab(0);
             orderFormDetail.setMobile(contactInfo.getTel());
             orderFormDetail.setPassengerId(contactInfo.getId());
             orderFormDetail.setPassengerName(contactInfo.getName());
