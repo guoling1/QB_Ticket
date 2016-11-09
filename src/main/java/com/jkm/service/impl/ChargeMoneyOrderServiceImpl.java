@@ -71,4 +71,14 @@ class ChargeMoneyOrderServiceImpl implements ChargeMoneyOrderService {
     public Optional<ChargeMoneyOrder> selectByOrderFormId(final long orderFormId) {
         return Optional.fromNullable(this.chargeMoneyOrderDao.selectByOrderFormId(orderFormId));
     }
+
+    /**
+     * {@inheritDoc}
+     * @param grabTicketFormId
+     * @return
+     */
+    @Override
+    public Optional<ChargeMoneyOrder> selectByGrabTicketFormId(long grabTicketFormId) {
+        return Optional.fromNullable(this.chargeMoneyOrderDao.selectByGrabTicketFormId(grabTicketFormId));
+    }
 }

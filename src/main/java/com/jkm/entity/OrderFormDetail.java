@@ -23,7 +23,14 @@ public class OrderFormDetail extends BaseEntity{
      * 订单ID
      */
     private long orderFormId;
-
+    /**
+     * 抢票单ID
+     */
+    private long grabTicketFormId;
+    /**
+     * 是否是抢票单(0(正常代购单)否  1是)
+     */
+    private int isGrab;
     /**
      * 手机号
      */

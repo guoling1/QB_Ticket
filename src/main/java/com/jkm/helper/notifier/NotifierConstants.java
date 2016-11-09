@@ -26,7 +26,7 @@ public class NotifierConstants {
          * @return
          */
         @Key("platform.name")
-        @DefaultValue("")
+        @DefaultValue("钱包++")
         String platformName();
     }
 }

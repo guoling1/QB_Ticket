@@ -1,6 +1,9 @@
 package com.jkm.entity;
 
 import com.jkm.enums.EnumBuyTicketPackageType;
+import com.jkm.enums.EnumGrabTicketStatus;
+import com.jkm.enums.EnumGrabTimeType;
+import com.jkm.enums.EnumTrainTicketSeatType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -8,6 +11,9 @@ import java.math.BigDecimal;
 
 /**
  * Created by yuxiang on 2016-11-04.
+ *
+ * tb_grab_ticket_form
+ * {@link EnumGrabTicketStatus}
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -17,6 +23,14 @@ public class GrabTicketForm extends BaseEntity {
      */
     private String uid;
     /**
+     * jkm使用方订单号
+     */
+    private String orderId;
+    /**
+     *交易订单号(对方提供)
+     */
+    private String transactionId;
+    /**
      * 联系手机,通知出票信息
      */
     private String phone;
@@ -25,9 +39,9 @@ public class GrabTicketForm extends BaseEntity {
      */
     private String paymentSn;
     /**
-     * 抢票单张车票价格
+     * 抢票数量
      */
-    private BigDecimal grabPrice;
+    private int ticketNum;
     /**
      * 抢票火车票的总价格
      */
@@ -37,25 +51,26 @@ public class GrabTicketForm extends BaseEntity {
      */
     private BigDecimal grabTotalPrice;
     /**
-     * 实际单张车票价格
-     */
-    private BigDecimal price;
-    /**
-     * 实际火车票的总价格
+     * 实际收取火车票的总价格
      */
     private BigDecimal ticketTotalPrice;
     /**
-     * 实际订单总价格
+     * 实际收取订单总价格
      */
     private BigDecimal totalPrice;
     /**
-     * 抢票出发日期 2015-09-09 13:00
+     * 抢票出发日期 2015-09-09
      */
     private String grabStartTime;
     /**
-     * 抢票截至日期 2015-09-10 13:00
+     * 抢票时效类型
+     * {@link EnumGrabTimeType}
      */
-    private String grabEndTime;
+    private int grabTimeType;
+    /**
+     * 最早发车时间 2015-09-10 13:00
+     */
+    private String firstStartTime;
     /**
      * 出发站名称
      */
@@ -81,6 +96,7 @@ public class GrabTicketForm extends BaseEntity {
     private String trainCodes;
     /**
      * 座位类型 (字符串拼接, 以,隔离)
+     * {@link EnumTrainTicketSeatType}
      */
     private String seatTypes;
     /**
@@ -94,27 +110,27 @@ public class GrabTicketForm extends BaseEntity {
      */
     private int buyTicketPackage;
     /**
-     * 发车日期
+     * 抢票成功发车日期 2016-10-08
      */
     private String startDate;
 
     /**
-     * 到达日期
+     * 抢票成功到达日期 2016-10-09
      */
     private String endDate;
 
     /**
-     * 抢票成功发车时间
+     * 抢票成功发车时间 21:35
      */
     private String startTime;
 
     /**
-     * 抢票成功到达时间
+     * 抢票成功到达时间 10:04
      */
     private String endTime;
 
     /**
-     * 抢票成功历时
+     * 运行时间
      */
     private String runTime;
 
@@ -122,6 +138,11 @@ public class GrabTicketForm extends BaseEntity {
      * 抢票成功车次
      */
     private String checi;
+
+    /**
+     * 取票单号（电子单号）
+     */
+    private String orderNumber;
 
     /**
      *乘客信息 (id, 姓名, 身份证号, 乘客类型(成人, 儿童) )
@@ -132,4 +153,10 @@ public class GrabTicketForm extends BaseEntity {
      * 备注
      */
     private String remark;
+
+
+    public boolean isWaitForPay() {
+
+        return EnumGrabTicketStatus.GRAB_FORM_PAY_WAIT.getId() == this.getStatus();
+    }
 }

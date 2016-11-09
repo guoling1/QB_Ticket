@@ -12,12 +12,12 @@ import java.util.List;
 public class HyReturnTicketRequest extends HySdkRequest {
 
     /**
-     *使用方订单号
+     *jkm订单号
      */
     @JsonProperty("orderid")
     private String orderId;
     /**
-     *我方交易单号
+     *hy交易单号
      */
     @JsonProperty("transactionid")
     private String transactionId;

@@ -45,4 +45,12 @@ public interface ChargeMoneyOrderDao {
      * @return
      */
     ChargeMoneyOrder selectByOrderFormId(@Param("orderFormId") long orderFormId);
+
+    /**
+     * 查询
+     *
+     * @param grabTicketFormId
+     * @return
+     */
+    ChargeMoneyOrder selectByGrabTicketFormId(long grabTicketFormId);
 }

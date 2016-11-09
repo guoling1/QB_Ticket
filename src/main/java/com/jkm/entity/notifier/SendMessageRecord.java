@@ -17,7 +17,7 @@ public class SendMessageRecord extends BaseEntity {
     /**
      * 接收者的用户id
      */
-    private long uid;
+    private String uid;
     /**
      * {@link com.jkm.enums.notifier.EnumUserType}
      */

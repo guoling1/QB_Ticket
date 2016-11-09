@@ -66,10 +66,17 @@ public interface OrderFormDetailService {
      * @param piaoType
      * @return
      */
-    Optional<OrderFormDetail> selectByOrderFormIdAndPassengerIdAndPiaoType(String orderId, int passengerId, String piaoType);
+    Optional<OrderFormDetail> selectByOrderFormIdAndPassengerIdAndPiaoType(long orderId, int passengerId, String piaoType);
 
     /**
      * 根新状态
      */
     void updateStatusById(long id , EnumOrderFormDetailStatus status);
+
+    /**
+     * 查询
+     * @param grabTicketFormId
+     * @return
+     */
+    List<OrderFormDetail> selectByGrabTicketFormId(long grabTicketFormId);
 }

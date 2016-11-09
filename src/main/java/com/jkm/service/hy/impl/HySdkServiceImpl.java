@@ -332,6 +332,25 @@ public class HySdkServiceImpl implements HySdkService{
         return json;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param jsonObject
+     * @return
+     */
+    @Override
+    public JSONObject cancelGrabTickets(JSONObject jsonObject) {
+        final StopWatch stopWatch = new StopWatch();
+        final JSONObject json = requestImpl(jsonObject,  HySdkConstans.POLICY_GATEWAY_URL, "", "取消抢票", stopWatch);
+        this.postHandle("",
+                "取消抢票",
+                json.getInt("code"),
+                json.toString(),
+                json.toString(),
+                stopWatch.getTime());
+        return json;
+    }
+
 
     private void postHandle(final String orderId,
                             final String method,

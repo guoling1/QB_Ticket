@@ -106,6 +106,14 @@
       WHERE id = #{id}
     </update>
 
+  <update id="updateStatus">
+    UPDATE tb_order_form
+    SET
+    status = #{status},
+    remark = #{remark}
+    WHERE id = #{id}
+  </update>
+
     <select id="selectById" resultType="com.jkm.entity.OrderForm">
       SELECT * FROM tb_order_form WHERE id = #{id}
     </select>
@@ -133,10 +141,14 @@
   <select id="selectByReqSn" resultType="com.jkm.entity.OrderForm">
     SELECT * FROM tb_order_form WHERE req_sn = #{reqSn}
   </select>
-  <update id="updateStatus">
-    UPDATE tb_order_form
-    SET
-    status = #{status}
-    WHERE id = #{id}
-  </update>
+
+  <select id="selectExpiredOrderForms" resultType="com.jkm.entity.OrderForm">
+    SELECT * FROM tb_order_form
+    WHERE expire_time &lt;= #{expireDate}
+    AND status IN
+    <foreach collection="statusList" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
 </mapper>

@@ -27,7 +27,7 @@ public class ReturnMoneyOrder extends BaseEntity{
      */
     private String  orderFormSn;
     /**
-     * 退款说明(出票失败退款, 抢票失败退款, 线上退票退款, 线下退票退款)
+     * 退款说明(出票失败退款, 抢票失败退款, 线上退票退款, 线下退票退款, 抢票成功差价退款, 取消抢票退款)
      */
     private String  remark;
     /**

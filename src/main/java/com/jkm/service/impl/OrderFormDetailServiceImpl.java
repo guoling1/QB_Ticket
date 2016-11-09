@@ -96,16 +96,16 @@ public class OrderFormDetailServiceImpl implements OrderFormDetailService {
     /**
      * {@inheritDoc}
      *
-     * @param orderId
+     * @param orderFormId
      * @param passengerId
      * @param piaoType
      * @return
      */
     @Override
-    public Optional<OrderFormDetail> selectByOrderFormIdAndPassengerIdAndPiaoType(final String orderId,
+    public Optional<OrderFormDetail> selectByOrderFormIdAndPassengerIdAndPiaoType(final long orderFormId,
                                                                                   final int passengerId, final String piaoType) {
         return Optional.fromNullable(
-                this.orderFormDetailDao.selectByOrderFormIdAndPassengerIdAndPiaoType(orderId, passengerId, piaoType));
+                this.orderFormDetailDao.selectByOrderFormIdAndPassengerIdAndPiaoType(orderFormId, passengerId, piaoType));
     }
 
     /**
@@ -115,5 +115,16 @@ public class OrderFormDetailServiceImpl implements OrderFormDetailService {
     @Override
     public void updateStatusById(final long id , final EnumOrderFormDetailStatus status) {
         this.orderFormDetailDao.updateStatusById(id , status.getId(), status.getValue());
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param grabTicketFormId
+     * @return
+     */
+    @Override
+    public List<OrderFormDetail> selectByGrabTicketFormId(long grabTicketFormId) {
+        return this.orderFormDetailDao.selectByGrabTicketFormId(grabTicketFormId);
     }
 }

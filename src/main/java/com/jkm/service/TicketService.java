@@ -80,4 +80,35 @@ public interface TicketService {
      * @return
      */
     Pair<Boolean,String> grabTicket(final RequestGrabTicket req);
+
+    /**
+     * 抢票客户支付结果处理接口
+     *
+     * @param grabTicketFormId
+     * @param paymentSn
+     * @param isPaySuccess
+     */
+    void handleGrabCustomerPayMsg(long grabTicketFormId, String paymentSn, boolean isPaySuccess) throws Exception;
+
+    /**
+     * 处理抢票回调通知
+     * @param jsonParams
+     */
+    void handleGrabCallBackMsg(JSONObject jsonParams);
+
+    /**
+     * 取消抢票
+     * @param grabTicketFormId
+     * @return
+     */
+    Pair<Boolean,String> cancelGrabTicket(long grabTicketFormId) throws Exception;
+
+    /**
+     * 针对退款结果是退款中，或者失败的订单 处理退款结果
+     *
+     * @param orderFormId   订单id
+     * @param isRefundSuccess  是否退款成功
+     * @param msg   结果描述
+     */
+    void handleOrderFormRefundResult(long orderFormId, boolean isRefundSuccess, String msg);
 }
