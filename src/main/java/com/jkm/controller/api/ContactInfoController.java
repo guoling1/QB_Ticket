@@ -2,7 +2,6 @@ package com.jkm.controller.api;
 
 import com.google.common.base.Preconditions;
 import com.jkm.controller.common.BaseController;
-import com.jkm.entity.BindCard;
 import com.jkm.entity.TbContactInfo;
 import com.jkm.service.ContactInfoService;
 import net.sf.json.JSONObject;
@@ -33,22 +32,42 @@ public class ContactInfoController extends BaseController {
         JSONObject responseJson = new JSONObject();
         try{
             JSONObject requestJson = super.getRequestJsonParams();
-            requestJson.put("uid",super.getUid(requestJson.getString("appid"),requestJson.getString("uid")));
             log.info("联系人参数："+requestJson.toString());
-            JSONObject jo = contactInfoService.insert((TbContactInfo)JSONObject.toBean(requestJson));
-            if(jo.getBoolean("success")){
+
+            TbContactInfo ti = new TbContactInfo();
+            ti.setUid(super.getUid(requestJson.getString("appid"),requestJson.getString("uid")));
+            if(requestJson.get("name")!=null){
+                ti.setName(requestJson.getString("name"));
+            }
+            if(requestJson.get("sex")!=null){
+                ti.setSex(requestJson.getInt("sex"));
+            }
+            if(requestJson.get("identyType")!=null){
+                ti.setIdentyType(requestJson.getString("identyType"));
+            }
+            if(requestJson.get("identy")!=null){
+                ti.setIdenty(requestJson.getString("identy"));
+            }
+            if(requestJson.get("tel")!=null){
+                ti.setTel(requestJson.getString("tel"));
+            }
+            if(requestJson.get("personType")!=null){
+                ti.setPersonType(requestJson.getInt("personType"));
+            }
+            JSONObject jo = contactInfoService.insert(ti);
+            if(jo.getBoolean("result")){
                 responseJson.put("result", true);
                 responseJson.put("data",jo.getLong("data"));
                 responseJson.put("message", jo.getString("message"));
             }else{
                 responseJson.put("result", false);
-                responseJson.put("data", null);
+                responseJson.put("data", 0);
                 responseJson.put("message", jo.getString("message"));
             }
         }catch (Exception e){
             log.info(e.getMessage());
             responseJson.put("result", false);
-            responseJson.put("data", null);
+            responseJson.put("data", 0);
             responseJson.put("message", "添加异常");
         }
         return responseJson;
@@ -119,7 +138,30 @@ public class ContactInfoController extends BaseController {
         try{
             JSONObject requestJson = super.getRequestJsonParams();
             log.info("联系人参数："+requestJson.toString());
-            int rowNum = contactInfoService.updateByPrimaryKeySelective((TbContactInfo)JSONObject.toBean(requestJson));
+            TbContactInfo ti = new TbContactInfo();
+            ti.setUid(super.getUid(requestJson.getString("appid"),requestJson.getString("uid")));
+            if(requestJson.get("name")!=null){
+                ti.setName(requestJson.getString("name"));
+            }
+            if(requestJson.get("sex")!=null){
+                ti.setSex(requestJson.getInt("sex"));
+            }
+            if(requestJson.get("identyType")!=null){
+                ti.setIdentyType(requestJson.getString("identyType"));
+            }
+            if(requestJson.get("identy")!=null){
+                ti.setIdenty(requestJson.getString("identy"));
+            }
+            if(requestJson.get("tel")!=null){
+                ti.setTel(requestJson.getString("tel"));
+            }
+            if(requestJson.get("personType")!=null){
+                ti.setPersonType(requestJson.getInt("personType"));
+            }
+            if(requestJson.get("id")!=null){
+                ti.setId(requestJson.getLong("id"));
+            }
+            int rowNum = contactInfoService.updateByPrimaryKeySelective(ti);
             responseJson.put("result", true);
             responseJson.put("data",rowNum);
             responseJson.put("message", "修改成功");

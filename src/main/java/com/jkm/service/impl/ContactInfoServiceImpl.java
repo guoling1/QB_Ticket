@@ -101,9 +101,15 @@ public class ContactInfoServiceImpl implements ContactInfoService {
             jo.put("result",false);
             jo.put("message","已有此乘客信息，不能重复添加");
         }else{
-            jo.put("result",true);
-            jo.put("data",contactInfoDao);
-            jo.put("message","绑定成功");
+            long l = contactInfoDao.insert(tbContactInfo);
+            if(l>0){
+                jo.put("result",true);
+                jo.put("data",tbContactInfo.getId());
+                jo.put("message","绑定成功");
+            }else{
+                jo.put("result",false);
+                jo.put("message","新增失败");
+            }
         }
         return jo;
     }
@@ -121,8 +127,15 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     @Override
     public int updateByPrimaryKeySelective(TbContactInfo tbContactInfo) {
         if("1".equals(tbContactInfo.getIdentyType())){
-            IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(tbContactInfo.getIdenty());
-            tbContactInfo.setBirthday(idcardInfo.getYear()+"-"+idcardInfo.getMonth()+"-"+idcardInfo.getDay());
+            if(tbContactInfo.getIdenty()!=null&&!"".equals(tbContactInfo.getIdenty())){
+                IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(tbContactInfo.getIdenty());
+                tbContactInfo.setBirthday(idcardInfo.getYear()+"-"+idcardInfo.getMonth()+"-"+idcardInfo.getDay());
+            }else{
+                TbContactInfo ti = contactInfoDao.selectById(tbContactInfo.getId());
+                IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(ti.getIdenty());
+                tbContactInfo.setBirthday(idcardInfo.getYear()+"-"+idcardInfo.getMonth()+"-"+idcardInfo.getDay());
+            }
+
         }
         return contactInfoDao.updateByPrimaryKeySelective(tbContactInfo);
     }

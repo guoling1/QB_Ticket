@@ -2,7 +2,7 @@ package com.jkm.notifiersdk.helper;
 
 import com.jkm.notifiersdk.enums.EnumYmSkdRequestBusinessType;
 import com.jkm.util.JsonUtil;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.log4j.Logger;
 
 import java.util.Map;
 
@@ -12,8 +12,9 @@ import java.util.Map;
  * @author hutao
  * @version 1.0
  */
-@Slf4j
 public class LogYmSdkRequestPostProcessor implements YmSdkRequestPostProcessor {
+    private static Logger log = Logger.getLogger(LogYmSdkRequestPostProcessor.class);
+
     /**
      * {@inheritDoc}
      */
@@ -26,12 +27,12 @@ public class LogYmSdkRequestPostProcessor implements YmSdkRequestPostProcessor {
                        final String remark) {
         if (retCode.equals("0")) {
             if (log.isDebugEnabled()) {
-                log.debug("短信sdk业务请求[{}]成功,请求内容[{}],请求耗时[{}]",
-                        businessType.getMsg(), JsonUtil.toJsonString(requestParams), millisecond);
+                log.debug("短信sdk业务请求[" + businessType.getMsg() + "]成功," +
+                        "请求内容[" + JsonUtil.toJsonString(requestParams) + "],请求耗时[" + millisecond + "]");
             }
         } else {
-            log.error("短信sdk业务请求[{}]失败:code=[{}],response=[{}],请求内容[{}]",
-                    businessType.getMsg(), retCode, response, JsonUtil.toJsonString(requestParams));
+            log.error("短信sdk业务请求[" + businessType.getMsg() + "]失败:code=[" + retCode + "],response=[" + response + "]," +
+                    "请求内容[" + JsonUtil.toJsonString(requestParams) +"]");
         }
     }
 }

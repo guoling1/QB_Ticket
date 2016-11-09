@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.*;
@@ -43,8 +44,8 @@ public class OrderFormController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "queryMyOrder")
-    public ResponseEntityBase<Object[]> queryMyOrderForm(final RequestQueryOrderForm request) {
+    @RequestMapping(value = "queryMyOrder", method = RequestMethod.POST)
+    public ResponseEntityBase<Object[]> queryMyOrderForm(@RequestBody final RequestQueryOrderForm request) {
         final ResponseEntityBase<Object[]> results = new ResponseEntityBase<>();
         final List<OrderForm> orderForms = this.orderFormService.selectByUid(request.getUid());
         if (CollectionUtils.isEmpty(orderForms)) {
@@ -76,8 +77,8 @@ public class OrderFormController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "queryById")
-    public ResponseEntityBase<ResponseQueryOrderForm> queryById(final RequestQueryOrderForm request) {
+    @RequestMapping(value = "queryById", method = RequestMethod.POST)
+    public ResponseEntityBase<ResponseQueryOrderForm> queryById(@RequestBody final RequestQueryOrderForm request) {
         final ResponseEntityBase<ResponseQueryOrderForm> results = new ResponseEntityBase<>();
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectById(request.getOrderFormId());
         final OrderForm orderForm = orderFormOptional.get();

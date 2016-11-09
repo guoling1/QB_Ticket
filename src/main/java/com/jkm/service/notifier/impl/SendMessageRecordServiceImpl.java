@@ -4,7 +4,6 @@ import com.jkm.dao.notifier.SendMessageRecordDao;
 import com.jkm.entity.notifier.SendMessageRecord;
 import com.jkm.enums.notifier.EnumUserType;
 import com.jkm.service.notifier.SendMessageRecordService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,6 @@ import java.util.List;
 /**
  * Created by konglingxin on 15/11/4.
  */
-@Slf4j
 @Service
 public class SendMessageRecordServiceImpl implements SendMessageRecordService {
     @Autowired

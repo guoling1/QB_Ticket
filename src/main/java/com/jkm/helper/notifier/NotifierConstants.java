@@ -26,7 +26,7 @@ public class NotifierConstants {
          * @return
          */
         @Key("platform.name")
-        @DefaultValue("联想金融")
+        @DefaultValue("")
         String platformName();
     }
 }

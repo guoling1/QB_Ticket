@@ -97,7 +97,7 @@
     </update>
 
     <select id="selectById" resultType="com.jkm.entity.TbContactInfo">
-        SELECT * FROM tb_contact_info WHERE id = #{id}
+        SELECT * FROM tb_contact_info WHERE id = #{id} and status=0
     </select>
 
     <select id="findByUidAndIdenty" resultType="com.jkm.entity.TbContactInfo">
@@ -124,7 +124,7 @@
     <update id="updateStatus" parameterType="java.lang.Long">
         UPDATE tb_contact_info
         SET
-        status =1,
+        status =1
         WHERE id = #{id}
     </update>
     <!-- 修 改-->

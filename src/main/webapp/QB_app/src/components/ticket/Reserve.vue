@@ -10,22 +10,25 @@
           <div class="right">到达城市</div>
         </div>
         <div class="side write">
-          <div class="left" @click="station">北京</div>
+          <div class="left" @click="station('stationONE')">{{$dataT.from}}</div>
           <img class="middle" src="../../assets/exchange.png">
 
-          <div class="right" @click="station">上海</div>
+          <div class="right" @click="station('stationTWO')">{{$dataT.to}}</div>
         </div>
       </div>
       <div class="time" @click="time('dateONE')">
-        <div class="show">{{dateONE}}</div>
+        <div class="show">{{$dataT.date}}</div>
       </div>
       <div class="option">
         <div class="show">只看高铁/动车</div>
-        <div class="check active">
+        <div class="check" v-bind:class="{active:$onlyG}" @click="onlyU">
           <div class="btn"></div>
         </div>
       </div>
-      <router-link class="submit" to="/ticket/train-menu/train">查询</router-link>
+      <router-link class="submit"
+                   :to="{path:'/ticket/train-menu/train',query:{date:$from.date,from:$from.from,to:$from.to,only:$onlyG}}">
+        查询
+      </router-link>
       <div class="history">
         <div>查询历史</div>
         <div>清空</div>
@@ -33,19 +36,22 @@
       <div class="know">订票须知<span></span></div>
     </div>
     <datetime></datetime>
+    <stationName></stationName>
   </div>
 </template>
 
 <script lang="babel">
   import Datetime from './Datetime.vue';
+  import StationName from './StationName.vue';
   export default {
     name: 'menu',
     components: {
-      Datetime
+      Datetime,
+      StationName
     },
     data: function () {
       return {
-        msg: 'Welcome to Your Vue.js App'
+        onlyG: false
       }
     },
     methods: {
@@ -55,13 +61,33 @@
           ctrl: true
         });
       },
-      station: function () {
-        this.$store.commit('STATION_CTRL', true);
+      station: function (name) {
+        this.$store.commit('STATION_OPEN', {
+          name: name,
+          ctrl: true
+        });
+      },
+      onlyU: function () {
+        this.$data.onlyG = !this.$data.onlyG;
       }
     },
     computed: {
-      dateONE () {
-        return this.$store.state.date.scope.dateONE.time;
+      $onlyG: function () {
+        return this.$data.onlyG
+      },
+      $dataT: function () {
+        return {
+          date: this.$store.state.date.scope.dateONE.time,
+          from: this.$store.state.station.scope.stationONE.station,
+          to: this.$store.state.station.scope.stationTWO.station
+        }
+      },
+      $from: function () {
+        return {
+          date: this.$store.state.date.scope.dateONE.code,
+          from: this.$store.state.station.scope.stationONE.code,
+          to: this.$store.state.station.scope.stationTWO.code
+        };
       }
     }
   }

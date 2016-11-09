@@ -8,7 +8,7 @@ import lombok.Getter;
  */
 @Getter
 public enum EnumUserType {
-    FOREGROUND_USER(1, "前台用户"),
+    FOREGROUND_USER(1, "前端用户"),
 
     BACKGROUND_USER(2, "运营后台用户"),
 

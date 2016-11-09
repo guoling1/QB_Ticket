@@ -1,60 +1,54 @@
 <template lang="html">
   <div class="main">
     <div class="banner con">
-      <div class="bannerLeft">新增联系人</div>
+      <div class="bannerLeft" @click="show">新增联系人</div>
       <div class="bannerRight">导入12306联系人</div>
     </div>
-    <ul>
-      <li>
+    <ul id="list">
+      <li v-for="(people,index) in peoples" @click="change(index)">
         <span class="option"></span>
         <div class="passen">
-          <span class="name">刘思思</span>
-          <span class="type">(成人票)</span>
-          <p>132125198904040652</p>
+          <span class="name">{{people.name}}</span>
+          <span class="type">({{people.personType}})</span>
+          <p>{{people.identy}}</p>
         </div>
-        <span class="edit"></span>
-      </li>
-      <li class="select">
-        <span class="option"></span>
-        <div class="passen">
-          <span class="name">刘思思</span>
-          <span class="type">(成人票)</span>
-          <p>132125198904040652</p>
-        </div>
-        <span class="edit"></span>
-      </li><li>
-        <span class="option"></span>
-        <div class="passen">
-          <span class="name">刘思思</span>
-          <span class="type">(成人票)</span>
-          <p>132125198904040652</p>
-        </div>
-        <span class="edit"></span>
+        <span class="edit" @click="show(index)"></span>
       </li>
     </ul>
     <div class="bottom">
       确定
     </div>
-    <div class="mask">
+    <div class="mask" id="mask">
       <div class="content">
         <div class="sub">
-          <span class="del">删除联系人</span>
-          <span class="sev">保存</span>
+            <span class="del" @click="del(index)">删除联系人</span>
+            <span class="sev" @click="sev(index)">保存</span>
         </div>
         <ul>
           <li>
             <label for="name">乘客姓名</label>
-            <input type="text" name="name" value="刘思思">
+            <input type="text" name="name" id='name' :value="people==undefined?'':people.name">
+          </li>
+          <li>
+            <label for="sex">乘客性别</label>
+            <label style="margin-left:10px;color:#999"><input type="radio" name="sex" value="男" checked="checked">男</label>
+            <label style="margin-left:20px;color:#999"><input type="radio" name="sex" value="女">女</label>
           </li>
           <li class="typeLi">
-            <label for="type">证件类型</label>
-            <input type="text" name="type" value="身份证">
-          </li><li>
-            <label for="typeID">证件号码</label>
-            <input type="text" name="typeID" value="1321251198904040652">
-          </li><li style="border:none">
-            <label for="name">乘客类型</label>
-            <input type="text" name="name" value="成人">
+            <label for="identyType">证件类型</label>
+            <input type="text" name="identyType" id='identyType' value="二代身份证">
+          </li>
+          <li>
+            <label for="identy">证件号码</label>
+            <input type="text" name="identy" id='identy' :value="people==undefined?'':people.identy">
+          </li>
+          <li>
+            <label for="personType">乘客类型</label>
+            <input type="text" name="personType" id='personType' value="成人票">
+          </li>
+          <li style="border:none">
+            <label for="tel">手机号码</label>
+            <input type="text" name="tel" id='tel' :value="people==undefined?'':people.tel">
           </li>
         </ul>
       </div>
@@ -62,13 +56,166 @@
   </div>
 </template>
 <script lang="babel">
+  import Vue from 'vue';
   export default {
     name: 'menu',
     data () {
       return {
-        msg: '可以了'
+        name:'',
+        massages:[],
+        selected: '',
+        people:'',
+        index:''
       }
-    }
+    },
+    computed:{
+      peoples:function(){
+        return this.$data.massages;
+      }
+    },
+    beforeRouteEnter (to, from, next) {
+      Vue.http.post('/contactInfo/list',{"uid":"1","appid":"1"})
+        .then(function (response) {
+          next(vm=> {
+            vm.$data.massages = response.data.data;
+            for (var i = 0; i < vm.$data.massages.length; i++) {
+              //设置乘客类型
+              var personType=vm.$data.massages[i].personType;
+              if(personType==1){
+                vm.$data.massages[i].personType='成人';
+              }else if(personType==2){
+                vm.$data.massages[i].personType='儿童';
+              }else if(personType==3){
+                vm.$data.massages[i].personType='学生';
+              }else if(personType==4){
+                vm.$data.massages[i].personType='伤残军人';
+              }
+              //设置证件
+              var identyType=vm.$data.massages[i].identyType;
+              if(identyType==1){
+                vm.$data.massages[i].identyType='二代身份证';
+              }else if(identyType==2){
+                vm.$data.massages[i].identyType='一代身份证';
+              }else if(identyType=='C'){
+                vm.$data.massages[i].identyType='港澳通行证';
+              }else if(identyType=='G'){
+                vm.$data.massages[i].identyType='台湾通行证';
+              }else if(identyType=='B'){
+                vm.$data.massages[i].identyType='护照'
+              }
+              //性别
+              vm.$data.massages[i].sex=vm.$data.massages[i].sex==0?"男":"女";
+            }
+          })
+        })
+        .catch(function (response) {
+          next(vm=>{
+          })
+        })
+    },
+    methods:{
+      change:function(index,flag){
+        var oUl=document.getElementById("list");
+        var aLi=oUl.getElementsByTagName("li");
+        if(aLi[index].className == "select"){
+          aLi[index].className = "";
+        }else {
+          aLi[index].className = "select"
+        }
+      },
+
+      show:function(idx){
+        var mask=document.getElementById("mask");
+        if(isNaN(idx)){
+          mask.style.display="block";
+        }else {
+          mask.style.display="block";
+          this.$data.index=idx;
+          document.querySelector('#name').value=this.$data.massages[idx].name;
+          document.querySelector('#identyType').value=this.$data.massages[idx].identyType;
+          document.querySelector('#identy').value=this.$data.massages[idx].identy;
+          document.querySelector('#personType').value=this.$data.massages[idx].personType;
+          var addPerson={
+            uid:1,
+            appid:1,
+            name:document.querySelector('#name').value,
+            sex:document.querySelector(':checked').value,
+            identyType:document.querySelector('#identyType').value,
+            identy:document.querySelector('#identy').value,
+            tel:document.querySelector('#tel').value,
+            personType:document.querySelector('#personType').value
+          }
+        }
+      },
+      del:function (index) {
+          var delPerson={
+            uid:1,
+            appid:1,
+            id:this.$data.massages[index].id
+          }
+          Vue.http.post('/contactInfo/delete',JSON.stringify(delPerson))
+            .then((res,)=>{
+              if(res.data.result==true){
+                this.$data.massages.splice(index,1);
+                document.querySelector("#mask").style.display="none";
+              }
+            })
+      },
+      sev:function (idx) {
+          var addPerson={
+            uid:1,
+            appid:1,
+            name:document.querySelector('#name').value,
+            sex:1,
+            identyType:document.querySelector('#identyType').value,
+            identy:document.querySelector('#identy').value,
+            tel:13146716739,
+            personType:document.querySelector('#personType').value
+          }
+          if((typeof idx)!=='number'){
+            Vue.http.post('/contactInfo/add',JSON.stringify(addPerson))
+              .then((res)=>{
+                if(res.data.result==true){
+                  addPerson.id=res.data.data;
+                  this.$data.massages.push(addPerson);
+                  document.querySelector("#mask").style.display="none";
+                }
+              })
+          }else{
+            addPerson.id=this.$data.massages[idx].id;
+            if(addPerson.personType=="成人"){
+              addPerson.personType=1;
+            }else if(addPerson.personType=="儿童"){
+              addPerson.personType=2;
+            }else if(addPerson.personType=="学生"){
+              addPerson.personType=3;
+            }else if(addPerson.personType=="伤残军人"){
+              addPerson.personType=4;
+            }
+            if(addPerson.identyType=="二代身份证"){
+              addPerson.identyType=1;
+            }else if(addPerson.identyType=="一代身份证"){
+              addPerson.identyType=2;
+            }else if(addPerson.identyType=="港澳通行证"){
+              addPerson.identyType=C;
+            }else if(addPerson.identyType=="台湾通行证"){
+              addPerson.identyType=G;
+            }else  if(addPerson.identyType=="护照"){
+              addPerson.identyType=B;
+            }
+            addPerson.sex=addPerson.sex=="男"?0:1;
+            Vue.http.post('/contactInfo/update',JSON.stringify(addPerson))
+              .then((res)=>{
+                if(res.data.result==true){
+                  for(var i in addPerson){
+                    this.$set(this.$data.massages[idx],i,addPerson[i])
+                  }
+                  document.querySelector("#mask").style.display="none";
+                }
+              })
+          }
+        }
+      }
   }
 </script>
 
@@ -134,6 +281,7 @@ ul{
     .passen{
       float: left;
       padding-left: 14px;
+      text-align: left;
 
         .name{
           font-size: 15px;
@@ -195,8 +343,8 @@ ul{
       line-height:42.5px;
 
       .del{
-        position: relative;
-        right: 140px;
+        height: 0;
+        float: left;
         font-size: 15px;
         color: #b9b9b9;
 
@@ -227,6 +375,9 @@ ul{
         input{
           border: none;
           color:#999;
+          &:focus{
+            outline: none;
+          }
         }
       }
     }

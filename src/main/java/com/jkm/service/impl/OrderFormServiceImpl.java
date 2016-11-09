@@ -121,4 +121,12 @@ public class OrderFormServiceImpl implements OrderFormService {
     public int updateStatus(final OrderForm orderForm) {
         return this.orderFormDao.updateStatus(orderForm);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void handleExpiredOrderForm() {
+//        List<OrderForm> orderForms = this.orderFormDao.selectExpiredOrderForms();
+    }
 }

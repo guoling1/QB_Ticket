@@ -2,7 +2,7 @@ package com.jkm.helper.notifier;
 
 import com.jkm.util.reactor.ProcessorRegister;
 import com.jkm.util.reactor.TaskReactor;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,8 +13,9 @@ import org.springframework.stereotype.Component;
  * @version 1.0
  */
 @Component
-@Slf4j
 public class SendMsgEventProcessorRegister implements ProcessorRegister {
+    private static Logger log = Logger.getLogger(SendMsgEventProcessorRegister.class);
+
     @Autowired
     private SendMsgEventProcessor sendMsgEventProcessor;
 

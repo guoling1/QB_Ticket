@@ -2,17 +2,18 @@ package com.jkm.service.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.jkm.entity.OrderForm;
-import com.jkm.entity.PayResultRecord;
-import com.jkm.entity.RefundResultRecord;
+import com.jkm.entity.*;
 import com.jkm.entity.fusion.*;
 import com.jkm.entity.fusion.body.RequestBody100003;
 import com.jkm.entity.fusion.body.RequestBody100004;
 import com.jkm.entity.fusion.body.RequestBody100005;
+import com.jkm.entity.fusion.body.RequestBody200005;
 import com.jkm.entity.fusion.detail.RequestDetail100003;
 import com.jkm.entity.fusion.detail.RequestDetail100004;
 import com.jkm.entity.fusion.detail.RequestDetail100005;
+import com.jkm.entity.fusion.detail.RequestDetail200005;
 import com.jkm.entity.fusion.head.RequestHead;
+import com.jkm.entity.fusion.head.RequestHead20005;
 import com.jkm.enums.EnumOrderFormStatus;
 import com.jkm.service.*;
 import com.jkm.util.SnGenerator;
@@ -45,7 +46,10 @@ public class AuthenServiceImpl implements AuthenService {
 	private OrderFormService orderFormService;
 	@Autowired
 	private TicketService ticketService;
-
+	@Autowired
+	private GetParamRecordService getParamRecordService;
+	@Autowired
+	private BindCardService bindCardService;
 	/**
 	 * 快捷支付
 	 * @param requestData
@@ -55,6 +59,17 @@ public class AuthenServiceImpl implements AuthenService {
 	public Map<String, Object> fastPay(AuthenData requestData) {
 		Map<String, Object> ret = new HashMap<String, Object>();
 		try {
+			GetParamRecord gr = new GetParamRecord();
+			gr.setStatus(0);
+			gr.setAppId(requestData.getAppId());
+			gr.setNonceStr(requestData.getNonceStr());
+			int count = getParamRecordService.selectByCondition(gr);
+			if(count>0){
+				ret.put("retCode", false);
+				ret.put("retMsg", "请不要重复提交订单");
+			}else{
+				getParamRecordService.insertSelective(gr);
+			}
 			Request100005 request100005 = createFastPay(requestData);
 			String xml = XmlUtil.toXML(request100005);
 			logger.debug("****************xml生成authen*********************-"
@@ -144,7 +159,7 @@ public class AuthenServiceImpl implements AuthenService {
 //		if ("1".equals(requestData.getStep())) {
 //			head.setReqSn(requestData.getReqSn());
 //		} else {
-			head.setReqSn(SnGenerator.generate());
+			head.setReqSn(requestData.getReqSn());
 //		}
 		head.setSignedMsg("signedMsg");
 		RequestBody100005 body = new RequestBody100005();
@@ -397,16 +412,115 @@ public class AuthenServiceImpl implements AuthenService {
 		authenData.setCrdNo(requestData.getString("crdNo"));
 		authenData.setCapCrdNm(requestData.getString("capCrdNm"));
 		authenData.setIdNo(requestData.getString("idNo"));
-		Map<String, Object> result = new HashMap<String, Object>();
+		authenData.setReqSn(SnGenerator.generate());
 		orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId());
 		orderFormService.updateStatus(orderFormOptional.get());
 		Map<String, Object> ret = this.fastPay(authenData);
 		if((boolean)ret.get("retCode")==true){//支付成功
 			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),ret.get("reqSn").toString(),true);
+			BindCard bindCard = new BindCard();
+			bindCard.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+			bindCard.setCardNo(requestData.getString("crdNo"));
+			bindCard.setAccountName(requestData.getString("capCrdNm"));
+			bindCard.setCardType("00");
+			bindCard.setCardId(requestData.getString("idNo"));
+			bindCard.setPhone(requestData.getString("phoneNo"));
+			bindCardService.insertSelective(bindCard);
 		}else{//支付失败
 			orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId());
 			orderFormService.updateStatus(orderFormOptional.get());
 		}
 		return ret;
+	}
+
+	/**
+	 * 支付订单查询
+	 * @param requestData
+	 * @return
+	 */
+	@Override
+	public Map<String, Object> queryQuickPay(JSONObject requestData) {
+		Map<String, Object> ret = new HashMap<String, Object>();
+		try {
+			Request200005 request200005 = createQueryQuickPay(requestData);
+			String xml = XmlUtil.toXML(request200005);
+			logger.debug("****************xml生成authen*********************-"+ xml);
+			// 加签
+			logger.debug("****************xml加签*********************");
+			xml = signatureService.addSignatrue(xml);
+			// 加压加密
+			logger.debug("****************xml加压加密*********************");
+			String Base64 = GZipUtil.gzipString(xml);
+			// 通讯使用HTTPS进行通讯
+			logger.debug("****************xml通讯使用HTTPS进行通讯*********************");
+			String response1 = HttpUtils.sendPostMessage(Base64, HzSdkConstans.FASTPAY_QUERY_URL,
+					Constants.transfer_charset);
+			// 解压解密返回信息
+			String response2 = null;
+			if (StringUtils.isNotEmpty(response1)) {
+				logger.debug("****************xml通讯返回*********************");
+				response2 = GZipUtil.ungzipString(response1);
+				boolean isSuc = signatureService.isSignature(response2);
+				if (isSuc) {
+					ret.put("signMsg", "验签成功！！");
+					logger.error("验签成功！！");
+				} else {
+					ret.put("signMsg", "验签失败！！");
+					logger.error("验签失败！！");
+				}
+				// 将解压解密后的结果转化为Response200005对象
+				Response200005 response200005 = XmlUtil.fromXML(response2,
+						Response200005.class);
+
+				if ("0000".equals(response200005.getInfo().getRetCode())) {
+					JSONObject jo = new JSONObject();
+					jo.put("","");
+					ret.put("retCode", response200005.getInfo().getRetCode());
+					ret.put("retMsg", response200005.getInfo().getErrMsg());
+					ret.put("retData",jo);
+				} else {
+					ret.put("retCode", false);
+					ret.put("retMsg", response200005.getInfo().getErrMsg());
+				}
+			} else {
+				ret.put("retCode", false);
+				ret.put("retMsg", "付款接口连接失败");
+			}
+			logger.debug("****************" + response2
+					+ "*********************");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ret;
+	}
+	private Request200005 createQueryQuickPay(JSONObject requestData) {
+		Request200005 queryQuickPay = new Request200005();
+		RequestHead20005 head = new RequestHead20005();
+		head.setTrxCode("200005");//固定
+		head.setVersion("01");//固定
+		head.setDataType(Constants.DATA_TYPE_XML);//固定
+		head.setLevel(Constants.LEVEL_0);//固定
+		head.setReqSn(requestData.getString("reqSn"));
+		head.setSignedMsg("signedMsg");
+		head.setMerchantId(HzSdkConstans.MERC_ID);
+		RequestBody200005 body = new RequestBody200005();
+		RequestDetail200005 detail = new RequestDetail200005();
+		detail.setMERCHANT_ID(HzSdkConstans.MERC_ID);
+		detail.setMERC_ORD_NO(requestData.getString("mercOrdNo"));
+		detail.setMERC_ORD_DT(requestData.getString("mercOrdDt"));
+		body.setQueryTrans(detail);
+		queryQuickPay.setBody(body);
+		queryQuickPay.setInfo(head);
+		return queryQuickPay;
+	}
+	/**
+	 * 退款单查询
+	 * @param requestData
+	 * @return
+	 */
+	@Override
+	public Map<String, Object> queryRefund(JSONObject requestData) {
+		return null;
 	}
 }

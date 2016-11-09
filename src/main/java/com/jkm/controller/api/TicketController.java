@@ -59,14 +59,9 @@ public class TicketController extends BaseController{
      */
     @ResponseBody
     @RequestMapping(value = "/submitOrder", method = RequestMethod.POST)
-    public ResponseEntityBase<ResponseSubmitOrder> submitOrder(final RequestSubmitOrder request) throws IOException {
+    public ResponseEntityBase<ResponseSubmitOrder> submitOrder(@RequestBody final RequestSubmitOrder request) {
         final ResponseEntityBase<ResponseSubmitOrder> results = new ResponseEntityBase<>();
-//        final RequestSubmitOrder.Passenger passenger = request.new Passenger();
-//        passenger.setId(2);
-//        passenger.setPiaoType("1");
-//        final ArrayList<RequestSubmitOrder.Passenger> passengers = new ArrayList<>();
-//        passengers.add(passenger);
-//        request.setPassengers(passengers);
+        request.setUid(super.getUid(request.getAppId(), request.getUid()));
         final Triple<Boolean, String, Long> submitOrderResult = this.ticketService.submitOrder(request);
         final ResponseSubmitOrder responseBookTicket = new ResponseSubmitOrder();
         if (submitOrderResult.getLeft()) {
@@ -89,7 +84,7 @@ public class TicketController extends BaseController{
      */
     @ResponseBody
     @RequestMapping(value = "/cancelOrder", method = RequestMethod.POST)
-    public ResponseEntityBase<ResponseCancelOrder> cancelOrder(final RequestCancelOrder request) {
+    public ResponseEntityBase<ResponseCancelOrder> cancelOrder(@RequestBody final RequestCancelOrder request) {
         final ResponseEntityBase<ResponseCancelOrder> results = new ResponseEntityBase<>();
         final Pair<Boolean, String> cancelOrderResult = this.ticketService.cancelOrder(request.getOrderFormId());
         final ResponseCancelOrder responseCancelOrder = new ResponseCancelOrder();
