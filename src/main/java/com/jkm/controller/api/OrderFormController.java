@@ -122,6 +122,7 @@ public class OrderFormController extends BaseController {
                 passenger.setPiaoTypeName(EnumTrainTicketType.of(next.getPiaoType()).getValue());
                 passenger.setCxin(next.getCxin());
                 passenger.setPrice(next.getPrice());
+                passenger.setStatus(next.getStatus());
                 passengers.add(passenger);
                 iterator.remove();
             }

@@ -1,11 +1,9 @@
 package com.jkm.service.impl;
 
-import com.jkm.entity.OrderForm;
 import com.jkm.enums.notifier.EnumNoticeType;
 import com.jkm.enums.notifier.EnumUserType;
 import com.jkm.helper.TicketMessageParams.*;
 import com.jkm.helper.notifier.SendMessageParams;
-import com.jkm.service.OrderFormService;
 import com.jkm.service.TicketSendMessageService;
 import com.jkm.service.notifier.SendMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
