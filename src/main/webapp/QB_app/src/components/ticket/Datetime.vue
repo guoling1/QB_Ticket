@@ -131,10 +131,13 @@
       close: function (year, month, day) {
         let week = (new Date(year, month - 1, day)).getDay();
         let weekWord = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+        if (day < 10) {
+          day = '0' + day;
+        }
         this.$store.commit('TIME_CLOSE', {
           ctrl: false,
           code: year + '-' + month + '-' + day,
-          time: year + '年' + month + '月' + day + '日 ' + weekWord[week]
+          time: month + '月' + day + '日 ' + weekWord[week]
         });
       }
     },

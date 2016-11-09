@@ -21,6 +21,10 @@ public class HzSdkConstans {
      */
     public static final String  FASTPAY_QUERY_URL;
     /**
+     * 快捷支付退款查询地址
+     */
+    public static final String  QUERY_REFUND_URL;
+    /**
      * 单笔退款地址
      */
     public static final String  SINGLE_REFUND_URL;
@@ -40,6 +44,8 @@ public class HzSdkConstans {
         Preconditions.checkState(!Strings.isNullOrEmpty(FASTPAY_QUERY_URL), "快捷支付查询地址");
         SINGLE_REFUND_URL = hzSdkConfig.singleRefundUrl();
         Preconditions.checkState(!Strings.isNullOrEmpty(SINGLE_REFUND_URL), "单笔退款地址");
+        QUERY_REFUND_URL = hzSdkConfig.refundQueryUrl();
+        Preconditions.checkState(!Strings.isNullOrEmpty(QUERY_REFUND_URL), "单笔退款查询地址");
         CARD_AUTH = hzSdkConfig.cardAuth();
         Preconditions.checkState(!Strings.isNullOrEmpty(CARD_AUTH), "银行卡鉴权地址");
     }
@@ -83,7 +89,12 @@ public class HzSdkConstans {
         @Key("single_refund_url")
         @DefaultValue("")
         String singleRefundUrl();
-
+        /**
+         * 单笔退款地址
+         */
+        @Key("refund_query_url")
+        @DefaultValue("")
+        String refundQueryUrl();
 
         /**
          * 银行卡鉴权

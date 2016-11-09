@@ -127,7 +127,7 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
                         policyOrder.setInsProductNo(HySdkConstans.PERSON);
                     }
                     // 如果是身份证, 则截取
-                    if(input.getPassportTypeSeId() == EnumCertificatesType.SECOND_ID_CARD.getId()){
+                    if(input.getPassportTypeSeId().equals(EnumCertificatesType.SECOND_ID_CARD.getId())){
                         final IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(input.getPassportSeNo());
                         policyOrder.setGender(idcardInfo.getGender());
                         policyOrder.setCardType(EnumCardType.SECOND_ID_CARD.getId());
@@ -149,6 +149,7 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
 
                 }
                 policyOrder.setFlightDate(orderForm.getStartDate() + " " + orderForm.getStartTime());
+                policyOrder.setFlightNumber(orderForm.getCheci());
                 policyOrder.setSerialNo(SnGenerator.generate());
                 policyOrder.setContractName(input.getPassengerName());
                 //TODO
@@ -169,7 +170,7 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
             request.setFlightNumber(input.getFlightNumber());
             request.setSerialNo(input.getSerialNo());
             request.setContractName(input.getContractName());
-            request.setCardType(input.getCardType());
+            request.setContractType(String.valueOf(input.getCardType()));
             request.setGender(input.getGender());
             request.setCardType(input.getCardType());
             request.setCardNo(input.getCardNo());
@@ -177,14 +178,17 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
             request.setPhone(input.getPhone());
             final JSONArray jsonArray = this.hySdkService.postPolicyOrder(request);
             final JSONObject jsonObject = jsonArray.getJSONObject(0);
-            input.setPolicyNo(jsonObject.getString("policyNo"));
-            input.setRemark(jsonObject.getString("resultErrDesc"));
-            input.setPrintNo(jsonObject.getString("printNo"));
-            input.setApplyNo(jsonObject.getString("applyNo"));
+
             if(jsonObject.getInt("resultId") == 0){
                 //成功
+                input.setPolicyNo(jsonObject.getString("policyNo"));
+                input.setRemark(jsonObject.getString("resultErrDesc"));
+                input.setPrintNo(jsonObject.getString("printNo"));
+                input.setApplyNo(jsonObject.getString("applyNo"));
                 input.setStatus(EnumPolicyOrderStatus.POLICY_BUY_SUCCESS.getId());
             }else{
+                input.setPolicyNo(jsonObject.getString("policyNo"));
+                input.setRemark(jsonObject.getString("resultErrDesc"));
                 input.setStatus(EnumPolicyOrderStatus.POLICY_BUY_FAIL.getId());
             }
             this.policyOrderDao.update(input);
