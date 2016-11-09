@@ -5,7 +5,7 @@
 
 	<!-- 通用查询结果列-->
 	<sql id="Base_Column_List">
-		 id,	uid,	app_id,	account,  status,	create_time,	update_time
+		 id,	uid,	app_id,	account, pwd,  status,	create_time,	update_time
 	</sql>
 
 	<!-- 查询（根据Uid查询） -->
