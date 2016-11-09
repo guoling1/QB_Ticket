@@ -268,7 +268,9 @@ public class AuthenServiceImpl implements AuthenService {
 					+ "*********************");
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
+			ret.put("retCode", false);
+			ret.put("retMsg", "参数有误");
 		}
 		return ret;
 	}
