@@ -138,7 +138,7 @@ public class TicketServiceImpl implements TicketService {
         this.orderFormService.add(orderForm);
         final JSONArray passengerJsonArray = new JSONArray();
         for (RequestSubmitOrder.Passenger passenger : passengerList) {
-            final Optional<TbContactInfo> contactInfoOptional1 = contactInfoService.selectById(passenger.getId());
+            final Optional<TbContactInfo> contactInfoOptional1 = this.contactInfoService.selectById(passenger.getId());
             Preconditions.checkState(contactInfoOptional1.isPresent(), "乘客不存在");
             final TbContactInfo contactInfo = contactInfoOptional1.get();
             final OrderFormDetail orderFormDetail = new OrderFormDetail();
@@ -157,7 +157,7 @@ public class TicketServiceImpl implements TicketService {
             orderFormDetail.setPiaoType(passenger.getPiaoType());
             orderFormDetail.setStatus(EnumOrderFormDetailStatus.TICKET_INITIALIZATION.getId());
             orderFormDetail.setRemark(EnumOrderFormDetailStatus.TICKET_INITIALIZATION.getValue());
-            orderFormDetailService.add(orderFormDetail);
+            this.orderFormDetailService.add(orderFormDetail);
             passengerJsonObject.put("passengersename", contactInfo.getName());
             passengerJsonObject.put("passportseno", contactInfo.getIdenty());
             passengerJsonObject.put("passporttypeseid", contactInfo.getIdentyType());
