@@ -61,13 +61,11 @@ public class ContactInfoController extends BaseController {
                 responseJson.put("message", jo.getString("message"));
             }else{
                 responseJson.put("result", false);
-                responseJson.put("data", 0);
                 responseJson.put("message", jo.getString("message"));
             }
         }catch (Exception e){
             log.info(e.getMessage());
             responseJson.put("result", false);
-            responseJson.put("data", 0);
             responseJson.put("message", "添加异常");
         }
         return responseJson;
@@ -93,7 +91,6 @@ public class ContactInfoController extends BaseController {
         }catch (Exception e){
             log.info(e.getMessage());
             responseJson.put("result", false);
-            responseJson.put("data", null);
             responseJson.put("message", "查询异常");
         }
         return responseJson;
@@ -120,7 +117,6 @@ public class ContactInfoController extends BaseController {
         }catch (Exception e){
             log.info(e.getMessage());
             responseJson.put("result", false);
-            responseJson.put("data", null);
             responseJson.put("message", "删除异常");
         }
         return responseJson;
@@ -168,7 +164,6 @@ public class ContactInfoController extends BaseController {
         }catch (Exception e){
             log.info(e.getMessage());
             responseJson.put("result", false);
-            responseJson.put("data", null);
             responseJson.put("message", "修改异常");
         }
         return responseJson;
@@ -194,7 +189,6 @@ public class ContactInfoController extends BaseController {
         }catch (Exception e){
             log.info(e.getMessage());
             responseJson.put("result", false);
-            responseJson.put("data",null);
             responseJson.put("message", "调用失败");
         }
         return responseJson;

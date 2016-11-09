@@ -1,5 +1,9 @@
 <template lang="html">
-  <div class="main">
+  <div class="main" v-if="showModule">
+    <div class="header">
+      <div class="close" @click='close'></div>
+      <h1>常用联系人</h1>
+    </div>
     <div class="banner con">
       <div class="bannerLeft" @click="show">新增联系人</div>
       <div class="bannerRight">导入12306联系人</div>
@@ -15,7 +19,7 @@
         <span class="edit" @click="show(index)"></span>
       </li>
     </ul>
-    <div class="bottom">
+    <div class="bottom" @click="close">
       确定
     </div>
     <div class="mask" id="mask">
@@ -69,51 +73,58 @@
       }
     },
     computed:{
+      showModule:function () {
+        if(this.$store.state.contact.ctrl){
+          this.$http.post('/contactInfo/list',{"uid":"1","appid":"1"})
+            .then(function (response) {
+                let massages = response.data.data;
+                for (var i = 0; i < massages.length; i++) {
+                  //设置乘客类型
+                  var personType=massages[i].personType;
+                  if(personType==1){
+                    massages[i].personType='成人';
+                  }else if(personType==2){
+                    massages[i].personType='儿童';
+                  }else if(personType==3){
+                    massages[i].personType='学生';
+                  }else if(personType==4){
+                    massages[i].personType='伤残军人';
+                  }
+                  //设置证件
+                  var identyType=massages[i].identyType;
+                  if(identyType==1){
+                    massages[i].identyType='二代身份证';
+                  }else if(identyType==2){
+                    massages[i].identyType='一代身份证';
+                  }else if(identyType=='C'){
+                    massages[i].identyType='港澳通行证';
+                  }else if(identyType=='G'){
+                    massages[i].identyType='台湾通行证';
+                  }else if(identyType=='B'){
+                    massages[i].identyType='护照'
+                  }
+                  //性别
+                  massages[i].sex=massages[i].sex==0?"男":"女";
+                }
+              this.$data.massages = massages;
+            })
+            .catch(function (err) {
+              console.log(err);
+            })
+        }
+        // 每次打开都去重新获取联系人列表
+        return this.$store.state.contact.ctrl
+      },
       peoples:function(){
         return this.$data.massages;
       }
     },
-    beforeRouteEnter (to, from, next) {
-      Vue.http.post('/contactInfo/list',{"uid":"1","appid":"1"})
-        .then(function (response) {
-          next(vm=> {
-            vm.$data.massages = response.data.data;
-            for (var i = 0; i < vm.$data.massages.length; i++) {
-              //设置乘客类型
-              var personType=vm.$data.massages[i].personType;
-              if(personType==1){
-                vm.$data.massages[i].personType='成人';
-              }else if(personType==2){
-                vm.$data.massages[i].personType='儿童';
-              }else if(personType==3){
-                vm.$data.massages[i].personType='学生';
-              }else if(personType==4){
-                vm.$data.massages[i].personType='伤残军人';
-              }
-              //设置证件
-              var identyType=vm.$data.massages[i].identyType;
-              if(identyType==1){
-                vm.$data.massages[i].identyType='二代身份证';
-              }else if(identyType==2){
-                vm.$data.massages[i].identyType='一代身份证';
-              }else if(identyType=='C'){
-                vm.$data.massages[i].identyType='港澳通行证';
-              }else if(identyType=='G'){
-                vm.$data.massages[i].identyType='台湾通行证';
-              }else if(identyType=='B'){
-                vm.$data.massages[i].identyType='护照'
-              }
-              //性别
-              vm.$data.massages[i].sex=vm.$data.massages[i].sex==0?"男":"女";
-            }
-          })
-        })
-        .catch(function (response) {
-          next(vm=>{
-          })
-        })
-    },
     methods:{
+      close: function(){
+        this.$store.commit("CONTACT_CLOSE", {
+          ctrl: false
+        });
+      },
       change:function(index,flag){
         var oUl=document.getElementById("list");
         var aLi=oUl.getElementsByTagName("li");
@@ -154,7 +165,7 @@
             id:this.$data.massages[index].id
           }
           Vue.http.post('/contactInfo/delete',JSON.stringify(delPerson))
-            .then((res,)=>{
+            .then((res)=>{
               if(res.data.result==true){
                 this.$data.massages.splice(index,1);
                 document.querySelector("#mask").style.display="none";
@@ -236,6 +247,30 @@
   overflow: hidden;
   .flexItem(1, 100%);
   background-color: #f5f5f5;
+  position: absolute;
+  top:0;
+  left: 0;
+  z-index: 99;
+}
+.header {
+  width: 100%;
+  height: 64px;
+  color: #fefefe;
+  background-color: #4ab9f1;
+  padding: 30px 10px 0;
+  .close {
+    width: 19px;
+    height: 24px;
+    background: url("../../assets/back.png") no-repeat center;
+    background-size: 9px 14px;
+    float: left;
+    padding: 5px;
+    position: absolute;
+  }
+  h1 {
+    font-size: 18px;
+    line-height: 24px;
+  }
 }
 .con{
   padding: 0 15px;
