@@ -56,7 +56,7 @@ public interface UserInfoService {
      * 添加用户信息
      * @param uid
      */
-    void insertUser(String uid);
+    void insertUser(String uid,String phone);
     /**
      *
      * 修改（根据uid修改）

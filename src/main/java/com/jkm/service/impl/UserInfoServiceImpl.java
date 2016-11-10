@@ -50,7 +50,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public void insertUser(String uid) {
+    public void insertUser(String uid,String phone) {
         UserInfo userInfo = userInfoDao.selectByUid(uid);
         if(userInfo==null){
             UserInfo u = new UserInfo();
@@ -58,6 +58,9 @@ public class UserInfoServiceImpl implements UserInfoService {
             u.setUid(uid);
             u.setStatus(0);
             userInfoDao.insert(u);
+        }else{
+            userInfo.setPhone(phone);
+            userInfoDao.updatePhoneByUid(userInfo);
         }
     }
 
