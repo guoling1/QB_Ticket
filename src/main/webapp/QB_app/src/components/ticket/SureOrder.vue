@@ -87,6 +87,7 @@
 </template>
 
 <script lang="babel">
+  import Vue from 'vue'
   import Contacts from './Contacts.vue'
 
   const zwCode = {
@@ -109,8 +110,8 @@
     data: function () {
       return {
         sureOrder: {
-          appId: "1",     //appid
-          uid: "1",  //用户id
+          appId: "wnl",     //appid
+          uid: "123456",  //用户id
           mobile: '15010607970',   //联系手机号
           price: 00.0,    //票价
           fromStationName: "",  //出发站
@@ -165,8 +166,17 @@
       submit: function () {
         console.log(this.$data.sureOrder);
         this.$http.post('/ticket/submitOrder', this.$data.sureOrder).then(function (res) {
-          if (res.code == 1) {
-            this.$router.push({path: '/ticket/pay-order', query:{id: res.data.orderFormId}});
+          if (res.data.code == 1) {
+            // 这里 轮询 等待回调
+            setInterval(function () {
+              Vue.http.post('/order/queryById', {orderFormId: res.data.data.orderFormId}).then(function (res) {
+                if (res.data.code == 1 && res.data.data.status == 3) {
+                  this.$router.push({path: '/ticket/pay-order', query: {id: res.data.data.orderFormId}});
+                }
+              })
+            }, 1000);
+          } else {
+            console.log(res.data.message);
           }
         }, function (err) {
           console.log(err);

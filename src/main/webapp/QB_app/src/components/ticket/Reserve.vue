@@ -26,7 +26,7 @@
         </div>
       </div>
       <router-link class="submit"
-                   :to="{path:'/ticket/train-menu/train',query:{date:$from.date,from:$from.from,to:$from.to,only:$onlyG}}">
+                   :to="{path:'/ticket/train-menu/train',query:{appid:common.appid,uid:common.uid,date:$from.date,from:$from.from,to:$from.to,only:$onlyG}}">
         查询
       </router-link>
       <div class="history">
@@ -51,8 +51,18 @@
     },
     data: function () {
       return {
+        common: {
+          appid: '',
+          uid: ''
+        },
         onlyG: false
       }
+    },
+    beforeRouteEnter (to, from, next) {
+      next(function (vm) {
+        vm.$data.common.appid = to.query.appid;
+        vm.$data.common.uid = to.query.uid;
+      });
     },
     methods: {
       time: function (name) {
