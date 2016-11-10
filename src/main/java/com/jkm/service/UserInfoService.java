@@ -62,5 +62,5 @@ public interface UserInfoService {
      * 修改（根据uid修改）
      *
      **/
-    int updateByUid ( UserInfo record );
+    int updatePhoneByUid ( UserInfo record );
 }

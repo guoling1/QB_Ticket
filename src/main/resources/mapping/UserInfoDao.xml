@@ -124,7 +124,7 @@
 	</update>
 
 	<!-- 修 改-->
-	<update id="updateByUid" parameterType="com.jkm.entity.UserInfo">
+	<update id="updatePhoneByUid" parameterType="com.jkm.entity.UserInfo">
 		UPDATE tb_user_info set phone = #{phone} WHERE uid = #{uid}
 	</update>
 </mapper>

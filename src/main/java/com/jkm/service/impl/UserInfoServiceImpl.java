@@ -62,8 +62,8 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public int updateByUid(UserInfo record) {
-        int rown = userInfoDao.updateByUid(record);
+    public int updatePhoneByUid(UserInfo record) {
+        int rown = userInfoDao.updatePhoneByUid(record);
         return rown;
     }
 }
