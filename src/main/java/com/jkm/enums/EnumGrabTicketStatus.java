@@ -62,12 +62,30 @@ public enum EnumGrabTicketStatus {
     /**
      * 抢票订单取消
      */
-    ORDER_FORM_CANCEL(10, "订单取消"),
+    GRAB_FORM_CANCEL(10, "订单取消"),
 
     /**
      * 未购买套餐,等待到期退款
      */
-    WAIT_FOR_REFUND(11, "未购买套餐,等待到期退款");
+    WAIT_FOR_REFUND(11, "未购买套餐,等待到期退款"),
+    /**
+     * 退款中
+     */
+    GRAB_FORM_REFUND_ING(14, "退款中"),
+
+    /**
+     * 退款成功
+     */
+    GRAB_FORM_REFUND_SUCCESS(15, "退款成功"),
+
+    /**
+     * 退款失败
+     */
+    GRAB_FORM_REFUND_FAIL(16, "退款失败"),
+    /**
+     * 退票
+     */
+    GRAB_FORM_HAVE_BEEN_RETURN_TICKET(17, "退票");
 
     @Getter
     private int id;

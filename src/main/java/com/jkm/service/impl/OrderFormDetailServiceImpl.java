@@ -5,6 +5,7 @@ import com.jkm.dao.OrderFormDetailDao;
 import com.jkm.entity.OrderForm;
 import com.jkm.entity.OrderFormDetail;
 import com.jkm.enums.EnumOrderFormDetailStatus;
+import com.jkm.enums.EnumOrderFormStatus;
 import com.jkm.service.OrderFormDetailService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,5 +137,49 @@ public class OrderFormDetailServiceImpl implements OrderFormDetailService {
     @Override
     public List<OrderFormDetail> selectByGrabTicketFormId(long grabTicketFormId) {
         return this.orderFormDetailDao.selectByGrabTicketFormId(grabTicketFormId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderFormId
+     * @param orderFormRefundSuccess
+     * @return
+     */
+    @Override
+    public List<OrderFormDetail> selectAllTicketsNoReFund(long orderFormId, EnumOrderFormDetailStatus orderFormRefundSuccess) {
+        return this.orderFormDetailDao.selectAllTicketsNoReFund(orderFormId, orderFormRefundSuccess.getId());
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderFormId
+     * @return
+     */
+    @Override
+    public long selectOrderFormNum(long orderFormId) {
+        return this.orderFormDetailDao.selectOrderFormNum(orderFormId);
+    }
+
+    /**
+     *
+     * @param grabOrderFormId
+     * @param ticketReturnSuccess
+     * @return
+     */
+    @Override
+    public List<OrderFormDetail> selectAllTicketsNoReFundGrab(long grabOrderFormId, EnumOrderFormDetailStatus ticketReturnSuccess) {
+        return this.orderFormDetailDao.selectAllTicketsNoReFundGrab(grabOrderFormId, ticketReturnSuccess.getId());
+    }
+
+    /**
+     *
+     * @param grabOrderFormId
+     * @return
+     */
+    @Override
+    public long selectGrabFormNumGrab(long grabOrderFormId) {
+        return this.orderFormDetailDao.selectGrabFormNumGrab(grabOrderFormId);
     }
 }

@@ -25,6 +25,16 @@ public class MqConfig {
      */
     public static final String TICKET_CANCEL_EXPIRED_ORDER = "ticketCancelExpiredOrder";
 
+    /**
+     * 取消失去有效支付时间的抢票单
+     */
+    public static final String TICKET_CANCEL_EXPIRED_GRAB_ORDER = "ticketCancelExpiredGrabOrder";
+
+    /**
+     * 客户未购买套餐到期自动退款
+     */
+    public static final String NO_PACKAGE_WAIT_REFUND = "noPackageWaitRefund";
+
     static {
         final MqConfigs mqConfigs = getMqConfigs();
         TOPIC = mqConfigs.topic();
@@ -41,7 +51,7 @@ public class MqConfig {
         Preconditions.checkState(!Strings.isNullOrEmpty(ONSADDR), "ONSADDR");
     }
     /**
-     * 获得银胜配置
+     * 获得配置
      */
     public static MqConfigs getMqConfigs() {
         return ConfigCache.getOrCreate(MqConfigs.class);

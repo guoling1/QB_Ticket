@@ -17,6 +17,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestGrabTicket {
+    /**
+     * appId
+     */
+    private String appId;
 
     /**
      * 用户id
@@ -82,10 +86,12 @@ public class RequestGrabTicket {
     /**
      * 联系人id列表
      */
-    private List<GrabPassenger> passengers;
+    private List<GrabPassenger> grabPassengers;
 
+    @AllArgsConstructor
+    @NoArgsConstructor
     @Data
-    private class GrabPassenger {
+    public static class GrabPassenger {
         /**
          * 联系人id
          */

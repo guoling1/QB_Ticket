@@ -110,4 +110,11 @@ public interface TicketService {
      * @param msg   结果描述
      */
     void handleOrderFormRefundResult(long orderFormId, boolean isRefundSuccess, String msg);
+
+    /**
+     * 抢票失败给用户全额退票
+     *
+     * @param grabTicketFormId
+     */
+    void returnToGrabFail(final long grabTicketFormId);
 }
