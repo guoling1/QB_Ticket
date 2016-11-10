@@ -33,28 +33,20 @@ public class BindCardController extends BaseController {
         try{
             JSONObject requestJson = super.getRequestJsonParams();
             log.info("银行卡参数："+requestJson.toString());
-            BindCard bindCard = new BindCard();
-            bindCard.setUid(super.getUid(requestJson.getString("appid"),requestJson.getString("uid")));
-            bindCard.setCardNo(requestJson.getString("cardNo"));
-            bindCard.setAccountName(requestJson.getString("accountName"));
-            bindCard.setCardType(requestJson.getString("cardType"));
-            bindCard.setCardId(requestJson.getString("cardId"));
-            bindCard.setPhone(requestJson.getString("phone"));
-            JSONObject jo = bindCardService.insertSelective(bindCard);
+            requestJson.put("uid",super.getUid(requestJson.getString("appid"),requestJson.getString("uid")));
+            JSONObject jo = bindCardService.insertSelective(requestJson);
             if(jo.getBoolean("success")){
                 responseJson.put("result", true);
                 responseJson.put("data",jo.getLong("data"));
                 responseJson.put("message", jo.getString("message"));
             }else{
                 responseJson.put("result", false);
-                responseJson.put("data", 0);
                 responseJson.put("message", jo.getString("message"));
             }
         }catch (Exception e){
             log.info(e.getMessage());
             responseJson.put("result", false);
-            responseJson.put("data", 0);
-            responseJson.put("message", "绑定异常");
+            responseJson.put("message", e.getMessage());
         }
         return responseJson;
     }

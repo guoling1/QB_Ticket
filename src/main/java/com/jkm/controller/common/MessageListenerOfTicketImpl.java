@@ -20,16 +20,12 @@ import com.aliyun.openservices.ons.api.ConsumeContext;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.MessageListener;
 import com.google.common.base.Optional;
-import com.jkm.entity.BindCard;
 import com.jkm.entity.OrderForm;
 import com.jkm.entity.fusion.QueryQuickPayData;
 import com.jkm.entity.fusion.QueryRefundData;
-import com.jkm.entity.fusion.SingleRefundData;
 import com.jkm.service.AuthenService;
-import com.jkm.service.BindCardService;
 import com.jkm.service.OrderFormService;
 import com.jkm.service.TicketService;
-import com.jkm.util.DateFormatUtil;
 import com.jkm.util.SnGenerator;
 import com.jkm.util.mq.MqConfig;
 import com.jkm.util.mq.MqProducer;
@@ -37,13 +33,12 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Date;
 import java.util.Map;
 
 /**
  * MQ消息处理类
  */
-public class MessageListenerImpl implements MessageListener {
+public class MessageListenerOfTicketImpl implements MessageListener {
     @Autowired
     private AuthenService authenService;
     @Autowired
@@ -59,25 +54,7 @@ public class MessageListenerImpl implements MessageListener {
 //                    +message.getTag());
             String body = new String(message.getBody(),"UTF-8");
             JSONObject jo = JSONObject.fromObject(body);
-            QueryQuickPayData queryQuickPayData = new QueryQuickPayData();
-            queryQuickPayData.setReqSn(SnGenerator.generate());
-            queryQuickPayData.setMercOrdNo(jo.getString("reqSn"));
-            queryQuickPayData.setMercOrdDt(jo.getString("dt"));
-            Map<String, Object> resultMap =  authenService.queryQuickPay(queryQuickPayData);
-            if("0000".equals(resultMap.get("retCode").toString())){
-                Optional<OrderForm> orderFormOptional = orderFormService.selectByReqSn(jo.getString("reqSn"));
-                if("S".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//成功
-                    ticketService.handleCustomerPayMsg(jo.getLong("orderId"),jo.getString("reqSn"),true);
-                }else if("U".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//处理中 再次发送请求
-                    MqProducer.sendMessage(jo,MqConfig.FAST_PAY_QUERY,10000);//再次发请求
-                }else if("N".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//待支付
-
-                }else if("F".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//失败
-                    ticketService.handleCustomerPayMsg(jo.getLong("orderId"),jo.getString("reqSn"),false);
-                }
-            }else if("-1000".equals(resultMap.get("retCode").toString())){//连接超时
-                MqProducer.sendMessage(jo,MqConfig.FAST_PAY_QUERY,10000);//再次发请求
-            }
+            this.orderFormService.handleExpiredOrderForm(jo.getLong("orderFormId"));
 
         } catch (UnsupportedEncodingException e) {
         }

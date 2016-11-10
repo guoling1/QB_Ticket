@@ -41,7 +41,7 @@ public interface BindCardService {
      * 添加 （匹配有值的字段）
      *
      **/
-    JSONObject insertSelective(BindCard record );
+    JSONObject insertSelective(JSONObject record );
 
     /**
      *
