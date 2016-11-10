@@ -579,25 +579,25 @@ public class AuthenServiceImpl implements AuthenService {
 	@Override
 	public JSONObject toPay(JSONObject requestData) {
 		JSONObject jo = new JSONObject();
-		Preconditions.checkNotNull(requestData.get("cardNo"),"缺少银行卡号");
+		Preconditions.checkNotNull(requestData.get("crdNo"),"缺少银行卡号");
 		Preconditions.checkNotNull(requestData.get("orderId"),"订单号不能为空");
-		Preconditions.checkNotNull(requestData.get("accountName"),"缺少开户姓名");
-		Preconditions.checkNotNull(requestData.get("cardId"),"缺少身份证号");
-		Preconditions.checkNotNull(requestData.get("phone"),"缺少手机号");
+		Preconditions.checkNotNull(requestData.get("capCrdNm"),"缺少开户姓名");
+		Preconditions.checkNotNull(requestData.get("idNo"),"缺少身份证号");
+		Preconditions.checkNotNull(requestData.get("phoneNo"),"缺少手机号");
 		Preconditions.checkNotNull(requestData.get("isAgree"),"请勾选并同意协议");
 		Preconditions.checkNotNull(requestData.get("vCode"),"请输入验证码");
 		Preconditions.checkNotNull(requestData.get("bankCode"),"卡宾不能为空");
 		Preconditions.checkNotNull(requestData.get("nonceStr"),"随机参数有误");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("orderId")+""), "订单信息不能为空");
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("cardNo")), "卡号不能不能为空");
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("accountName")), "开户姓名不能为空");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("crdNo")), "卡号不能不能为空");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("capCrdNm")), "开户姓名不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("idNo")), "身份证号不能为空");
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("phone")), "手机号不能为空");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("phoneNo")), "手机号不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("bankCode")), "卡宾不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("vCode")), "验证码不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("nonceStr")), "随机参数有误");
 
-		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(requestData.getString("phone"),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
+		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(requestData.getString("phoneNo"),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
 		int resultType = codeStatus.getKey();
 		if(resultType!=1){
 			jo.put("result",false);
@@ -605,17 +605,17 @@ public class AuthenServiceImpl implements AuthenService {
 			return jo;
 		}
 
-		if(!ValidationUtil.checkBankCard(requestData.getString("cardNo"))){
+		if(!ValidationUtil.checkBankCard(requestData.getString("crdNo"))){
 			jo.put("result",false);
 			jo.put("message","银行卡号不正确");
 			return jo;
 		}
-		if(!ValidationUtil.isIdCard(requestData.getString("cardId"))){
+		if(!ValidationUtil.isIdCard(requestData.getString("idNo"))){
 			jo.put("result",false);
 			jo.put("message","身份证号不正确");
 			return jo;
 		}
-		if(!ValidationUtil.isMobile(requestData.getString("phone"))){
+		if(!ValidationUtil.isMobile(requestData.getString("phoneNo"))){
 			jo.put("result",false);
 			jo.put("message","手机号不正确");
 			return jo;
@@ -646,7 +646,7 @@ public class AuthenServiceImpl implements AuthenService {
 			bindCard.setCardNo(UserBankCardSupporter.encryptCardNo(requestData.getString("crdNo")));
 			bindCard.setAccountName(requestData.getString("capCrdNm"));
 			bindCard.setCardType("00");
-			bindCard.setCardId(UserBankCardSupporter.encryptCardId(requestData.getString("cardId")));
+			bindCard.setCardId(UserBankCardSupporter.encryptCardId(requestData.getString("idNo")));
 			bindCard.setPhone(requestData.getString("phoneNo"));
 			bindCard.setBankCode(requestData.getString("bankCode"));
 			bindCard.setStatus(0);
