@@ -42,7 +42,7 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
     @Autowired
     private ContactInfoService contactInfoService;
     @Autowired
-    private GrabTicketFromService grabTicketFromService;
+    private GrabTicketFormService grabTicketFormService;
     /**
      * {@inheritDoc}
      *
@@ -130,7 +130,7 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
                         final IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(input.getPassportSeNo());
                         policyOrder.setGender(idcardInfo.getGender());
                         policyOrder.setCardType(EnumCardType.SECOND_ID_CARD.getId());
-                        policyOrder.setCardNo(input.getPassportSeNo());
+                        policyOrder.setCardNo(input.getPassportSeNoPlain());
                         policyOrder.setBirthday(idcardInfo.getBirthday());
                     }else{
                         //如果是其他证件, 乘客信息取
@@ -208,7 +208,7 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
     @Override
     public void batchBuyGrabPolicy(long grabTicketFormId) {
         log.info("抢票单grabTicketFormId:" + grabTicketFormId + "申请购买保险!!!");
-        final GrabTicketForm orderForm = this.grabTicketFromService.selectById(grabTicketFormId).get();
+        final GrabTicketForm orderForm = this.grabTicketFormService.selectById(grabTicketFormId).get();
         //没买套餐,不买保险
         if(orderForm.getBuyTicketPackage() == EnumBuyTicketPackageType.TICKET_PACKAGE_FIRST.getId()){
             return;

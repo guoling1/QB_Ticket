@@ -30,6 +30,16 @@ public enum EnumGrabTicketStatus {
     GRAB_FORM_PAY_SUCCESS(3, "客户付款成功"),
 
     /**
+     * 客户付款失败
+     */
+    GRAB_FORM_PAY_FAIL(18, "客户付款失败"),
+
+    /**
+     * 客户付款中
+     */
+    GRAB_FORM_PAY_ING(19, "客户付款中"),
+
+    /**
      * 客户付款超时未支付
      */
     GRAB_FORM_PAY_OVERTIME(4, "客户超时未支付"),
