@@ -103,7 +103,7 @@ public class TicketServiceImpl implements TicketService {
     public Triple<Boolean, String, Long> submitOrder(final RequestSubmitOrder requestSubmitOrder) {
         log.info("开始创建订单！！");
         final OrderForm orderForm = new OrderForm();
-        this.userInfoService.insertUser(requestSubmitOrder.getUid());
+        this.userInfoService.insertUser(requestSubmitOrder.getUid(), requestSubmitOrder.getMobile());
 //        final Optional<TbContactInfo> contactInfoOptional = this.contactInfoService.selectByUid(requestSubmitOrder.getUid());
 //        Preconditions.checkState(contactInfoOptional.isPresent(), "订票人uid[" + requestSubmitOrder.getUid() + "]不存在");
         final UserInfo userInfo = this.userInfoService.selectByUid(requestSubmitOrder.getUid());
