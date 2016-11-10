@@ -29,7 +29,7 @@ public final class DateFormatUtil {
             .put("yyyyMMdd", new SimpleDateFormat("yyyyMMdd", Locale.CHINA))
             .put("yyyy-MM-dd", new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA))
             .put("yyyy-MM-dd hh:mm:ss", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CHINA))
-            .put("yyyy-MM-dd hh:mm", new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.CHINA))
+            .put("yyyy-MM-dd HH:mm", new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA))
             .put("yyyy-MM-dd HH:mm:ss", new SimpleDateFormat(yyyy_MM_dd_HH_mm_ss, Locale.CHINA))
             .put("yyyyMMddHHmmssSSS", new SimpleDateFormat("yyyyMMddHHmmssSSS", Locale.CHINA))
             .put("MM-dd", new SimpleDateFormat("MM-dd", Locale.CHINA))

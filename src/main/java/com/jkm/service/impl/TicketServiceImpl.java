@@ -10,6 +10,8 @@ import com.jkm.enums.*;
 import com.jkm.helper.InsurancePolicyUtil;
 import com.jkm.helper.TicketMessageParams.SendBuyTicketFailParam;
 import com.jkm.helper.TicketMessageParams.SendBuyTicketSuccessParam;
+import com.jkm.helper.TicketMessageParams.SendGrabTicketFailParam;
+import com.jkm.helper.TicketMessageParams.SendGrabTicketSuccessParam;
 import com.jkm.service.*;
 import com.jkm.service.ContactInfoService;
 import com.jkm.service.OrderFormDetailService;
@@ -88,7 +90,7 @@ public class TicketServiceImpl implements TicketService {
     private QueryTicketPriceService queryTicketPriceService;
 
     @Autowired
-    private GrabTicketFromService grabTicketFromService;
+    private GrabTicketFormService grabTicketFormService;
 
     @Autowired
     private TicketSendMessageService ticketSendMessageService;
@@ -103,7 +105,7 @@ public class TicketServiceImpl implements TicketService {
     public Triple<Boolean, String, Long> submitOrder(final RequestSubmitOrder requestSubmitOrder) {
         log.info("开始创建订单！！");
         final OrderForm orderForm = new OrderForm();
-        this.userInfoService.insertUser(requestSubmitOrder.getUid());
+        this.userInfoService.insertUser(requestSubmitOrder.getUid(), requestSubmitOrder.getMobile());
 //        final Optional<TbContactInfo> contactInfoOptional = this.contactInfoService.selectByUid(requestSubmitOrder.getUid());
 //        Preconditions.checkState(contactInfoOptional.isPresent(), "订票人uid[" + requestSubmitOrder.getUid() + "]不存在");
         final UserInfo userInfo = this.userInfoService.selectByUid(requestSubmitOrder.getUid());
@@ -162,7 +164,7 @@ public class TicketServiceImpl implements TicketService {
             orderFormDetail.setRemark(EnumOrderFormDetailStatus.TICKET_INITIALIZATION.getValue());
             this.orderFormDetailService.add(orderFormDetail);
             passengerJsonObject.put("passengersename", contactInfo.getName());
-            passengerJsonObject.put("passportseno", contactInfo.getIdenty());
+            passengerJsonObject.put("passportseno", orderFormDetail.getPassportSeNoPlain());
             passengerJsonObject.put("passporttypeseid", contactInfo.getIdentyType());
             passengerJsonObject.put("passporttypeseidname", EnumCertificatesType.of(contactInfo.getIdentyType()).getValue());
             passengerJsonObject.put("passengerid", contactInfo.getId());
@@ -209,9 +211,6 @@ public class TicketServiceImpl implements TicketService {
         log.info("订单[" + orderId + "]提交-回调处理中");
         final boolean success = jsonObject.getBoolean("success");
         final boolean orderSuccess = jsonObject.getBoolean("ordersuccess");
-        final String orderAmount = jsonObject.getString("orderamount");
-        final JSONArray passengers = jsonObject.getJSONArray("passengers");
-        Preconditions.checkState(!passengers.isEmpty(), "乘客列表为空了");
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByOrderId(orderId);
         Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + orderId + "]不存在");
         if (orderFormOptional.get().isOccupySuccessOrFail()) {//处理可能的多次回调
@@ -221,9 +220,11 @@ public class TicketServiceImpl implements TicketService {
         final Optional<OrderForm> orderFormOptional1 = this.orderFormService.selectByIdWithLock(orderFormOptional.get().getId());
         final OrderForm orderForm = orderFormOptional1.get();
         Preconditions.checkState(orderForm.isRequestOccupySeatRequesting(), "订单[" + orderId + "]状态不正确");
-        orderForm.setTicketTotalPrice(new BigDecimal(orderAmount));
         if (success && orderSuccess) {
+            final JSONArray passengers = jsonObject.getJSONArray("passengers");
+            Preconditions.checkState(!passengers.isEmpty(), "乘客列表为空了");
             log.info("订单回调处理成功---占座成功");
+            orderForm.setTicketTotalPrice(new BigDecimal(jsonObject.getString("orderamount")));
             orderForm.setTicketTotalPrice(new BigDecimal(jsonObject.getString("orderamount")));
             orderForm.setTotalPrice(orderForm.getTicketTotalPrice().add(orderForm.getBuyTicketPackagePrice()).add(orderForm.getGrabTicketPackagePrice()));
             orderForm.setOutOrderId(jsonObject.getString("transactionid"));
@@ -254,6 +255,7 @@ public class TicketServiceImpl implements TicketService {
             //创建商户收款记录
             final ChargeMoneyOrder chargeMoneyOrder = new ChargeMoneyOrder();
             chargeMoneyOrder.setOrderFormId(orderForm.getId());
+            chargeMoneyOrder.setGrabTicketFormId(0);
             chargeMoneyOrder.setTotalAmount(orderForm.getTotalPrice());
             chargeMoneyOrder.setBuyTicketPackage(orderForm.getBuyTicketPackagePrice());
             chargeMoneyOrder.setGrabTicketPackage(orderForm.getGrabTicketPackagePrice());
@@ -472,22 +474,25 @@ public class TicketServiceImpl implements TicketService {
             JSONArray jsonArray = new JSONArray();
             jsonArray.add(obj);
             try{
-                //
+                //发请求
+                log.info("订单号:"+ orderFormDetailId + "请求退票, 退票请求中......");
                 final HyReturnTicketResponse response = this.hySdkService.returnTicket(request, jsonArray);
                 if(response.getSuccess().equals("true")){
+                    log.info("订单号:"+ orderFormDetailId + "请求退票, 退票请求已接收......");
                     this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_REQUEST_SUCCESS);
                     return Pair.of(true , "退票请求已接收");
                 }else{
-                    this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
+                    log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求失败......");
+                    //this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
                     return Pair.of(false, "退票请求失败");
                 }
             }catch (Throwable e){
-                this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
+                log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求异常......");
                 return Pair.of(false, e.getMessage());
             }
         }else{
             //是抢购票
-            final Optional<GrabTicketForm> orderFormOptional = this.grabTicketFromService.selectById(orderFormDetail.getGrabTicketFormId());
+            final Optional<GrabTicketForm> orderFormOptional = this.grabTicketFormService.selectById(orderFormDetail.getGrabTicketFormId());
             Preconditions.checkArgument(orderFormOptional.isPresent() , "请求抢票订单不存在");
             final GrabTicketForm orderForm = orderFormOptional.get();
             // 申请时间距离发车时间不到2小时或已经超过发出时间时，不可退票
@@ -532,14 +537,17 @@ public class TicketServiceImpl implements TicketService {
             try{
                 final HyReturnTicketResponse response = this.hySdkService.returnTicket(request, jsonArray);
                 if(response.getSuccess().equals("true")){
+                    log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求成功......");
                     this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_REQUEST_SUCCESS);
                     return Pair.of(true , "退票请求已接收");
                 }else{
-                    this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
+                    log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求失败......");
+                    //this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
                     return Pair.of(false, "退票请求失败");
                 }
             }catch (Throwable e){
-                this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
+                log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求异常......");
+                //this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
                 return Pair.of(false, e.getMessage());
             }
         }
@@ -580,12 +588,28 @@ public class TicketServiceImpl implements TicketService {
                     buyTicketPackageId = orderForm.getBuyTicketPackageId();
                     totalPrice = orderForm.getTotalPrice();
                     createTime = orderForm.getCreateTime();
+                    //如果退票成功, 判断大订单是否全部退票
+                    final List<OrderFormDetail> list = this.orderFormDetailService.selectAllTicketsNoReFund(orderForm.getId(),EnumOrderFormDetailStatus.TICKET_RETURN_SUCCESS);
+                    final long count = this.orderFormDetailService.selectOrderFormNum(orderForm.getId());
+                    if(list.size() == (int)count){
+                        //全部退票
+                        orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_HAVE_BEEN_RETURN_TICKET.getId());
+                        this.orderFormService.update(orderForm);
+                    }
                 }else{
-                    final GrabTicketForm orderForm = this.grabTicketFromService.selectById(flow.getGrabTicketFormId()).get();
+                    final GrabTicketForm orderForm = this.grabTicketFormService.selectById(flow.getGrabTicketFormId()).get();
                     paymentSn = orderForm.getPaymentSn();
                     buyTicketPackageId = orderForm.getBuyTicketPackage();
                     totalPrice = orderForm.getTotalPrice();
                     createTime = orderForm.getCreateTime();
+                    //如果退票成功, 判断大订单是否全部退票
+                    final List<OrderFormDetail> list = this.orderFormDetailService.selectAllTicketsNoReFundGrab(orderForm.getId(), EnumOrderFormDetailStatus.TICKET_RETURN_SUCCESS);
+                    final long count = this.orderFormDetailService.selectGrabFormNumGrab(orderForm.getId());
+                    if (list.size() == (int)count){
+                        //全部退票
+                        orderForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_HAVE_BEEN_RETURN_TICKET.getId());
+                        this.grabTicketFormService.update(orderForm);
+                    }
                 }
 
                 final PolicyOrder policyOrder = this.policyOrderService.getByOrderFormDetailId(orderFormDetail.getId());
@@ -648,7 +672,7 @@ public class TicketServiceImpl implements TicketService {
                         //成功 , 修改退款单状态,
                         this.returnMoneyOrderService.updateStatusById(returnMoneyOrder.getId(), EnumReturnMoneyOrderStatus.RETURN_MONEY_SUCCESS);
                     }else{
-                        //失败.
+                        //失败 ,
                         this.returnMoneyOrderService.updateStatusById(returnMoneyOrder.getId(), EnumReturnMoneyOrderStatus.RETURN_MONEY_FAIL);
                     }
 
@@ -665,7 +689,7 @@ public class TicketServiceImpl implements TicketService {
         }
             else{
                 //线下退款,或改签退款
-                if (jsonObject.getBoolean("returnsuccess")) {
+                if (jsonObject.getBoolean("returnstate")) {
                     //退票成功
                     JSONObject obj = (JSONObject) jsonArray.get(0);
                     final RefundTicketFlow flow = this.refundTicketFlowService.getByTicketNo(obj.getString("ticket_no"));
@@ -686,12 +710,28 @@ public class TicketServiceImpl implements TicketService {
                         buyTicketPackageId = orderForm.getBuyTicketPackageId();
                         totalPrice = orderForm.getTotalPrice();
                         createTime = orderForm.getCreateTime();
+                        //如果退票成功, 判断大订单是否全部退票
+                        final List<OrderFormDetail> list = this.orderFormDetailService.selectAllTicketsNoReFund(orderForm.getId(),EnumOrderFormDetailStatus.TICKET_RETURN_SUCCESS);
+                        final long count = this.orderFormDetailService.selectOrderFormNum(orderForm.getId());
+                        if(list.size() == (int)count){
+                            //全部退票
+                            orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_HAVE_BEEN_RETURN_TICKET.getId());
+                            this.orderFormService.update(orderForm);
+                        }
                     }else{
-                        final GrabTicketForm orderForm = this.grabTicketFromService.selectById(flow.getGrabTicketFormId()).get();
+                        final GrabTicketForm orderForm = this.grabTicketFormService.selectById(flow.getGrabTicketFormId()).get();
                         paymentSn = orderForm.getPaymentSn();
                         buyTicketPackageId = orderForm.getBuyTicketPackage();
                         totalPrice = orderForm.getTotalPrice();
                         createTime = orderForm.getCreateTime();
+                        //如果退票成功, 判断大订单是否全部退票
+                        final List<OrderFormDetail> list = this.orderFormDetailService.selectAllTicketsNoReFundGrab(orderForm.getId(), EnumOrderFormDetailStatus.TICKET_RETURN_SUCCESS);
+                        final long count = this.orderFormDetailService.selectGrabFormNumGrab(orderForm.getId());
+                        if (list.size() == (int)count){
+                            //全部退票
+                            orderForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_HAVE_BEEN_RETURN_TICKET.getId());
+                            this.grabTicketFormService.update(orderForm);
+                        }
                     }
 
                     final PolicyOrder policyOrder = this.policyOrderService.getByOrderFormDetailId(orderFormDetail.getId());
@@ -707,7 +747,7 @@ public class TicketServiceImpl implements TicketService {
                     returnMoneyOrder.setOrderFormDetailId(orderFormDetail.getId());
                     returnMoneyOrder.setOrderFormSn(paymentSn);
                     returnMoneyOrder.setRemark("线上退票退款");
-                    if (object.getInt("ResultId") == 0) {
+                    if (object.getInt("resultId") == 0) {
                         //退保成功 , 计算退款金额, 退款金额 = 该乘客票款实退金额 + 出票套餐
                         //更新保险单状态
                         this.policyOrderService.updateStatusById(policyOrder.getId(), EnumPolicyOrderStatus.POLICY_RETURN_SUCCESS);
@@ -806,7 +846,7 @@ public class TicketServiceImpl implements TicketService {
     @Transactional
     public Pair<Boolean, String> grabTicket(final RequestGrabTicket req) {
 
-        final JSONObject jsonObject = this.queryTicketPriceService.queryTicket(HySdkConstans.QUERY_PARTNER_ID, "train_query", "", "", "", "ADULT");
+        final JSONObject jsonObject = this.queryTicketPriceService.queryTicket(HySdkConstans.QUERY_PARTNER_ID, "train_query", req.getFromStationCode(), req.getToStationCode(), req.getGrabStartTime(), "ADULT");
         //获取列车信息
         final JSONArray jsonArray = jsonObject.getJSONArray("data");
         //获取车次信息
@@ -821,8 +861,8 @@ public class TicketServiceImpl implements TicketService {
         grabTicketForm.setUid(req.getUid());
         grabTicketForm.setPhone(req.getPhone());
         grabTicketForm.setFirstStartTime(req.getFirstStartTime());
-        grabTicketForm.setTicketNum(req.getPassengers().size());
-        final BigDecimal multiply = new BigDecimal(grabPrice).multiply(new BigDecimal(req.getPassengers().size()));
+        grabTicketForm.setTicketNum(req.getGrabPassengers().size());
+        final BigDecimal multiply = new BigDecimal(grabPrice).multiply(new BigDecimal(req.getGrabPassengers().size()));
         grabTicketForm.setGrabTicketTotalPrice(multiply);
         //购买套餐的价格
         final BigDecimal buyPackage = new BigDecimal(EnumBuyTicketPackageType.of(req.getBuyTicketPackageId()).getPrice()).multiply(new BigDecimal(grabTicketForm.getTicketNum()));
@@ -841,10 +881,10 @@ public class TicketServiceImpl implements TicketService {
         grabTicketForm.setSeatTypes(req.getSeatTypes());
         grabTicketForm.setGrabTicketPackage(req.getGrabTicketPackageId());
         grabTicketForm.setBuyTicketPackage(req.getBuyTicketPackageId());
-        grabTicketForm.setPassengerInfo(JSONArray.fromObject(req.getPassengers()).toString());
+        grabTicketForm.setPassengerInfo(JSONArray.fromObject(req.getGrabPassengers()).toString());
         grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_PAY_WAIT.getId());
         //初始化抢票单, 创建收款单收款
-        this.grabTicketFromService.init(grabTicketForm);
+        this.grabTicketFormService.init(grabTicketForm);
 
         //创建商户收款记录
         final ChargeMoneyOrder chargeMoneyOrder = new ChargeMoneyOrder();
@@ -855,6 +895,10 @@ public class TicketServiceImpl implements TicketService {
         chargeMoneyOrder.setGrabTicketPackage(grabPackage);
         chargeMoneyOrder.setStatus(EnumChargeMoneyOrderStatus.INIT.getId());
         chargeMoneyOrderService.init(chargeMoneyOrder);
+        //放入消息队列 , 15分钟支付时间
+        JSONObject mqJo = new JSONObject();
+        mqJo.put("grabTicketFormId",grabTicketForm.getId());
+        MqProducer.sendMessage(mqJo, MqConfig.TICKET_CANCEL_EXPIRED_GRAB_ORDER, 1000*15*60);
 
         return Pair.of(true,String.valueOf(grabTicketForm.getId()));
     }
@@ -868,9 +912,9 @@ public class TicketServiceImpl implements TicketService {
      */
     @Override
     public void handleGrabCustomerPayMsg(long grabTicketFormId, String paymentSn, boolean isPaySuccess) throws Exception {
-        final Optional<GrabTicketForm> orderFormOptional = this.grabTicketFromService.selectByIdWithLock(grabTicketFormId);
+        final Optional<GrabTicketForm> orderFormOptional = this.grabTicketFormService.selectByIdWithLock(grabTicketFormId);
         final GrabTicketForm orderForm = orderFormOptional.get();
-        Preconditions.checkState(orderForm.isWaitForPay(), "处理客户付款，订单[%s]的状态不是等待支付状态！！！");
+        Preconditions.checkState(orderForm.isPaySuccess(), "抢票单[%s]的状态不是支付成功状态！！！" , grabTicketFormId);
         final Optional<ChargeMoneyOrder> chargeMoneyOrderOptional = this.chargeMoneyOrderService.selectByGrabTicketFormId(grabTicketFormId);
         Preconditions.checkState(chargeMoneyOrderOptional.isPresent(), "订单[%s]对应的收款记录不存在", grabTicketFormId);
         final ChargeMoneyOrder chargeMoneyOrder = this.chargeMoneyOrderService.selectByIdWithLock(chargeMoneyOrderOptional.get().getId()).get();
@@ -880,12 +924,17 @@ public class TicketServiceImpl implements TicketService {
             orderForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_PAY_SUCCESS.getId());
             orderForm.setRemark(EnumGrabTicketStatus.GRAB_FORM_PAY_SUCCESS.getValue());
             orderForm.setPaymentSn(paymentSn);
-            this.grabTicketFromService.update(orderForm);
+            this.grabTicketFormService.update(orderForm);
             chargeMoneyOrder.setStatus(EnumChargeMoneyOrderStatus.PAYMENT_TICKET_SUCCESS.getId());
             log.info("订单[" + grabTicketFormId + "]支付成功--调用确认订单接口！！");
             //抢票支付成功, 请求抢票
             this.requestGrabImpl(grabTicketFormId);
         } else {
+            //记录流水号
+            orderForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL.getId());
+            orderForm.setRemark(EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL.getValue());
+            orderForm.setPaymentSn(paymentSn);
+            this.grabTicketFormService.update(orderForm);
             chargeMoneyOrder.setStatus(EnumChargeMoneyOrderStatus.PAYMENT_TICKET_FAIL.getId());
         }
         this.chargeMoneyOrderService.update(chargeMoneyOrder);
@@ -899,7 +948,7 @@ public class TicketServiceImpl implements TicketService {
     @Transactional
     @Override
     public void handleGrabCallBackMsg(JSONObject jsonParams) {
-        final Optional<GrabTicketForm> grabTicketFormOptional = this.grabTicketFromService.selectByOrderIdWithLock(jsonParams.getString("orderid"));
+        final Optional<GrabTicketForm> grabTicketFormOptional = this.grabTicketFormService.selectByOrderIdWithLock(jsonParams.getString("orderid"));
         Preconditions.checkArgument(grabTicketFormOptional.isPresent(), "抢票单还未创建");
         final GrabTicketForm grabTicketForm = grabTicketFormOptional.get();
         if(jsonParams.getBoolean("success") == true && jsonParams.getInt("code") == 100){
@@ -916,7 +965,7 @@ public class TicketServiceImpl implements TicketService {
             grabTicketForm.setEndTime(getTimeStr(jsonParams.getString("arrive_time")));
             grabTicketForm.setTransactionId(jsonParams.getString("transactionid"));
             grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_SUCCESS.getId());
-            this.grabTicketFromService.update(grabTicketForm);
+            this.grabTicketFormService.update(grabTicketForm);
 
             final JSONArray passengers = jsonParams.getJSONArray("passengers");
             for (Object object : passengers){
@@ -941,36 +990,58 @@ public class TicketServiceImpl implements TicketService {
             //退差价
             final BigDecimal subtract = grabTicketForm.getTicketTotalPrice().subtract(grabTicketForm.getGrabTicketTotalPrice());
             if (subtract.compareTo(new BigDecimal(0)) != 0){
+                final SendGrabTicketSuccessParam param = new SendGrabTicketSuccessParam();
+                param.setUid(grabTicketForm.getUid());
+                param.setMobile(grabTicketForm.getPhone());
+                param.setStartStation(grabTicketForm.getFromStationName());
+                param.setEndStation(grabTicketForm.getToStationName());
+                param.setTicketNo(grabTicketForm.getCheci());
+                param.setStartDate(grabTicketForm.getStartDate());
+                param.setStartTime(grabTicketForm.getStartTime());
+                param.setTicketNo(grabTicketForm.getOrderNumber());
+                param.setResidueAmount(subtract.toString());
+                this.ticketSendMessageService.sendGrabTicketSuccessHaveResidueMessage(param);
                 //有差价,才退款
-                final ReturnMoneyOrder returnMoneyOrder = new ReturnMoneyOrder();
-                returnMoneyOrder.setOrderFormDetailId(0);
-                returnMoneyOrder.setOrderFormSn(grabTicketForm.getPaymentSn());
-                returnMoneyOrder.setRemark("抢票成功差价退款");
-                returnMoneyOrder.setOrgDate(grabTicketForm.getCreateTime());
-                returnMoneyOrder.setReturnTotalMoney(subtract);
-                returnMoneyOrder.setOrgMoney(grabTicketForm.getTotalPrice());
-                returnMoneyOrder.setReturnTicketMoney(subtract);
-                returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(0));
-                returnMoneyOrder.setReturnGrabTicketPackage(new BigDecimal(0));
-                returnMoneyOrder.setStatus(EnumReturnMoneyOrderStatus.INIT.getId());
-                this.returnMoneyOrderService.init(returnMoneyOrder);
+                final RefundOrderFlow refundOrderFlow = new RefundOrderFlow();
+                refundOrderFlow.setOrderFormId(0);
+                refundOrderFlow.setGrabTicketFormId(grabTicketForm.getId());
+                refundOrderFlow.setPaymentSn(grabTicketForm.getPaymentSn());
+                refundOrderFlow.setOrderDate(DateFormatUtil.format(grabTicketForm.getCreateTime(), DateFormatUtil.yyyyMMdd));
+                refundOrderFlow.setRefundAmount(subtract);
+                refundOrderFlow.setOriginalAmount(grabTicketForm.getGrabTotalPrice());
+                refundOrderFlow.setRefundReason("抢票成功差价退款");
+                this.refundOrderFlowService.insert(refundOrderFlow);
 
                 //请求退款接口 , 退款
                 final SingleRefundData data = new SingleRefundData();
-                data.setOrgSn(returnMoneyOrder.getOrderFormSn());
-                data.setOrdDate(DateFormatUtil.format(returnMoneyOrder.getOrgDate(), DateFormatUtil.yyyyMMdd));
-                data.setRefundAmount(returnMoneyOrder.getReturnTotalMoney().toString());
-                data.setOrgAmount(returnMoneyOrder.getOrgMoney().toString());
-                data.setRefundReason(returnMoneyOrder.getRemark());
+                data.setOrgSn(refundOrderFlow.getPaymentSn());
+                data.setOrdDate(refundOrderFlow.getOrderDate());
+                data.setRefundAmount(refundOrderFlow.getRefundAmount().toString());
+                data.setOrgAmount(refundOrderFlow.getOriginalAmount().toString());
+                data.setRefundReason(refundOrderFlow.getRefundReason());
                 final Map<String, Object> map = this.authenService.singlRefund(data);
                 //判断退款是否成功 ,
                 if ((boolean) map.get("retCode") == true){
                     //成功 , 修改退款单状态,
-                    this.returnMoneyOrderService.updateStatusById(returnMoneyOrder.getId(), EnumReturnMoneyOrderStatus.RETURN_MONEY_SUCCESS);
+                    refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.REFUND_SUCCESS.getId());
+                    this.refundOrderFlowService.update(refundOrderFlow);
                 }else{
                     //失败.
-                    this.returnMoneyOrderService.updateStatusById(returnMoneyOrder.getId(), EnumReturnMoneyOrderStatus.RETURN_MONEY_FAIL);
+                    refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.REFUND_FAIL.getId());
+                    this.refundOrderFlowService.update(refundOrderFlow);
                 }
+            }else{
+                //发送短信
+                final SendGrabTicketSuccessParam param = new SendGrabTicketSuccessParam();
+                param.setUid(grabTicketForm.getUid());
+                param.setMobile(grabTicketForm.getPhone());
+                param.setStartStation(grabTicketForm.getFromStationName());
+                param.setEndStation(grabTicketForm.getToStationName());
+                param.setTicketNo(grabTicketForm.getCheci());
+                param.setStartDate(grabTicketForm.getStartDate());
+                param.setStartTime(grabTicketForm.getStartTime());
+                param.setTicketNo(grabTicketForm.getOrderNumber());
+                this.ticketSendMessageService.sendGrabTicketSuccessHaveNotResidueMessage(param);
             }
             //购买保险
             this.policyOrderService.batchBuyGrabPolicy(grabTicketForm.getId());
@@ -978,8 +1049,10 @@ public class TicketServiceImpl implements TicketService {
         }else{
             //抢票时间到期,抢票失败 , 全额退款
             //更新抢票单状态
-            this.grabTicketFromService.updateStatusById(EnumGrabTicketStatus.GRAB_FORM_FAIL, grabTicketForm.getId());
-            final ReturnMoneyOrder returnMoneyOrder = new ReturnMoneyOrder();
+            this.grabTicketFormService.updateStatusById(EnumGrabTicketStatus.GRAB_FORM_FAIL, grabTicketForm.getId());
+            //全额退款
+            this.returnToGrabFail(grabTicketForm.getId());
+           /* final ReturnMoneyOrder returnMoneyOrder = new ReturnMoneyOrder();
             returnMoneyOrder.setOrderFormDetailId(0);
             returnMoneyOrder.setOrderFormSn(grabTicketForm.getPaymentSn());
             returnMoneyOrder.setRemark("抢票失败退款");
@@ -993,7 +1066,14 @@ public class TicketServiceImpl implements TicketService {
             returnMoneyOrder.setReturnGrabTicketPackage(grabPackage);
             returnMoneyOrder.setStatus(EnumReturnMoneyOrderStatus.INIT.getId());
             this.returnMoneyOrderService.init(returnMoneyOrder);
-
+            //抢票失败, 发送退款短信
+            final SendGrabTicketFailParam param = new SendGrabTicketFailParam();
+            param.setUid(grabTicketForm.getUid());
+            param.setMobile(grabTicketForm.getPhone());
+            param.setStartStation(grabTicketForm.getFromStationName());
+            param.setEndStation(grabTicketForm.getToStationName());
+            param.setStartDate(grabTicketForm.getGrabStartTime());
+            this.ticketSendMessageService.sendGrabTicketFailMessage(param);
             //请求退款接口 , 退款
             final SingleRefundData data = new SingleRefundData();
             data.setOrgSn(returnMoneyOrder.getOrderFormSn());
@@ -1009,10 +1089,55 @@ public class TicketServiceImpl implements TicketService {
             }else{
                 //失败.
                 this.returnMoneyOrderService.updateStatusById(returnMoneyOrder.getId(), EnumReturnMoneyOrderStatus.RETURN_MONEY_FAIL);
-            }
+            }*/
         }
     }
 
+    /**
+     * 抢票失败给用户全额退票
+     */
+    public void returnToGrabFail(final long grabTicketFormId){
+
+        final Optional<GrabTicketForm> grabTicketFormOptional = this.grabTicketFormService.selectByIdWithLock(grabTicketFormId);
+        Preconditions.checkArgument(grabTicketFormOptional.isPresent(), "订单不存在");
+        final GrabTicketForm grabTicketForm = grabTicketFormOptional.get();
+
+        final RefundOrderFlow refundOrderFlow = new RefundOrderFlow();
+        refundOrderFlow.setOrderFormId(0);
+        refundOrderFlow.setGrabTicketFormId(grabTicketForm.getId());
+        refundOrderFlow.setPaymentSn(grabTicketForm.getPaymentSn());
+        refundOrderFlow.setOrderDate(DateFormatUtil.format(grabTicketForm.getCreateTime(), DateFormatUtil.yyyyMMdd));
+        refundOrderFlow.setRefundAmount(grabTicketForm.getGrabTotalPrice());
+        refundOrderFlow.setOriginalAmount(grabTicketForm.getGrabTotalPrice());
+        refundOrderFlow.setRefundReason("抢票失败,全额退款");
+        this.refundOrderFlowService.insert(refundOrderFlow);
+        //抢票失败, 发送退款短信
+        final SendGrabTicketFailParam param = new SendGrabTicketFailParam();
+        param.setUid(grabTicketForm.getUid());
+        param.setMobile(grabTicketForm.getPhone());
+        param.setStartStation(grabTicketForm.getFromStationName());
+        param.setEndStation(grabTicketForm.getToStationName());
+        param.setStartDate(grabTicketForm.getGrabStartTime());
+        this.ticketSendMessageService.sendGrabTicketFailMessage(param);
+        //请求退款接口 , 退款
+        final SingleRefundData data = new SingleRefundData();
+        data.setOrgSn(refundOrderFlow.getPaymentSn());
+        data.setOrdDate(refundOrderFlow.getOrderDate());
+        data.setRefundAmount(refundOrderFlow.getRefundAmount().toString());
+        data.setOrgAmount(refundOrderFlow.getOriginalAmount().toString());
+        data.setRefundReason(refundOrderFlow.getRefundReason());
+        final Map<String, Object> map = this.authenService.singlRefund(data);
+        //判断退款是否请求成功 ,
+        if ((boolean) map.get("retCode") == true){
+            //成功 , 修改退款单状态,
+            refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.REFUND_SUCCESS.getId());
+            this.refundOrderFlowService.update(refundOrderFlow);
+        }else{
+            //失败.
+            refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.REFUND_FAIL.getId());
+            this.refundOrderFlowService.update(refundOrderFlow);
+        }
+    }
     /**
      * {@inheritDoc}
      *
@@ -1023,7 +1148,7 @@ public class TicketServiceImpl implements TicketService {
     @Transactional
     public Pair<Boolean, String> cancelGrabTicket(long grabTicketFormId) throws Exception {
         //先判断该订单处在抢票进行中的状态
-        final Optional<GrabTicketForm> grabTicketFormOptional = this.grabTicketFromService.selectByIdWithLock(grabTicketFormId);
+        final Optional<GrabTicketForm> grabTicketFormOptional = this.grabTicketFormService.selectByIdWithLock(grabTicketFormId);
         Preconditions.checkArgument(grabTicketFormOptional.isPresent(), "抢票单不存在,无法取消");
         final GrabTicketForm grabTicketForm = grabTicketFormOptional.get();
         if (EnumGrabTicketStatus.GRAB_FORM_REQUEST_SUCCESS.getId() != grabTicketForm.getStatus()){
@@ -1075,7 +1200,7 @@ public class TicketServiceImpl implements TicketService {
         }else{
             //失败 , 记录
             grabTicketForm.setRemark(jsonResponse.getString("msg"));
-            this.grabTicketFromService.update(grabTicketForm);
+            this.grabTicketFormService.update(grabTicketForm);
             return Pair.of(false, jsonResponse.getString("msg"));
         }
     }
@@ -1098,16 +1223,22 @@ public class TicketServiceImpl implements TicketService {
      * 支付成功后请求抢票
      * @param grabTicketFormId
      */
-    private void requestGrabImpl(long grabTicketFormId) throws Exception {
-        final Optional<GrabTicketForm> grabTicketFormOptional = this.grabTicketFromService.selectByIdWithLock(grabTicketFormId);
+    public void requestGrabImpl(long grabTicketFormId) throws Exception {
+        final Optional<GrabTicketForm> grabTicketFormOptional = this.grabTicketFormService.selectByIdWithLock(grabTicketFormId);
         final GrabTicketForm grabTicketForm = grabTicketFormOptional.get();
         //判断是否购买套餐
         final boolean flag = (EnumBuyTicketPackageType.of(grabTicketForm.getBuyTicketPackage()).getId() == EnumBuyTicketPackageType.TICKET_PACKAGE_FIRST.getId())
            &&(EnumGrabTicketPackageType.of(grabTicketForm.getGrabTicketPackage()).getId() == EnumGrabTicketPackageType.TICKET_PACKAGE_FIRST.getId());
+        final Date parse = DateFormatUtil.parse(grabTicketForm.getFirstStartTime(), DateFormatUtil.yyyy_MM_dd_HH_mm);
+        final Date endTime = new Date(parse.getTime() - EnumGrabTimeType.of(grabTicketForm.getGrabTimeType()).getHour()*60*60*1000);
         if (flag){
             //未购买套餐
             grabTicketForm.setStatus(EnumGrabTicketStatus.WAIT_FOR_REFUND.getId());
-            this.grabTicketFromService.update(grabTicketForm);
+            this.grabTicketFormService.update(grabTicketForm);
+            //放入消息队列 , 15分钟支付时间
+            JSONObject mqJo = new JSONObject();
+            mqJo.put("grabTicketFormId",grabTicketForm.getId());
+            MqProducer.sendMessage(mqJo, MqConfig.NO_PACKAGE_WAIT_REFUND, endTime.getTime() - (new Date()).getTime());
             return;
         }
         //请求抢票
@@ -1143,7 +1274,7 @@ public class TicketServiceImpl implements TicketService {
         jsonObject.put("to_station_name", grabTicketForm.getToStationName());
         jsonObject.put("start_date", grabTicketForm.getGrabStartTime());
         // 判断出发日期是不是今天
-        if(grabTicketForm.getStartTime().equals(DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMdd))){
+        if(grabTicketForm.getGrabStartTime().equals(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd))){
             //是今天
             final String format = DateFormatUtil.format(new Date(new Date().getTime() + 3 * 60 * 60 * 1000), DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
             jsonObject.put("start_begin_time", getTimeStr(format));
@@ -1155,8 +1286,6 @@ public class TicketServiceImpl implements TicketService {
         jsonObject.put("seat_type", this.getSeatTypeStr(grabTicketForm.getSeatTypes()));
         jsonObject.put("qorder_type",100);
         jsonObject.put("qorder_start_time",DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd_HH_mm));
-        final Date parse = DateFormatUtil.parse(grabTicketForm.getFirstStartTime(), DateFormatUtil.yyyy_MM_dd_HH_mm);
-        final Date endTime = new Date(parse.getTime() + EnumGrabTimeType.of(grabTicketForm.getGrabTimeType()).getHour()*60*60*1000);
         jsonObject.put("qorder_end_time",DateFormatUtil.format(endTime , DateFormatUtil.yyyy_MM_dd_HH_mm));
         jsonObject.put("max_price",0);
         jsonObject.put("passengers",passengerJsonArray);
@@ -1167,12 +1296,12 @@ public class TicketServiceImpl implements TicketService {
             //抢票下单成功
             grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_REQUEST_SUCCESS.getId());
             grabTicketForm.setRemark(jsonResponse.getString("msg"));
-            this.grabTicketFromService.update(grabTicketForm);
+            this.grabTicketFormService.update(grabTicketForm);
         }else{
             //抢票下单失败,更改抢票单状态, 记录失败原因
             grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_REQUEST_FAIL.getId());
             grabTicketForm.setRemark(jsonResponse.getString("msg"));
-            this.grabTicketFromService.update(grabTicketForm);
+            this.grabTicketFormService.update(grabTicketForm);
         }
     }
 
@@ -1231,10 +1360,12 @@ public class TicketServiceImpl implements TicketService {
                 }
             }
         }
-
-        final List<Double> list = (List<Double>)map.values();
-        Collections.sort(list);
-        return list.get(list.size()-1);
+        final List<Double> list = new ArrayList<>();
+       for (Map.Entry<String , Double> entry : map.entrySet()){
+           list.add(entry.getValue());
+       }
+       Collections.sort(list);
+        return list.get(list.size() - 1);
     }
 
     private Map<String, JSONObject> getMaps(String str, JSONArray jsonArray) {
@@ -1245,7 +1376,7 @@ public class TicketServiceImpl implements TicketService {
             JSONObject jsonObject = JSONObject.fromObject(obj);
             for (String string : strings){
                 if(string.equals(jsonObject.getString("train_code"))){
-                    map.put("string", jsonObject);
+                    map.put(string, jsonObject);
                 }
             }
         }

@@ -23,6 +23,11 @@ public class RefundOrderFlow extends BaseEntity {
     private long orderFormId;
 
     /**
+     * 抢票单id
+     */
+    private long grabTicketFormId = 0;
+
+    /**
      * 订单支付流失号
      */
     private String paymentSn;

@@ -1,5 +1,6 @@
 package com.jkm.controller.api;
 
+import com.google.common.base.Preconditions;
 import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
 import com.jkm.controller.helper.request.RequestTicketRefund;
@@ -8,8 +9,12 @@ import com.jkm.entity.fusion.AuthenData;
 import com.jkm.entity.fusion.QueryQuickPayData;
 import com.jkm.entity.fusion.QueryRefundData;
 import com.jkm.entity.fusion.SingleRefundData;
+import com.jkm.enums.notifier.EnumVerificationCodeType;
 import com.jkm.service.AuthenService;
+import com.jkm.service.notifier.SmsAuthService;
+import com.jkm.util.ValidationUtil;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +35,10 @@ public class FusionController extends BaseController {
     @Autowired
     private AuthenService authenService;
 
+
+
     /**
-     * 立即支付(首次)
+     * 大订单立即支付(首次)
      *
      * @param requestData
      * @return
@@ -51,7 +58,7 @@ public class FusionController extends BaseController {
         return responseJo;
     }
     /**
-     * 立即支付(多次)
+     * 大订单立即支付(多次)
      *
      * @param requestData
      * @return
@@ -65,6 +72,68 @@ public class FusionController extends BaseController {
             responseJo = authenService.toPayByCid(jo);
         }catch(Exception e){
             logger.info("立即支付(多次)");
+            responseJo.put("result",false);
+            responseJo.put("message",e.getMessage());
+        }
+        return responseJo;
+    }
+
+    /**
+     * 抢票单立即支付(首次)
+     *
+     * @param requestData
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/toPayGrab", method = RequestMethod.POST)
+    public JSONObject toPayGrab() {
+        JSONObject responseJo = new JSONObject();
+        try{
+            JSONObject jo = super.getRequestJsonParams();
+            responseJo = authenService.toPayGrab(jo);
+        }catch(Exception e){
+            logger.info("抢票单立即支付(首次)失败");
+            responseJo.put("result",false);
+            responseJo.put("message",e.getMessage());
+        }
+        return responseJo;
+    }
+    /**
+     * 抢票单立即支付(多次)
+     *
+     * @param requestData
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/toPayGrabByCid", method = RequestMethod.POST)
+    public JSONObject toPayGrabByCid() {
+        JSONObject responseJo = new JSONObject();
+        try{
+            JSONObject jo = super.getRequestJsonParams();
+            responseJo = authenService.toPayGrabByCid(jo);
+        }catch(Exception e){
+            logger.info("立即支付(多次)");
+            responseJo.put("result",false);
+            responseJo.put("message",e.getMessage());
+        }
+        return responseJo;
+    }
+    /**
+     * 获取验证码
+     *
+     * @param requestData
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getCode", method = RequestMethod.POST)
+    public JSONObject getCode() {
+        JSONObject responseJo = new JSONObject();
+        try{
+            JSONObject jo = super.getRequestJsonParams();
+            String uid = super.getUid(jo.getString("appid"),jo.getString("uid"));
+            jo.put("uid",uid);
+            responseJo = authenService.getCode(jo);
+        }catch(Exception e){
             responseJo.put("result",false);
             responseJo.put("message",e.getMessage());
         }

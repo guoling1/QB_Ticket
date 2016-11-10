@@ -24,4 +24,8 @@ public class UserInfo extends BaseEntity{
      * 12306密码
      */
     private String pwd;
+    /**
+     * 用户手机号
+     */
+    private String phone;
 }

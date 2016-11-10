@@ -18,12 +18,23 @@ public class MqConfig {
     public static final String SECRET_KEY;
     public static final String ONSADDR;
     public static final String SINGLE_REFUND_QUERY = "singlRefundQuery";//单笔退款查询
-    public static final String FAST_PAY_QUERY = "fastPayQuery";//快捷支付退款
+    public static final String FAST_PAY_QUERY = "fastPayQuery";//快捷支付查询
+    public static final String FAST_PAY_GRAB_QUERY = "fastPayGrabQuery";//快捷支付抢票单查询
 
     /**
      * 取消失去有效支付时间的订单
      */
     public static final String TICKET_CANCEL_EXPIRED_ORDER = "ticketCancelExpiredOrder";
+
+    /**
+     * 取消失去有效支付时间的抢票单
+     */
+    public static final String TICKET_CANCEL_EXPIRED_GRAB_ORDER = "ticketCancelExpiredGrabOrder";
+
+    /**
+     * 客户未购买套餐到期自动退款
+     */
+    public static final String NO_PACKAGE_WAIT_REFUND = "noPackageWaitRefund";
 
     static {
         final MqConfigs mqConfigs = getMqConfigs();
@@ -41,7 +52,7 @@ public class MqConfig {
         Preconditions.checkState(!Strings.isNullOrEmpty(ONSADDR), "ONSADDR");
     }
     /**
-     * 获得银胜配置
+     * 获得配置
      */
     public static MqConfigs getMqConfigs() {
         return ConfigCache.getOrCreate(MqConfigs.class);

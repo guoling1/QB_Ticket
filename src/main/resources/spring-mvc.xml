@@ -118,32 +118,10 @@
                     <key>
                         <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
                             <property name="topic" value="${mq.topic}"/> <!-- Topic,请替换 -->
-                            <property name="expression" value="fastPayQuery"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
+                            <property name="expression" value="fastPayQuery||FAST_PAY_GRAB_QUERY"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
                         </bean>
                     </key>
                 </entry>
-            </map>
-
-        </property>
-    </bean>
-
-    <!-- 消息处理器 -->
-    <bean id="messageListener" class="com.jkm.controller.common.MessageListenerImpl"/>
-
-    <!--消费端-->
-    <bean id="consumerOfRefund" class="com.aliyun.openservices.ons.api.bean.ConsumerBean"
-          init-method="start" destroy-method="shutdown">
-        <property name="properties">
-            <map>
-                <entry key="ConsumerId" value="${mq.consumerId}"/>
-                <entry key="AccessKey" value="${mq.accessKey}"/>
-                <entry key="SecretKey" value="${mq.secretKey}"/>
-                <entry key="ONSAddr" value="${mq.onsaddr}"/>
-            </map>
-        </property>
-
-        <property name="subscriptionTable">
-            <map>
                 <entry value-ref="messageListenerOfRefund">
                     <key>
                         <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
@@ -152,29 +130,6 @@
                         </bean>
                     </key>
                 </entry>
-            </map>
-
-        </property>
-    </bean>
-
-    <!-- 消息处理器 -->
-    <bean id="messageListenerOfRefund" class="com.jkm.controller.common.MessageListenerOfRefundImpl"/>
-
-
-    <!--消费端-->
-    <bean id="consumerOfTicket" class="com.aliyun.openservices.ons.api.bean.ConsumerBean"
-          init-method="start" destroy-method="shutdown">
-        <property name="properties">
-            <map>
-                <entry key="ConsumerId" value="${mq.consumerId}"/>
-                <entry key="AccessKey" value="${mq.accessKey}"/>
-                <entry key="SecretKey" value="${mq.secretKey}"/>
-                <entry key="ONSAddr" value="${mq.onsaddr}"/>
-            </map>
-        </property>
-
-        <property name="subscriptionTable">
-            <map>
                 <entry value-ref="messageListenerOfTicket">
                     <key>
                         <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
@@ -188,8 +143,15 @@
         </property>
     </bean>
 
+    <!-- 快捷支付消息处理器 -->
+    <bean id="messageListener" class="com.jkm.controller.common.MessageListenerImpl"/>
+
+    <!-- 单笔退款消息处理器 -->
+    <bean id="messageListenerOfRefund" class="com.jkm.controller.common.MessageListenerOfRefundImpl"/>
+
     <!-- 消息处理器 -->
     <bean id="messageListenerOfTicket" class="com.jkm.controller.common.MessageListenerOfTicketImpl"/>
+
     <!--生产端-->
     <bean id="producer" class="com.aliyun.openservices.ons.api.bean.ProducerBean"
           init-method="start" destroy-method="shutdown">

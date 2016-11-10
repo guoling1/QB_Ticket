@@ -1,9 +1,12 @@
 package com.jkm.controller.api;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.jkm.controller.common.BaseController;
 import com.jkm.entity.TbContactInfo;
+import com.jkm.entity.helper.UserBankCardSupporter;
 import com.jkm.service.ContactInfoService;
+import com.jkm.util.ValidationUtil;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,21 @@ public class ContactInfoController extends BaseController {
 
             TbContactInfo ti = new TbContactInfo();
             ti.setUid(super.getUid(requestJson.getString("appid"),requestJson.getString("uid")));
+            Preconditions.checkNotNull(requestJson.get("name"),"姓名不能为空");
+            Preconditions.checkNotNull(requestJson.get("identy"),"证件号码不能为空");
+            Preconditions.checkNotNull(requestJson.get("identyType"),"请选择证件类型");
+            Preconditions.checkNotNull(requestJson.get("personType"),"请选择乘客类型");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getString("name")), "姓名不能为空");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getString("identy")), "证件号码不能为空");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getString("identyType")), "请选择证件类型");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getString("personType")), "请选择乘客类型");
+
+            if("1".equals(requestJson.getString("identyType"))&&!ValidationUtil.isIdCard(requestJson.getString("identy"))){
+                responseJson.put("result",false);
+                responseJson.put("message","身份证号不正确");
+                return responseJson;
+            }
+
             if(requestJson.get("name")!=null){
                 ti.setName(requestJson.getString("name"));
             }
@@ -46,7 +64,7 @@ public class ContactInfoController extends BaseController {
                 ti.setIdentyType(requestJson.getString("identyType"));
             }
             if(requestJson.get("identy")!=null){
-                ti.setIdenty(requestJson.getString("identy"));
+                ti.setIdenty(UserBankCardSupporter.encryptCardId(requestJson.getString("identy")));
             }
             if(requestJson.get("tel")!=null){
                 ti.setTel(requestJson.getString("tel"));
@@ -54,6 +72,7 @@ public class ContactInfoController extends BaseController {
             if(requestJson.get("personType")!=null){
                 ti.setPersonType(requestJson.getInt("personType"));
             }
+
             JSONObject jo = contactInfoService.insert(ti);
             if(jo.getBoolean("result")){
                 responseJson.put("result", true);
@@ -82,9 +101,11 @@ public class ContactInfoController extends BaseController {
         try{
             JSONObject requestJson = super.getRequestJsonParams();
             Preconditions.checkNotNull(requestJson.get("id"),"缺失参数id");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getLong("id")+""), "缺失参数id");
             long id = requestJson.getLong("id");
             log.info("联系人参数："+requestJson.toString());
             TbContactInfo tbContactInfo = contactInfoService.selectOne(id);
+            tbContactInfo.setIdenty(UserBankCardSupporter.decryptCardId(tbContactInfo.getIdenty()));
             responseJson.put("result", true);
             responseJson.put("data",tbContactInfo);
             responseJson.put("message", "查询成功");
@@ -108,6 +129,7 @@ public class ContactInfoController extends BaseController {
         try{
             JSONObject requestJson = super.getRequestJsonParams();
             Preconditions.checkNotNull(requestJson.get("id"),"缺失参数id");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getLong("id")+""), "缺失参数id");
             long id = requestJson.getLong("id");
             log.info("联系人参数："+requestJson.toString());
             int rowNum = contactInfoService.updateStatus(id);
@@ -146,7 +168,7 @@ public class ContactInfoController extends BaseController {
                 ti.setIdentyType(requestJson.getString("identyType"));
             }
             if(requestJson.get("identy")!=null){
-                ti.setIdenty(requestJson.getString("identy"));
+                ti.setIdenty(UserBankCardSupporter.encryptCardId(requestJson.getString("identy")));
             }
             if(requestJson.get("tel")!=null){
                 ti.setTel(requestJson.getString("tel"));

@@ -120,7 +120,7 @@ public class TicketController extends BaseController{
      */
     @RequestMapping(value = "/refund", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntityBase<ResponseTicketRefund> refund(final RequestTicketRefund req) {
+    public ResponseEntityBase<ResponseTicketRefund> refund(@RequestBody final RequestTicketRefund req) {
         final ResponseEntityBase<ResponseTicketRefund> result = new ResponseEntityBase<>();
 
         try{
@@ -141,16 +141,18 @@ public class TicketController extends BaseController{
 
     /**
      * 火车车票抢票受理
-     * @param req
+     * @param requset
      * @return
      */
-    @RequestMapping(value = "/grap", method = RequestMethod.POST)
+    @RequestMapping(value = "/grab", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntityBase<ResponseGrabTicket> grabTicket(final RequestGrabTicket req) {
+    public ResponseEntityBase<ResponseGrabTicket> grabTicket(@RequestBody final RequestGrabTicket requset) throws Exception {
+       this.ticketService.requestGrabImpl(2);
+        requset.setUid(super.getUid(requset.getAppId(), requset.getUid()));
+        Preconditions.checkState(ValidateUtils.isMobile(requset.getPhone()));
         final ResponseEntityBase<ResponseGrabTicket> result = new ResponseEntityBase<>();
-
         try{
-            Pair<Boolean,String> pair = this.ticketService.grabTicket(req);
+            Pair<Boolean,String> pair = this.ticketService.grabTicket(requset);
             if(pair.getLeft()){
                 result.setCode(1);
                 result.setMessage(pair.getRight());
@@ -159,8 +161,9 @@ public class TicketController extends BaseController{
                 result.setMessage(pair.getRight());
             }
         }catch(final Throwable throwable){
+            logger.error("火车车票抢票受理异常, 异常信息:" + throwable.getMessage());
             result.setCode(-1);
-            result.setMessage("退票失败");
+            result.setMessage("抢票申请失败");
         }
         return result;
     }

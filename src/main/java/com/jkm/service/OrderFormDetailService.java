@@ -3,6 +3,7 @@ package com.jkm.service;
 import com.google.common.base.Optional;
 import com.jkm.entity.OrderFormDetail;
 import com.jkm.enums.EnumOrderFormDetailStatus;
+import com.jkm.enums.EnumOrderFormStatus;
 
 import java.util.List;
 
@@ -87,4 +88,34 @@ public interface OrderFormDetailService {
      * @return
      */
     List<OrderFormDetail> selectByGrabTicketFormId(long grabTicketFormId);
+
+    /**
+     * 查询
+     * @param orderFormId
+     * @param orderFormRefundSuccess
+     * @return
+     */
+    List<OrderFormDetail> selectAllTicketsNoReFund(long orderFormId, EnumOrderFormDetailStatus orderFormRefundSuccess);
+
+    /**
+     * 查询
+     * @param orderFormId
+     * @return
+     */
+    long selectOrderFormNum(long orderFormId);
+
+    /**
+     *
+     * @param grabOrderFormId
+     * @param ticketReturnSuccess
+     * @return
+     */
+    List<OrderFormDetail> selectAllTicketsNoReFundGrab(long grabOrderFormId, EnumOrderFormDetailStatus ticketReturnSuccess);
+
+    /**
+     *
+     * @param grabOrderFormId
+     * @return
+     */
+    long selectGrabFormNumGrab(long grabOrderFormId);
 }

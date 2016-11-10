@@ -27,7 +27,7 @@ public class BindCardServiceImpl implements BindCardService{
     public JSONObject selectByUid(String uid) {
         JSONObject jo = new JSONObject();
         List<BindCard> cardList = bindCardDao.selectByUid(uid);
-        if(cardList!=null){
+        if(cardList!=null&&cardList.size()>0){
             for(int i=0;i<cardList.size();i++){
                 cardList.get(i).setCardId(UserBankCardSupporter.decryptCardId(cardList.get(i).getCardId()));
                 cardList.get(i).setCardNo(ValidationUtil.getShortCardNo(UserBankCardSupporter.decryptCardNo(cardList.get(i).getCardNo())));

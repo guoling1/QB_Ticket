@@ -3,8 +3,10 @@ package com.jkm.service.impl;
 import com.google.common.base.Optional;
 import com.jkm.dao.ContactInfoDao;
 import com.jkm.entity.TbContactInfo;
+import com.jkm.entity.helper.UserBankCardSupporter;
 import com.jkm.service.ContactInfoService;
 import com.jkm.util.IdcardInfoExtractor;
+import com.jkm.util.ValidationUtil;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +95,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
         tbContactInfo.setCheckStatus(0);
         tbContactInfo.setIsUserSelf(1);
         if("1".equals(tbContactInfo.getIdentyType())){
-            IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(tbContactInfo.getIdenty());
+            IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(UserBankCardSupporter.decryptCardId(tbContactInfo.getIdenty()));
             tbContactInfo.setBirthday(idcardInfo.getYear()+"-"+idcardInfo.getMonth()+"-"+idcardInfo.getDay());
         }
         int count = contactInfoDao.selectCountByIdenty(tbContactInfo.getIdenty());
@@ -128,11 +130,11 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     public int updateByPrimaryKeySelective(TbContactInfo tbContactInfo) {
         if("1".equals(tbContactInfo.getIdentyType())){
             if(tbContactInfo.getIdenty()!=null&&!"".equals(tbContactInfo.getIdenty())){
-                IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(tbContactInfo.getIdenty());
+                IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(UserBankCardSupporter.decryptCardId(tbContactInfo.getIdenty()));
                 tbContactInfo.setBirthday(idcardInfo.getYear()+"-"+idcardInfo.getMonth()+"-"+idcardInfo.getDay());
             }else{
                 TbContactInfo ti = contactInfoDao.selectById(tbContactInfo.getId());
-                IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(ti.getIdenty());
+                IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(UserBankCardSupporter.decryptCardId(ti.getIdenty()));
                 tbContactInfo.setBirthday(idcardInfo.getYear()+"-"+idcardInfo.getMonth()+"-"+idcardInfo.getDay());
             }
 
@@ -142,7 +144,13 @@ public class ContactInfoServiceImpl implements ContactInfoService {
 
     @Override
     public List<TbContactInfo> selectListByUid(String uid) {
-        return this.contactInfoDao.selectListByUid(uid);
+        List<TbContactInfo> list = this.contactInfoDao.selectListByUid(uid);
+        if(list!=null&&list.size()>0){
+            for(int i=0;i<list.size();i++){
+                list.get(i).setIdenty(UserBankCardSupporter.decryptCardId(list.get(i).getIdenty()));
+            }
+        }
+        return list;
     }
 
 }

@@ -44,7 +44,7 @@ public enum EnumTrainTicketSeatType {
     /**
      * 二等座
      */
-    SECOND_CLASS_SEAT("O", "二等座", "edz_num"),
+    SECOND_CLASS_SEAT("O", "二等座", "edz_price"),
 
     /**
      * 一等座

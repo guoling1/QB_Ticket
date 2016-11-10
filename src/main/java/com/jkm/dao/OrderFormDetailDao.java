@@ -82,5 +82,40 @@ public interface OrderFormDetailDao {
      */
     List<OrderFormDetail> selectByGrabTicketFormId(long grabTicketFormId);
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     OrderFormDetail selectByIdWithLock(long id);
+
+    /**
+     *
+     * @param orderFormId
+     * @param status
+     * @return
+     */
+    List<OrderFormDetail> selectAllTicketsNoReFund(@Param("orderFormId") long orderFormId, @Param("status") int status);
+
+    /**
+     *
+     * @param orderFormId
+     * @return
+     */
+    long selectOrderFormNum(long orderFormId);
+
+    /**
+     *
+     * @param grabOrderFormId
+     * @param status
+     * @return
+     */
+    List<OrderFormDetail> selectAllTicketsNoReFundGrab(@Param("grabOrderFormId") long grabOrderFormId, @Param("status") int status);
+
+    /**
+     *
+     * @param grabOrderFormId
+     * @return
+     */
+    long selectGrabFormNumGrab(long grabOrderFormId);
 }
