@@ -15,7 +15,7 @@
       </div>
       <div class="group">
         <div>银行卡</div>
-        <input type="text" placeholder="请输入银行卡号(仅储蓄卡)" v-model="submitInfo.crdNo">
+        <input type="text" placeholder="请输入银行卡号(仅储蓄卡)" v-model="submitInfo.crdNo" @blur="bin($event)">
       </div>
       <div class="group">
         <div>手机号</div>
@@ -50,7 +50,8 @@
           idNo: "", //证件号
           phoneNo: "", //手机号
           isAgree: 0, //是否同意服务协议
-          vCode: ""
+          vCode: "", //验证码
+          bankCode: "" //卡bin
         },
         price: 0.0
       }
@@ -69,6 +70,18 @@
           this.$data.submitInfo.isAgree = 0;
         }
       },
+      bin: function (event) {
+        const val = event.target.value;
+        this.$http.post('/bankCardBin/cardNoInfo', {cardNo: val}).then(function (res) {
+          if (res.$data.code == 1) {
+            this.$data.submitInfo.bankCode = res.data.data.shorthand;
+          } else {
+            console.log(res.data.message);
+          }
+        }, function (err) {
+          console.log(err);
+        })
+      },
       send: function () {
         console.log('发送验证码');
       },
@@ -82,7 +95,7 @@
           min = data.getMinutes() + '',
           ss = data.getSeconds() + '';
         let random = parseInt(Math.random() * 89999 + 10000) + '';
-        this.$data.nonceStr = year + month + day + hour + min + ss + random;
+        this.$data.submitInfo.nonceStr = year + month + day + hour + min + ss + random;
         console.log(this.$data.submitInfo);
         this.$http.post('/authen/toPay', this.$data.submitInfo).then(function (res) {
           if (res.data.code == 1) {

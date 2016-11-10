@@ -82,6 +82,7 @@
         </div>
       </div>
     </div>
+    <div class="loading" v-if="loading">占座中...</div>
     <contacts></contacts>
   </div>
 </template>
@@ -110,8 +111,8 @@
     data: function () {
       return {
         sureOrder: {
-          appId: "wnl",     //appid
-          uid: "123456",  //用户id
+          appId: "",     //appid
+          uid: "",  //用户id
           mobile: '15010607970',   //联系手机号
           price: 00.0,    //票价
           fromStationName: "",  //出发站
@@ -134,13 +135,16 @@
           arriveShow: '',
           runShow: '',
           passengers: []
-        }
+        },
+        loading: false
       }
     },
     beforeRouteEnter (to, from, next) {
       let sessionPreOrder = JSON.parse(sessionStorage.getItem('preOrder'));
       let sessionPreDate = JSON.parse(sessionStorage.getItem('preDate'));
       next(function (vm) {
+        vm.$data.sureOrder.appId = to.query.appid;
+        vm.$data.sureOrder.uid = to.query.uid;
         vm.$data.sureOrder.price = to.query.price;
         vm.$data.otherData.table = to.query.table;
         vm.$data.sureOrder.fromStationName = sessionPreOrder.from_station_name;
@@ -164,17 +168,25 @@
         this.$router.push({path: '/ticket/login'});
       },
       submit: function () {
-        console.log(this.$data.sureOrder);
+        var polling = '';
+        const pollFun = (id) => {
+          this.$http.post('/order/queryById', {orderFormId: id}).then(function (res) {
+            if (res.data.code == 1 && res.data.data.status == 3) {
+              clearInterval(polling);
+              this.$router.push({path: '/ticket/pay-order', query: {appid:this.$data.sureOrder.appId,uid:this.$data.sureOrder.uid,id: res.data.data.orderFormId}});
+            }else if(res.data.code == 1 && res.data.data.status == 4){
+              clearInterval(polling);
+              console.log("占座失败");
+            }
+          })
+        }
         this.$http.post('/ticket/submitOrder', this.$data.sureOrder).then(function (res) {
           if (res.data.code == 1) {
             // 这里 轮询 等待回调
-            setInterval(function () {
-              Vue.http.post('/order/queryById', {orderFormId: res.data.data.orderFormId}).then(function (res) {
-                if (res.data.code == 1 && res.data.data.status == 3) {
-                  this.$router.push({path: '/ticket/pay-order', query: {id: res.data.data.orderFormId}});
-                }
-              })
-            }, 1000);
+            this.$data.loading = true;
+            polling = setInterval(function(){
+              pollFun(res.data.data.orderFormId);
+            }, 1500);
           } else {
             console.log(res.data.message);
           }
@@ -497,5 +509,17 @@
         background-color: #4ab9f1;
       }
     }
+  }
+
+  .loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    font-size: 15px;
+    color: #FFF;
+    text-align: center;
   }
 </style>

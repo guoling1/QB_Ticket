@@ -59,6 +59,10 @@
     name: 'menu',
     data () {
       return {
+        common: {
+          appid: '',
+          uid: ''
+        },
         only: false,
         initStations: [],
         // 火车票筛选信息
@@ -77,6 +81,8 @@
         next(function (vm) {
           vm.$data.only = to.query.only;
           vm.$data.initStations = res.body.data;
+          vm.$data.common.appid = to.query.appid;
+          vm.$data.common.uid = to.query.uid;
         });
       }, function (err) {
         console.log(err);
@@ -87,7 +93,10 @@
       router: function (event, station) {
         // 路由跳转前,查询信息必须被存储在 sessionStorage 存储时注意要转json
         sessionStorage.setItem('preOrder', JSON.stringify(station));
-        this.$router.push({path: '/ticket/submit-order', query: {startTime: '2016-12-06'}});
+        this.$router.push({
+          path: '/ticket/submit-order',
+          query: {appid: this.$data.common.appid, uid: this.$data.common.uid, startTime: '2016-12-06'}
+        });
       }
     },
     computed: {
