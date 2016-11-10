@@ -44,6 +44,7 @@ public class FusionController extends BaseController {
             JSONObject jo = super.getRequestJsonParams();
             responseJo = authenService.toPay(jo);
         }catch(Exception e){
+            logger.info("立即支付(首次)失败");
             responseJo.put("result",false);
             responseJo.put("message",e.getMessage());
         }
@@ -63,6 +64,7 @@ public class FusionController extends BaseController {
             JSONObject jo = super.getRequestJsonParams();
             responseJo = authenService.toPayByCid(jo);
         }catch(Exception e){
+            logger.info("立即支付(多次)");
             responseJo.put("result",false);
             responseJo.put("message",e.getMessage());
         }
