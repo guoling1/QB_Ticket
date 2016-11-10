@@ -15,7 +15,9 @@ import com.jkm.entity.fusion.head.RequestHead20003;
 import com.jkm.entity.fusion.head.RequestHead20005;
 import com.jkm.entity.helper.UserBankCardSupporter;
 import com.jkm.enums.EnumOrderFormStatus;
+import com.jkm.enums.notifier.EnumVerificationCodeType;
 import com.jkm.service.*;
+import com.jkm.service.notifier.SmsAuthService;
 import com.jkm.util.BeanUtils;
 import com.jkm.util.DateFormatUtil;
 import com.jkm.util.SnGenerator;
@@ -25,6 +27,7 @@ import com.jkm.util.mq.MqConfig;
 import com.jkm.util.mq.MqProducer;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +59,8 @@ public class AuthenServiceImpl implements AuthenService {
 	private GetParamRecordService getParamRecordService;
 	@Autowired
 	private BindCardService bindCardService;
+	@Autowired
+	private SmsAuthService smsAuthService;
 	/**
 	 * 快捷支付
 	 * @param requestData
@@ -573,7 +578,6 @@ public class AuthenServiceImpl implements AuthenService {
 	@Override
 	public JSONObject toPay(JSONObject requestData) {
 		JSONObject jo = new JSONObject();
-
 		Preconditions.checkNotNull(requestData.get("cardNo"),"缺少银行卡号");
 		Preconditions.checkNotNull(requestData.get("orderId"),"订单号不能为空");
 		Preconditions.checkNotNull(requestData.get("accountName"),"缺少开户姓名");
@@ -591,6 +595,13 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("bankCode")), "卡宾不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("vCode")), "验证码不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("nonceStr")), "随机参数有误");
+		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(requestData.getString("phone"),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
+		int resultType = codeStatus.getKey();
+		if(resultType!=1){
+			jo.put("result",false);
+			jo.put("message",codeStatus.getValue());
+			return jo;
+		}
 		if(!ValidationUtil.checkBankCard(requestData.getString("cardNo"))){
 			jo.put("result",false);
 			jo.put("message","银行卡号不正确");
@@ -685,6 +696,27 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("result",false);
 			jo.put("message",ret.get("retMsg"));
 			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),ret.get("reqSn").toString(),false);
+		}
+		return jo;
+	}
+
+	@Override
+	public JSONObject getCode(JSONObject requestData) {
+		JSONObject jo = new JSONObject();
+		Preconditions.checkNotNull(requestData.get("phone"),"手机号不能为空");
+		if(!ValidationUtil.isMobile(requestData.getString("phone"))){
+			jo.put("result",false);
+			jo.put("message","手机号格式不正确");
+			return requestData;
+		}
+		Pair<Integer, String> result = smsAuthService.getVerifyCode(requestData.getString("phone"), EnumVerificationCodeType.PAYMENT);
+		int resultType = result.getKey();
+		if(resultType==1){
+			jo.put("result",true);
+			jo.put("message","获取成功");
+		}else{
+			jo.put("result",false);
+			jo.put("message",result.getValue());
 		}
 		return jo;
 	}

@@ -55,4 +55,10 @@ public interface AuthenService {
 	 * @return
 	 */
 	public JSONObject toPayByCid(JSONObject requestData);
+	/**
+	 * 获取短信验证按
+	 * @param requestData
+	 * @return
+	 */
+	public JSONObject getCode(JSONObject requestData);
 }
