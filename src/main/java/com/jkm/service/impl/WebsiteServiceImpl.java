@@ -76,6 +76,7 @@ public class WebsiteServiceImpl implements WebsiteService {
     public void importContacts(String uid) {
         UserInfo userInfoResult = userInfoService.selectByUid(uid);
         Preconditions.checkNotNull(userInfoResult,"登录信息异常");
+        Preconditions.checkNotNull(userInfoResult.getAccount(),"未添加12306账号或账户异常，不能使用此功能");
         JSONObject userInfoJson = new JSONObject();
         userInfoJson.put("trainAccount",userInfoResult.getAccount());
         userInfoJson.put("pass",DESUtil.decrypt(userInfoResult.getPwd()));
