@@ -75,7 +75,7 @@
     computed:{
       showModule:function () {
         if(this.$store.state.contact.ctrl){
-          this.$http.post('/contactInfo/list',{"uid":"1","appid":"1"})
+          this.$http.post('/contactInfo/list',{"uid":"123456","appid":"wnl"})
             .then(function (response) {
                 let massages = response.data.data;
                 for (var i = 0; i < massages.length; i++) {
