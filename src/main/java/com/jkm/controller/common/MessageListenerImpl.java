@@ -25,7 +25,10 @@ import com.jkm.entity.OrderForm;
 import com.jkm.entity.fusion.QueryQuickPayData;
 import com.jkm.entity.fusion.QueryRefundData;
 import com.jkm.entity.fusion.SingleRefundData;
-import com.jkm.service.*;
+import com.jkm.service.AuthenService;
+import com.jkm.service.BindCardService;
+import com.jkm.service.OrderFormService;
+import com.jkm.service.TicketService;
 import com.jkm.util.DateFormatUtil;
 import com.jkm.util.SnGenerator;
 import com.jkm.util.mq.MqConfig;
@@ -47,8 +50,6 @@ public class MessageListenerImpl implements MessageListener {
     private TicketService ticketService;
     @Autowired
     private OrderFormService orderFormService;
-    @Autowired
-    private GrabTicketFromService grabTicketFromService;
 
     @Override
     public Action consume(Message message, ConsumeContext consumeContext) {
@@ -78,25 +79,6 @@ public class MessageListenerImpl implements MessageListener {
                 MqProducer.sendMessage(jo,MqConfig.FAST_PAY_QUERY,10000);//再次发请求
             }
 
-                    }else if("F".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//失败
-                        ticketService.handleCustomerPayMsg(jo.getLong("orderId"),jo.getString("reqSn"),false);
-                    }
-                }else if("-1000".equals(resultMap.get("retCode").toString())){
-                    MqProducer.sendMessage(jo,MqConfig.SINGLE_REFUND_QUERY,10000);//再次发请求
-                }
-            } else if (MqConfig.TICKET_CANCEL_EXPIRED_ORDER.equals(message.getTag())) {//取消订单
-                String body = new String(message.getBody(),"UTF-8");
-                JSONObject jo = JSONObject.fromObject(body);
-                this.orderFormService.handleExpiredOrderForm(jo.getLong("orderFormId"));
-            } else if (MqConfig.TICKET_CANCEL_EXPIRED_GRAB_ORDER.equals(message.getTag())) {//取消抢票订单
-                String body = new String(message.getBody(),"UTF-8");
-                JSONObject jo = JSONObject.fromObject(body);
-                this.grabTicketFromService.handleExpiredOGrabForm(jo.getLong("grabTicketFormId"));
-            }else if (MqConfig.NO_PACKAGE_WAIT_REFUND.equals(message.getTag())) {//抢票订单没买套餐自动退款
-                String body = new String(message.getBody(),"UTF-8");
-                JSONObject jo = JSONObject.fromObject(body);
-                this.grabTicketFromService.handleNoPackageWaitRefund(jo.getLong("grabTicketFormId"));
-            }
         } catch (UnsupportedEncodingException e) {
         }
         //如果想测试消息重投的功能,可以将Action.CommitMessage 替换成Action.ReconsumeLater
