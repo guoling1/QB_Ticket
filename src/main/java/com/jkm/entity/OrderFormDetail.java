@@ -1,5 +1,6 @@
 package com.jkm.entity;
 
+import com.jkm.entity.helper.UserBankCardSupporter;
 import com.jkm.enums.EnumOrderFormDetailStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -106,4 +107,12 @@ public class OrderFormDetail extends BaseEntity{
         return this.getStatus() == EnumOrderFormDetailStatus.TICKET_INITIALIZATION.getId();
     }
 
+    /**
+     * 获得解密后的证件号码
+     *
+     * @return
+     */
+    public String getPassportSeNoPlain() {
+        return UserBankCardSupporter.decryptCardId(this.passportSeNo);
+    }
 }

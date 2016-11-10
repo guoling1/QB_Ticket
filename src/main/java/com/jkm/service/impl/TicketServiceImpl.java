@@ -165,7 +165,7 @@ public class TicketServiceImpl implements TicketService {
             orderFormDetail.setRemark(EnumOrderFormDetailStatus.TICKET_INITIALIZATION.getValue());
             this.orderFormDetailService.add(orderFormDetail);
             passengerJsonObject.put("passengersename", contactInfo.getName());
-            passengerJsonObject.put("passportseno", contactInfo.getIdenty());
+            passengerJsonObject.put("passportseno", orderFormDetail.getPassportSeNoPlain());
             passengerJsonObject.put("passporttypeseid", contactInfo.getIdentyType());
             passengerJsonObject.put("passporttypeseidname", EnumCertificatesType.of(contactInfo.getIdentyType()).getValue());
             passengerJsonObject.put("passengerid", contactInfo.getId());
