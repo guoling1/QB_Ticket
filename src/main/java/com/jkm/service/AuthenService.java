@@ -48,5 +48,11 @@ public interface AuthenService {
 	 * @param requestData
 	 * @return
 	 */
-	public Map<String, Object> toPay(JSONObject requestData);
+	public JSONObject toPay(JSONObject requestData);
+	/**
+	 * 多次支付
+	 * @param requestData
+	 * @return
+	 */
+	public JSONObject toPayByCid(JSONObject requestData);
 }
