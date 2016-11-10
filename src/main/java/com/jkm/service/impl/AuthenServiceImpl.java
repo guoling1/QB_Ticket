@@ -5,6 +5,7 @@ import com.aliyun.openservices.ons.api.SendResult;
 import com.aliyun.openservices.ons.api.bean.ProducerBean;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.jkm.entity.*;
 import com.jkm.entity.fusion.*;
 import com.jkm.entity.fusion.body.*;
@@ -12,11 +13,13 @@ import com.jkm.entity.fusion.detail.*;
 import com.jkm.entity.fusion.head.RequestHead;
 import com.jkm.entity.fusion.head.RequestHead20003;
 import com.jkm.entity.fusion.head.RequestHead20005;
+import com.jkm.entity.helper.UserBankCardSupporter;
 import com.jkm.enums.EnumOrderFormStatus;
 import com.jkm.service.*;
 import com.jkm.util.BeanUtils;
 import com.jkm.util.DateFormatUtil;
 import com.jkm.util.SnGenerator;
+import com.jkm.util.ValidationUtil;
 import com.jkm.util.fusion.*;
 import com.jkm.util.mq.MqConfig;
 import com.jkm.util.mq.MqProducer;
@@ -568,8 +571,47 @@ public class AuthenServiceImpl implements AuthenService {
 	}
 
 	@Override
-	public Map<String, Object> toPay(JSONObject requestData) {
+	public JSONObject toPay(JSONObject requestData) {
 		JSONObject jo = new JSONObject();
+
+		Preconditions.checkNotNull(requestData.get("cardNo"),"缺少银行卡号");
+		Preconditions.checkNotNull(requestData.get("orderId"),"订单号不能为空");
+		Preconditions.checkNotNull(requestData.get("accountName"),"缺少开户姓名");
+		Preconditions.checkNotNull(requestData.get("cardId"),"缺少身份证号");
+		Preconditions.checkNotNull(requestData.get("phone"),"缺少手机号");
+		Preconditions.checkNotNull(requestData.get("isAgree"),"请勾选并同意协议");
+		Preconditions.checkNotNull(requestData.get("vCode"),"请输入验证码");
+		Preconditions.checkNotNull(requestData.get("bankCode"),"卡宾不能为空");
+		Preconditions.checkNotNull(requestData.get("nonceStr"),"随机参数有误");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("orderId")+""), "订单信息不能为空");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("cardNo")), "卡号不能不能为空");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("accountName")), "开户姓名不能为空");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("idNo")), "身份证号不能为空");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("phone")), "手机号不能为空");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("bankCode")), "卡宾不能为空");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("vCode")), "验证码不能为空");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("nonceStr")), "随机参数有误");
+		if(!ValidationUtil.checkBankCard(requestData.getString("cardNo"))){
+			jo.put("result",false);
+			jo.put("message","银行卡号不正确");
+			return jo;
+		}
+		if(!ValidationUtil.isIdCard(requestData.getString("cardId"))){
+			jo.put("result",false);
+			jo.put("message","身份证号不正确");
+			return jo;
+		}
+		if(!ValidationUtil.isMobile(requestData.getString("phone"))){
+			jo.put("result",false);
+			jo.put("message","手机号不正确");
+			return jo;
+		}
+		if(requestData.getInt("isAgree")!=0){
+			jo.put("result",false);
+			jo.put("message","请同意协议");
+			return jo;
+		}
+
 		Optional<OrderForm>  orderFormOptional = orderFormService.selectById(requestData.getLong("orderId"));
 		Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + orderFormOptional.get().getId() + "]不存在");
 		BigDecimal amount = orderFormOptional.get().getTotalPrice();
@@ -580,22 +622,70 @@ public class AuthenServiceImpl implements AuthenService {
 		authenData.setCapCrdNm(requestData.getString("capCrdNm"));
 		authenData.setIdNo(requestData.getString("idNo"));
 		authenData.setReqSn(SnGenerator.generate());
+		authenData.setNonceStr(requestData.getString("nonceStr"));
 		orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId());
 		orderFormService.updateStatus(orderFormOptional.get());
 		Map<String, Object> ret = this.fastPay(authenData);
 		if((boolean)ret.get("retCode")==true){//支付成功
-//			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),ret.get("reqSn").toString(),true);
 			BindCard bindCard = new BindCard();
 			bindCard.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
-			bindCard.setCardNo(requestData.getString("crdNo"));
+			bindCard.setCardNo(UserBankCardSupporter.encryptCardNo(requestData.getString("crdNo")));
 			bindCard.setAccountName(requestData.getString("capCrdNm"));
 			bindCard.setCardType("00");
-			bindCard.setCardId(requestData.getString("idNo"));
+			bindCard.setCardId(UserBankCardSupporter.encryptCardId(requestData.getString("cardId")));
 			bindCard.setPhone(requestData.getString("phoneNo"));
-			bindCardService.insertSelective(bindCard);
+			bindCard.setBankCode(requestData.getString("bankCode"));
+			bindCard.setStatus(0);
+			bindCardService.insertBindCard(bindCard);
+			jo.put("result",true);
+			jo.put("data",ret.get("retData"));
+			jo.put("message","支付成功");
 		}else{//支付失败
+			jo.put("result",false);
+			jo.put("message",ret.get("retMsg"));
 			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),ret.get("reqSn").toString(),false);
 		}
-		return ret;
+		return jo;
+	}
+
+	@Override
+	public JSONObject toPayByCid(JSONObject requestData) {
+		JSONObject jo = new JSONObject();
+		Preconditions.checkNotNull(requestData.get("orderId"),"订单号不能为空");
+		Preconditions.checkNotNull(requestData.get("cId"),"银行信息不能为空");
+		Preconditions.checkNotNull(requestData.get("nonceStr"),"随机参数有误");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("orderId")+""), "订单号不能为空");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("nonceStr")), "随机参数有误");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("cId")+""), "银行信息不能为空");
+		BindCard bindCard = bindCardService.selectByPrimaryKey(requestData.getLong("cId"));
+		if(bindCard==null){
+			jo.put("result",false);
+			jo.put("message","无此银行卡信息");
+			return jo;
+		}
+		Optional<OrderForm>  orderFormOptional = orderFormService.selectById(requestData.getLong("orderId"));
+		Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + orderFormOptional.get().getId() + "]不存在");
+		BigDecimal amount = orderFormOptional.get().getTotalPrice();
+		AuthenData authenData = new AuthenData();
+		authenData.setAmount(amount+"");
+		authenData.setPhoneNo(bindCard.getPhone());
+		authenData.setCrdNo(UserBankCardSupporter.decryptCardNo(bindCard.getCardNo()));
+		authenData.setCapCrdNm(bindCard.getAccountName());
+		authenData.setIdNo(UserBankCardSupporter.decryptCardId(bindCard.getCardId()));
+		authenData.setReqSn(SnGenerator.generate());
+		authenData.setNonceStr(requestData.getString("nonceStr"));
+		orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId());
+		orderFormService.updateStatus(orderFormOptional.get());
+		Map<String, Object> ret = this.fastPay(authenData);
+		if((boolean)ret.get("retCode")==true){//支付成功
+			jo.put("result",true);
+			jo.put("data",ret.get("retData"));
+			jo.put("message","支付成功");
+		}else{//支付失败
+			jo.put("result",false);
+			jo.put("message",ret.get("retMsg"));
+			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),ret.get("reqSn").toString(),false);
+		}
+		return jo;
 	}
 }

@@ -5,7 +5,7 @@
 
 	<!-- 通用查询结果列-->
 	<sql id="Base_Column_List">
-		 id,	uid,	card_no,	account_name,	card_type,	card_id,	phone, 	create_time,	update_time
+		 id,	uid,	card_no, bank_code, account_name,	card_type,	card_id,	phone, 	create_time,	update_time
 	</sql>
 
 	<!-- 查询（根据uid查询） -->
@@ -33,9 +33,9 @@
 	<!-- 添加 -->
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.entity.BindCard">
 		 INSERT INTO tb_bind_card
- 		(uid,card_no,account_name,card_type,card_id,phone,pay_pwd,status)
+ 		(uid,card_no,bank_code,account_name,card_type,card_id,phone,pay_pwd,status)
 		 VALUES 
- 		(#{uid},#{cardNo},#{accountName},#{cardType},#{cardId},#{phone},#{payPwd},#{status})
+ 		(#{uid},#{cardNo},#{bankCode},#{accountName},#{cardType},#{cardId},#{phone},#{payPwd},#{status})
 	</insert>
 
 	<!-- 添加 （匹配有值的字段）-->
@@ -48,6 +48,9 @@
 			<if test="cardNo != null">
 				 card_no,
 			</if>
+			 <if test="bankCode != null">
+				 bank_code,
+			 </if>
 			<if test="accountName != null">
 				 account_name,
 			</if>
@@ -74,6 +77,9 @@
 			<if test="cardNo!=null">
 				 #{cardNo},
 			</if>
+			 <if test="bankCode != null">
+				 #{bankCode},
+			 </if>
 			<if test="accountName!=null">
 				 #{accountName},
 			</if>
@@ -105,6 +111,9 @@
 			<if test="cardNo != null">
 				 card_no = #{cardNo},
 			</if>
+			 <if test="bankCode != null">
+				 bank_code = #{bankCode},
+			 </if>
 			<if test="accountName != null">
 				 account_name = #{accountName},
 			</if>
@@ -133,6 +142,7 @@
 		 SET 
 			 uid = #{uid},
 			 card_no = #{cardNo},
+			 bank_code = #{bankCode},
 			 account_name = #{accountName},
 			 card_type = #{cardType},
 			 card_id = #{cardId},

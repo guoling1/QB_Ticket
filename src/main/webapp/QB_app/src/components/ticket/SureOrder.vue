@@ -78,15 +78,17 @@
             <div class="amount">实付款<span class="red">￥</span><span class="red big">128.5</span></div>
             <div class="i"></div>
           </div>
-          <div class="right">提交订单</div>
+          <div class="right" @click="submit">提交订单</div>
         </div>
       </div>
     </div>
+    <div class="loading" v-if="loading">占座中...</div>
     <contacts></contacts>
   </div>
 </template>
 
 <script lang="babel">
+  import Vue from 'vue'
   import Contacts from './Contacts.vue'
 
   const zwCode = {
@@ -109,8 +111,8 @@
     data: function () {
       return {
         sureOrder: {
-          appId: "wnl",     //appid
-          uid: "123456",  //用户id
+          appId: "",     //appid
+          uid: "",  //用户id
           mobile: '15010607970',   //联系手机号
           price: 00.0,    //票价
           fromStationName: "",  //出发站
@@ -125,23 +127,24 @@
           runTime: "",           //运行分钟
           checi: "",           //车次
           buyTicketPackageId: 1,    //出票套餐
-          passengers: [{         //乘客
-            id: 1,       //乘客id
-            piaoType: 1  //乘客类型
-          }]
+          passengers: [] // 乘客信息
         },
         otherData: {
           table: '',
           startShow: '',
           arriveShow: '',
-          runShow: ''
-        }
+          runShow: '',
+          passengers: []
+        },
+        loading: false
       }
     },
     beforeRouteEnter (to, from, next) {
       let sessionPreOrder = JSON.parse(sessionStorage.getItem('preOrder'));
       let sessionPreDate = JSON.parse(sessionStorage.getItem('preDate'));
       next(function (vm) {
+        vm.$data.sureOrder.appId = to.query.appid;
+        vm.$data.sureOrder.uid = to.query.uid;
         vm.$data.sureOrder.price = to.query.price;
         vm.$data.otherData.table = to.query.table;
         vm.$data.sureOrder.fromStationName = sessionPreOrder.from_station_name;
@@ -164,6 +167,33 @@
       login: function () {
         this.$router.push({path: '/ticket/login'});
       },
+      submit: function () {
+        var polling = '';
+        const pollFun = (id) => {
+          this.$http.post('/order/queryById', {orderFormId: id}).then(function (res) {
+            if (res.data.code == 1 && res.data.data.status == 3) {
+              clearInterval(polling);
+              this.$router.push({path: '/ticket/pay-order', query: {appid:this.$data.sureOrder.appId,uid:this.$data.sureOrder.uid,id: res.data.data.orderFormId}});
+            }else if(res.data.code == 1 && res.data.data.status == 4){
+              clearInterval(polling);
+              console.log("占座失败");
+            }
+          })
+        }
+        this.$http.post('/ticket/submitOrder', this.$data.sureOrder).then(function (res) {
+          if (res.data.code == 1) {
+            // 这里 轮询 等待回调
+            this.$data.loading = true;
+            polling = setInterval(function(){
+              pollFun(res.data.data.orderFormId);
+            }, 1500);
+          } else {
+            console.log(res.data.message);
+          }
+        }, function (err) {
+          console.log(err);
+        });
+      },
       contact: function () {
         this.$store.commit("CONTACT_OPEN", {
           ctrl: true
@@ -177,12 +207,20 @@
       passengers: function () {
         let storeDate = this.$store.state.contact.info;
         let data = [];
+        this.$data.sureOrder.passengers = [];
+        let type = {
+          '成人': 1, '儿童': 2, '学生': 3, '伤残军人': 4
+        };
         for (let i in storeDate) {
           if (storeDate[i]) {
             data.push(storeDate[i]);
+            console.log(storeDate[i]);
+            this.$data.sureOrder.passengers.push({
+              id: storeDate[i].id,
+              piaoType: type[storeDate[i].personType]
+            })
           }
         }
-        this.$data.sureOrder.passengers = data;
         return data;
       },
       pageInfo () {
@@ -471,5 +509,17 @@
         background-color: #4ab9f1;
       }
     }
+  }
+
+  .loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    font-size: 15px;
+    color: #FFF;
+    text-align: center;
   }
 </style>

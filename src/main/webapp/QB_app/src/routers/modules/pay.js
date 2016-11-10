@@ -7,24 +7,18 @@ import App from '../../App';
 // 按需加载 1,组件单独打包
 // const payMenu = resolve => require(['../../components/pay/Menu'], resolve);
 // 按需加载 2.组件分组打包
-const payMenu = r => require.ensure([], () => r(require('../../components/pay/Menu')), 'group-pay');
 const payMain = r => require.ensure([], () => r(require('../../components/pay/Main')), 'group-pay');
+const payFirstAdd = r => require.ensure([], () => r(require('../../components/pay/FirstAdd')), 'group-pay');
 
 export default {
   path: '/pay',
-  redirect: '/pay/menu/main',
+  redirect: '/pay/first-add',
   component: App,
   children: [
     {
-      path: 'menu',
-      redirect: '/pay/menu/main',
-      component: payMenu,
-      children: [
-        {
-          path: 'main',
-          component: payMain
-        }
-      ]
+      path: 'first-add',
+      name: 'firstAdd',
+      component: payFirstAdd
     }
   ]
 }

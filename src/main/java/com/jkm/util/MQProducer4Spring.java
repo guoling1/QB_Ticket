@@ -24,14 +24,14 @@ public class MQProducer4Spring {
         System.out.println("Producer Started");
         JSONObject mqJo = new JSONObject();
 
-        for (int i = 0; i < 10; i++) {
-            mqJo.put("reqSn","11111"+i);
+
+            mqJo.put("reqSn","11111");
             Message message = new Message(MqConfig.TOPIC, MqConfig.SINGLE_REFUND_QUERY, mqJo.toString().getBytes("UTF8"));
             SendResult sendResult = producer.send(message);
             if (sendResult != null) {
                 System.out.println(new Date() + " Send mq message success! Topic is:" + MqConfig.TOPIC + "msgId is: " + sendResult.getMessageId());
             }
-        }
+
     }
 
 
