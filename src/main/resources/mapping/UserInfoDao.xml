@@ -5,7 +5,7 @@
 
 	<!-- 通用查询结果列-->
 	<sql id="Base_Column_List">
-		 id,	uid,	app_id,	account, pwd,  status,	create_time,	update_time
+		 id,	uid,	app_id,	account, pwd, phone,  status,	create_time,	update_time
 	</sql>
 
 	<!-- 查询（根据Uid查询） -->
@@ -33,9 +33,9 @@
 	<!-- 添加 -->
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.entity.UserInfo">
 		 INSERT INTO tb_user_info
- 		(uid,app_id,account,pwd,status)
+ 		(uid,app_id,phone,account,pwd,status)
 		 VALUES 
- 		(#{uid},#{appId},#{account},#{pwd},#{status})
+ 		(#{uid},#{appId},#{phone},#{account},#{pwd},#{status})
 	</insert>
 
 	<!-- 添加 （匹配有值的字段）-->
@@ -51,6 +51,9 @@
 			<if test="account != null">
 				 account,
 			</if>
+			 <if test="phone != null">
+				 phone,
+			 </if>
 			<if test="pwd != null">
 				 pwd,
 			</if>
@@ -69,6 +72,9 @@
 			<if test="account!=null">
 				 #{account},
 			</if>
+			 <if test="phone!=null">
+				 #{phone},
+			 </if>
 			<if test="pwd!=null">
 				 #{pwd},
 			</if>
@@ -91,6 +97,9 @@
 			<if test="account != null">
 				 account = #{account},
 			</if>
+			 <if test="phone != null">
+				 phone = #{phone},
+			 </if>
 			<if test="pwd != null">
 				 pwd = #{pwd},
 			</if>
@@ -106,6 +115,7 @@
 		 UPDATE tb_user_info
 		 SET 
 			 uid = #{uid},
+			 phone = #{phone},
 			 app_id = #{appId},
 			 account = #{account},
 			 pwd = #{pwd},
@@ -113,4 +123,8 @@
 		 WHERE id = #{id}
 	</update>
 
+	<!-- 修 改-->
+	<update id="updateByUid" parameterType="com.jkm.entity.UserInfo">
+		UPDATE tb_user_info set phone = #{phone} WHERE uid = #{uid}
+	</update>
 </mapper>

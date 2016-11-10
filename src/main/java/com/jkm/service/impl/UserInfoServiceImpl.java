@@ -60,4 +60,10 @@ public class UserInfoServiceImpl implements UserInfoService {
             userInfoDao.insert(u);
         }
     }
+
+    @Override
+    public int updateByUid(UserInfo record) {
+        int rown = userInfoDao.updateByUid(record);
+        return rown;
+    }
 }

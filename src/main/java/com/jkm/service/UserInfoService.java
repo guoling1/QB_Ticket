@@ -57,4 +57,10 @@ public interface UserInfoService {
      * @param uid
      */
     void insertUser(String uid);
+    /**
+     *
+     * 修改（根据uid修改）
+     *
+     **/
+    int updateByUid ( UserInfo record );
 }

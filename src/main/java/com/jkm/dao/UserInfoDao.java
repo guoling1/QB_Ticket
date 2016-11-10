@@ -52,4 +52,10 @@ public interface UserInfoDao {
      *
      **/
     int updateByPrimaryKey ( UserInfo record );
+    /**
+     *
+     * 修改（根据uid修改）
+     *
+     **/
+    int updateByUid ( UserInfo record );
 }
