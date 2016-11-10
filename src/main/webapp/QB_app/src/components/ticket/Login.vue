@@ -8,11 +8,11 @@
       <div class="framework">
         <div class="ipt">
           <i class="icon-account"></i>
-          <input type="text" placeholder="12306用户名/邮箱/手机号">
+          <input type="text" placeholder="12306用户名/邮箱/手机号" v-model="loginData.data.trainAccount">
         </div>
         <div class="ipt">
           <i class="icon-password"></i>
-          <input type="text" placeholder="请输入12306密码">
+          <input type="text" placeholder="请输入12306密码" v-model="loginData.data.pass">
         </div>
         <div class="ipt no-border">
           <i class="icon-remember"></i>
@@ -25,9 +25,9 @@
           </div>
         </div>
       </div>
-      <router-link class="submit" :to="{path:'/ticket/train-menu/train',query:{date:$from.date}}">
+      <div class="submit" @click="submit">
         <i></i>登录12306
-      </router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -37,32 +37,29 @@
     name: 'menu',
     data: function () {
       return {
-        msg: 'Welcome to Your Vue.js App'
+        loginData: {
+          data: {
+            trainAccount: "", //12306账户
+            pass: "" //12306密码
+          },
+          uid: "", //三方商户用户id
+          appid: "" //三方商户唯一标示appid
+        }
       }
+    },
+    beforeRouteEnter (to, from, next) {
+      next(function (vm) {
+        vm.$data.loginData.appid = to.query.appid;
+        vm.$data.loginData.uid = to.query.uid;
+      });
     },
     methods: {
-      time: function (name) {
-        this.$store.commit('TIME_OPEN', {
-          name: name,
-          ctrl: true
-        });
-      },
-      station: function () {
-        this.$store.commit('STATION_CTRL', true);
-      }
-    },
-    computed: {
-      $data: function () {
-        return {
-          date: this.$store.state.date.scope.dateONE.time,
-          form: this.$store.state.station.scope.stationONE.station,
-          to: this.$store.state.station.scope.stationTWO.station
-        }
-      },
-      $from: function () {
-        return {
-          date: '2016-12-06'
-        };
+      submit: function () {
+        this.$http.post('/website/addWebSite', this.$data.loginData).then(function (res) {
+          console.log(res);
+        }, function (err) {
+          console.log(err);
+        })
       }
     }
   }

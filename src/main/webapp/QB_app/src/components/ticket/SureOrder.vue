@@ -80,7 +80,7 @@
             <div class="amount">实付款<span class="red">￥</span><span class="red big">128.5</span></div>
             <div class="i"></div>
           </div>
-          <div class="right" @click="submit">提交订单</div>
+          <div class="right" @click="submit($event,true)">提交订单</div>
         </div>
       </div>
     </div>
@@ -89,10 +89,23 @@
       <div class="select">
         <div class="xx"></div>
         <ul>
-          <li @click="packHide(2)" v-bind:class="{active:sureOrder.buyTicketPackageId==2}"><span>¥ 20/人套餐</span> 极速出票，赠送78万保险</li>
-          <li @click="packHide(3)" v-bind:class="{active:sureOrder.buyTicketPackageId==3}"><span>¥ 30/人套餐</span> 优先出票，赠送300万保险</li>
+          <li @click="packHide(2)" v-bind:class="{active:sureOrder.buyTicketPackageId==2}"><span>¥ 20/人套餐</span>
+            极速出票，赠送78万保险
+          </li>
+          <li @click="packHide(3)" v-bind:class="{active:sureOrder.buyTicketPackageId==3}"><span>¥ 30/人套餐</span>
+            优先出票，赠送300万保险
+          </li>
           <li @click="packHide(1)" v-bind:class="{active:sureOrder.buyTicketPackageId==1}">不购买 出票慢，失败的可能性增加</li>
         </ul>
+      </div>
+    </div>
+    <div class="skip" v-show="skip">
+      <div class="show">
+        <div class="xx"></div>
+        <div class="btn">
+          <div class="sub" @click="submit($event)">放弃</div>
+          <div class="close" @click="skipHide">增加保障</div>
+        </div>
       </div>
     </div>
     <contacts></contacts>
@@ -149,7 +162,8 @@
           passengers: []
         },
         loading: false,
-        pack: false
+        pack: false,
+        skip: false
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -178,16 +192,26 @@
     },
     methods: {
       login: function () {
-        this.$router.push({path: '/ticket/login'});
+        this.$router.push({path: '/ticket/login',query:{appid:this.$data.sureOrder.appId,uid:this.$data.sureOrder.uid}});
       },
-      packShow: function(){
+      packShow: function () {
         this.$data.pack = true;
       },
-      packHide: function(num){
+      packHide: function (num) {
         this.$data.pack = false;
         this.$data.sureOrder.buyTicketPackageId = num;
       },
-      submit: function () {
+      skipHide: function(){
+        this.$data.skip = false;
+      },
+      submit: function (event,skip) {
+        // 判断是否选择了套餐
+        if(this.$data.sureOrder.buyTicketPackageId==1&&!!skip){
+          console.log('请选择抢票套餐');
+          this.$data.skip = true;
+          return false;
+        }
+        this.$data.skip = false;
         var polling = '';
         const pollFun = (id)=>{
           this.$http.post('/order/queryById', {orderFormId: id}).then(function (res) {
@@ -227,6 +251,10 @@
       }
     },
     computed: {
+      price: function () {
+        console.log(this.$data.sureOrder.passengers);
+        return this.$data.sureOrder.passengers;
+      },
       passengers: function () {
         let storeDate = this.$store.state.contact.info;
         let data = [];
@@ -237,7 +265,6 @@
         for (let i in storeDate) {
           if (storeDate[i]) {
             data.push(storeDate[i]);
-            console.log(storeDate[i]);
             this.$data.sureOrder.passengers.push({
               id: storeDate[i].id,
               piaoType: type[storeDate[i].personType]
@@ -551,30 +578,30 @@
     text-align: center;
   }
 
-  .pack{
+  .pack {
     position: fixed;
-    top:0;
+    top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: 88;
-    background:rgba(0,0,0,0.5);
-    .select{
+    background: rgba(0, 0, 0, 0.5);
+    .select {
       position: absolute;
       width: 100%;
       height: 50%;
       background-color: #FFF;
       left: 0;
       bottom: 0;
-      .xx{
+      .xx {
         width: 14px;
         height: 14px;
         background: url("../../assets/xx.png") no-repeat center;
         background-size: 14px 14px;
         padding: 15px;
       }
-      ul{
-        li{
+      ul {
+        li {
           width: 100%;
           height: 45px;
           line-height: 45px;
@@ -582,16 +609,64 @@
           padding-left: 15px;
           color: #999;
           border-bottom: 1px solid #f5f5f5;
-          span{
+          span {
             color: #000;
           }
-          &.active{
+          &.active {
             color: #2ba7e5;
             background: url("../../assets/select.png") no-repeat 320px;
             background-size: 16px 11px;
-            span{
+            span {
               font-weight: bold;
             }
+          }
+        }
+      }
+    }
+  }
+  .skip{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 88;
+    background: rgba(0, 0, 0, 0.5);
+    .show{
+      position: absolute;
+      width: 100%;
+      height: 50%;
+      background-color: #FFF;
+      left: 0;
+      bottom: 0;
+      .xx {
+        width: 14px;
+        height: 14px;
+        background: url("../../assets/xx.png") no-repeat center;
+        background-size: 14px 14px;
+        padding: 15px;
+      }
+      .btn{
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 50px;
+        div{
+          float: left;
+          width: 50%;
+          height: 50px;
+          line-height: 50px;
+          text-align: center;
+          &.sub{
+            font-size: 15px;
+            color: #4ab9f1;
+            border-top: 1px solid #f5f5f5;
+          }
+          &.close{
+            font-size: 15px;
+            color: #FFF;
+            background-color: #4ab9f1;
           }
         }
       }
