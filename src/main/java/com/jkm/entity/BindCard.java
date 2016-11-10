@@ -1,5 +1,7 @@
 package com.jkm.entity;
 
+import com.jkm.entity.helper.UserBankCardSupporter;
+import com.jkm.enums.EnumGrabTicketStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -47,5 +49,22 @@ public class BindCard extends BaseEntity{
 	 * 支付密码
 	 */
 	private String payPwd;
+
+	/**
+	 * 解密后的银行卡
+	 * @param cardNo
+	 * @return
+	 */
+	public String cardNoOrg(String cardNo) {
+		return UserBankCardSupporter.decryptCardNo(cardNo);
+	}
+	/**
+	 * 解密后的身份证
+	 * @param cardNo
+	 * @return
+	 */
+	public String cardIdOrg(String cardId) {
+		return UserBankCardSupporter.decryptCardId(cardId);
+	}
 
 }
