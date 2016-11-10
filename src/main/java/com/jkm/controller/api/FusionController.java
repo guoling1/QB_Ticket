@@ -38,7 +38,7 @@ public class FusionController extends BaseController {
 
 
     /**
-     * 立即支付(首次)
+     * 大订单立即支付(首次)
      *
      * @param requestData
      * @return
@@ -58,7 +58,7 @@ public class FusionController extends BaseController {
         return responseJo;
     }
     /**
-     * 立即支付(多次)
+     * 大订单立即支付(多次)
      *
      * @param requestData
      * @return
@@ -70,6 +70,47 @@ public class FusionController extends BaseController {
         try{
             JSONObject jo = super.getRequestJsonParams();
             responseJo = authenService.toPayByCid(jo);
+        }catch(Exception e){
+            logger.info("立即支付(多次)");
+            responseJo.put("result",false);
+            responseJo.put("message",e.getMessage());
+        }
+        return responseJo;
+    }
+
+    /**
+     * 抢票单立即支付(首次)
+     *
+     * @param requestData
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/toPayGrab", method = RequestMethod.POST)
+    public JSONObject toPayGrab() {
+        JSONObject responseJo = new JSONObject();
+        try{
+            JSONObject jo = super.getRequestJsonParams();
+            responseJo = authenService.toPayGrab(jo);
+        }catch(Exception e){
+            logger.info("抢票单立即支付(首次)失败");
+            responseJo.put("result",false);
+            responseJo.put("message",e.getMessage());
+        }
+        return responseJo;
+    }
+    /**
+     * 抢票单立即支付(多次)
+     *
+     * @param requestData
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/toPayGrabByCid", method = RequestMethod.POST)
+    public JSONObject toPayGrabByCid() {
+        JSONObject responseJo = new JSONObject();
+        try{
+            JSONObject jo = super.getRequestJsonParams();
+            responseJo = authenService.toPayGrabByCid(jo);
         }catch(Exception e){
             logger.info("立即支付(多次)");
             responseJo.put("result",false);

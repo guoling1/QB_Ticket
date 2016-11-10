@@ -56,6 +56,18 @@ public interface AuthenService {
 	 */
 	public JSONObject toPayByCid(JSONObject requestData);
 	/**
+	 * 抢票单立即支付
+	 * @param requestData
+	 * @return
+	 */
+	public JSONObject toPayGrab(JSONObject requestData) throws Exception;
+	/**
+	 * 多次支付
+	 * @param requestData
+	 * @return
+	 */
+	public JSONObject toPayGrabByCid(JSONObject requestData) throws Exception;
+	/**
 	 * 获取短信验证按
 	 * @param requestData
 	 * @return
