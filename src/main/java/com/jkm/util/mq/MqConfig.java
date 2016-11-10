@@ -27,6 +27,11 @@ public class MqConfig {
     public static final String TICKET_CANCEL_EXPIRED_ORDER = "ticketCancelExpiredOrder";
 
     /**
+     * 处理 退款申请发送成功 等待最后结果的订单
+     */
+    public static final String TICKET_HANDLE_REFUND_ORDER_RESULT = "ticketHandleRefundOrderResult";
+
+    /**
      * 取消失去有效支付时间的抢票单
      */
     public static final String TICKET_CANCEL_EXPIRED_GRAB_ORDER = "ticketCancelExpiredGrabOrder";

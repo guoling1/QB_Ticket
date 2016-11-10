@@ -138,6 +138,14 @@
                         </bean>
                     </key>
                 </entry>
+                <entry value-ref="messageListenerOfOrderRefund">
+                    <key>
+                        <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
+                            <property name="topic" value="${mq.topic}"/> <!-- Topic,请替换 -->
+                            <property name="expression" value="ticketHandleRefundOrderResult"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
+                        </bean>
+                    </key>
+                </entry>
             </map>
 
         </property>
@@ -149,8 +157,11 @@
     <!-- 单笔退款消息处理器 -->
     <bean id="messageListenerOfRefund" class="com.jkm.controller.common.MessageListenerOfRefundImpl"/>
 
-    <!-- 消息处理器 -->
+    <!-- 处理过了支付时间的订单的消息处理器 -->
     <bean id="messageListenerOfTicket" class="com.jkm.controller.common.MessageListenerOfTicketImpl"/>
+
+    <!-- 处理订单退款在请求中的消息处理器 -->
+    <bean id="messageListenerOfOrderRefund" class="com.jkm.controller.common.MessageListenerOfOrderRefundImpl"/>
 
     <!--生产端-->
     <bean id="producer" class="com.aliyun.openservices.ons.api.bean.ProducerBean"

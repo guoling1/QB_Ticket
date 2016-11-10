@@ -1441,17 +1441,23 @@ public class TicketServiceImpl implements TicketService {
         this.orderFormService.update(orderForm);
         final Map<String, Object> resultMap = this.authenService.singlRefund(singleRefundData);
         if ((boolean) resultMap.get("retCode")) {
-            log.info("订单[" + orderForm.getId() + "]--退款单[" + refundOrderFlow.getId() + "]" + "退款成功");
-            orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_REFUND_SUCCESS.getId());
-            orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_REFUND_SUCCESS.getValue());
-            refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.REFUND_SUCCESS.getId());
+            log.info("订单[" + orderForm.getId() + "]--退款单[" + refundOrderFlow.getId() + "]" + "退款申请成功！！添加消息回调");
+            orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_REFUND_ING.getId());
+            orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_REFUND_ING.getValue());
+            this.orderFormService.update(orderForm);
+            //消息
+            JSONObject mqJo = new JSONObject();
+            mqJo.put("orderFormId", orderForm.getId());
+            mqJo.put("reqSn", orderForm.getPaymentSn());
+            mqJo.put("sendCount", 0);
+            MqProducer.sendMessage(mqJo, MqConfig.TICKET_HANDLE_REFUND_ORDER_RESULT, 2000);
         } else {
             log.info("订单[" + orderForm.getId() + "]--退款单[" + refundOrderFlow.getId() + "]" + "退款失败");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_REFUND_FAIL.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_REFUND_FAIL.getValue());
             refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.REFUND_FAIL.getId());
+            this.refundOrderFlowService.update(refundOrderFlow);
+            this.orderFormService.update(orderForm);
         }
-        this.orderFormService.update(orderForm);
-        this.refundOrderFlowService.update(refundOrderFlow);
     }
 }
