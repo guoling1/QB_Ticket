@@ -137,7 +137,7 @@
               float: left;
               position: relative;
               top: 5px;
-left: 67px;
+              left: 67px;
             }
           }
 

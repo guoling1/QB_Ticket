@@ -23,8 +23,10 @@ const state = {
       Z: true,
       K: true
     },
-    startTime: '',
-    endTime: ''
+    startTime: '0',
+    endTime: '0',
+    ticket:true,
+    sort:true
   }
 };
 

@@ -3,11 +3,11 @@
     <router-view></router-view>
 
     <div class="bottom">
-      <div class="btn" :class="">
+      <div class="btn" v-bind:class="{active:$select}" @click="timer">
         <div class="icon icon-time"></div>
         <p>出发 早→晚</p>
       </div>
-      <div class="btn" :class="">
+      <div class="btn" v-bind:class="{active:$select}" @click="ticket">
         <div class="icon icon-quick"></div>
         <p>只看高铁动车</p>
       </div>
@@ -33,7 +33,8 @@
     },
     data () {
       return {
-        pathName: this.$route.name
+        pathName: this.$route.name,
+        select:!this.$store.state.screen.config.trains.D&&!this.$store.state.screen.config.trains.G
       }
     },
     watch: {
@@ -46,7 +47,34 @@
         this.$store.commit('SCREEN_OPEN', {
           ctrl: true
         });
+      },
+      ticket:function(){
+        var obj={D: false,G: false,Z: true,K: true};
+        var obj1={D: true,G: true,Z: true,K: true};
+        this.$data.select=!this.$data.select;
+        if(this.$data.select){
+          this.$store.state.screen.config.trains=obj;
+        }else {
+          this.$store.state.screen.config.trains=obj1;
+        }
+      },
+      timer:function(){
+        //安行驶时间排序
+        function sort(arr){
+          arr.sort(function(a,b){
+            return a.run_time_minute-b.run_time_minute;
+          })
+        }
+        if(this.$data.select){
+        //  sort()
+        }
       }
+    },
+    computed:{
+      $select:function (){
+        return this.$data.select
+      }
+
     }
   }
 </script>
@@ -108,7 +136,12 @@
         font-size: 11px;
         color: #585858;
         margin-top: 5px;
+
+
       }
+    }
+    .active p{
+      color: #1ca0e2;
     }
   }
 </style>
