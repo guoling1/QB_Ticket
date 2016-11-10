@@ -117,4 +117,10 @@ public interface TicketService {
      * @param grabTicketFormId
      */
     void returnToGrabFail(final long grabTicketFormId);
+
+    /**
+     * 请求抢票实现
+     * @param grabTicketFormId
+     */
+    void requestGrabImpl(long grabTicketFormId)throws Exception;
 }

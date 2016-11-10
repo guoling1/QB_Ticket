@@ -6,7 +6,7 @@ import com.jkm.entity.GrabTicketForm;
 import com.jkm.entity.RefundOrderFlow;
 import com.jkm.enums.EnumGrabTicketStatus;
 import com.jkm.enums.EnumRefundOrderFlowStatus;
-import com.jkm.service.GrabTicketFromService;
+import com.jkm.service.GrabTicketFormService;
 import com.jkm.service.RefundOrderFlowService;
 import com.jkm.service.ReturnMoneyOrderService;
 import com.jkm.service.TicketService;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
  * Created by yuxiang on 2016-11-07.
  */
 @Service
-public class GrabTicketFromServiceImpl implements GrabTicketFromService {
+public class GrabTicketFormServiceImpl implements GrabTicketFormService {
 
     @Autowired
     private GrabTicketFromDao grabTicketFromDao;

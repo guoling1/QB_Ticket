@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by yuxiang on 2016-11-07.
  */
-public interface GrabTicketFromService {
+public interface GrabTicketFormService {
 
     /**
      *

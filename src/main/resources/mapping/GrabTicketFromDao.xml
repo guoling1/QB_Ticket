@@ -33,7 +33,7 @@
         order_number,
         passenger_info,
         remark,
-        status,
+        status
         )VALUES(
         #{uid},
         #{orderId},

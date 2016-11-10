@@ -155,9 +155,9 @@ public class GrabTicketForm extends BaseEntity {
     private String remark;
 
 
-    public boolean isWaitForPay() {
+    public boolean isPaySuccess() {
 
-        return EnumGrabTicketStatus.GRAB_FORM_PAY_WAIT.getId() == this.getStatus();
+        return EnumGrabTicketStatus.GRAB_FORM_PAY_SUCCESS.getId() == this.getStatus();
     }
 
     public boolean isCanCancel(){
