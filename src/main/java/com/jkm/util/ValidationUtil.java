@@ -1,5 +1,8 @@
 package com.jkm.util;
-import java.util.regex.Matcher;  
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;  
 /**
  * 描述：验证工具类<br>
@@ -391,5 +394,12 @@ public class ValidationUtil {
             luhmSum += k;
         }
         return (luhmSum % 10 == 0) ? '0' : (char)((10 - luhmSum % 10) + '0');
+    }
+
+    public static String getShortCardNo(String cardNo){
+        String result = "";
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(cardNo), "卡号不能为空");
+        result="***"+cardNo.substring(cardNo.length()-4,cardNo.length());
+        return result;
     }
 }  

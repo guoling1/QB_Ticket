@@ -31,31 +31,42 @@ public class FusionController extends BaseController {
     private AuthenService authenService;
 
     /**
-     * 立即支付
+     * 立即支付(首次)
      *
      * @param requestData
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/toPay", method = RequestMethod.POST)
-    public ResponseEntityBase<JSONObject> toPay() {
-        ResponseEntityBase<JSONObject> result = new ResponseEntityBase<>();
+    public JSONObject toPay() {
+        JSONObject responseJo = new JSONObject();
         try{
             JSONObject jo = super.getRequestJsonParams();
-            Map<String, Object> map = authenService.toPay(jo);
-            if ((boolean)map.get("retCode")==true) {
-                result.setCode(2000);
-                result.setData((JSONObject)map.get("retData"));
-                result.setMessage("支付成功");
-            }else {
-                result.setCode(2001);
-                result.setMessage(map.get("retMsg").toString());
-            }
+            responseJo = authenService.toPay(jo);
         }catch(Exception e){
-            result.setCode(2001);
-            result.setMessage("支付失败");
+            responseJo.put("result",false);
+            responseJo.put("message",e.getMessage());
         }
-        return result;
+        return responseJo;
+    }
+    /**
+     * 立即支付(多次)
+     *
+     * @param requestData
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/toPayByCid", method = RequestMethod.POST)
+    public JSONObject toPayByCid() {
+        JSONObject responseJo = new JSONObject();
+        try{
+            JSONObject jo = super.getRequestJsonParams();
+            responseJo = authenService.toPayByCid(jo);
+        }catch(Exception e){
+            responseJo.put("result",false);
+            responseJo.put("message",e.getMessage());
+        }
+        return responseJo;
     }
 
 }

@@ -64,7 +64,7 @@ public class BindCardController extends BaseController {
             JSONObject requestJson = super.getRequestJsonParams();
             String uid = super.getUid(requestJson.getString("appid"),requestJson.getString("uid"));
             log.info("银行卡参数："+requestJson.toString());
-            List<BindCard> list = bindCardService.selectByUid(uid);
+            JSONObject list = bindCardService.selectByUid(uid);
             responseJson.put("result", true);
             responseJson.put("data",list);
             responseJson.put("message", "调用成功");
