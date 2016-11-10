@@ -25,10 +25,7 @@ import com.jkm.entity.OrderForm;
 import com.jkm.entity.fusion.QueryQuickPayData;
 import com.jkm.entity.fusion.QueryRefundData;
 import com.jkm.entity.fusion.SingleRefundData;
-import com.jkm.service.AuthenService;
-import com.jkm.service.BindCardService;
-import com.jkm.service.OrderFormService;
-import com.jkm.service.TicketService;
+import com.jkm.service.*;
 import com.jkm.util.DateFormatUtil;
 import com.jkm.util.SnGenerator;
 import com.jkm.util.mq.MqConfig;
@@ -50,15 +47,10 @@ public class MessageListenerImpl implements MessageListener {
     private TicketService ticketService;
     @Autowired
     private OrderFormService orderFormService;
-
     @Override
     public Action consume(Message message, ConsumeContext consumeContext) {
         try {
-//            System.out.println(new Date() + " Receive message, Topic is:" +
-//                    message.getTopic() + ", MsgId is:" + message.getMsgID()+",body is:"+new String(message.getBody(),"UTF-8")+" tags is:"
-//                    +message.getTag());
-
-            if(MqConfig.FAST_PAY_QUERY.equals(message.getTag())){//快捷支付
+            if(MqConfig.FAST_PAY_QUERY.equals(message.getTag())){//流水单支付结果查询
                 String body = new String(message.getBody(),"UTF-8");
                 JSONObject jo = JSONObject.fromObject(body);
                 QueryQuickPayData queryQuickPayData = new QueryQuickPayData();
@@ -71,43 +63,70 @@ public class MessageListenerImpl implements MessageListener {
                     if("S".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//成功
                         ticketService.handleCustomerPayMsg(jo.getLong("orderId"),jo.getString("reqSn"),true);
                     }else if("U".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//处理中 再次发送请求
-                        MqProducer.sendMessage(jo,MqConfig.FAST_PAY_QUERY,10000);//再次发请求
-                    }else if("N".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//待支付
-
+                        if(jo.getInt("sendCount")<5){
+                            jo.put("sendCount",jo.getInt("sendCount")+1);
+                            MqProducer.sendMessage(jo,MqConfig.FAST_PAY_QUERY,10000);//再次发请求
+                        }else if(jo.getInt("sendCount")>5&&jo.getInt("sendCount")<15){
+                            jo.put("sendCount",jo.getInt("sendCount")+1);
+                            MqProducer.sendMessage(jo,MqConfig.FAST_PAY_QUERY,60000);//再次发请求
+                        }else{
+                            ticketService.handleCustomerPayMsg(jo.getLong("orderId"),jo.getString("reqSn"),false);
+                        }
                     }else if("F".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//失败
                         ticketService.handleCustomerPayMsg(jo.getLong("orderId"),jo.getString("reqSn"),false);
                     }
                 }else if("-1000".equals(resultMap.get("retCode").toString())){//连接超时
-                    MqProducer.sendMessage(jo,MqConfig.FAST_PAY_QUERY,10000);//再次发请求
+                    if(jo.getInt("sendCount")<5){
+                        jo.put("sendCount",jo.getInt("sendCount")+1);
+                        MqProducer.sendMessage(jo,MqConfig.FAST_PAY_QUERY,10000);//再次发请求
+                    }else if(jo.getInt("sendCount")>5&&jo.getInt("sendCount")<15){
+                        jo.put("sendCount",jo.getInt("sendCount")+1);
+                        MqProducer.sendMessage(jo,MqConfig.FAST_PAY_QUERY,60000);//再次发请求
+                    }else{
+                        ticketService.handleCustomerPayMsg(jo.getLong("orderId"),jo.getString("reqSn"),false);
+                    }
                 }
-            }else if(MqConfig.SINGLE_REFUND_QUERY.equals(message.getTag())){//退款
-                System.out.println("msgId ====="+message.getMsgID());
+            }else if(MqConfig.FAST_PAY_GRAB_QUERY.equals(message.getTag())){//快捷支付抢票单查询
                 String body = new String(message.getBody(),"UTF-8");
                 JSONObject jo = JSONObject.fromObject(body);
-                QueryRefundData queryRefundData = new QueryRefundData();
-                queryRefundData.setReqSn(SnGenerator.generate());
-                queryRefundData.setQuerySn(jo.getString("reqSn"));
-                Map<String, Object> resultMap =  authenService.queryRefund(queryRefundData);
+                QueryQuickPayData queryQuickPayData = new QueryQuickPayData();
+                queryQuickPayData.setReqSn(SnGenerator.generate());
+                queryQuickPayData.setMercOrdNo(jo.getString("reqSn"));
+                queryQuickPayData.setMercOrdDt(jo.getString("dt"));
+                Map<String, Object> resultMap =  authenService.queryQuickPay(queryQuickPayData);
                 if("0000".equals(resultMap.get("retCode").toString())){
                     Optional<OrderForm> orderFormOptional = orderFormService.selectByReqSn(jo.getString("reqSn"));
                     if("S".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//成功
-                        ticketService.handleCustomerPayMsg(jo.getLong("orderId"),jo.getString("reqSn"),true);
+                        ticketService.handleGrabCustomerPayMsg(jo.getLong("orderId"),jo.getString("reqSn"),true);
                     }else if("U".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//处理中 再次发送请求
-                        MqProducer.sendMessage(jo,MqConfig.SINGLE_REFUND_QUERY,10000);//再次发请求
-                    }else if("N".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//待支付
-
+                        if(jo.getInt("sendCount")<30) {
+                            jo.put("sendCount", jo.getInt("sendCount") + 1);
+                            MqProducer.sendMessage(jo, MqConfig.FAST_PAY_GRAB_QUERY, 10000);//再次发请求
+                        }else if(jo.getInt("sendCount")>5&&jo.getInt("sendCount")<15){
+                            jo.put("sendCount",jo.getInt("sendCount")+1);
+                            MqProducer.sendMessage(jo,MqConfig.FAST_PAY_GRAB_QUERY,60000);//再次发请求
+                        }else{
+                            ticketService.handleGrabCustomerPayMsg(jo.getLong("orderId"),jo.getString("reqSn"),false);
+                        }
                     }else if("F".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//失败
-                        ticketService.handleCustomerPayMsg(jo.getLong("orderId"),jo.getString("reqSn"),false);
+                        ticketService.handleGrabCustomerPayMsg(jo.getLong("orderId"),jo.getString("reqSn"),false);
                     }
-                }else if("-1000".equals(resultMap.get("retCode").toString())){
-                    MqProducer.sendMessage(jo,MqConfig.SINGLE_REFUND_QUERY,10000);//再次发请求
+                }else if("-1000".equals(resultMap.get("retCode").toString())){//连接超时
+                    if(jo.getInt("sendCount")<5) {
+                        jo.put("sendCount",jo.getInt("sendCount")+1);
+                        MqProducer.sendMessage(jo,MqConfig.FAST_PAY_GRAB_QUERY,10000);//再次发请求
+                    }else if(jo.getInt("sendCount")>5&&jo.getInt("sendCount")<15){
+                        jo.put("sendCount",jo.getInt("sendCount")+1);
+                        MqProducer.sendMessage(jo,MqConfig.FAST_PAY_GRAB_QUERY,60000);//再次发请求
+                    }else{
+                        ticketService.handleGrabCustomerPayMsg(jo.getLong("orderId"),jo.getString("reqSn"),false);
+                    }
                 }
-            } else if (MqConfig.TICKET_CANCEL_EXPIRED_ORDER.equals(message.getTag())) {//取消订单
-                String body = new String(message.getBody(),"UTF-8");
-                JSONObject jo = JSONObject.fromObject(body);
-                this.orderFormService.handleExpiredOrderForm(jo.getLong("orderFormId"));
             }
         } catch (UnsupportedEncodingException e) {
+
+        } catch (Exception e) {
+
         }
         //如果想测试消息重投的功能,可以将Action.CommitMessage 替换成Action.ReconsumeLater
         return Action.CommitMessage;

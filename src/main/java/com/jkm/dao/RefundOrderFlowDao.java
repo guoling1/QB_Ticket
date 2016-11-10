@@ -1,5 +1,6 @@
 package com.jkm.dao;
 
+import com.jkm.entity.GrabTicketForm;
 import com.jkm.entity.RefundOrderFlow;
 import org.apache.ibatis.annotations.Param;
 
@@ -38,4 +39,12 @@ public interface RefundOrderFlowDao {
      * @return
      */
     RefundOrderFlow selectByOrderFormId(@Param("orderFormId") long orderFormId);
+
+    /**
+     * 按抢票单id查询
+     *
+     * @param grabTicketFormId
+     * @return
+     */
+    RefundOrderFlow selectByGrabTicketFormId(@Param("grabTicketFormId") long grabTicketFormId);
 }

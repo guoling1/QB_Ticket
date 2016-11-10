@@ -14,7 +14,7 @@ public interface BindCardService {
      * 查询（根据uid查询）
      *
      **/
-    List<BindCard> selectByUid (String uid);
+    JSONObject selectByUid (String uid);
     /**
      *
      * 查询（根据主键ID查询）
@@ -41,7 +41,13 @@ public interface BindCardService {
      * 添加 （匹配有值的字段）
      *
      **/
-    JSONObject insertSelective(BindCard record );
+    JSONObject insertSelective(JSONObject record );
+    /**
+     *
+     * 添加对象
+     *
+     **/
+    JSONObject insertBindCard(BindCard record );
 
     /**
      *

@@ -35,37 +35,34 @@ public class WebsiteServiceImpl implements WebsiteService {
      * @return
      */
     @Override
-    public long addWebSite(String data, String uid, String appid) {
+    public long addWebSite(String data, String uid, String appid) throws Exception {
         long backId = 0;
-        try {
-            JSONObject webSiteInfo = JSONObject.fromObject(data);
-            String tempData = DESUtil.encrypt(data);
-            JSONObject jo = new JSONObject();
-            jo.put("data",tempData);
-            jo.put("accountversion","2");
-            //①
-            JSONObject responseJson = HttpClientUtil.sendPost(jo, HySdkConstans.ACCOUNT_VALIDATE_URL);
-            if(responseJson.getBoolean("success")){
-                UserInfo userInfo = new UserInfo();
-                userInfo.setStatus(0);
-                userInfo.setUid(appid+"_"+uid);
-                userInfo.setAppId(appid);
-                userInfo.setAccount(webSiteInfo.getString("trainAccount"));
-                userInfo.setPwd(UserBankCardSupporter.encryptPwd(webSiteInfo.getString("pass")));
-                UserInfo userInfoResult = userInfoService.selectByUid(uid);
-                //②
-                if(userInfoResult==null){
-                    backId = userInfoService.insert(userInfo);
-                }else{
-                    userInfo.setId(userInfoResult.getId());
-                    int updataRows = userInfoService.updateByPrimaryKeySelective(userInfo);
-                    if(updataRows>0){//修改成功
-                        backId = userInfoResult.getId();
-                    }
+
+        JSONObject webSiteInfo = JSONObject.fromObject(data);
+        String tempData = DESUtil.encrypt(data);
+        JSONObject jo = new JSONObject();
+        jo.put("data",tempData);
+        jo.put("accountversion","2");
+        //①
+        JSONObject responseJson = HttpClientUtil.sendPost(jo, HySdkConstans.ACCOUNT_VALIDATE_URL);
+        if(responseJson.getBoolean("success")){
+            UserInfo userInfo = new UserInfo();
+            userInfo.setStatus(0);
+            userInfo.setUid(uid);
+            userInfo.setAppId(appid);
+            userInfo.setAccount(webSiteInfo.getString("trainAccount"));
+            userInfo.setPwd(UserBankCardSupporter.encryptPwd(webSiteInfo.getString("pass")));
+            UserInfo userInfoResult = userInfoService.selectByUid(uid);
+            //②
+            if(userInfoResult==null){
+                backId = userInfoService.insert(userInfo);
+            }else{
+                userInfo.setId(userInfoResult.getId());
+                int updataRows = userInfoService.updateByPrimaryKeySelective(userInfo);
+                if(updataRows>0){//修改成功
+                    backId = userInfoResult.getId();
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return backId;
     }
@@ -79,6 +76,7 @@ public class WebsiteServiceImpl implements WebsiteService {
     public void importContacts(String uid) {
         UserInfo userInfoResult = userInfoService.selectByUid(uid);
         Preconditions.checkNotNull(userInfoResult,"登录信息异常");
+        Preconditions.checkNotNull(userInfoResult.getAccount(),"未添加12306账号或账户异常，不能使用此功能");
         JSONObject userInfoJson = new JSONObject();
         userInfoJson.put("trainAccount",userInfoResult.getAccount());
         userInfoJson.put("pass",DESUtil.decrypt(userInfoResult.getPwd()));

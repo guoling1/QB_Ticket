@@ -102,5 +102,17 @@
     <select id="selectByIdWithLock" resultType="com.jkm.entity.OrderFormDetail">
         SELECT * FROM tb_order_form_detail WHERE id = #{id}  FOR UPDATE
     </select>
+    <select id="selectAllTicketsNoReFund" resultType="com.jkm.entity.OrderFormDetail">
+        SELECT * FROM tb_order_form_detail WHERE order_form_id = #{orderFormId} and status = #{status}
+    </select>
+    <select id="selectOrderFormNum" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM tb_order_form_detail WHERE order_form_id = #{orderFormId}
+    </select>
+    <select id="selectAllTicketsNoReFundGrab" resultType="com.jkm.entity.OrderFormDetail">
+        SELECT * FROM tb_order_form_detail WHERE grab_order_form_id = #{grabOrderFormId} and status = #{status}
+    </select>
+    <select id="selectGrabFormNumGrab" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM tb_order_form_detail WHERE grab_order_form_id = #{grabOrderFormId}
+    </select>
 
 </mapper>

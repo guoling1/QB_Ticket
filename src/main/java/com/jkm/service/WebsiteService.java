@@ -13,7 +13,7 @@ public interface WebsiteService {
      * @param appid
      * @return
      */
-    long addWebSite(String data,String uid, String appid);
+    long addWebSite(String data,String uid, String appid) throws Exception;
 
     /**
      * 一键导入联系人

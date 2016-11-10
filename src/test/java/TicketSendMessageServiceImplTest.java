@@ -29,9 +29,9 @@ public class TicketSendMessageServiceImplTest {
 //    @Test
 //    public void testPayment() {
 //        final SendPaymentParam sendPaymentParam = new SendPaymentParam();
-//        sendPaymentParam.setUid("wnl-123457");
+//        sendPaymentParam.setUid("1-1");
 //        sendPaymentParam.setCode("654321");
-//        sendPaymentParam.setMobile("18640426296");
+//        sendPaymentParam.setMobile("13146716739");
 //        sendPaymentParam.setAmount("100");
 //        this.ticketSendMessageService.sendPaymentMessage(sendPaymentParam);
 //    }

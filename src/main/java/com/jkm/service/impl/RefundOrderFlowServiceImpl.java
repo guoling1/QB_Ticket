@@ -2,6 +2,7 @@ package com.jkm.service.impl;
 
 import com.google.common.base.Optional;
 import com.jkm.dao.RefundOrderFlowDao;
+import com.jkm.entity.GrabTicketForm;
 import com.jkm.entity.RefundOrderFlow;
 import com.jkm.service.RefundOrderFlowService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,5 +58,16 @@ public class RefundOrderFlowServiceImpl implements RefundOrderFlowService {
     @Override
     public Optional<RefundOrderFlow> selectByOrderFormId(final long id) {
         return Optional.fromNullable(this.refundOrderFlowDao.selectByOrderFormId(id));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param grabTicketFormId
+     * @return
+     */
+    @Override
+    public Optional<RefundOrderFlow> selectByGrabTicketFormId(long grabTicketFormId) {
+        return Optional.fromNullable(this.refundOrderFlowDao.selectByGrabTicketFormId(grabTicketFormId));
     }
 }

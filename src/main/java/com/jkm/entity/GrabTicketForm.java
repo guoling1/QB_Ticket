@@ -43,11 +43,11 @@ public class GrabTicketForm extends BaseEntity {
      */
     private int ticketNum;
     /**
-     * 抢票火车票的总价格
+     * 抢票火车票的总价格(预付款)
      */
     private BigDecimal grabTicketTotalPrice;
     /**
-     * 抢票订单总价格
+     * 抢票订单总价格(预付款)
      */
     private BigDecimal grabTotalPrice;
     /**
@@ -155,7 +155,12 @@ public class GrabTicketForm extends BaseEntity {
     private String remark;
 
 
-    public boolean isWaitForPay() {
+    public boolean isPaySuccess() {
+
+        return EnumGrabTicketStatus.GRAB_FORM_PAY_SUCCESS.getId() == this.getStatus();
+    }
+
+    public boolean isCanCancel(){
 
         return EnumGrabTicketStatus.GRAB_FORM_PAY_WAIT.getId() == this.getStatus();
     }

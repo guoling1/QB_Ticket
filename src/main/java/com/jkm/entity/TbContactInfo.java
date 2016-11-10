@@ -1,5 +1,6 @@
 package com.jkm.entity;
 
+import com.jkm.entity.helper.UserBankCardSupporter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -103,4 +104,12 @@ public class TbContactInfo extends BaseEntity{
      *入学年份
      */
     private String enterYear;
+    /**
+     * 解密后的身份证
+     * @param cardNo
+     * @return
+     */
+    public String identyOrg(String identy) {
+        return UserBankCardSupporter.decryptCardId(identy);
+    }
 }

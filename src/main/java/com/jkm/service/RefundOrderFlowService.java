@@ -1,6 +1,7 @@
 package com.jkm.service;
 
 import com.google.common.base.Optional;
+import com.jkm.entity.GrabTicketForm;
 import com.jkm.entity.RefundOrderFlow;
 
 /**
@@ -38,4 +39,12 @@ public interface RefundOrderFlowService {
      * @return
      */
     Optional<RefundOrderFlow> selectByOrderFormId(long id);
+
+    /**
+     * 按抢票单id查询
+     *
+     * @param grabTicketFormId
+     * @return
+     */
+    Optional<RefundOrderFlow> selectByGrabTicketFormId(long grabTicketFormId);
 }

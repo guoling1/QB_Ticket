@@ -5,6 +5,7 @@
         INSERT INTO tb_refund_order_flow
         (
         order_form_id,
+        grab_ticket_form_id,
         payment_sn,
         order_date,
         refund_amount,
@@ -16,6 +17,7 @@
         VALUES
         (
         #{orderFormId},
+        #{grabTicketFormId},
         #{paymentSn},
         #{orderDate},
         #{refundAmount},
@@ -30,6 +32,7 @@
         UPDATE tb_refund_order_flow
         SET
         order_form_id = #{orderFormId},
+        grab_ticket_form_id = #{grabTicketFormId},
         payment_sn = #{paymentSn},
         order_date = #{date},
         refund_amount = #{refundAmount},
@@ -46,6 +49,9 @@
 
     <select id="selectByOrderFormId" resultType="com.jkm.entity.RefundOrderFlow">
         SELECT * FROM tb_refund_order_flow WHERE order_form_id = #{orderFormId}
+    </select>
+    <select id="selectByGrabTicketFormId" resultType="com.jkm.entity.RefundOrderFlow">
+        SELECT * FROM tb_refund_order_flow WHERE grab_ticket_form_id = #{grabTicketFormId}
     </select>
 
 </mapper>

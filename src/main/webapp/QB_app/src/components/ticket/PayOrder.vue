@@ -35,6 +35,7 @@
       <div class="space">
         <div class="cancel">取消订单</div>
       </div>
+      {{orderInfo}}
       <div class="submit">
         <div class="detail">
           <div class="tt">金额详情</div>
@@ -54,7 +55,7 @@
             <div class="amount">实付款<span class="red">￥</span><span class="red big">128.5</span></div>
             <div class="i"></div>
           </div>
-          <div class="right">提交订单</div>
+          <div class="right" @click="submit">立即支付</div>
         </div>
       </div>
     </div>
@@ -62,6 +63,7 @@
 </template>
 
 <script lang="babel">
+  import Vue from 'vue'
   import Datetime from './Datetime.vue';
   export default {
     name: 'menu',
@@ -70,23 +72,42 @@
     },
     data: function () {
       return {
-        msg: 'Welcome to Your Vue.js App'
+        common: {
+          appid: '',
+          uid: ''
+        },
+        orderInfo: ''
       }
+    },
+    beforeRouteEnter (to, from, next) {
+      Vue.http.post('/order/queryById', {
+        "orderFormId": to.query.id
+      }).then(function (res) {
+        if (res.data.code == 1) {
+          next(function (vm) {
+            vm.$data.orderInfo = res.data.data;
+            vm.$data.common.appid = to.query.appid;
+            vm.$data.common.uid = to.query.uid;
+          });
+        } else {
+          console.log(res.data.message);
+        }
+      }, function (err) {
+        console.log(err);
+        next(false);
+      });
     },
     methods: {
-      time: function (name) {
-        this.$store.commit('TIME_OPEN', {
-          name: name,
-          ctrl: true
+      submit: function () {
+        this.$router.push({
+          path: '/pay/first-add',
+          query: {
+            appid: this.$data.common.appid,
+            uid: this.$data.common.uid,
+            id: this.$data.orderInfo.orderFormId,
+            price: this.$data.orderInfo.price
+          }
         });
-      },
-      station: function () {
-        this.$store.commit('STATION_CTRL', true);
-      }
-    },
-    computed: {
-      dateONE () {
-        return this.$store.state.date.scope.dateONE.time;
       }
     }
   }

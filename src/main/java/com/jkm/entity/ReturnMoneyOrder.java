@@ -10,7 +10,7 @@ import java.util.Date;
 /**
  * Created by yuxiang on 2016-11-02.
  *
- * 退款单
+ * 车票退款单,
  * tb_return_money_order
  * {@link EnumReturnMoneyOrderStatus}
  */

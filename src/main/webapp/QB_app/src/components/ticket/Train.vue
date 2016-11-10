@@ -17,7 +17,7 @@
 
           <div class="topRight">
             <p>￥{{station.low_price}}<span>起</span></p>
-            <span class="time">{{station.run_time}}</span>
+            <span class="time">{{station.runTimeShow}}</span>
           </div>
           <div class="topMiddle">
             <div class="form">
@@ -59,6 +59,11 @@
     name: 'menu',
     data () {
       return {
+        common: {
+          appid: '',
+          uid: ''
+        },
+        startTime: '',
         only: false,
         initStations: [],
         // 火车票筛选信息
@@ -77,7 +82,20 @@
       }).then(function (res) {
         next(function (vm) {
           vm.$data.only = to.query.only;
+          for (let i = 0; i < res.body.data.length; i++) {
+            let runMin = res.body.data[i].run_time_minute;
+            let runH = 0;
+            let runM = 0;
+            if (runMin >= 60) {
+              runH = parseInt(runMin / 60);
+              runM = runMin % 60;
+            }
+            res.body.data[i]['runTimeShow'] = runH + '小时' + runM + '分钟';
+          }
           vm.$data.initStations = res.body.data;
+          vm.$data.startTime = to.query.date;
+          vm.$data.common.appid = to.query.appid;
+          vm.$data.common.uid = to.query.uid;
         });
       }, function (err) {
         console.log(err);
@@ -88,10 +106,23 @@
       router: function (event, station) {
         // 路由跳转前,查询信息必须被存储在 sessionStorage 存储时注意要转json
         sessionStorage.setItem('preOrder', JSON.stringify(station));
-        this.$router.push({path: '/ticket/submit-order', query: {startTime: '2016-12-06'}});
+        this.$router.push({
+          path: '/ticket/submit-order',
+          query: {appid: this.$data.common.appid, uid: this.$data.common.uid, startTime: this.$data.startTime}
+        });
       }
     },
     computed: {
+      time: function () {
+        let runMin = this.$data.initStations.run_time_minute;
+        let runH = 0;
+        let runM = 0;
+        if (runMin >= 60) {
+          runH = parseInt(runMin / 60);
+          runM = runMin % 60;
+        }
+        return runH + '小时' + runM + '分钟';
+      },
       stations () {
         if (this.initStations) {
           // 优先筛选条件

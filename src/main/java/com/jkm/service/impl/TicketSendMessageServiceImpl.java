@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 
 /**
@@ -37,7 +38,7 @@ public class TicketSendMessageServiceImpl implements TicketSendMessageService {
                 .userType(EnumUserType.FOREGROUND_USER)
                 .noticeType(EnumNoticeType.PAYMENT_CODE)
                 .mobile(sendPaymentParam.getMobile())
-                .data(data)
+                .data(data).sendTime(new Timestamp(System.currentTimeMillis()))
                 .build();
         this.sendMessageService.sendMessage(sendMessageParams);
     }
