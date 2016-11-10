@@ -3,7 +3,9 @@ package com.jkm.service.impl;
 import com.google.common.base.Preconditions;
 import com.jkm.dao.BindCardDao;
 import com.jkm.entity.BindCard;
+import com.jkm.entity.helper.UserBankCardSupporter;
 import com.jkm.service.BindCardService;
+import com.jkm.util.ValidationUtil;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +49,18 @@ public class BindCardServiceImpl implements BindCardService{
         Preconditions.checkNotNull(requestJson.get("phone"),"缺少手机号");
         Preconditions.checkNotNull(requestJson.get("isAgree"),"同意协议才能绑定银行卡");
         Preconditions.checkNotNull(requestJson.get("vCode"),"请输入验证码");
+        if(!ValidationUtil.checkBankCard(requestJson.getString("cardNo"))){
+            jo.put("result",false);
+            jo.put("message","银行卡号不正确");
+        }
+        if(!ValidationUtil.isIdCard(requestJson.getString("cardId"))){
+            jo.put("result",false);
+            jo.put("message","身份证号不正确");
+        }
+        if(!ValidationUtil.isMobile(requestJson.getString("phone"))){
+            jo.put("result",false);
+            jo.put("message","手机号不正确");
+        }
         if(requestJson.getInt("isAgree")!=0){
             jo.put("result",false);
             jo.put("message","请同意协议");
@@ -54,11 +68,10 @@ public class BindCardServiceImpl implements BindCardService{
         BindCard bindCard = new BindCard();
         bindCard.setCardType("00");
         bindCard.setUid(requestJson.getString("uid"));
-        bindCard.setCardNo(requestJson.getString("cardNo"));
+        bindCard.setCardNo(UserBankCardSupporter.decryptCardNo(requestJson.getString("cardNo")));
         bindCard.setAccountName(requestJson.getString("accountName"));
-        bindCard.setCardId(requestJson.getString("cardId"));
+        bindCard.setCardId(UserBankCardSupporter.decryptCardId(requestJson.getString("cardId")));
         bindCard.setPhone(requestJson.getString("phone"));
-
         int returnNum = bindCardDao.isAdd(bindCard.getCardNo());
         if(returnNum>0){
             jo.put("result",false);
