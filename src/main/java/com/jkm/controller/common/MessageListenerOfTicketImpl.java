@@ -25,6 +25,7 @@ import com.jkm.service.OrderFormService;
 import com.jkm.service.TicketService;
 import com.jkm.util.mq.MqConfig;
 import net.sf.json.JSONObject;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.UnsupportedEncodingException;
@@ -33,10 +34,9 @@ import java.io.UnsupportedEncodingException;
  * MQ消息处理类
  */
 public class MessageListenerOfTicketImpl implements MessageListener {
-    @Autowired
-    private AuthenService authenService;
-    @Autowired
-    private TicketService ticketService;
+
+    private static Logger log = Logger.getLogger(MessageListenerOfTicketImpl.class);
+
     @Autowired
     private OrderFormService orderFormService;
     @Autowired
@@ -44,25 +44,23 @@ public class MessageListenerOfTicketImpl implements MessageListener {
     @Override
     public Action consume(Message message, ConsumeContext consumeContext) {
         try {
-//            System.out.println(new Date() + " Receive message, Topic is:" +
-//                    message.getTopic() + ", MsgId is:" + message.getMsgID()+",body is:"+new String(message.getBody(),"UTF-8")+" tags is:"
-//                    +message.getTag());
+            final String body = new String(message.getBody(),"UTF-8");
+            final JSONObject jo = JSONObject.fromObject(body);
+            log.info("消费[过了支付时间的订单[" + jo.getLong("orderFormId") + "]]");
+            this.orderFormService.handleExpiredOrderForm(jo.getLong("orderFormId"));
             if ((MqConfig.TICKET_CANCEL_EXPIRED_ORDER).equals(message.getTag())){  //订单到期取消
-                String body = new String(message.getBody(),"UTF-8");
-                JSONObject jo = JSONObject.fromObject(body);
+
                 this.orderFormService.handleExpiredOrderForm(jo.getLong("orderFormId"));
             }else if (MqConfig.TICKET_CANCEL_EXPIRED_GRAB_ORDER.equals(message.getTag())) {//取消到期抢票订单
-                String body = new String(message.getBody(),"UTF-8");
-                JSONObject jo = JSONObject.fromObject(body);
+
                 this.grabTicketFormService.handleExpiredOGrabForm(jo.getLong("grabTicketFormId"));
             }else if (MqConfig.NO_PACKAGE_WAIT_REFUND.equals(message.getTag())) {//抢票订单没买套餐自动退款
-                String body = new String(message.getBody(),"UTF-8");
-                JSONObject jo = JSONObject.fromObject(body);
+
                 this.grabTicketFormService.handleNoPackageWaitRefund(jo.getLong("grabTicketFormId"));
             }
 
-
         } catch (UnsupportedEncodingException e) {
+            log.info("消费[过了支付时间的订单]异常", e);
         }
         //如果想测试消息重投的功能,可以将Action.CommitMessage 替换成Action.ReconsumeLater
         return Action.CommitMessage;
