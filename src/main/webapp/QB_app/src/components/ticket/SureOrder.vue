@@ -50,13 +50,15 @@
       <div class="space">
         <div class="group no-border">
           <div class="prompt">联系手机</div>
-          <div class="write no-prompt empty">通知出票信息</div>
+          <input type="text" class="ipt" placeholder="通知出票信息" v-model="sureOrder.mobile">
         </div>
       </div>
       <div class="space">
-        <div class="group no-border">
+        <div class="group no-border" @click="packShow">
           <div class="prompt">套餐类型</div>
-          <div class="write empty">123</div>
+          <div class="write empty" v-if="sureOrder.buyTicketPackageId==1">不购买</div>
+          <div class="write empty" v-if="sureOrder.buyTicketPackageId==2">￥20/人 极速出票</div>
+          <div class="write empty" v-if="sureOrder.buyTicketPackageId==3">￥30/人 优先出票</div>
         </div>
       </div>
       <div class="submit">
@@ -83,6 +85,16 @@
       </div>
     </div>
     <div class="loading" v-if="loading">占座中...</div>
+    <div class="pack" v-show="pack">
+      <div class="select">
+        <div class="xx"></div>
+        <ul>
+          <li @click="packHide(2)" v-bind:class="{active:sureOrder.buyTicketPackageId==2}"><span>¥ 20/人套餐</span> 极速出票，赠送78万保险</li>
+          <li @click="packHide(3)" v-bind:class="{active:sureOrder.buyTicketPackageId==3}"><span>¥ 30/人套餐</span> 优先出票，赠送300万保险</li>
+          <li @click="packHide(1)" v-bind:class="{active:sureOrder.buyTicketPackageId==1}">不购买 出票慢，失败的可能性增加</li>
+        </ul>
+      </div>
+    </div>
     <contacts></contacts>
   </div>
 </template>
@@ -113,7 +125,7 @@
         sureOrder: {
           appId: "",     //appid
           uid: "",  //用户id
-          mobile: '15010607970',   //联系手机号
+          mobile: '',   //联系手机号
           price: 00.0,    //票价
           fromStationName: "",  //出发站
           fromStationCode: "",     //出发站code
@@ -126,7 +138,7 @@
           endTime: "",           //到达时间
           runTime: "",           //运行分钟
           checi: "",           //车次
-          buyTicketPackageId: 1,    //出票套餐
+          buyTicketPackageId: 3,    //出票套餐
           passengers: [] // 乘客信息
         },
         otherData: {
@@ -136,7 +148,8 @@
           runShow: '',
           passengers: []
         },
-        loading: false
+        loading: false,
+        pack: false
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -167,14 +180,24 @@
       login: function () {
         this.$router.push({path: '/ticket/login'});
       },
+      packShow: function(){
+        this.$data.pack = true;
+      },
+      packHide: function(num){
+        this.$data.pack = false;
+        this.$data.sureOrder.buyTicketPackageId = num;
+      },
       submit: function () {
         var polling = '';
-        const pollFun = (id) => {
+        const pollFun = (id)=>{
           this.$http.post('/order/queryById', {orderFormId: id}).then(function (res) {
             if (res.data.code == 1 && res.data.data.status == 3) {
               clearInterval(polling);
-              this.$router.push({path: '/ticket/pay-order', query: {appid:this.$data.sureOrder.appId,uid:this.$data.sureOrder.uid,id: res.data.data.orderFormId}});
-            }else if(res.data.code == 1 && res.data.data.status == 4){
+              this.$router.push({
+                path: '/ticket/pay-order',
+                query: {appid: this.$data.sureOrder.appId, uid: this.$data.sureOrder.uid, id: res.data.data.orderFormId}
+              });
+            } else if (res.data.code == 1 && res.data.data.status == 4) {
               clearInterval(polling);
               console.log("占座失败");
             }
@@ -184,7 +207,7 @@
           if (res.data.code == 1) {
             // 这里 轮询 等待回调
             this.$data.loading = true;
-            polling = setInterval(function(){
+            polling = setInterval(function () {
               pollFun(res.data.data.orderFormId);
             }, 1500);
           } else {
@@ -398,6 +421,11 @@
         background: url("../../assets/prompt-arrow.png") no-repeat right;
         background-size: 7px 12px;
       }
+      .ipt {
+        float: left;
+        height: 54px;
+        border: none;
+      }
     }
 
   }
@@ -521,5 +549,52 @@
     font-size: 15px;
     color: #FFF;
     text-align: center;
+  }
+
+  .pack{
+    position: fixed;
+    top:0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 88;
+    background:rgba(0,0,0,0.5);
+    .select{
+      position: absolute;
+      width: 100%;
+      height: 50%;
+      background-color: #FFF;
+      left: 0;
+      bottom: 0;
+      .xx{
+        width: 14px;
+        height: 14px;
+        background: url("../../assets/xx.png") no-repeat center;
+        background-size: 14px 14px;
+        padding: 15px;
+      }
+      ul{
+        li{
+          width: 100%;
+          height: 45px;
+          line-height: 45px;
+          text-align: left;
+          padding-left: 15px;
+          color: #999;
+          border-bottom: 1px solid #f5f5f5;
+          span{
+            color: #000;
+          }
+          &.active{
+            color: #2ba7e5;
+            background: url("../../assets/select.png") no-repeat 320px;
+            background-size: 16px 11px;
+            span{
+              font-weight: bold;
+            }
+          }
+        }
+      }
+    }
   }
 </style>
