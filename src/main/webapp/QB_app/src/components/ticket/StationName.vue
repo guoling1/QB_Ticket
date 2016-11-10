@@ -18,21 +18,13 @@
       <div class="hot">
         <div class="t">热门</div>
         <ul>
-          <li>北京</li>
-          <li>上海</li>
-          <li>广州</li>
-          <li>深圳</li>
+          <li v-for="ht in hotCity" @click="close($event,ht.code,ht.city)">{{ht.city}}</li>
         </ul>
       </div>
-      <div class="shortcut">
-        <div class="i">A</div>
+      <div class="shortcut" v-for="(num,key) in list">
+        <div class="i">{{key}}</div>
         <ul>
-          <li>安顺</li>
-          <li>安阳</li>
-        </ul>
-        <div class="i">B</div>
-        <ul>
-          <li>霸州</li>
+          <li v-for="cope in num" @click="close($event,cope.code,cope.city)">{{cope.city}}</li>
         </ul>
       </div>
     </div>
@@ -42,15 +34,35 @@
 <script lang="babel">
   // 车站信息解析
   const station_names = require('../../station_name');
-  const stationList = {};
+  var stationList = [];
   for (let i = 0; i < station_names.split('@').length; i++) {
     let parsing_middleware = station_names.split('@')[i].split('|');
     stationList[parsing_middleware[5]] = {};
-    stationList[parsing_middleware[5]].city = parsing_middleware[1];
-    stationList[parsing_middleware[5]].code = parsing_middleware[2];
-    stationList[parsing_middleware[5]].fullname = parsing_middleware[3];
-    stationList[parsing_middleware[5]].shortname = parsing_middleware[4];
+    stationList[parsing_middleware[5]].city = parsing_middleware[1];//中文名
+    stationList[parsing_middleware[5]].code = parsing_middleware[2];//简称
+    stationList[parsing_middleware[5]].fullname = parsing_middleware[3];//拼音
+    stationList[parsing_middleware[5]].shortname = parsing_middleware[4];//缩写
     stationList['length'] = i;
+  }
+  for(var i=0; i<stationList.length-1; i++){
+    for(var j=0; j<stationList.length-1-i; j++){
+      if(stationList[j].fullname>stationList[j+1].fullname){
+        var tmp=stationList[j];
+        stationList[j]=stationList[j+1];
+        stationList[j+1]=tmp;
+      }
+    }
+  }
+  function list() {
+    var obj={A:[],B:[],C:[],D:[],E:[],F:[],G:[],H:[],I:[],J:[],K:[],L:[],M:[],N:[],O:[],P:[],Q:[],R:[],S:[],T:[],U:[],V:[],W:[],X:[],Y:[],Z:[]};
+    for (var k=0;k<stationList.length;k++){
+      for(var j in obj){
+        if(stationList[k].fullname[0].toUpperCase()==j){
+          obj[j].push(stationList[k]);
+        }
+      }
+    }
+    return obj
   }
   export default {
     name: 'Datetime',
@@ -58,7 +70,20 @@
       return {
         $result: false,
         $empty: false,
-        $search: []
+        $search: [],
+        hotCity:[{city:"北京",code:"BJP"},
+                  {city:"上海",code:"SHH"},
+                  {city:"杭州",code:"HZH"},
+                  {city:"广州",code:"GZQ"},
+                  {city:"南京",code:"NJH"},
+                  {city:"成都",code:"CDW"},
+                  {city:"西安",code:"XAY"},
+                  {city:"郑州",code:"ZZF"},
+                  {city:"深圳",code:"SZQ"},
+                  {city:"武汉",code:"WHN"},
+                  {city:"长沙",code:"CSQ"},
+                  {city:"天津",code:"TJP"}],
+        list:list()
       }
     },
     methods: {
@@ -71,6 +96,7 @@
         });
       },
       input: function (event) {
+        document.querySelector('.float').style.zIndex="10";
         let val = event.target.value;
         if (!val || val == "") {
           this.$data.$result = false;
@@ -153,7 +179,7 @@
     width: 100%;
     height: 100%;
     position: absolute;
-    z-index: 188;
+    z-index: -1;
   }
 
   .header {

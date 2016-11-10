@@ -47,6 +47,9 @@ public class TicketServiceImpl implements TicketService {
 
     private static Logger log = Logger.getLogger(TicketServiceImpl.class);
 
+    /**
+     * 单位分钟
+     */
     private static final int PAYMENT_MINUTE = 15;
 
     @Autowired
@@ -138,7 +141,7 @@ public class TicketServiceImpl implements TicketService {
         this.orderFormService.add(orderForm);
         final JSONArray passengerJsonArray = new JSONArray();
         for (RequestSubmitOrder.Passenger passenger : passengerList) {
-            final Optional<TbContactInfo> contactInfoOptional1 = contactInfoService.selectById(passenger.getId());
+            final Optional<TbContactInfo> contactInfoOptional1 = this.contactInfoService.selectById(passenger.getId());
             Preconditions.checkState(contactInfoOptional1.isPresent(), "乘客不存在");
             final TbContactInfo contactInfo = contactInfoOptional1.get();
             final OrderFormDetail orderFormDetail = new OrderFormDetail();
@@ -157,7 +160,7 @@ public class TicketServiceImpl implements TicketService {
             orderFormDetail.setPiaoType(passenger.getPiaoType());
             orderFormDetail.setStatus(EnumOrderFormDetailStatus.TICKET_INITIALIZATION.getId());
             orderFormDetail.setRemark(EnumOrderFormDetailStatus.TICKET_INITIALIZATION.getValue());
-            orderFormDetailService.add(orderFormDetail);
+            this.orderFormDetailService.add(orderFormDetail);
             passengerJsonObject.put("passengersename", contactInfo.getName());
             passengerJsonObject.put("passportseno", contactInfo.getIdenty());
             passengerJsonObject.put("passporttypeseid", contactInfo.getIdentyType());
@@ -224,8 +227,7 @@ public class TicketServiceImpl implements TicketService {
             orderForm.setTicketTotalPrice(new BigDecimal(jsonObject.getString("orderamount")));
             orderForm.setTotalPrice(orderForm.getTicketTotalPrice().add(orderForm.getBuyTicketPackagePrice()).add(orderForm.getGrabTicketPackagePrice()));
             orderForm.setOutOrderId(jsonObject.getString("transactionid"));
-            final Date expiredTime = new DateTime(new Date()).plusMinutes(PAYMENT_MINUTE).toDate();
-            orderForm.setExpireTime(expiredTime);
+            orderForm.setExpireTime(new DateTime(new Date()).plusMinutes(PAYMENT_MINUTE).toDate());
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getValue());
             this.orderFormService.update(orderForm);
@@ -260,7 +262,7 @@ public class TicketServiceImpl implements TicketService {
             //放入消息队列
             JSONObject mqJo = new JSONObject();
             mqJo.put("orderFormId",orderForm.getId());
-            MqProducer.sendMessage(mqJo, MqConfig.TICKET_CANCEL_EXPIRED_ORDER, 1000);
+            MqProducer.sendMessage(mqJo, MqConfig.TICKET_CANCEL_EXPIRED_ORDER, PAYMENT_MINUTE * 60 * 1000);
         } else {
             log.info("订单回调处理成功---占座失败");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_FAIL.getId());

@@ -29,7 +29,7 @@ public class SendGrabTicketFailParam {
     private String endStation;
 
     /**
-     * 出发日期
+     * 出发日期 yyyy-MM-dd
      */
     private String startDate;
 }
