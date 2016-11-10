@@ -209,9 +209,6 @@ public class TicketServiceImpl implements TicketService {
         log.info("订单[" + orderId + "]提交-回调处理中");
         final boolean success = jsonObject.getBoolean("success");
         final boolean orderSuccess = jsonObject.getBoolean("ordersuccess");
-        final String orderAmount = jsonObject.getString("orderamount");
-        final JSONArray passengers = jsonObject.getJSONArray("passengers");
-        Preconditions.checkState(!passengers.isEmpty(), "乘客列表为空了");
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByOrderId(orderId);
         Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + orderId + "]不存在");
         if (orderFormOptional.get().isOccupySuccessOrFail()) {//处理可能的多次回调
@@ -221,9 +218,11 @@ public class TicketServiceImpl implements TicketService {
         final Optional<OrderForm> orderFormOptional1 = this.orderFormService.selectByIdWithLock(orderFormOptional.get().getId());
         final OrderForm orderForm = orderFormOptional1.get();
         Preconditions.checkState(orderForm.isRequestOccupySeatRequesting(), "订单[" + orderId + "]状态不正确");
-        orderForm.setTicketTotalPrice(new BigDecimal(orderAmount));
         if (success && orderSuccess) {
+            final JSONArray passengers = jsonObject.getJSONArray("passengers");
+            Preconditions.checkState(!passengers.isEmpty(), "乘客列表为空了");
             log.info("订单回调处理成功---占座成功");
+            orderForm.setTicketTotalPrice(new BigDecimal(jsonObject.getString("orderamount")));
             orderForm.setTicketTotalPrice(new BigDecimal(jsonObject.getString("orderamount")));
             orderForm.setTotalPrice(orderForm.getTicketTotalPrice().add(orderForm.getBuyTicketPackagePrice()).add(orderForm.getGrabTicketPackagePrice()));
             orderForm.setOutOrderId(jsonObject.getString("transactionid"));
