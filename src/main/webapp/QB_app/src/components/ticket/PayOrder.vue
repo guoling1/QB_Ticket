@@ -72,6 +72,10 @@
     },
     data: function () {
       return {
+        common: {
+          appid: '',
+          uid: ''
+        },
         orderInfo: ''
       }
     },
@@ -82,6 +86,8 @@
         if (res.data.code == 1) {
           next(function (vm) {
             vm.$data.orderInfo = res.data.data;
+            vm.$data.common.appid = to.query.appid;
+            vm.$data.common.uid = to.query.uid;
           });
         } else {
           console.log(res.data.message);
@@ -96,6 +102,8 @@
         this.$router.push({
           path: '/pay/first-add',
           query: {
+            appid: this.$data.common.appid,
+            uid: this.$data.common.uid,
             id: this.$data.orderInfo.orderFormId,
             price: this.$data.orderInfo.price
           }
