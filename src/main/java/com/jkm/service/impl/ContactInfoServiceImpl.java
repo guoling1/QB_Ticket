@@ -6,6 +6,7 @@ import com.jkm.entity.TbContactInfo;
 import com.jkm.entity.helper.UserBankCardSupporter;
 import com.jkm.service.ContactInfoService;
 import com.jkm.util.IdcardInfoExtractor;
+import com.jkm.util.ValidationUtil;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,8 +144,13 @@ public class ContactInfoServiceImpl implements ContactInfoService {
 
     @Override
     public List<TbContactInfo> selectListByUid(String uid) {
-
-        return this.contactInfoDao.selectListByUid(uid);
+        List<TbContactInfo> list = this.contactInfoDao.selectListByUid(uid);
+        if(list!=null&&list.size()>0){
+            for(int i=0;i<list.size();i++){
+                list.get(i).setIdenty(UserBankCardSupporter.decryptCardId(list.get(i).getIdenty()));
+            }
+        }
+        return list;
     }
 
 }
