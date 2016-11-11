@@ -19,10 +19,8 @@ import com.aliyun.openservices.ons.api.Action;
 import com.aliyun.openservices.ons.api.ConsumeContext;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.MessageListener;
-import com.jkm.service.AuthenService;
 import com.jkm.service.GrabTicketFormService;
 import com.jkm.service.OrderFormService;
-import com.jkm.service.TicketService;
 import com.jkm.util.mq.MqConfig;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
@@ -33,9 +31,9 @@ import java.io.UnsupportedEncodingException;
 /**
  * MQ消息处理类
  */
-public class MessageListenerOfTicketImpl implements MessageListener {
+public class MessageListenerOfExpiredOrderImpl implements MessageListener {
 
-    private static Logger log = Logger.getLogger(MessageListenerOfTicketImpl.class);
+    private static Logger log = Logger.getLogger(MessageListenerOfExpiredOrderImpl.class);
 
     @Autowired
     private OrderFormService orderFormService;

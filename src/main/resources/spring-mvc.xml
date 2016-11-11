@@ -99,7 +99,7 @@
             </props>
         </property>
     </bean>
-
+    <bean class="com.jkm.util.BeanUtils" scope="singleton"/>
     <!--消费端-->
     <bean id="consumer" class="com.aliyun.openservices.ons.api.bean.ConsumerBean"
           init-method="start" destroy-method="shutdown">
@@ -118,23 +118,15 @@
                     <key>
                         <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
                             <property name="topic" value="${mq.topic}"/> <!-- Topic,请替换 -->
-                            <property name="expression" value="fastPayQuery||FAST_PAY_GRAB_QUERY"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
+                            <property name="expression" value="fastPayQuery||fastPayGrabQuery"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
                         </bean>
                     </key>
                 </entry>
-                <entry value-ref="messageListenerOfRefund">
+                <entry value-ref="MessageListenerOfExpiredOrder">
                     <key>
                         <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
                             <property name="topic" value="${mq.topic}"/> <!-- Topic,请替换 -->
-                            <property name="expression" value="singlRefundQuery"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
-                        </bean>
-                    </key>
-                </entry>
-                <entry value-ref="messageListenerOfTicket">
-                    <key>
-                        <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
-                            <property name="topic" value="${mq.topic}"/> <!-- Topic,请替换 -->
-                            <property name="expression" value="ticketCancelExpiredOrder"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
+                            <property name="expression" value="ticketCancelExpiredOrder||ticketCancelExpiredGrabOrder||noPackageWaitRefund"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
                         </bean>
                     </key>
                 </entry>
@@ -154,11 +146,8 @@
     <!-- 快捷支付消息处理器 -->
     <bean id="messageListener" class="com.jkm.controller.common.MessageListenerImpl"/>
 
-    <!-- 单笔退款消息处理器 -->
-    <bean id="messageListenerOfRefund" class="com.jkm.controller.common.MessageListenerOfRefundImpl"/>
-
     <!-- 处理过了支付时间的订单的消息处理器 -->
-    <bean id="messageListenerOfTicket" class="com.jkm.controller.common.MessageListenerOfTicketImpl"/>
+    <bean id="MessageListenerOfExpiredOrder" class="com.jkm.controller.common.MessageListenerOfExpiredOrderImpl"/>
 
     <!-- 处理订单退款在请求中的消息处理器 -->
     <bean id="messageListenerOfOrderRefund" class="com.jkm.controller.common.MessageListenerOfOrderRefundImpl"/>
