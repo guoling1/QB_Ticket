@@ -183,8 +183,6 @@ public class AuthenServiceImpl implements AuthenService {
 		detail.setID_TYPE("00");//只支持身份证
 		detail.setID(requestData.getIdNo());//证件号
 		detail.setTEL(requestData.getPhoneNo());//手机号
-		detail.setCRE_VAL_DATE("");
-		detail.setCRE_CVN2("");
 		body.setTransDetail(detail);
 		authen.setBody(body);
 		authen.setInfo(head);
@@ -593,13 +591,13 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("vCode")), "验证码不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("nonceStr")), "随机参数有误");
 
-		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(requestData.getString("phoneNo"),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
-		int resultType = codeStatus.getKey();
-		if(resultType!=1){
-			jo.put("result",false);
-			jo.put("message",codeStatus.getValue());
-			return jo;
-		}
+//		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(requestData.getString("phoneNo"),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
+//		int resultType = codeStatus.getKey();
+//		if(resultType!=1){
+//			jo.put("result",false);
+//			jo.put("message",codeStatus.getValue());
+//			return jo;
+//		}
 
 		if(!ValidationUtil.checkBankCard(requestData.getString("crdNo"))){
 			jo.put("result",false);
@@ -632,6 +630,7 @@ public class AuthenServiceImpl implements AuthenService {
 		authenData.setCapCrdNm(requestData.getString("capCrdNm"));
 		authenData.setIdNo(requestData.getString("idNo"));
 		authenData.setReqSn(SnGenerator.generate());
+		authenData.setAppId(requestData.getString("appid"));
 		authenData.setNonceStr(requestData.getString("nonceStr"));
 		orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId());
 		orderFormService.updateStatus(orderFormOptional.get());
@@ -696,6 +695,7 @@ public class AuthenServiceImpl implements AuthenService {
 		authenData.setCapCrdNm(bindCard.getAccountName());
 		authenData.setIdNo(UserBankCardSupporter.decryptCardId(bindCard.getCardId()));
 		authenData.setReqSn(SnGenerator.generate());
+		authenData.setAppId(requestData.getString("appid"));
 		authenData.setNonceStr(requestData.getString("nonceStr"));
 		orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId());
 		orderFormService.updateStatus(orderFormOptional.get());
@@ -788,7 +788,7 @@ public class AuthenServiceImpl implements AuthenService {
 		authenData.setIdNo(requestData.getString("idNo"));
 		authenData.setReqSn(SnGenerator.generate());
 		authenData.setNonceStr(requestData.getString("nonceStr"));
-
+		authenData.setAppId(requestData.getString("appid"));
 
 		Map<String, Object> ret = this.fastPay(authenData);
 		if("0000".equals(ret.get("retCode").toString())){//支付成功
@@ -857,6 +857,7 @@ public class AuthenServiceImpl implements AuthenService {
 		authenData.setIdNo(UserBankCardSupporter.decryptCardId(bindCard.getCardId()));
 		authenData.setReqSn(SnGenerator.generate());
 		authenData.setNonceStr(requestData.getString("nonceStr"));
+		authenData.setAppId(requestData.getString("appid"));
 		Map<String, Object> ret = this.fastPay(authenData);
 		if("0000".equals(ret.get("retCode").toString())){//支付成功
 			jo.put("result",true);
