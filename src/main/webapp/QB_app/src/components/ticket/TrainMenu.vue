@@ -3,15 +3,15 @@
     <router-view></router-view>
 
     <div class="bottom">
-      <div class="btn" v-bind:class="{active:$select}" @click="timer">
+      <div class="btn" v-bind:class="{active:$selectTime}" @click="timer">
         <div class="icon icon-time"></div>
-        <p>出发 早→晚</p>
+        <p id="form">出发 早→晚</p>
       </div>
-      <div class="btn" v-bind:class="{active:$select}" @click="ticket">
+      <div class="btn" v-bind:class="{active:$select}" @click="trains">
         <div class="icon icon-quick"></div>
         <p>只看高铁动车</p>
       </div>
-      <div class="btn" :class="">
+      <div class="btn" :class="{active:$ticket}" @click="ticketFn">
         <div class="icon icon-still"></div>
         <p>只看有票</p>
       </div>
@@ -34,7 +34,9 @@
     data () {
       return {
         pathName: this.$route.name,
-        select:!this.$store.state.screen.config.trains.D&&!this.$store.state.screen.config.trains.G
+        select:!this.$store.state.screen.config.trains.D&&!this.$store.state.screen.config.trains.G,
+        selectTime:!this.$store.state.screen.config.sort,
+        ticket:!this.$store.state.screen.config.ticket
       }
     },
     watch: {
@@ -48,7 +50,8 @@
           ctrl: true
         });
       },
-      ticket:function(){
+      //只看高铁动车
+      trains:function(){
         var obj={D: false,G: false,Z: true,K: true};
         var obj1={D: true,G: true,Z: true,K: true};
         this.$data.select=!this.$data.select;
@@ -58,21 +61,36 @@
           this.$store.state.screen.config.trains=obj1;
         }
       },
+      //出发早晚
       timer:function(){
-        //安行驶时间排序
-        function sort(arr){
-          arr.sort(function(a,b){
-            return a.run_time_minute-b.run_time_minute;
-          })
+        this.$data.selectTime=!this.$data.selectTime;
+        if(this.$data.selectTime){
+          this.$store.state.screen.config.sort=false;
+          document.querySelector("#form").innerHTML="历时 短→长"
+        }else {
+          this.$store.state.screen.config.sort=true
+          document.querySelector("#form").innerHTML="出发 早→晚"
         }
-        if(this.$data.select){
-        //  sort()
+      },
+      //是否有票
+      ticketFn:function () {
+        this.$data.ticket=!this.$data.ticket;
+        if(this.$data.ticket){
+          this.$store.state.screen.config.ticket=false;
+        }else {
+          this.$store.state.screen.config.ticket=true;
         }
       }
     },
     computed:{
       $select:function (){
         return this.$data.select
+      },
+      $selectTime:function(){
+        return this.$data.selectTime
+      },
+      $ticket:function(){
+        return this.$data.ticket
       }
 
     }
@@ -140,8 +158,26 @@
 
       }
     }
-    .active p{
-      color: #1ca0e2;
+    .btn.active {
+      p{
+        color: #1ca0e2;
+      }
+      .icon.icon-time {
+        background-image: url("../../assets/time-active.png");
+        //background-size: 16px 16px;
+      }
+      .icon.icon-quick {
+        background-image: url("../../assets/quick-active.png");
+        //background-size: 16px 16px;
+      }
+      .icon.icon-still {
+        background-image: url("../../assets/still-active.png");
+        //background-size: 16px 16px;
+      }
+      .icon.icon-screen {
+        background-image: url("../../assets/screen-active.png");
+        //background-size: 16px 16px;
+      }
     }
   }
 </style>

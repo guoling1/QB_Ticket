@@ -9,6 +9,7 @@ import App from '../../App';
 // 按需加载 2.组件分组打包
 const payMain = r => require.ensure([], () => r(require('../../components/pay/Main')), 'group-pay');
 const payFirstAdd = r => require.ensure([], () => r(require('../../components/pay/FirstAdd')), 'group-pay');
+const paySecondAdd = r => require.ensure([], () => r(require('../../components/pay/SecondAdd')), 'group-pay');
 
 export default {
   path: '/pay',
@@ -19,6 +20,11 @@ export default {
       path: 'first-add',
       name: 'firstAdd',
       component: payFirstAdd
+    },
+    {
+      path: 'second-add',
+      name: 'secondAdd',
+      component: paySecondAdd
     }
   ]
 }
