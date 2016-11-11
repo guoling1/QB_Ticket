@@ -96,7 +96,7 @@ public class MessageListenerOfOrderRefundImpl implements MessageListener {
         record.setOrderFormId(jo.getLong("orderFormId"));
         record.setGrabOrderFormId(0);
         record.setIsGrab(0);
-        record.setPaymentSn(jo.getString("reqSn"));
+        record.setPaymentSn(jo.getString("paymentSn"));
         record.setRefundAmount(new BigDecimal(jo.getString("refundAmount")));
         record.setStatus(0);
         record.setRemark("代购订单退款异常");
