@@ -3,6 +3,7 @@ package com.jkm.controller.api;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.jkm.controller.common.BaseController;
+import com.jkm.controller.helper.ResponseEntityBase;
 import com.jkm.service.WebsiteService;
 import com.jkm.util.DESUtil;
 import com.jkm.util.HttpClientUtil;
@@ -34,8 +35,8 @@ public class WebsiteController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/addWebSite", method = RequestMethod.POST)
-    public JSONObject addWebSite() throws Exception {
-        JSONObject responseJson = new JSONObject();
+    public ResponseEntityBase<Long> addWebSite() throws Exception {
+        ResponseEntityBase<Long> responseEntityBase = new ResponseEntityBase<Long>();
         try{
 
             JSONObject requestJson = super.getRequestJsonParams();
@@ -50,19 +51,18 @@ public class WebsiteController extends BaseController {
             String appid = requestJson.getString("appid");
             long backId = websiteService.addWebSite(data,super.getUid(appid,uid),appid);
             if(backId>0){
-                responseJson.put("result", true);
-                responseJson.put("data",backId);
-                responseJson.put("message", "登录成功");
+                responseEntityBase.setMessage("登录成功");
+                responseEntityBase.setData(backId);
             }else{
-                responseJson.put("result", false);
-                responseJson.put("message", "登录失败");
+                responseEntityBase.setCode(400);
+                responseEntityBase.setMessage("登录失败");
             }
         }catch(Exception e){
             log.info("添加12306账号失败");
-            responseJson.put("result", false);
-            responseJson.put("message", e.getMessage());
+            responseEntityBase.setCode(500);
+            responseEntityBase.setMessage(e.getMessage().toString());
         }
-        return responseJson;
+        return responseEntityBase;
     }
     /**
      * 导入12306联系人
@@ -71,19 +71,18 @@ public class WebsiteController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/importContacts", method = RequestMethod.POST)
-    public JSONObject importContacts(){
-        JSONObject responseJson = new JSONObject();
+    public ResponseEntityBase importContacts(){
+        ResponseEntityBase responseEntityBase = new ResponseEntityBase();
         try {
             JSONObject requestJson = super.getRequestJsonParams();
             String uid = super.getUid(requestJson.getString("appid"),requestJson.getString("uid"));
             websiteService.importContacts(uid);
-            responseJson.put("result", true);
-            responseJson.put("message", "导入成功");
+            responseEntityBase.setMessage("导入成功");
         } catch (Exception e) {
             log.info("导入失败");
-            responseJson.put("result", false);
-            responseJson.put("message", "导入成功");
+            responseEntityBase.setCode(500);
+            responseEntityBase.setMessage(e.getMessage().toString());
         }
-        return responseJson;
+        return responseEntityBase;
     }
 }

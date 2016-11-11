@@ -2,6 +2,7 @@ package com.jkm.controller.api;
 
 import com.google.common.base.Preconditions;
 import com.jkm.controller.common.BaseController;
+import com.jkm.controller.helper.ResponseEntityBase;
 import com.jkm.entity.BindCard;
 import com.jkm.service.BindCardService;
 import net.sf.json.JSONObject;
@@ -28,27 +29,26 @@ public class BindCardController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/bind", method = RequestMethod.POST)
-    public JSONObject bind(){
-        JSONObject responseJson = new JSONObject();
+    public ResponseEntityBase<Long> bind(){
+        ResponseEntityBase<Long> responseEntityBase = new ResponseEntityBase<Long>();
         try{
             JSONObject requestJson = super.getRequestJsonParams();
             log.info("银行卡参数："+requestJson.toString());
             requestJson.put("uid",super.getUid(requestJson.getString("appid"),requestJson.getString("uid")));
             JSONObject jo = bindCardService.insertSelective(requestJson);
             if(jo.getBoolean("success")){
-                responseJson.put("result", true);
-                responseJson.put("data",jo.getLong("data"));
-                responseJson.put("message", jo.getString("message"));
+                responseEntityBase.setMessage(jo.getString("message"));
+                responseEntityBase.setData(jo.getLong("data"));
             }else{
-                responseJson.put("result", false);
-                responseJson.put("message", jo.getString("message"));
+                responseEntityBase.setCode(400);
+                responseEntityBase.setMessage(jo.getString("message"));
             }
         }catch (Exception e){
-            log.info(e.getMessage());
-            responseJson.put("result", false);
-            responseJson.put("message", e.getMessage());
+            log.info("绑定银行卡异常");
+            responseEntityBase.setCode(500);
+            responseEntityBase.setMessage(e.getMessage().toString());
         }
-        return responseJson;
+        return responseEntityBase;
     }
 
     /**
@@ -58,22 +58,20 @@ public class BindCardController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/list", method = RequestMethod.POST)
-    public JSONObject list(){
-        JSONObject responseJson = new JSONObject();
+    public ResponseEntityBase<JSONObject> list(){
+        ResponseEntityBase<JSONObject> responseEntityBase = new ResponseEntityBase<JSONObject>();
         try {
             JSONObject requestJson = super.getRequestJsonParams();
             String uid = super.getUid(requestJson.getString("appid"),requestJson.getString("uid"));
             log.info("银行卡参数："+requestJson.toString());
             JSONObject list = bindCardService.selectByUid(uid);
-            responseJson.put("result", true);
-            responseJson.put("data",list);
-            responseJson.put("message", "调用成功");
+            responseEntityBase.setData(list);
         }catch (Exception e){
-            log.info(e.getMessage());
-            responseJson.put("result", false);
-            responseJson.put("message", "调用失败");
+            log.info("银行卡列表异常");
+            responseEntityBase.setCode(500);
+            responseEntityBase.setMessage("fail");
         }
-        return responseJson;
+        return responseEntityBase;
     }
 
     /**
@@ -82,8 +80,8 @@ public class BindCardController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public JSONObject delete(){
-        JSONObject responseJson = new JSONObject();
+    public ResponseEntityBase<Integer> delete(){
+        ResponseEntityBase<Integer> responseEntityBase = new ResponseEntityBase<Integer>();
         try {
             JSONObject requestJson = super.getRequestJsonParams();
             Preconditions.checkNotNull(requestJson.get("id"),"缺失参数id");
@@ -91,19 +89,18 @@ public class BindCardController extends BaseController {
             log.info("银行卡参数："+requestJson.toString());
             int backRows = bindCardService.updateState(id);
             if(backRows>0){
-                responseJson.put("result", true);
-                responseJson.put("data",backRows);
-                responseJson.put("message", "删除成功");
+                responseEntityBase.setMessage("删除成功");
+                responseEntityBase.setData(backRows);
             }else{
-                responseJson.put("result", false);
-                responseJson.put("message", "删除失败");
+                responseEntityBase.setCode(400);
+                responseEntityBase.setMessage("删除失败");
             }
         }catch (Exception e){
-            log.info(e.getMessage());
-            responseJson.put("result", false);
-            responseJson.put("message", "删除失败");
+            log.info("删除银行卡异常");
+            responseEntityBase.setCode(500);
+            responseEntityBase.setMessage("删除失败");
         }
-        return responseJson;
+        return responseEntityBase;
     }
 
 }
