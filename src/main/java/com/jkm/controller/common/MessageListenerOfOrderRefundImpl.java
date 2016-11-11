@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class MessageListenerOfOrderRefundImpl implements MessageListener {
 
-    private static Logger log = Logger.getLogger(MessageListenerOfTicketImpl.class);
+    private static Logger log = Logger.getLogger(MessageListenerOfOrderRefundImpl.class);
     @Autowired
     private AuthenService authenService;
 

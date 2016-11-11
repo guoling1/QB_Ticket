@@ -813,7 +813,7 @@ public class TicketServiceImpl implements TicketService {
     public void handleCustomerPayMsg(final long orderFormId, final String paymentSn, final boolean isPaySuccess) {
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByIdWithLock(orderFormId);
         final OrderForm orderForm = orderFormOptional.get();
-        Preconditions.checkState(orderForm.isOccupySuccess(), "处理客户付款，订单[%s]的状态不是占座成功状态！！！", orderFormId);
+        Preconditions.checkState(orderForm.isOccupySuccess() || orderForm.isCustomerPayFail(), "处理客户付款，订单[%s]的状态不是占座成功或者付款失败状态！！！", orderFormId);
         final Optional<ChargeMoneyOrder> chargeMoneyOrderOptional = this.chargeMoneyOrderService.selectByOrderFormId(orderFormId);
         Preconditions.checkState(chargeMoneyOrderOptional.isPresent(), "订单[%s]对应的收款记录不存在", orderFormId);
         final ChargeMoneyOrder chargeMoneyOrder = this.chargeMoneyOrderService.selectByIdWithLock(chargeMoneyOrderOptional.get().getId()).get();
