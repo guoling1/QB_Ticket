@@ -108,6 +108,7 @@ public class TicketController extends BaseController{
             results.setMessage("fail");
         }
         responseCancelOrder.setMsg(cancelOrderResult.getRight());
+        responseCancelOrder.setOrderFormId(request.getOrderFormId());
         results.setData(responseCancelOrder);
         return results;
     }
