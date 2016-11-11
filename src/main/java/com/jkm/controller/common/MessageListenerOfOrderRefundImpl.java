@@ -49,7 +49,8 @@ public class MessageListenerOfOrderRefundImpl implements MessageListener {
 
             final QueryRefundData queryRefundData = new QueryRefundData();
             queryRefundData.setReqSn(SnGenerator.generate());
-            queryRefundData.setQuerySn(jo.getString("reqSn"));
+            queryRefundData.setQuerySn(jo.getString("paymentSn"));
+//            queryRefundData.set
             final Map<String, Object> resultMap =  authenService.queryRefund(queryRefundData);
             if("0000".equals(resultMap.get("retCode").toString())){
                 if("S".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//成功
