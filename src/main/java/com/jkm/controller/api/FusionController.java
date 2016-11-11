@@ -60,7 +60,11 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("立即支付(首次)失败");
-            responseEntityBase.setMessage(e.getMessage().toString());
+            if(e.getMessage()==null){
+                responseEntityBase.setMessage("支付异常");
+            }else{
+                responseEntityBase.setMessage(e.getMessage().toString());
+            }
             responseEntityBase.setCode(500);
         }
         return responseEntityBase;
@@ -87,7 +91,11 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("立即支付(多次)失败");
-            responseEntityBase.setMessage(e.getMessage().toString());
+            if(e.getMessage()==null){
+                responseEntityBase.setMessage("支付异常");
+            }else{
+                responseEntityBase.setMessage(e.getMessage().toString());
+            }
             responseEntityBase.setCode(500);
         }
         return responseEntityBase;
@@ -115,7 +123,11 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("抢票单立即支付(首次)失败");
-            responseEntityBase.setMessage(e.getMessage().toString());
+            if(e.getMessage()==null){
+                responseEntityBase.setMessage("支付异常");
+            }else{
+                responseEntityBase.setMessage(e.getMessage().toString());
+            }
             responseEntityBase.setCode(500);
         }
         return responseEntityBase;
@@ -142,7 +154,11 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("立即支付(多次)异常");
-            responseEntityBase.setMessage(e.getMessage().toString());
+            if(e.getMessage()==null){
+                responseEntityBase.setMessage("支付异常");
+            }else{
+                responseEntityBase.setMessage(e.getMessage().toString());
+            }
             responseEntityBase.setCode(500);
         }
         return responseEntityBase;
@@ -170,7 +186,7 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("获取验证码异常");
-            responseEntityBase.setMessage(e.getMessage().toString());
+            responseEntityBase.setMessage("获取验证码异常");
             responseEntityBase.setCode(500);
         }
         return responseEntityBase;
@@ -240,6 +256,7 @@ public class FusionController extends BaseController {
             QueryRefundData queryRefundData =new QueryRefundData();
             queryRefundData.setQuerySn(jo.getString("querySn"));
             queryRefundData.setReqSn(SnGenerator.generate());
+            queryRefundData.setQueryDate(jo.getString("querySn").substring(0,8));
             Map<String, Object> result = authenService.queryRefund(queryRefundData);
             logger.info("结果："+result);
         }catch(Exception e){

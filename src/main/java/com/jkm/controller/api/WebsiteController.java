@@ -60,7 +60,7 @@ public class WebsiteController extends BaseController {
         }catch(Exception e){
             log.info("添加12306账号失败");
             responseEntityBase.setCode(500);
-            responseEntityBase.setMessage(e.getMessage().toString());
+            responseEntityBase.setMessage("添加账号失败");
         }
         return responseEntityBase;
     }
@@ -81,7 +81,7 @@ public class WebsiteController extends BaseController {
         } catch (Exception e) {
             log.info("导入失败");
             responseEntityBase.setCode(500);
-            responseEntityBase.setMessage(e.getMessage().toString());
+            responseEntityBase.setMessage("导入异常");
         }
         return responseEntityBase;
     }

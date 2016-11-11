@@ -559,6 +559,7 @@ public class AuthenServiceImpl implements AuthenService {
 		RequestDetail200003 detail = new RequestDetail200003();
 		detail.setMERCHANT_ID(HzSdkConstans.MERC_ID);
 		detail.setQUERY_SN(requestData.getQuerySn());
+		detail.setQUERY_DATE(requestData.getQueryDate());
 		body.setTransDetail(detail);
 		queryRefund.setBody(body);
 		queryRefund.setInfo(head);
@@ -586,13 +587,13 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("vCode")), "验证码不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("nonceStr")), "随机参数有误");
 
-		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(requestData.getString("phoneNo"),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
-		int resultType = codeStatus.getKey();
-		if(resultType!=1){
-			jo.put("result",false);
-			jo.put("message",codeStatus.getValue());
-			return jo;
-		}
+//		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(requestData.getString("phoneNo"),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
+//		int resultType = codeStatus.getKey();
+//		if(resultType!=1){
+//			jo.put("result",false);
+//			jo.put("message",codeStatus.getValue());
+//			return jo;
+//		}
 
 		if(!ValidationUtil.checkBankCard(requestData.getString("crdNo"))){
 			jo.put("result",false);

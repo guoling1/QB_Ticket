@@ -84,7 +84,7 @@ public class ContactInfoController extends BaseController {
             }
         }catch (Exception e){
             log.info("添加联系人信息异常");
-            responseEntityBase.setMessage(e.getMessage().toString());
+            responseEntityBase.setMessage(e.getMessage());
             responseEntityBase.setCode(500);
         }
         return responseEntityBase;
