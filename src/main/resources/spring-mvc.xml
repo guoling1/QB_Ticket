@@ -118,7 +118,7 @@
                     <key>
                         <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
                             <property name="topic" value="${mq.topic}"/> <!-- Topic,请替换 -->
-                            <property name="expression" value="fastPayQuery||FAST_PAY_GRAB_QUERY"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
+                            <property name="expression" value="fastPayQuery||fastPayGrabQuery"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
                         </bean>
                     </key>
                 </entry>
@@ -126,7 +126,7 @@
                     <key>
                         <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
                             <property name="topic" value="${mq.topic}"/> <!-- Topic,请替换 -->
-                            <property name="expression" value="ticketCancelExpiredOrder"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
+                            <property name="expression" value="ticketCancelExpiredOrder||ticketCancelExpiredGrabOrder||noPackageWaitRefund"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
                         </bean>
                     </key>
                 </entry>
