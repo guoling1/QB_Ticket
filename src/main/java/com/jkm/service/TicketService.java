@@ -123,4 +123,32 @@ public interface TicketService {
      * @param grabTicketFormId
      */
     void requestGrabImpl(long grabTicketFormId)throws Exception;
+
+    /**
+     * 车票退款 消息处理
+     *
+     * @param orderFormDetailId
+     * @param reqToken
+     * @param flag
+     * @param string
+     */
+    void handleOrderFormDeatailRefundResult(long orderFormDetailId, String reqToken, boolean flag, String string);
+
+    /**
+     * 抢票退还差价消息处理
+     *
+     * @param grabTicketFormId
+     * @param flag
+     * @param string
+     */
+    void handleGrabPartRefundResult(long grabTicketFormId, boolean flag, String string);
+
+    /**
+     * 抢票退还全部金额消息处理
+     *
+     * @param grabTicketFormId
+     * @param flag
+     * @param string
+     */
+    void handleGrabAllRefundResult(long grabTicketFormId, boolean flag, String string);
 }

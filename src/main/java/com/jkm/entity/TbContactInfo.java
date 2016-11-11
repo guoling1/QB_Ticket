@@ -106,7 +106,7 @@ public class TbContactInfo extends BaseEntity{
     private String enterYear;
     /**
      * 解密后的身份证
-     * @param cardNo
+     * @param identy
      * @return
      */
     public String identyOrg(String identy) {

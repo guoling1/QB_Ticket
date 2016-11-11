@@ -1,5 +1,6 @@
 package com.jkm.dao;
 
+import com.google.common.base.Optional;
 import com.jkm.entity.OrderFormDetail;
 import org.apache.ibatis.annotations.Param;
 
@@ -118,4 +119,7 @@ public interface OrderFormDetailDao {
      * @return
      */
     long selectGrabFormNumGrab(long grabOrderFormId);
+
+
+    OrderFormDetail selectByTicketNo(String ticketNo);
 }

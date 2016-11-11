@@ -44,4 +44,15 @@ public class RefundTicketFlowServiceImpl implements RefundTicketFlowService {
     public void update(RefundTicketFlow flow) {
         this.refundTicketFlowDao.update(flow);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param reqtoken
+     * @return
+     */
+    @Override
+    public RefundTicketFlow getByReqToken(String reqtoken) {
+        return this.refundTicketFlowDao.getByReqToken(reqtoken);
+    }
 }
