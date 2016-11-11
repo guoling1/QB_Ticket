@@ -12,6 +12,14 @@ const state = {
     stationTWO: {
       code: 'SZQ',
       station: '深圳'
+    },
+    stationTHREE: {
+      code: 'BJP',
+      station: '北京'
+    },
+    stationFOUR: {
+      code: '0',
+      station: '选择城市'
     }
   },
   now: ''
