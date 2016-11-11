@@ -12,6 +12,7 @@ import com.jkm.entity.fusion.SingleRefundData;
 import com.jkm.enums.notifier.EnumVerificationCodeType;
 import com.jkm.service.AuthenService;
 import com.jkm.service.notifier.SmsAuthService;
+import com.jkm.util.SnGenerator;
 import com.jkm.util.ValidationUtil;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.tuple.Pair;
@@ -59,7 +60,11 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("立即支付(首次)失败");
-            responseEntityBase.setMessage(e.getMessage().toString());
+            if(e.getMessage()==null){
+                responseEntityBase.setMessage("支付异常");
+            }else{
+                responseEntityBase.setMessage(e.getMessage().toString());
+            }
             responseEntityBase.setCode(500);
         }
         return responseEntityBase;
@@ -86,7 +91,11 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("立即支付(多次)失败");
-            responseEntityBase.setMessage(e.getMessage().toString());
+            if(e.getMessage()==null){
+                responseEntityBase.setMessage("支付异常");
+            }else{
+                responseEntityBase.setMessage(e.getMessage().toString());
+            }
             responseEntityBase.setCode(500);
         }
         return responseEntityBase;
@@ -114,7 +123,11 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("抢票单立即支付(首次)失败");
-            responseEntityBase.setMessage(e.getMessage().toString());
+            if(e.getMessage()==null){
+                responseEntityBase.setMessage("支付异常");
+            }else{
+                responseEntityBase.setMessage(e.getMessage().toString());
+            }
             responseEntityBase.setCode(500);
         }
         return responseEntityBase;
@@ -141,7 +154,11 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("立即支付(多次)异常");
-            responseEntityBase.setMessage(e.getMessage().toString());
+            if(e.getMessage()==null){
+                responseEntityBase.setMessage("支付异常");
+            }else{
+                responseEntityBase.setMessage(e.getMessage().toString());
+            }
             responseEntityBase.setCode(500);
         }
         return responseEntityBase;
@@ -169,33 +186,84 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("获取验证码异常");
-            responseEntityBase.setMessage(e.getMessage().toString());
+            responseEntityBase.setMessage("获取验证码异常");
             responseEntityBase.setCode(500);
         }
         return responseEntityBase;
     }
     /**
-     * 验证查询方法
+     * 验证支付查询
      *
      * @param requestData
      * @return
      */
-//    @ResponseBody
-//    @RequestMapping(value = "/getTest", method = RequestMethod.POST)
-//    public JSONObject getTest() {
-//        JSONObject responseJo = new JSONObject();
-//        try{
-//            JSONObject jo = super.getRequestJsonParams();
-//            String uid = super.getUid(jo.getString("appid"),jo.getString("uid"));
-//            jo.put("uid",uid);
-//            QueryQuickPayData queryQuickPayData =new QueryQuickPayData();
-//            queryQuickPayData.setMercOrdDt();
-//            responseJo = authenService.queryQuickPay()
-//        }catch(Exception e){
-//            responseJo.put("result",false);
-//            responseJo.put("message",e.getMessage());
-//        }
-//        return responseJo;
-//    }
+    @ResponseBody
+    @RequestMapping(value = "/getTest", method = RequestMethod.POST)
+    public JSONObject getTest() {
+        JSONObject responseJo = new JSONObject();
+        try{
+            JSONObject jo = super.getRequestJsonParams();
+            QueryQuickPayData queryQuickPayData =new QueryQuickPayData();
+            queryQuickPayData.setMercOrdNo(jo.getString("payment"));
+            queryQuickPayData.setReqSn(SnGenerator.generate());
+            queryQuickPayData.setMercOrdDt(jo.getString("payment").substring(0,8));
+            Map<String, Object> result = authenService.queryQuickPay(queryQuickPayData);
+            logger.info("结果："+result);
+        }catch(Exception e){
+            responseJo.put("result",false);
+            responseJo.put("message",e.getMessage());
+        }
+        return responseJo;
+    }
+    /**
+     * 验证退款
+     *
+     * @param requestData
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getTest1", method = RequestMethod.POST)
+    public JSONObject getTest1() {
+        JSONObject responseJo = new JSONObject();
+        try{
+            JSONObject jo = super.getRequestJsonParams();
+            SingleRefundData singleRefundData =new SingleRefundData();
+            singleRefundData.setReqSn(SnGenerator.generate());
+            singleRefundData.setOrgSn(jo.getString("orgSn"));
+            singleRefundData.setOrgDate(jo.getString("orgDate"));
+            singleRefundData.setRefundAmount(jo.getString("refundAmount"));
+            singleRefundData.setOrgAmount(jo.getString("orgAmount"));
+            Map<String, Object> result = authenService.singlRefund(singleRefundData);
+            logger.info("结果："+result);
+        }catch(Exception e){
+            responseJo.put("result",false);
+            responseJo.put("message",e.getMessage());
+        }
+        return responseJo;
+    }
+    /**
+     * 验证退款查询
+     *
+     * @param requestData
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getTest2", method = RequestMethod.POST)
+    public JSONObject getTest2() {
+        JSONObject responseJo = new JSONObject();
+        try{
+            JSONObject jo = super.getRequestJsonParams();
+            QueryRefundData queryRefundData =new QueryRefundData();
+            queryRefundData.setQuerySn(jo.getString("querySn"));
+            queryRefundData.setReqSn(SnGenerator.generate());
+            queryRefundData.setQueryDate(jo.getString("querySn").substring(0,8));
+            Map<String, Object> result = authenService.queryRefund(queryRefundData);
+            logger.info("结果："+result);
+        }catch(Exception e){
+            responseJo.put("result",false);
+            responseJo.put("message",e.getMessage());
+        }
+        return responseJo;
+    }
 
 }

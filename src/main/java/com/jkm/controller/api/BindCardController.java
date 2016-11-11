@@ -46,7 +46,7 @@ public class BindCardController extends BaseController {
         }catch (Exception e){
             log.info("绑定银行卡异常");
             responseEntityBase.setCode(500);
-            responseEntityBase.setMessage(e.getMessage().toString());
+            responseEntityBase.setMessage(e.getMessage());
         }
         return responseEntityBase;
     }

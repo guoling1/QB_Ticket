@@ -16,6 +16,10 @@ public class QueryRefundData {
      * 交易流水
      */
     private String querySn;
+    /**
+     * 交易时间
+     */
+    private String queryDate;
 
     public String getMercId() {
         return mercId;
@@ -39,5 +43,13 @@ public class QueryRefundData {
 
     public void setQuerySn(String querySn) {
         this.querySn = querySn;
+    }
+
+    public String getQueryDate() {
+        return queryDate;
+    }
+
+    public void setQueryDate(String queryDate) {
+        this.queryDate = queryDate;
     }
 }
