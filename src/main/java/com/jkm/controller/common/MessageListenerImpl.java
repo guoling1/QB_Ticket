@@ -59,7 +59,6 @@ public class MessageListenerImpl implements MessageListener {
                 queryQuickPayData.setMercOrdDt(jo.getString("dt"));
                 Map<String, Object> resultMap =  authenService.queryQuickPay(queryQuickPayData);
                 if("0000".equals(resultMap.get("retCode").toString())){
-                    Optional<OrderForm> orderFormOptional = orderFormService.selectByReqSn(jo.getString("reqSn"));
                     if("S".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//成功
                         ticketService.handleCustomerPayMsg(jo.getLong("orderId"),jo.getString("reqSn"),true);
                     }else if("U".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//处理中 再次发送请求
@@ -95,7 +94,6 @@ public class MessageListenerImpl implements MessageListener {
                 queryQuickPayData.setMercOrdDt(jo.getString("dt"));
                 Map<String, Object> resultMap =  authenService.queryQuickPay(queryQuickPayData);
                 if("0000".equals(resultMap.get("retCode").toString())){
-                    Optional<OrderForm> orderFormOptional = orderFormService.selectByReqSn(jo.getString("reqSn"));
                     if("S".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//成功
                         ticketService.handleGrabCustomerPayMsg(jo.getLong("orderId"),jo.getString("reqSn"),true);
                     }else if("U".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//处理中 再次发送请求

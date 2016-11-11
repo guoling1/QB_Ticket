@@ -246,9 +246,6 @@ public class AuthenServiceImpl implements AuthenService {
 					refundResultRecord.setReqSn(request100003.getInfo().getReqSn());
 					refundResultRecord.setResultParams(response100003.toString());
 					refundResultRecordService.insertSelective(refundResultRecord);
-					JSONObject mqJo = new JSONObject();
-					mqJo.put("reqSn",requestData.getReqSn());
-					MqProducer.sendMessage(mqJo,MqConfig.SINGLE_REFUND_QUERY,10000);
 				} else {
 					ret.put("retCode", false);
 					ret.put("retMsg", response100003.getInfo().getErrMsg());
@@ -265,9 +262,6 @@ public class AuthenServiceImpl implements AuthenService {
 			} else {
 				ret.put("retCode", false);
 				ret.put("retMsg", "单笔退款接口连接失败");
-				JSONObject mqJo = new JSONObject();
-				mqJo.put("reqSn",requestData.getReqSn());
-				MqProducer.sendMessage(mqJo,MqConfig.SINGLE_REFUND_QUERY,10000);
 			}
 			logger.debug("****************" + response2
 					+ "*********************");
@@ -287,7 +281,7 @@ public class AuthenServiceImpl implements AuthenService {
 		head.setVersion("01");
 		head.setDataType(Constants.DATA_TYPE_XML);
 		head.setLevel(Constants.LEVEL_0);
-		head.setReqSn(SnGenerator.generate());
+		head.setReqSn(requestData.getReqSn());
 		head.setSignedMsg("signedMsg");
 		RequestBody100003 body = new RequestBody100003();
 		RequestDetail100003 detail = new RequestDetail100003();
@@ -592,13 +586,13 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("vCode")), "验证码不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("nonceStr")), "随机参数有误");
 
-//		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(requestData.getString("phoneNo"),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
-//		int resultType = codeStatus.getKey();
-//		if(resultType!=1){
-//			jo.put("result",false);
-//			jo.put("message",codeStatus.getValue());
-//			return jo;
-//		}
+		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(requestData.getString("phoneNo"),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
+		int resultType = codeStatus.getKey();
+		if(resultType!=1){
+			jo.put("result",false);
+			jo.put("message",codeStatus.getValue());
+			return jo;
+		}
 
 		if(!ValidationUtil.checkBankCard(requestData.getString("crdNo"))){
 			jo.put("result",false);
@@ -664,7 +658,8 @@ public class AuthenServiceImpl implements AuthenService {
 			mqJo.put("reqSn",authenData.getReqSn());
 			mqJo.put("dt", DateFormatUtil.format(new Date(), "yyyyMMdd"));
 			mqJo.put("sendCount",0);
-			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_QUERY,10000);
+			mqJo.put("orderId",requestData.getLong("orderId"));
+			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_QUERY,2000);
 		}else if("5000".equals(ret.get("retCode").toString())){
 			jo.put("result",false);
 			jo.put("message","付款接口连接失败,等待10s重新链接");
@@ -672,7 +667,8 @@ public class AuthenServiceImpl implements AuthenService {
 			mqJo.put("reqSn",authenData.getReqSn());
 			mqJo.put("dt", DateFormatUtil.format(new Date(), "yyyyMMdd"));
 			mqJo.put("sendCount",0);
-			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_QUERY,10000);
+			mqJo.put("orderId",requestData.getLong("orderId"));
+			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_QUERY,2000);
 		}else if("3000".equals(ret.get("retCode").toString())){
 			jo.put("result",false);
 			jo.put("message",ret.get("retMsg"));
@@ -732,7 +728,8 @@ public class AuthenServiceImpl implements AuthenService {
 			mqJo.put("reqSn",authenData.getReqSn());
 			mqJo.put("dt", DateFormatUtil.format(new Date(), "yyyyMMdd"));
 			mqJo.put("sendCount",0);
-			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_QUERY,10000);
+			mqJo.put("orderId",requestData.getLong("orderId"));
+			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_QUERY,2000);
 		}else if("5000".equals(ret.get("retCode").toString())){
 			jo.put("result",false);
 			jo.put("message","付款接口连接失败");
@@ -740,7 +737,8 @@ public class AuthenServiceImpl implements AuthenService {
 			mqJo.put("reqSn",authenData.getReqSn());
 			mqJo.put("dt", DateFormatUtil.format(new Date(), "yyyyMMdd"));
 			mqJo.put("sendCount",0);
-			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_QUERY,10000);
+			mqJo.put("orderId",requestData.getLong("orderId"));
+			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_QUERY,2000);
 		}else if("3000".equals(ret.get("retCode").toString())){
 			jo.put("result",false);
 			jo.put("message",ret.get("retMsg"));
@@ -847,7 +845,8 @@ public class AuthenServiceImpl implements AuthenService {
 			mqJo.put("reqSn",authenData.getReqSn());
 			mqJo.put("dt", DateFormatUtil.format(new Date(), "yyyyMMdd"));
 			mqJo.put("sendCount",0);
-			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_GRAB_QUERY,10000);
+			mqJo.put("orderId",requestData.getLong("orderId"));
+			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_GRAB_QUERY,2000);
 		}else if("5000".equals(ret.get("retCode").toString())){
 			jo.put("result",false);
 			jo.put("message","付款接口连接失败,等待10s重新链接");
@@ -855,7 +854,8 @@ public class AuthenServiceImpl implements AuthenService {
 			mqJo.put("reqSn",authenData.getReqSn());
 			mqJo.put("dt", DateFormatUtil.format(new Date(), "yyyyMMdd"));
 			mqJo.put("sendCount",0);
-			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_GRAB_QUERY,10000);
+			mqJo.put("orderId",requestData.getLong("orderId"));
+			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_GRAB_QUERY,2000);
 		}else if("3000".equals(ret.get("retCode").toString())){
 			jo.put("result",false);
 			jo.put("message",ret.get("retMsg"));
@@ -918,7 +918,8 @@ public class AuthenServiceImpl implements AuthenService {
 			mqJo.put("reqSn",authenData.getReqSn());
 			mqJo.put("dt", DateFormatUtil.format(new Date(), "yyyyMMdd"));
 			mqJo.put("sendCount",0);
-			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_GRAB_QUERY,10000);
+			mqJo.put("orderId",requestData.getLong("orderId"));
+			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_GRAB_QUERY,2000);
 		}else if("5000".equals(ret.get("retCode").toString())){
 			jo.put("result",false);
 			jo.put("message","付款接口连接失败");
@@ -926,7 +927,8 @@ public class AuthenServiceImpl implements AuthenService {
 			mqJo.put("reqSn",authenData.getReqSn());
 			mqJo.put("dt", DateFormatUtil.format(new Date(), "yyyyMMdd"));
 			mqJo.put("sendCount",0);
-			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_GRAB_QUERY,10000);
+			mqJo.put("orderId",requestData.getLong("orderId"));
+			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_GRAB_QUERY,2000);
 		}else if("3000".equals(ret.get("retCode").toString())){
 			jo.put("result",false);
 			jo.put("message",ret.get("retMsg"));
