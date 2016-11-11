@@ -23,6 +23,15 @@ public final class SnGenerator {
     }
 
     /**
+     * 生成订单号
+     * QBT + 时间戳＋2位随机数
+     *
+     * @return
+     */
+    public static String generateRandom() {
+        return "D" + DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(2);
+    }
+    /**
      * 生成length位订单号
      * "XJD" + 时间戳＋＊位随机数
      *
