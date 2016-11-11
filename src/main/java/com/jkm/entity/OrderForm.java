@@ -180,6 +180,15 @@ public class OrderForm extends BaseEntity {
         return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId();
     }
 
+    /**
+     * 客户是否 付款成功
+     *
+     * @return
+     */
+    public boolean isCustomerPayFail() {
+        return this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId();
+    }
+
 
     /**
      * 订单是否是占座请求中

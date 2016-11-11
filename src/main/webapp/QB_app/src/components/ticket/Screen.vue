@@ -77,7 +77,9 @@
           },
           // 用 0,1,2,3,4分别表示5个时间段,0表示全部
           startTime: '0',
-          endTime: '0'
+          endTime: '0',
+          ticket:true,
+          sort:true
         }
       }
     },
@@ -96,7 +98,7 @@
       reset: function () {
         // 根据pageConfig得出新的config,然后修改store数据
         let newConfig = {};
-        newConfig={
+        this.$data.pageConfig=newConfig={
           table: {
             edz: true,
             ydz: true,
@@ -117,7 +119,9 @@
           },
           // 用 0,1,2,3,4分别表示5个时间段,0表示全部
           startTime: '0',
-          endTime: '0'
+          endTime: '0',
+          ticket:true,
+          sort:true
         };
         // 必须整体重新赋值 config
         this.$store.commit('SCREEN_CLOSE', {

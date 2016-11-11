@@ -813,11 +813,11 @@ public class TicketServiceImpl implements TicketService {
     public void handleCustomerPayMsg(final long orderFormId, final String paymentSn, final boolean isPaySuccess) {
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByIdWithLock(orderFormId);
         final OrderForm orderForm = orderFormOptional.get();
-        Preconditions.checkState(orderForm.isOccupySuccess(), "处理客户付款，订单[%s]的状态不是占座成功状态！！！", orderFormId);
+        Preconditions.checkState(orderForm.isOccupySuccess() || orderForm.isCustomerPayFail(), "处理客户付款，订单[%s]的状态不是占座成功或者付款失败状态！！！", orderFormId);
         final Optional<ChargeMoneyOrder> chargeMoneyOrderOptional = this.chargeMoneyOrderService.selectByOrderFormId(orderFormId);
         Preconditions.checkState(chargeMoneyOrderOptional.isPresent(), "订单[%s]对应的收款记录不存在", orderFormId);
         final ChargeMoneyOrder chargeMoneyOrder = this.chargeMoneyOrderService.selectByIdWithLock(chargeMoneyOrderOptional.get().getId()).get();
-        Preconditions.checkState(!chargeMoneyOrder.isPaySuccess(), "订单[%s]对应的收款记录已经付款成功！！！！！！！");
+        Preconditions.checkState(!chargeMoneyOrder.isPaySuccess(), "订单[%s]对应的收款记录已经付款成功！！！！！！！", orderFormId);
         if (isPaySuccess) {
             log.info("订单[" + orderFormId + "]支付成功");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId());
@@ -1428,7 +1428,7 @@ public class TicketServiceImpl implements TicketService {
      */
     private void orderRefund(final RefundOrderFlow refundOrderFlow, final OrderForm orderForm) {
         log.info("订单[" + orderForm.getId() + "]请求退款");
-        Preconditions.checkState(refundOrderFlow.isRefundSuccess(), "订单[" + refundOrderFlow.getOrderFormId()  +
+        Preconditions.checkState(!refundOrderFlow.isRefundSuccess(), "订单[" + refundOrderFlow.getOrderFormId()  +
                 "]对应的退款单[" + refundOrderFlow.getId()+ "]已经退款");
         final SingleRefundData singleRefundData = new SingleRefundData();
         singleRefundData.setOrgSn(refundOrderFlow.getPaymentSn());
