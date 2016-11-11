@@ -122,15 +122,7 @@
                         </bean>
                     </key>
                 </entry>
-                <entry value-ref="messageListenerOfRefund">
-                    <key>
-                        <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
-                            <property name="topic" value="${mq.topic}"/> <!-- Topic,请替换 -->
-                            <property name="expression" value="singlRefundQuery"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
-                        </bean>
-                    </key>
-                </entry>
-                <entry value-ref="messageListenerOfTicket">
+                <entry value-ref="MessageListenerOfExpiredOrder">
                     <key>
                         <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
                             <property name="topic" value="${mq.topic}"/> <!-- Topic,请替换 -->
@@ -154,11 +146,8 @@
     <!-- 快捷支付消息处理器 -->
     <bean id="messageListener" class="com.jkm.controller.common.MessageListenerImpl"/>
 
-    <!-- 单笔退款消息处理器 -->
-    <bean id="messageListenerOfRefund" class="com.jkm.controller.common.MessageListenerOfRefundImpl"/>
-
     <!-- 处理过了支付时间的订单的消息处理器 -->
-    <bean id="messageListenerOfTicket" class="com.jkm.controller.common.MessageListenerOfTicketImpl"/>
+    <bean id="MessageListenerOfExpiredOrder" class="com.jkm.controller.common.MessageListenerOfExpiredOrderImpl"/>
 
     <!-- 处理订单退款在请求中的消息处理器 -->
     <bean id="messageListenerOfOrderRefund" class="com.jkm.controller.common.MessageListenerOfOrderRefundImpl"/>
