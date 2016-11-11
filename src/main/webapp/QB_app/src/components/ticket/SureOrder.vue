@@ -84,7 +84,6 @@
         </div>
       </div>
     </div>
-    <div class="loading" v-if="loading">占座中...</div>
     <div class="pack" v-show="pack">
       <div class="select">
         <div class="xx"></div>
@@ -161,7 +160,6 @@
           runShow: '',
           passengers: []
         },
-        loading: false,
         pack: false,
         skip: false
       }
@@ -212,28 +210,12 @@
           return false;
         }
         this.$data.skip = false;
-        var polling = '';
-        const pollFun = (id)=>{
-          this.$http.post('/order/queryById', {orderFormId: id}).then(function (res) {
-            if (res.data.code == 1 && res.data.data.status == 3) {
-              clearInterval(polling);
-              this.$router.push({
-                path: '/ticket/pay-order',
-                query: {appid: this.$data.sureOrder.appId, uid: this.$data.sureOrder.uid, id: res.data.data.orderFormId}
-              });
-            } else if (res.data.code == 1 && res.data.data.status == 4) {
-              clearInterval(polling);
-              console.log("占座失败");
-            }
-          })
-        }
         this.$http.post('/ticket/submitOrder', this.$data.sureOrder).then(function (res) {
           if (res.data.code == 1) {
-            // 这里 轮询 等待回调
-            this.$data.loading = true;
-            polling = setInterval(function () {
-              pollFun(res.data.data.orderFormId);
-            }, 1500);
+            this.$router.push({
+              path: '/ticket/pay-order',
+              query: {appid: this.$data.sureOrder.appId, uid: this.$data.sureOrder.uid, id: res.data.data.orderFormId}
+            });
           } else {
             console.log(res.data.message);
           }
@@ -564,18 +546,6 @@
         background-color: #4ab9f1;
       }
     }
-  }
-
-  .loading {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    font-size: 15px;
-    color: #FFF;
-    text-align: center;
   }
 
   .pack {

@@ -44,6 +44,10 @@
           },
           uid: "", //三方商户用户id
           appid: "" //三方商户唯一标示appid
+        },
+        nextRouter: {
+          path: "",
+          query: {}
         }
       }
     },
@@ -51,12 +55,15 @@
       next(function (vm) {
         vm.$data.loginData.appid = to.query.appid;
         vm.$data.loginData.uid = to.query.uid;
+        vm.$data.nextRouter.path = from.path;
+        vm.$data.nextRouter.query = from.query;
       });
     },
     methods: {
       submit: function () {
         this.$http.post('/website/addWebSite', this.$data.loginData).then(function (res) {
           console.log(res);
+          this.$router.push({path: this.$data.nextRouter.path, query: this.$data.nextRouter.query})
         }, function (err) {
           console.log(err);
         })
