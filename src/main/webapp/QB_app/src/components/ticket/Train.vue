@@ -224,6 +224,31 @@
           }
 
           var arr=toTime(fromTime(trains(table(this.initStations))))
+          //出发早晚
+          function sort(arr){
+            arr.sort(function(a,b){
+              return a.run_time_minute-b.run_time_minute;
+            })
+          }
+          if(!config.sort){
+            sort(arr)
+          }
+          //只看有票
+          function ticket(arr){
+            let ary=[];
+            for(let i=0;i<arr.length;i++){
+              var reg=/_num/g;
+              for(var j in arr[i]){
+                if(reg.test(j)==true&&arr[i][j]!="0"&&arr[i][j]!="--"){
+                   ary.push(arr[i]);
+                }
+              }
+            }
+            return ary;
+        }
+          if(!config.ticket){
+            arr=ticket(arr);
+          }
 
 
           // 计算最低价
