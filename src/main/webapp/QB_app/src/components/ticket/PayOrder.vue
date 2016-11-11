@@ -1,62 +1,85 @@
 <template lang="html">
   <div class="main">
     <div class="from">
+      <div class="state" v-show="orderInfo.status==2">
+        <i></i>正在为您占座中...
+      </div>
+      <div class="state" v-show="orderInfo.status==3">
+        <span v-if="countdown">您的座位还会为您保留{{countdown}}分钟，请尽快完成支付</span>
+        <span v-if="!countdown">您的订单已失效</span>
+      </div>
+      <div class="state" v-show="orderInfo.status==13">
+        <span>您的订单已取消</span>
+      </div>
       <div class="space">
         <div class="train-info">
           <div class="left">
-            <div class="time">07:10</div>
-            <div class="place">北京西</div>
-            <div class="date">11-20 周五</div>
+            <div class="time">{{orderInfo.startTime}}</div>
+            <div class="place">{{orderInfo.fromStationName}}</div>
+            <div class="date">{{otherInfo.startDate}}</div>
           </div>
           <div class="middle">
-            <div class="trains">G208</div>
+            <div class="trains">{{orderInfo.checi}}</div>
             <div class="ch"></div>
-            <div class="date">耗时1小时52分</div>
+            <div class="date">耗时{{otherInfo.runTime}}</div>
           </div>
           <div class="right">
-            <div class="time">17:10</div>
-            <div class="place">北京东</div>
-            <div class="date">11-20 周五</div>
+            <div class="time">{{orderInfo.endTime}}</div>
+            <div class="place">{{orderInfo.toStationName}}</div>
+            <div class="date">{{otherInfo.arriveDate}}</div>
           </div>
         </div>
-        <div class="man-info">
-          <div class="left">
-            <div class="big">刘思思 <span class="small">成人票</span></div>
-            <div class="small">120***********0565</div>
-            <div class="red">待支付</div>
-          </div>
-          <div class="right">
-            <div class="big">13号车厢01A号</div>
-            <div class="small">二等座</div>
-            <div class="red">￥<span>128.5</span></div>
+        <div v-show="orderInfo.status==3">
+          <div class="man-info" v-for="people in orderInfo.passengers">
+            <div class="left">
+              <div class="big">{{people.name}} <span class="small">{{people.piaoTypeName}}</span></div>
+              <div class="small">{{people.passportSeNo}}</div>
+              <div class="red">待支付</div>
+            </div>
+            <div class="right">
+              <div class="big">{{people.cxin}}</div>
+              <div class="small">{{orderInfo.zwName}}</div>
+              <div class="red">￥<span>{{people.price}}</span></div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="space">
+      <div class="space" v-show="orderInfo.status==3" @click="cancel">
         <div class="cancel">取消订单</div>
       </div>
-      {{orderInfo}}
       <div class="submit">
         <div class="detail">
           <div class="tt">金额详情</div>
           <div class="tt_detail">
             <div class="left">火车票</div>
-            <div class="right">x1人</div>
-            <div class="right margin">￥128.5</div>
+            <div class="right">x{{otherInfo.passengersNum}}人</div>
+            <div class="right margin">￥{{otherInfo.ticket}}</div>
           </div>
           <div class="tt_detail">
-            <div class="left">火车票</div>
-            <div class="right">x1人</div>
-            <div class="right margin">￥128.5</div>
+            <div class="left">出票套餐</div>
+            <div class="right">x{{otherInfo.passengersNum}}人</div>
+            <div class="right margin">￥{{otherInfo.insurance}}</div>
           </div>
         </div>
         <div class="btn">
           <div class="left">
-            <div class="amount">实付款<span class="red">￥</span><span class="red big">128.5</span></div>
+            <div class="amount">实付款<span class="red">￥</span><span class="red big">{{orderInfo.totalPrice}}</span></div>
             <div class="i"></div>
           </div>
-          <div class="right" @click="submit">立即支付</div>
+          <div class="right" v-bind:class="{dis:orderInfo.status!=3}" @click="submit">立即支付</div>
         </div>
+      </div>
+    </div>
+    <div class="bank" v-show="bank">
+      <div class="bankList">
+        <div class="xx"></div>
+        <ul>
+          <li v-for="card in cardList">
+            {{card}}
+          </li>
+        </ul>
+        <div class="new" @click="newCard">使用新卡支付</div>
+        <div class="btn">确认付款 ￥{{orderInfo.price}}</div>
       </div>
     </div>
   </div>
@@ -65,6 +88,7 @@
 <script lang="babel">
   import Vue from 'vue'
   import Datetime from './Datetime.vue';
+
   export default {
     name: 'menu',
     components: {
@@ -76,8 +100,34 @@
           appid: '',
           uid: ''
         },
-        orderInfo: ''
+        orderInfo: '',
+        cardList: '',
+        peopleInfo: '',
+        countdown: '15:00',
+        bank: false
       }
+    },
+    created: function () {
+      // 这里 轮询 等待回调
+      var polling = '';
+      const pollFun = ()=>{
+        this.$http.post('/order/queryById', {orderFormId: this.$data.orderInfo.orderFormId}).then(function (res) {
+          if (res.data.code == 1 && res.data.data.status == 3) {
+            clearInterval(polling);
+            console.log('改变信息');
+            this.$data.orderInfo = res.data.data;
+            // 调用定时器
+            this.timer(this.$data.orderInfo.expireTime);
+          } else if (res.data.code == 1 && res.data.data.status == 4) {
+            clearInterval(polling);
+            console.log("占座失败");
+          } else if (res.data.code == 1 && res.data.data.status == 13) {
+            clearInterval(polling);
+            console.log("订单已取消");
+          }
+        })
+      }
+      polling = setInterval(pollFun, 5000);
     },
     beforeRouteEnter (to, from, next) {
       Vue.http.post('/order/queryById', {
@@ -98,16 +148,99 @@
       });
     },
     methods: {
+      timer: function (t) {
+        let time = t - new Date().getTime();
+        if (time <= 0) {
+          this.$data.countdown = false;
+        } else {
+          let min = time / (1000 * 60);
+          let ss = (time - min) / (1000 * 60);
+          this.$data.countdown = min + ':' + ss;
+        }
+      },
+      newCard: function () {
+        this.$router.push({path: '/pay/second-add', query: this.$data.peopleInfo});
+      },
+      cancel: function () {
+        this.$http.post('/ticket/cancelOrder', {
+          orderFormId: this.$data.orderInfo.orderFormId
+        }).then(function (res) {
+          console.log(res);
+        }, function (err) {
+          console.log(err)
+        })
+      },
       submit: function () {
-        this.$router.push({
-          path: '/pay/first-add',
-          query: {
+        // 首先判断订单状态,决定是否能支付
+        if (this.$data.orderInfo.status == 3 && this.$data.countdown) {
+          this.$http.post('/card/list', {
             appid: this.$data.common.appid,
-            uid: this.$data.common.uid,
-            id: this.$data.orderInfo.orderFormId,
-            price: this.$data.orderInfo.price
-          }
-        });
+            uid: this.$data.common.uid
+          }).then(function (res) {
+            console.log(res);
+            if (res.data.code == 1) {
+              if (res.data.data.cardList) {
+                this.$data.cardList = res.data.data.cardList;
+                this.$data.peopleInfo = res.data.data.userCardInfo;
+                this.$data.bank = true;
+              } else {
+                this.$router.push({
+                  path: '/pay/first-add',
+                  query: {
+                    appid: this.$data.common.appid,
+                    uid: this.$data.common.uid,
+                    id: this.$data.orderInfo.orderFormId,
+                    price: this.$data.orderInfo.price
+                  }
+                });
+              }
+            } else {
+              console.log(res.data.message);
+            }
+          }, function (err) {
+            console.log(err);
+          });
+        }
+      }
+    },
+    computed: {
+      pageInfo: function () {
+        return this.$data.orderInfo
+      },
+      otherInfo: function () {
+        let a = 0;
+        let b = 0;
+        // 乘车人数 车票价格
+        for (let i in this.$data.orderInfo.passengers) {
+          a++;
+          b = this.$data.orderInfo.passengers[i]['price'];
+        }
+        // 套餐价格
+        let c = (this.$data.orderInfo.totalPrice - this.$data.orderInfo.ticketTotalPrice) / a;
+        // 运行时间
+        let runMin = this.$data.orderInfo.runTime;
+        let runH = 0;
+        let runM = 0;
+        if (runMin >= 60) {
+          runH = parseInt(runMin / 60);
+          runM = runMin % 60;
+        }
+        // 出发日期 到达日期
+        let weekWord = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+        let start = new Date(this.$data.orderInfo.startDate);
+        let arrive = new Date(this.$data.orderInfo.endDate);
+        return {
+          passengersNum: a,
+          ticket: b,
+          insurance: c,
+          runTime: runH + '小时' + runM + '分钟',
+          startDate: (start.getMonth() + 1) + '-' + start.getDate() + ' ' + weekWord[start.getDay()],
+          arriveDate: (arrive.getMonth() + 1) + '-' + arrive.getDate() + ' ' + weekWord[arrive.getDay()],
+          expire: false
+        }
+      },
+      expireTime: function () {
+        return this.$data.countdown;
       }
     }
   }
@@ -130,6 +263,26 @@
     overflow: hidden;
     .flexItem(1, 100%);
     background-color: #f5f5f5;
+  }
+
+  .state {
+    width: 100%;
+    height: 50px;
+    background-color: #fef0f0;
+    border: 1px solid #fed4d4;
+    line-height: 50px;
+    font-size: 15px;
+    color: #ff6565;
+    text-align: center;
+    i {
+      display: inline-block;
+      margin-right: 5px;
+      transform: translate3d(0, 2px, 0);
+      width: 16px;
+      height: 16px;
+      background: url("../../assets/time.gif") no-repeat center;
+      background-size: 16px 16px;
+    }
   }
 
   .train-info {
@@ -425,6 +578,81 @@
         font-size: 15px;
         color: #FFF;
         background-color: #4ab9f1;
+        &.dis {
+          background-color: #8fcfef;
+          color: #cfefff;
+        }
+      }
+    }
+  }
+
+  .bank {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 88;
+    background: rgba(0, 0, 0, 0.5);
+    .bankList {
+      position: absolute;
+      width: 100%;
+      height: 50%;
+      background-color: #FFF;
+      left: 0;
+      bottom: 0;
+      .xx {
+        width: 14px;
+        height: 14px;
+        background: url("../../assets/xx.png") no-repeat center;
+        background-size: 14px 14px;
+        padding: 15px;
+      }
+      ul {
+        li {
+          width: 100%;
+          height: 45px;
+          line-height: 45px;
+          text-align: left;
+          padding-left: 15px;
+          color: #999;
+          border-bottom: 1px solid #f5f5f5;
+          span {
+            color: #000;
+          }
+          &.active {
+            color: #2ba7e5;
+            background: url("../../assets/select.png") no-repeat 320px;
+            background-size: 16px 11px;
+            span {
+              font-weight: bold;
+            }
+          }
+        }
+      }
+      .new {
+        width: 100%;
+        height: 45px;
+        padding-left: 50px;
+        line-height: 45px;
+        text-align: left;
+        background: url("../../assets/new.png") no-repeat 15px 10px;
+        background-size: 25px 25px;
+        border-bottom: 1px solid #f5f5f5;
+        font-size: 15px;
+        color: #4ab9f1;
+      }
+      .btn {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 50px;
+        background-color: #4ab9f1;
+        font-size: 15px;
+        color: #FFF;
+        line-height: 50px;
+        text-align: center;
       }
     }
   }

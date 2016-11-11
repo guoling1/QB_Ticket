@@ -99,7 +99,7 @@
             </props>
         </property>
     </bean>
-
+    <bean class="com.jkm.util.BeanUtils" scope="singleton"/>
     <!--消费端-->
     <bean id="consumer" class="com.aliyun.openservices.ons.api.bean.ConsumerBean"
           init-method="start" destroy-method="shutdown">

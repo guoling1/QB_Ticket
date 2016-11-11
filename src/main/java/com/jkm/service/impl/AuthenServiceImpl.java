@@ -82,6 +82,7 @@ public class AuthenServiceImpl implements AuthenService {
 			if(count>0){
 				ret.put("retCode", "3000");
 				ret.put("retMsg", "请不要重复提交订单");
+				return ret;
 			}else{
 				getParamRecordService.insertSelective(gr);
 			}
@@ -183,8 +184,6 @@ public class AuthenServiceImpl implements AuthenService {
 		detail.setID_TYPE("00");//只支持身份证
 		detail.setID(requestData.getIdNo());//证件号
 		detail.setTEL(requestData.getPhoneNo());//手机号
-		detail.setCRE_VAL_DATE("");
-		detail.setCRE_CVN2("");
 		body.setTransDetail(detail);
 		authen.setBody(body);
 		authen.setInfo(head);
@@ -593,13 +592,13 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("vCode")), "验证码不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("nonceStr")), "随机参数有误");
 
-		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(requestData.getString("phoneNo"),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
-		int resultType = codeStatus.getKey();
-		if(resultType!=1){
-			jo.put("result",false);
-			jo.put("message",codeStatus.getValue());
-			return jo;
-		}
+//		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(requestData.getString("phoneNo"),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
+//		int resultType = codeStatus.getKey();
+//		if(resultType!=1){
+//			jo.put("result",false);
+//			jo.put("message",codeStatus.getValue());
+//			return jo;
+//		}
 
 		if(!ValidationUtil.checkBankCard(requestData.getString("crdNo"))){
 			jo.put("result",false);
@@ -624,6 +623,16 @@ public class AuthenServiceImpl implements AuthenService {
 
 		Optional<OrderForm>  orderFormOptional = orderFormService.selectById(requestData.getLong("orderId"));
 		Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + orderFormOptional.get().getId() + "]不存在");
+		if(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId()==orderFormOptional.get().getStatus()){
+			jo.put("result",false);
+			jo.put("message","该订单已提交，请耐心等待结果");
+			return jo;
+		}
+		if(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId()==orderFormOptional.get().getStatus()){
+			jo.put("result",false);
+			jo.put("message","该订单已支付完毕");
+			return jo;
+		}
 		BigDecimal amount = orderFormOptional.get().getTotalPrice();
 		AuthenData authenData = new AuthenData();
 		authenData.setAmount(amount+"");
@@ -632,6 +641,7 @@ public class AuthenServiceImpl implements AuthenService {
 		authenData.setCapCrdNm(requestData.getString("capCrdNm"));
 		authenData.setIdNo(requestData.getString("idNo"));
 		authenData.setReqSn(SnGenerator.generate());
+		authenData.setAppId(requestData.getString("appid"));
 		authenData.setNonceStr(requestData.getString("nonceStr"));
 		orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId());
 		orderFormService.updateStatus(orderFormOptional.get());
@@ -663,6 +673,9 @@ public class AuthenServiceImpl implements AuthenService {
 			mqJo.put("dt", DateFormatUtil.format(new Date(), "yyyyMMdd"));
 			mqJo.put("sendCount",0);
 			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_QUERY,10000);
+		}else if("3000".equals(ret.get("retCode").toString())){
+			jo.put("result",false);
+			jo.put("message",ret.get("retMsg"));
 		}else{//支付失败
 			jo.put("result",false);
 			jo.put("message",ret.get("retMsg"));
@@ -688,6 +701,16 @@ public class AuthenServiceImpl implements AuthenService {
 		}
 		Optional<OrderForm>  orderFormOptional = orderFormService.selectById(requestData.getLong("orderId"));
 		Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + orderFormOptional.get().getId() + "]不存在");
+		if(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId()==orderFormOptional.get().getStatus()){
+			jo.put("result",false);
+			jo.put("message","该订单已提交，请耐心等待结果");
+			return jo;
+		}
+		if(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId()==orderFormOptional.get().getStatus()){
+			jo.put("result",false);
+			jo.put("message","该订单已支付完毕");
+			return jo;
+		}
 		BigDecimal amount = orderFormOptional.get().getTotalPrice();
 		AuthenData authenData = new AuthenData();
 		authenData.setAmount(amount+"");
@@ -696,6 +719,7 @@ public class AuthenServiceImpl implements AuthenService {
 		authenData.setCapCrdNm(bindCard.getAccountName());
 		authenData.setIdNo(UserBankCardSupporter.decryptCardId(bindCard.getCardId()));
 		authenData.setReqSn(SnGenerator.generate());
+		authenData.setAppId(requestData.getString("appid"));
 		authenData.setNonceStr(requestData.getString("nonceStr"));
 		orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId());
 		orderFormService.updateStatus(orderFormOptional.get());
@@ -717,6 +741,9 @@ public class AuthenServiceImpl implements AuthenService {
 			mqJo.put("dt", DateFormatUtil.format(new Date(), "yyyyMMdd"));
 			mqJo.put("sendCount",0);
 			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_QUERY,10000);
+		}else if("3000".equals(ret.get("retCode").toString())){
+			jo.put("result",false);
+			jo.put("message",ret.get("retMsg"));
 		}else{//支付失败
 			jo.put("result",false);
 			jo.put("message",ret.get("retMsg"));
@@ -777,6 +804,16 @@ public class AuthenServiceImpl implements AuthenService {
 
 		Optional<GrabTicketForm> grabTicketFormOptional = grabTicketFormService.selectById(requestData.getLong("orderId"));
 		Preconditions.checkState(grabTicketFormOptional.isPresent(), "订单[" + grabTicketFormOptional.get().getId() + "]不存在");
+		if(EnumGrabTicketStatus.GRAB_FORM_PAY_ING.getId()==grabTicketFormOptional.get().getStatus()){
+			jo.put("result",false);
+			jo.put("message","该订单已提交，请耐心等待结果");
+			return jo;
+		}
+		if(EnumGrabTicketStatus.GRAB_FORM_PAY_SUCCESS.getId()==grabTicketFormOptional.get().getStatus()){
+			jo.put("result",false);
+			jo.put("message","该订单已支付完毕");
+			return jo;
+		}
 		BigDecimal amount = grabTicketFormOptional.get().getTotalPrice();
 		grabTicketFormService.updateStatusById(EnumGrabTicketStatus.GRAB_FORM_PAY_ING,requestData.getLong("orderId"));
 
@@ -788,7 +825,7 @@ public class AuthenServiceImpl implements AuthenService {
 		authenData.setIdNo(requestData.getString("idNo"));
 		authenData.setReqSn(SnGenerator.generate());
 		authenData.setNonceStr(requestData.getString("nonceStr"));
-
+		authenData.setAppId(requestData.getString("appid"));
 
 		Map<String, Object> ret = this.fastPay(authenData);
 		if("0000".equals(ret.get("retCode").toString())){//支付成功
@@ -819,6 +856,9 @@ public class AuthenServiceImpl implements AuthenService {
 			mqJo.put("dt", DateFormatUtil.format(new Date(), "yyyyMMdd"));
 			mqJo.put("sendCount",0);
 			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_GRAB_QUERY,10000);
+		}else if("3000".equals(ret.get("retCode").toString())){
+			jo.put("result",false);
+			jo.put("message",ret.get("retMsg"));
 		}else{//支付失败
 			jo.put("result",false);
 			jo.put("message",ret.get("retMsg"));
@@ -845,6 +885,17 @@ public class AuthenServiceImpl implements AuthenService {
 
 		Optional<GrabTicketForm> grabTicketFormOptional = grabTicketFormService.selectById(requestData.getLong("orderId"));
 		Preconditions.checkState(grabTicketFormOptional.isPresent(), "订单[" + grabTicketFormOptional.get().getId() + "]不存在");
+		if(EnumGrabTicketStatus.GRAB_FORM_PAY_ING.getId()==grabTicketFormOptional.get().getStatus()){
+			jo.put("result",false);
+			jo.put("message","该订单已提交，请耐心等待结果");
+			return jo;
+		}
+		if(EnumGrabTicketStatus.GRAB_FORM_PAY_SUCCESS.getId()==grabTicketFormOptional.get().getStatus()){
+			jo.put("result",false);
+			jo.put("message","该订单已支付完毕");
+			return jo;
+		}
+
 		BigDecimal amount = grabTicketFormOptional.get().getTotalPrice();
 		grabTicketFormService.updateStatusById(EnumGrabTicketStatus.GRAB_FORM_PAY_ING,requestData.getLong("orderId"));
 
@@ -857,6 +908,7 @@ public class AuthenServiceImpl implements AuthenService {
 		authenData.setIdNo(UserBankCardSupporter.decryptCardId(bindCard.getCardId()));
 		authenData.setReqSn(SnGenerator.generate());
 		authenData.setNonceStr(requestData.getString("nonceStr"));
+		authenData.setAppId(requestData.getString("appid"));
 		Map<String, Object> ret = this.fastPay(authenData);
 		if("0000".equals(ret.get("retCode").toString())){//支付成功
 			jo.put("result",true);
@@ -875,6 +927,9 @@ public class AuthenServiceImpl implements AuthenService {
 			mqJo.put("dt", DateFormatUtil.format(new Date(), "yyyyMMdd"));
 			mqJo.put("sendCount",0);
 			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_GRAB_QUERY,10000);
+		}else if("3000".equals(ret.get("retCode").toString())){
+			jo.put("result",false);
+			jo.put("message",ret.get("retMsg"));
 		}else{//支付失败
 			jo.put("result",false);
 			jo.put("message",ret.get("retMsg"));
