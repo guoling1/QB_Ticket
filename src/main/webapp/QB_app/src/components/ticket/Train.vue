@@ -67,8 +67,7 @@
         only: false,
         initStations: [],
         // 火车票筛选信息
-        screenConfig: this.$store.state.screen.config,
-
+        screenConfig: this.$store.state.screen.config
       }
     },
     beforeRouteEnter (to, from, next) {

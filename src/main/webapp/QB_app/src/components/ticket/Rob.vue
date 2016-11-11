@@ -253,7 +253,8 @@
         });
       },
       submit: function () {
-        this.$router.push({path: '/ticket/rob-order', query: {data: this.$data.submitInfo}})
+        sessionStorage.setItem('robOrder', JSON.stringify(this.$from));
+        this.$router.push({path: '/ticket/rob-order',query:{appid:this.$data.submitInfo.appId,uid:this.$data.submitInfo.uid}})
       }
     },
     watch: {
@@ -282,11 +283,12 @@
         }
       },
       $from: function () {
-        return {
-          date: this.$store.state.date.scope.dateTWO.code,
-          from: this.$store.state.station.scope.stationTHREE.code,
-          to: this.$store.state.station.scope.stationFOUR.code
-        };
+        this.$data.submitInfo.fromStationName = this.$store.state.station.scope.stationTHREE.station;
+        this.$data.submitInfo.fromStationCode = this.$store.state.station.scope.stationTHREE.code;
+        this.$data.submitInfo.toStationName = this.$store.state.station.scope.stationFOUR.station;
+        this.$data.submitInfo.toStationCode = this.$store.state.station.scope.stationFOUR.code;
+        this.$data.submitInfo.grabStartTime = this.$store.state.date.scope.dateTWO.code;
+        return this.$data.submitInfo;
       },
       $shortSeat: function () {
         return this.$data.shortSeat;
