@@ -138,6 +138,30 @@
                         </bean>
                     </key>
                 </entry>
+                <entry value-ref="messageListenerTicketRefundImpl">
+                    <key>
+                        <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
+                            <property name="topic" value="${mq.topic}"/> <!-- Topic,请替换 -->
+                            <property name="expression" value="returnTicketRefundIng"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
+                        </bean>
+                    </key>
+                </entry>
+                <entry value-ref="messageListenerTGrabPartRefundImpl">
+                    <key>
+                        <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
+                            <property name="topic" value="${mq.topic}"/> <!-- Topic,请替换 -->
+                            <property name="expression" value="grabTicketRefundPart"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
+                        </bean>
+                    </key>
+                </entry>
+                <entry value-ref="messageListenerTGrabAllRefundImpl">
+                    <key>
+                        <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
+                            <property name="topic" value="${mq.topic}"/> <!-- Topic,请替换 -->
+                            <property name="expression" value="grabTicketRefundAll"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
+                        </bean>
+                    </key>
+                </entry>
             </map>
 
         </property>
@@ -152,6 +176,14 @@
     <!-- 处理订单退款在请求中的消息处理器 -->
     <bean id="messageListenerOfOrderRefund" class="com.jkm.controller.common.MessageListenerOfOrderRefundImpl"/>
 
+    <!-- 处理退票时退款在请求中的消息处理器 -->
+    <bean id="messageListenerTicketRefundImpl" class="com.jkm.controller.common.MessageListenerTicketRefundImpl"/>
+
+    <!-- 处理抢票单部分退款的消息 -->
+    <bean id="messageListenerTGrabPartRefundImpl" class="com.jkm.controller.common.MessageListenerTGrabPartRefundImpl"/>
+
+    <!-- 处理抢票单全额退款的消息 -->
+    <bean id="messageListenerTGrabAllRefundImpl" class="com.jkm.controller.common.MessageListenerTGrabAllRefundImpl"/>
     <!--生产端-->
     <bean id="producer" class="com.aliyun.openservices.ons.api.bean.ProducerBean"
           init-method="start" destroy-method="shutdown">

@@ -9,7 +9,8 @@ public enum EnumReturnMoneyOrderStatus {
 
     INIT(0, "初始化"),
     RETURN_MONEY_SUCCESS(1, "退款成功"),
-    RETURN_MONEY_FAIL(2, "退款失败");
+    RETURN_MONEY_FAIL(2, "退款失败"),
+    RETURN_MONEY_ING(3, "退款中");
 
     @Getter
     private int id;

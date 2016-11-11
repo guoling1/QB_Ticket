@@ -118,4 +118,11 @@ public interface OrderFormDetailService {
      * @return
      */
     long selectGrabFormNumGrab(long grabOrderFormId);
+
+    /**
+     * 根据票号查
+     * @param ticketNo
+     * @return
+     */
+    Optional<OrderFormDetail> selectByTicketNo(String ticketNo);
 }

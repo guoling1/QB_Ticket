@@ -97,8 +97,14 @@ public class HySdkConstans {
      */
     public static final String POLICY_GATEWAY_URL;
 
+    /**
+     * 抢票回调url
+     */
+    public static final String GRAB_TICKET_URL;
 
+    public static final String GRAB_TICKET_CANCEL_URL;
 
+    public static final String GRAB_TICKET_NOTIFY_URL;
     static {
         final HySdkConfig hySdkConfig = getHySdkConfig();
         QUERY_PARTNER_ID = hySdkConfig.queryPartnerId();
@@ -127,6 +133,9 @@ public class HySdkConstans {
         POLICY_SIGN_KEY = hySdkConfig.policySignKey();
         GRAB_PARTNER_ID = hySdkConfig.grabPartnerId();
         GRAB_SIGN_KEY = hySdkConfig.grabSignKey();
+        GRAB_TICKET_NOTIFY_URL = hySdkConfig.grabTicketNotifyUrl();
+        GRAB_TICKET_URL = hySdkConfig.grabTicketUrl();
+        GRAB_TICKET_CANCEL_URL = hySdkConfig.grabTicketCancelUrl();
     }
 
     /**
@@ -241,6 +250,13 @@ public class HySdkConstans {
         String refundTicketNotifyUrl();
 
         /**
+         * 抢票回调url
+         */
+        @Key("third.channel.hy.grab.ticket.notify.url")
+        @DefaultValue("")
+        String grabTicketNotifyUrl();
+
+        /**
          *网关服务地址
          */
         @Key("third.channel.hy.service.gateway.url")
@@ -267,5 +283,19 @@ public class HySdkConstans {
         @Key("third.channel.hy.policy.gateway.url")
         @DefaultValue("")
         String policyGatewayUrl();
+
+        /**
+         *抢票url
+         */
+        @Key("third.channel.hy.grab.ticket.url")
+        @DefaultValue("")
+        String grabTicketUrl();
+
+        /**
+         *取消抢票url
+         */
+        @Key("third.channel.hy.grab.ticket.cancel.url")
+        @DefaultValue("")
+        String grabTicketCancelUrl();
     }
 }

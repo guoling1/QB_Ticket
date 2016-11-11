@@ -114,5 +114,8 @@
     <select id="selectGrabFormNumGrab" resultType="java.lang.Long">
         SELECT COUNT(*) FROM tb_order_form_detail WHERE grab_order_form_id = #{grabOrderFormId}
     </select>
+    <select id="selectByTicketNo" resultType="com.jkm.entity.OrderFormDetail">
+        SELECT * FROM tb_order_form_detail WHERE ticket_no = #{ticketNo}
+    </select>
 
 </mapper>

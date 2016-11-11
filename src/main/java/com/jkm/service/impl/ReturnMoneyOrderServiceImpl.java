@@ -34,5 +34,16 @@ public class ReturnMoneyOrderServiceImpl implements ReturnMoneyOrderService {
         this.returnMoneyOrderDao.updateStatusById(id, status.getId());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderFormDetailId
+     * @return
+     */
+    @Override
+    public ReturnMoneyOrder selectByOrderFormDetailId(long orderFormDetailId) {
+        return this.returnMoneyOrderDao.selectByOrderFormDetailId(orderFormDetailId);
+    }
+
 
 }

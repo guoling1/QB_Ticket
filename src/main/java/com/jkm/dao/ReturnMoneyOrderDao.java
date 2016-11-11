@@ -19,4 +19,11 @@ public interface ReturnMoneyOrderDao {
      * @param status
      */
     void updateStatusById(@Param("id") long id, @Param("status") int status);
+
+    /**
+     *
+     * @param orderFormDetailId
+     * @return
+     */
+    ReturnMoneyOrder selectByOrderFormDetailId(@Param("orderFormDetailId") long orderFormDetailId);
 }

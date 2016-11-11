@@ -41,6 +41,27 @@ public class MqConfig {
      */
     public static final String NO_PACKAGE_WAIT_REFUND = "noPackageWaitRefund";
 
+    /**
+     * 抢票下单失败,到期自动退款
+     */
+    public static final String GRAB_FORM_FAIL_WAIT_REFUND = "grabFormFailWaitRefund";
+
+    /**
+     * 退票退款处理请求中的消息
+     */
+    public static final String RETURN_TICKET_REFUND_ING = "returnTicketRefundIng";
+
+    /**
+     * 抢票差价退款的消息
+     */
+    public static final String GRAB_TICKET_REFUND_PART = "grabTicketRefundPart";
+
+    /**
+     * 抢票全额退款的消息
+     */
+    public static final String GRAB_TICKET_REFUND_ALL = "grabTicketRefundAll";
+
+
     static {
         final MqConfigs mqConfigs = getMqConfigs();
         TOPIC = mqConfigs.topic();

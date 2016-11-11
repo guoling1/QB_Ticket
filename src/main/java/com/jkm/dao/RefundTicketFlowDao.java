@@ -31,4 +31,11 @@ public interface RefundTicketFlowDao {
      * @param flow
      */
     void update(RefundTicketFlow flow);
+
+    /**
+     *
+     * @param reqtoken
+     * @return
+     */
+    RefundTicketFlow getByReqToken(@Param("reqtoken") String reqtoken);
 }

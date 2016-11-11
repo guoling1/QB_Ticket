@@ -20,4 +20,6 @@ public interface ReturnMoneyOrderService {
      * @param status
      */
     void updateStatusById(long id, EnumReturnMoneyOrderStatus status);
+
+    ReturnMoneyOrder selectByOrderFormDetailId(long orderFormDetailId);
 }
