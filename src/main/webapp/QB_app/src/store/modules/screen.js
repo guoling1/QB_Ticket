@@ -25,8 +25,8 @@ const state = {
     },
     startTime: '0',
     endTime: '0',
-    ticket:true,
-    sort:true
+    ticket:true,//只看有票
+    sort:true //出发早晚
   }
 };
 
