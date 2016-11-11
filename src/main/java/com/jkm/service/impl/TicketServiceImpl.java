@@ -1449,6 +1449,7 @@ public class TicketServiceImpl implements TicketService {
             JSONObject mqJo = new JSONObject();
             mqJo.put("orderFormId", orderForm.getId());
             mqJo.put("reqSn", orderForm.getPaymentSn());
+            mqJo.put("refundAmount", singleRefundData.getRefundAmount());
             mqJo.put("sendCount", 0);
             MqProducer.sendMessage(mqJo, MqConfig.TICKET_HANDLE_REFUND_ORDER_RESULT, 2000);
         } else {
