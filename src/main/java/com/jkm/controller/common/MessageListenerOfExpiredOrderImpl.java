@@ -19,10 +19,8 @@ import com.aliyun.openservices.ons.api.Action;
 import com.aliyun.openservices.ons.api.ConsumeContext;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.MessageListener;
-import com.jkm.service.AuthenService;
 import com.jkm.service.GrabTicketFormService;
 import com.jkm.service.OrderFormService;
-import com.jkm.service.TicketService;
 import com.jkm.util.mq.MqConfig;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
@@ -33,9 +31,9 @@ import java.io.UnsupportedEncodingException;
 /**
  * MQ消息处理类
  */
-public class MessageListenerOfTicketImpl implements MessageListener {
+public class MessageListenerOfExpiredOrderImpl implements MessageListener {
 
-    private static Logger log = Logger.getLogger(MessageListenerOfTicketImpl.class);
+    private static Logger log = Logger.getLogger(MessageListenerOfExpiredOrderImpl.class);
 
     @Autowired
     private OrderFormService orderFormService;
@@ -51,13 +49,17 @@ public class MessageListenerOfTicketImpl implements MessageListener {
             if ((MqConfig.TICKET_CANCEL_EXPIRED_ORDER).equals(message.getTag())){  //订单到期取消
 
                 this.orderFormService.handleExpiredOrderForm(jo.getLong("orderFormId"));
-            }else if (MqConfig.TICKET_CANCEL_EXPIRED_GRAB_ORDER.equals(message.getTag())) {//取消到期抢票订单
+            }else if (MqConfig.TICKET_CANCEL_EXPIRED_GRAB_ORDER.equals(message.getTag())) {//取消到期未付款抢票订单
 
                 this.grabTicketFormService.handleExpiredOGrabForm(jo.getLong("grabTicketFormId"));
             }else if (MqConfig.NO_PACKAGE_WAIT_REFUND.equals(message.getTag())) {//抢票订单没买套餐自动退款
 
                 this.grabTicketFormService.handleNoPackageWaitRefund(jo.getLong("grabTicketFormId"));
+            }else if (MqConfig.GRAB_FORM_FAIL_WAIT_REFUND.equals(message.getTag())) {//抢票下单失败
+
+                this.grabTicketFormService.handleNoPackageWaitRefund(jo.getLong("grabTicketFormId"));
             }
+
 
         } catch (UnsupportedEncodingException e) {
             log.info("消费[过了支付时间的订单]异常", e);

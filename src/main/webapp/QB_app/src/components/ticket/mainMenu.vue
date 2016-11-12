@@ -3,19 +3,22 @@
     <router-view></router-view>
 
     <div class="bottom">
-      <router-link to="/ticket/main-menu/reserve" class="btn" :class="pathName=='ticketReserve'?'active':''">
+      <router-link :to="{path:'/ticket/main-menu/reserve',query: common}" class="btn"
+                   :class="pathName=='ticketReserve'?'active':''">
         <div class="icon icon-ticket"></div>
         <p>车票预定</p>
       </router-link>
-      <router-link to="/ticket/main-menu/rob" class="btn" :class="pathName=='ticketRob'?'active':''">
+      <router-link :to="{path:'/ticket/main-menu/rob',query: common}" class="btn"
+                   :class="pathName=='ticketRob'?'active':''">
         <div class="icon icon-rob"></div>
         <p>抢票</p>
       </router-link>
       <!--<router-link to="/ticket/main-menu/private" class="btn" :class="pathName=='ticketPrivate'?'active':''">-->
-        <!--<div class="icon icon-private"></div>-->
-        <!--<p>私人定制</p>-->
+      <!--<div class="icon icon-private"></div>-->
+      <!--<p>私人定制</p>-->
       <!--</router-link>-->
-      <router-link to="/ticket/main-menu/order" class="btn" :class="pathName=='ticketOrder'?'active':''">
+      <router-link :to="{path:'/ticket/main-menu/order',query: common}" class="btn"
+                   :class="pathName=='ticketOrder'?'active':''">
         <div class="icon icon-order"></div>
         <p>我的订单</p>
       </router-link>
@@ -28,12 +31,24 @@
     name: 'menu',
     data () {
       return {
+        common: {
+          appid: '',
+          uid: ''
+        },
         pathName: this.$route.name
       }
     },
+    beforeRouteEnter (to, from, next) {
+      next(function (vm) {
+        vm.$data.common.appid = to.query.appid;
+        vm.$data.common.uid = to.query.uid;
+      });
+    },
     watch: {
-      $route: function (val) {
-        this.$data.pathName = val.name;
+      $route: function (n, o) {
+        this.$data.pathName = n.name;
+        this.$data.common.appid = o.query.appid;
+        this.$data.common.uid = o.query.uid;
       }
     }
   }

@@ -108,6 +108,7 @@ public class TicketController extends BaseController{
             results.setMessage("fail");
         }
         responseCancelOrder.setMsg(cancelOrderResult.getRight());
+        responseCancelOrder.setOrderFormId(request.getOrderFormId());
         results.setData(responseCancelOrder);
         return results;
     }
@@ -147,11 +148,12 @@ public class TicketController extends BaseController{
     @RequestMapping(value = "/grab", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntityBase<ResponseGrabTicket> grabTicket(@RequestBody final RequestGrabTicket requset) throws Exception {
-       this.ticketService.requestGrabImpl(2);
+        this.ticketService.requestGrabImpl(10);
         requset.setUid(super.getUid(requset.getAppId(), requset.getUid()));
         Preconditions.checkState(ValidateUtils.isMobile(requset.getPhone()));
         final ResponseEntityBase<ResponseGrabTicket> result = new ResponseEntityBase<>();
         try{
+            logger.info("用户uid=" + requset.getUid() + "下了一个抢票单");
             Pair<Boolean,String> pair = this.ticketService.grabTicket(requset);
             if(pair.getLeft()){
                 result.setCode(1);
@@ -161,9 +163,9 @@ public class TicketController extends BaseController{
                 result.setMessage(pair.getRight());
             }
         }catch(final Throwable throwable){
-            logger.error("火车车票抢票受理异常, 异常信息:" + throwable.getMessage());
+            logger.error("下抢票单异常 异常信息:" + throwable.getMessage());
             result.setCode(-1);
-            result.setMessage("抢票申请失败");
+            result.setMessage("失败");
         }
         return result;
     }

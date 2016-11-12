@@ -3,10 +3,10 @@
 <mapper namespace="com.jkm.dao.RefundTicketFlowDao">
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_refund_ticket_flow
-        (order_form_id,grab_ticket_form_id,order_form_detail_id,ticket_no,
+        (req_token, return_type ,order_form_id,grab_ticket_form_id,order_form_detail_id,ticket_no,
          apply_time,success_time,returnmoney, remark,status
         )VALUES(
-         #{orderFormId},#{grabTicketFormId},#{orderFormDetailId},#{ticketNo},#{applyTime},
+         #{reqToken}, #{returnType},#{orderFormId},#{grabTicketFormId},#{orderFormDetailId},#{ticketNo},#{applyTime},
         #{successTime},#{returnmoney},#{remark},#{status}
         )
     </insert>
@@ -16,7 +16,10 @@
     </update>
     <update id="update">
         UPDATE tb_refund_ticket_flow
-        SET order_form_id = #{orderFormId},
+        SET
+        req_token = #{reqToken},
+        return_type = #{returnType},
+        order_form_id = #{orderFormId},
         grab_ticket_form_id = #{grabTicketFormId},
         order_form_detail_id =#{orderFormDetailId},
         ticket_no = #{ticketNo},
@@ -28,5 +31,8 @@
     </update>
     <select id="selectByTicketNo" resultType="com.jkm.entity.RefundTicketFlow">
         SELECT * FROM tb_refund_ticket_flow WHERE ticket_no = #{ticketNo}
+    </select>
+    <select id="getByReqToken" resultType="com.jkm.entity.RefundTicketFlow">
+        SELECT * FROM tb_refund_ticket_flow WHERE req_token = #{reqtoken}
     </select>
 </mapper>

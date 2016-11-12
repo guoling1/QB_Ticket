@@ -182,4 +182,15 @@ public class OrderFormDetailServiceImpl implements OrderFormDetailService {
     public long selectGrabFormNumGrab(long grabOrderFormId) {
         return this.orderFormDetailDao.selectGrabFormNumGrab(grabOrderFormId);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param ticketNo
+     * @return
+     */
+    @Override
+    public Optional<OrderFormDetail> selectByTicketNo(String ticketNo) {
+        return Optional.fromNullable(this.orderFormDetailDao.selectByTicketNo(ticketNo));
+    }
 }

@@ -14,4 +14,7 @@
         UPDATE tb_return_money_order
         SET status = #{status} WHERE id = #{id}
     </update>
+    <select id="selectByOrderFormDetailId" resultType="com.jkm.entity.ReturnMoneyOrder">
+        SELECT * FROM tb_return_money_order WHERE  order_form_detail_id = #{orderFormDetailId};
+    </select>
 </mapper>

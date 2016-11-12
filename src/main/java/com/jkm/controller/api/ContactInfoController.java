@@ -3,6 +3,7 @@ package com.jkm.controller.api;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.jkm.controller.common.BaseController;
+import com.jkm.controller.helper.ResponseEntityBase;
 import com.jkm.entity.TbContactInfo;
 import com.jkm.entity.helper.UserBankCardSupporter;
 import com.jkm.service.ContactInfoService;
@@ -31,8 +32,8 @@ public class ContactInfoController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public JSONObject bind(){
-        JSONObject responseJson = new JSONObject();
+    public ResponseEntityBase<Long> bind(){
+        ResponseEntityBase<Long> responseEntityBase = new ResponseEntityBase<Long>();
         try{
             JSONObject requestJson = super.getRequestJsonParams();
             log.info("联系人参数："+requestJson.toString());
@@ -49,9 +50,9 @@ public class ContactInfoController extends BaseController {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getString("personType")), "请选择乘客类型");
 
             if("1".equals(requestJson.getString("identyType"))&&!ValidationUtil.isIdCard(requestJson.getString("identy"))){
-                responseJson.put("result",false);
-                responseJson.put("message","身份证号不正确");
-                return responseJson;
+                responseEntityBase.setCode(401);
+                responseEntityBase.setMessage("身份证号不正确");
+                return responseEntityBase;
             }
 
             if(requestJson.get("name")!=null){
@@ -75,19 +76,18 @@ public class ContactInfoController extends BaseController {
 
             JSONObject jo = contactInfoService.insert(ti);
             if(jo.getBoolean("result")){
-                responseJson.put("result", true);
-                responseJson.put("data",jo.getLong("data"));
-                responseJson.put("message", jo.getString("message"));
+                responseEntityBase.setMessage(jo.getString("message"));
+                responseEntityBase.setData(jo.getLong("data"));
             }else{
-                responseJson.put("result", false);
-                responseJson.put("message", jo.getString("message"));
+                responseEntityBase.setMessage(jo.getString("message"));
+                responseEntityBase.setCode(400);
             }
         }catch (Exception e){
-            log.info(e.getMessage());
-            responseJson.put("result", false);
-            responseJson.put("message", "添加异常");
+            log.info("添加联系人信息异常");
+            responseEntityBase.setMessage(e.getMessage());
+            responseEntityBase.setCode(500);
         }
-        return responseJson;
+        return responseEntityBase;
     }
     /**
      * 根据id查询用户信息
@@ -96,8 +96,8 @@ public class ContactInfoController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/selectOne", method = RequestMethod.POST)
-    public JSONObject selectOne(){
-        JSONObject responseJson = new JSONObject();
+    public ResponseEntityBase<TbContactInfo> selectOne(){
+        ResponseEntityBase<TbContactInfo> responseEntityBase = new ResponseEntityBase<TbContactInfo>();
         try{
             JSONObject requestJson = super.getRequestJsonParams();
             Preconditions.checkNotNull(requestJson.get("id"),"缺失参数id");
@@ -106,15 +106,14 @@ public class ContactInfoController extends BaseController {
             log.info("联系人参数："+requestJson.toString());
             TbContactInfo tbContactInfo = contactInfoService.selectOne(id);
             tbContactInfo.setIdenty(UserBankCardSupporter.decryptCardId(tbContactInfo.getIdenty()));
-            responseJson.put("result", true);
-            responseJson.put("data",tbContactInfo);
-            responseJson.put("message", "查询成功");
+            responseEntityBase.setData(tbContactInfo);
+            responseEntityBase.setMessage("查询成功");
         }catch (Exception e){
-            log.info(e.getMessage());
-            responseJson.put("result", false);
-            responseJson.put("message", "查询异常");
+            log.info("根据id查询用户信息异常");
+            responseEntityBase.setCode(500);
+            responseEntityBase.setMessage("查询异常");
         }
-        return responseJson;
+        return responseEntityBase;
     }
 
     /**
@@ -124,8 +123,8 @@ public class ContactInfoController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public JSONObject delete(){
-        JSONObject responseJson = new JSONObject();
+    public ResponseEntityBase<Integer> delete(){
+        ResponseEntityBase<Integer> responseEntityBase = new ResponseEntityBase<Integer>();
         try{
             JSONObject requestJson = super.getRequestJsonParams();
             Preconditions.checkNotNull(requestJson.get("id"),"缺失参数id");
@@ -133,15 +132,14 @@ public class ContactInfoController extends BaseController {
             long id = requestJson.getLong("id");
             log.info("联系人参数："+requestJson.toString());
             int rowNum = contactInfoService.updateStatus(id);
-            responseJson.put("result", true);
-            responseJson.put("data",rowNum);
-            responseJson.put("message", "删除成功");
+            responseEntityBase.setMessage("删除成功");
+            responseEntityBase.setData(rowNum);
         }catch (Exception e){
-            log.info(e.getMessage());
-            responseJson.put("result", false);
-            responseJson.put("message", "删除异常");
+            log.info("删除联系人异常");
+            responseEntityBase.setCode(500);
+            responseEntityBase.setMessage("查询异常");
         }
-        return responseJson;
+        return responseEntityBase;
     }
 
     /**
@@ -151,8 +149,8 @@ public class ContactInfoController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public JSONObject update(){
-        JSONObject responseJson = new JSONObject();
+    public ResponseEntityBase<Integer> update(){
+        ResponseEntityBase<Integer> responseEntityBase = new ResponseEntityBase<Integer>();
         try{
             JSONObject requestJson = super.getRequestJsonParams();
             log.info("联系人参数："+requestJson.toString());
@@ -180,15 +178,14 @@ public class ContactInfoController extends BaseController {
                 ti.setId(requestJson.getLong("id"));
             }
             int rowNum = contactInfoService.updateByPrimaryKeySelective(ti);
-            responseJson.put("result", true);
-            responseJson.put("data",rowNum);
-            responseJson.put("message", "修改成功");
+            responseEntityBase.setMessage("修改成功");
+            responseEntityBase.setData(rowNum);
         }catch (Exception e){
-            log.info(e.getMessage());
-            responseJson.put("result", false);
-            responseJson.put("message", "修改异常");
+            log.info("修改联系人异常");
+            responseEntityBase.setCode(500);
+            responseEntityBase.setMessage("修改异常");
         }
-        return responseJson;
+        return responseEntityBase;
     }
 
     /**
@@ -198,22 +195,20 @@ public class ContactInfoController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/list", method = RequestMethod.POST)
-    public JSONObject list(){
-        JSONObject responseJson = new JSONObject();
+    public ResponseEntityBase<List<TbContactInfo>> list(){
+        ResponseEntityBase<List<TbContactInfo>> responseEntityBase = new ResponseEntityBase<List<TbContactInfo>>();
         try {
             JSONObject requestJson = super.getRequestJsonParams();
             String uid = super.getUid(requestJson.getString("appid"),requestJson.getString("uid"));
             log.info("联系人参数："+requestJson.toString());
             List<TbContactInfo> list = contactInfoService.selectListByUid(uid);
-            responseJson.put("result", true);
-            responseJson.put("data",list);
-            responseJson.put("message", "调用成功");
+            responseEntityBase.setData(list);
         }catch (Exception e){
-            log.info(e.getMessage());
-            responseJson.put("result", false);
-            responseJson.put("message", "调用失败");
+            log.info("联系人列表异常");
+            responseEntityBase.setCode(500);
+            responseEntityBase.setMessage("调用失败");
         }
-        return responseJson;
+        return responseEntityBase;
     }
 
 }

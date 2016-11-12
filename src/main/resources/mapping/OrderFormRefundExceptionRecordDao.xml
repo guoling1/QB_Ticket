@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.dao.OrderFormRefundExceptionRecordDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_order_form_refund_exception_record
+        (
+        payment_sn,
+        refund_amount,
+        order_form_id,
+        grab_order_form_id,
+        order_form_detail_id,
+        remark,
+        status
+        )
+        VALUES
+        (
+        #{paymentSn},
+        #{refundAmount},
+        #{orderFormId},
+        #{grabOrderFormId},
+        #{orderFormDetailId},
+        #{remark},
+        #{status}
+        );
+    </insert>
+
+    <update id="update">
+        UPDATE tb_order_form_refund_exception_record
+        SET
+        payment_sn = #{paymentSn},
+        refund_amount = #{refundAmount},
+        order_form_id = #{orderFormId},
+        grab_order_form_id = #{grabOrderFormId},
+        order_form_detail_id = #{orderFormDetailId},
+        remark = #{remark},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <update id="markProcessedById">
+        UPDATE tb_order_form_refund_exception_record SET status = 1 WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultType="com.jkm.entity.OrderFormRefundExceptionRecord">
+        SELECT * FROM tb_order_form_refund_exception_record WHERE id = #{id}
+    </select>
+
+    <select id="selectByPaymentSn" resultType="com.jkm.entity.OrderFormRefundExceptionRecord">
+        SELECT * FROM tb_order_form_refund_exception_record WHERE payment_sn = #{paymentSn}
+    </select>
+
+    <select id="selectAllExceptionRecord" resultType="com.jkm.entity.OrderFormRefundExceptionRecord">
+        SELECT * FROM tb_order_form_refund_exception_record WHERE status = 0
+    </select>
+
+</mapper>

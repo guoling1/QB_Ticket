@@ -24,4 +24,11 @@ public interface RefundTicketFlowService {
      * @param flow
      */
     void update(RefundTicketFlow flow);
+
+    /**
+     * 查询
+     * @param reqtoken
+     * @return
+     */
+    RefundTicketFlow getByReqToken(String reqtoken);
 }

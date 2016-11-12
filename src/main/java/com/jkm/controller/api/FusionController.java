@@ -12,6 +12,7 @@ import com.jkm.entity.fusion.SingleRefundData;
 import com.jkm.enums.notifier.EnumVerificationCodeType;
 import com.jkm.service.AuthenService;
 import com.jkm.service.notifier.SmsAuthService;
+import com.jkm.util.SnGenerator;
 import com.jkm.util.ValidationUtil;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.tuple.Pair;
@@ -45,17 +46,28 @@ public class FusionController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/toPay", method = RequestMethod.POST)
-    public JSONObject toPay() {
-        JSONObject responseJo = new JSONObject();
+    public ResponseEntityBase<JSONObject> toPay() {
+        ResponseEntityBase<JSONObject> responseEntityBase = new ResponseEntityBase<JSONObject>();
         try{
             JSONObject jo = super.getRequestJsonParams();
-            responseJo = authenService.toPay(jo);
+            JSONObject responseJo = authenService.toPay(jo);
+            if(responseJo.getBoolean("result")==true){
+                responseEntityBase.setMessage(responseJo.getString("message"));
+                responseEntityBase.setData(responseJo.getJSONObject("data"));
+            }else{
+                responseEntityBase.setMessage(responseJo.getString("message"));
+                responseEntityBase.setCode(400);
+            }
         }catch(Exception e){
             logger.info("立即支付(首次)失败");
-            responseJo.put("result",false);
-            responseJo.put("message",e.getMessage());
+            if(e.getMessage()==null){
+                responseEntityBase.setMessage("支付异常");
+            }else{
+                responseEntityBase.setMessage(e.getMessage().toString());
+            }
+            responseEntityBase.setCode(500);
         }
-        return responseJo;
+        return responseEntityBase;
     }
     /**
      * 大订单立即支付(多次)
@@ -65,17 +77,28 @@ public class FusionController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/toPayByCid", method = RequestMethod.POST)
-    public JSONObject toPayByCid() {
-        JSONObject responseJo = new JSONObject();
+    public ResponseEntityBase<JSONObject> toPayByCid() {
+        ResponseEntityBase<JSONObject> responseEntityBase = new ResponseEntityBase<JSONObject>();
         try{
             JSONObject jo = super.getRequestJsonParams();
-            responseJo = authenService.toPayByCid(jo);
+            JSONObject responseJo = authenService.toPayByCid(jo);
+            if(responseJo.getBoolean("result")==true){
+                responseEntityBase.setMessage(responseJo.getString("message"));
+                responseEntityBase.setData(responseJo.getJSONObject("data"));
+            }else{
+                responseEntityBase.setMessage(responseJo.getString("message"));
+                responseEntityBase.setCode(400);
+            }
         }catch(Exception e){
-            logger.info("立即支付(多次)");
-            responseJo.put("result",false);
-            responseJo.put("message",e.getMessage());
+            logger.info("立即支付(多次)失败");
+            if(e.getMessage()==null){
+                responseEntityBase.setMessage("支付异常");
+            }else{
+                responseEntityBase.setMessage(e.getMessage().toString());
+            }
+            responseEntityBase.setCode(500);
         }
-        return responseJo;
+        return responseEntityBase;
     }
 
     /**
@@ -86,17 +109,28 @@ public class FusionController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/toPayGrab", method = RequestMethod.POST)
-    public JSONObject toPayGrab() {
-        JSONObject responseJo = new JSONObject();
+    public ResponseEntityBase<JSONObject> toPayGrab() {
+        ResponseEntityBase<JSONObject> responseEntityBase = new ResponseEntityBase<JSONObject>();
         try{
             JSONObject jo = super.getRequestJsonParams();
-            responseJo = authenService.toPayGrab(jo);
+            JSONObject responseJo = authenService.toPayGrab(jo);
+            if(responseJo.getBoolean("result")==true){
+                responseEntityBase.setMessage(responseJo.getString("message"));
+                responseEntityBase.setData(responseJo.getJSONObject("data"));
+            }else{
+                responseEntityBase.setMessage(responseJo.getString("message"));
+                responseEntityBase.setCode(400);
+            }
         }catch(Exception e){
             logger.info("抢票单立即支付(首次)失败");
-            responseJo.put("result",false);
-            responseJo.put("message",e.getMessage());
+            if(e.getMessage()==null){
+                responseEntityBase.setMessage("支付异常");
+            }else{
+                responseEntityBase.setMessage(e.getMessage().toString());
+            }
+            responseEntityBase.setCode(500);
         }
-        return responseJo;
+        return responseEntityBase;
     }
     /**
      * 抢票单立即支付(多次)
@@ -106,17 +140,28 @@ public class FusionController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/toPayGrabByCid", method = RequestMethod.POST)
-    public JSONObject toPayGrabByCid() {
-        JSONObject responseJo = new JSONObject();
+    public ResponseEntityBase<JSONObject> toPayGrabByCid() {
+        ResponseEntityBase<JSONObject> responseEntityBase = new ResponseEntityBase<JSONObject>();
         try{
             JSONObject jo = super.getRequestJsonParams();
-            responseJo = authenService.toPayGrabByCid(jo);
+            JSONObject responseJo = authenService.toPayGrabByCid(jo);
+            if(responseJo.getBoolean("result")==true){
+                responseEntityBase.setMessage(responseJo.getString("message"));
+                responseEntityBase.setData(responseJo.getJSONObject("data"));
+            }else{
+                responseEntityBase.setMessage(responseJo.getString("message"));
+                responseEntityBase.setCode(400);
+            }
         }catch(Exception e){
-            logger.info("立即支付(多次)");
-            responseJo.put("result",false);
-            responseJo.put("message",e.getMessage());
+            logger.info("立即支付(多次)异常");
+            if(e.getMessage()==null){
+                responseEntityBase.setMessage("支付异常");
+            }else{
+                responseEntityBase.setMessage(e.getMessage().toString());
+            }
+            responseEntityBase.setCode(500);
         }
-        return responseJo;
+        return responseEntityBase;
     }
     /**
      * 获取验证码
@@ -126,13 +171,94 @@ public class FusionController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/getCode", method = RequestMethod.POST)
-    public JSONObject getCode() {
-        JSONObject responseJo = new JSONObject();
+    public ResponseEntityBase<Object> getCode() {
+        ResponseEntityBase<Object> responseEntityBase = new ResponseEntityBase<Object>();
         try{
             JSONObject jo = super.getRequestJsonParams();
             String uid = super.getUid(jo.getString("appid"),jo.getString("uid"));
             jo.put("uid",uid);
-            responseJo = authenService.getCode(jo);
+            JSONObject responseJo = authenService.getCode(jo);
+            if(responseJo.getBoolean("result")==true){
+                responseEntityBase.setMessage(responseJo.getString("message"));
+            }else{
+                responseEntityBase.setMessage(responseJo.getString("message"));
+                responseEntityBase.setCode(400);
+            }
+        }catch(Exception e){
+            logger.info("获取验证码异常");
+            responseEntityBase.setMessage("获取验证码异常");
+            responseEntityBase.setCode(500);
+        }
+        return responseEntityBase;
+    }
+    /**
+     * 验证支付查询
+     *
+     * @param requestData
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getTest", method = RequestMethod.POST)
+    public JSONObject getTest() {
+        JSONObject responseJo = new JSONObject();
+        try{
+            JSONObject jo = super.getRequestJsonParams();
+            QueryQuickPayData queryQuickPayData =new QueryQuickPayData();
+            queryQuickPayData.setMercOrdNo(jo.getString("payment"));
+            queryQuickPayData.setReqSn(SnGenerator.generate());
+            queryQuickPayData.setMercOrdDt(jo.getString("payment").substring(0,8));
+            Map<String, Object> result = authenService.queryQuickPay(queryQuickPayData);
+            logger.info("结果："+result);
+        }catch(Exception e){
+            responseJo.put("result",false);
+            responseJo.put("message",e.getMessage());
+        }
+        return responseJo;
+    }
+    /**
+     * 验证退款
+     *
+     * @param requestData
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getTest1", method = RequestMethod.POST)
+    public JSONObject getTest1() {
+        JSONObject responseJo = new JSONObject();
+        try{
+            JSONObject jo = super.getRequestJsonParams();
+            SingleRefundData singleRefundData =new SingleRefundData();
+            singleRefundData.setReqSn(SnGenerator.generate());
+            singleRefundData.setOrgSn(jo.getString("orgSn"));
+            singleRefundData.setOrgDate(jo.getString("orgDate"));
+            singleRefundData.setRefundAmount(jo.getString("refundAmount"));
+            singleRefundData.setOrgAmount(jo.getString("orgAmount"));
+            Map<String, Object> result = authenService.singlRefund(singleRefundData);
+            logger.info("结果："+result);
+        }catch(Exception e){
+            responseJo.put("result",false);
+            responseJo.put("message",e.getMessage());
+        }
+        return responseJo;
+    }
+    /**
+     * 验证退款查询
+     *
+     * @param requestData
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getTest2", method = RequestMethod.POST)
+    public JSONObject getTest2() {
+        JSONObject responseJo = new JSONObject();
+        try{
+            JSONObject jo = super.getRequestJsonParams();
+            QueryRefundData queryRefundData =new QueryRefundData();
+            queryRefundData.setQuerySn(jo.getString("querySn"));
+            queryRefundData.setReqSn(SnGenerator.generate());
+            queryRefundData.setQueryDate(jo.getString("querySn").substring(0,8));
+            Map<String, Object> result = authenService.queryRefund(queryRefundData);
+            logger.info("结果："+result);
         }catch(Exception e){
             responseJo.put("result",false);
             responseJo.put("message",e.getMessage());
