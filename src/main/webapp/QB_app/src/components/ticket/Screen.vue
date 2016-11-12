@@ -127,7 +127,6 @@
         this.$store.commit('SCREEN_CLOSE', {
           ctrl: false,
           config: newConfig
-
         });
       },
       select:function (msg){

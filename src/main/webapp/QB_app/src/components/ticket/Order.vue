@@ -1,27 +1,28 @@
 <template lang="html">
   <div class="main">
     <div class="reserve show">预订单</div>
-    <div class="rob" >抢票单</div>
+    <div class="rob">抢票单</div>
     <ul>
       <li v-for="massage in massages">
         <div class="top">
-          <span class="date">{{massage.date}}出发</span><span class="checi">{{massage.checi}}</span>
+          <span class="date">{{massage.startDate}} {{massage.startTime}}出发</span><span class="checi">{{massage.checi}}</span>
         </div>
         <div class="bottom">
           <div>
-            <span class="form">{{massage.fromstation}}</span>
-            <span class="icon"></span>
+            <span class="form">{{massage.fromStationName}}</span>
             <img src="../../assets/jiantou.png" alt="" />
-            <span class="to">{{massage.tostation}}</span>
+            <span class="to">{{massage.toStationName}}</span>
           </div>
-          <span class="name">{{massage.name}}</span>
-          <span class="price">￥{{massage.price}}</span>
-          <p class="static">{{massage.static}}<p>
+          <span class="name" v-for="passenger in massage.passengers">{{passenger.name}}</span>
+          <span class="price" v-for="passenger in massage.passengers">￥{{passenger.price}}</span>
+          <!-- <router-link :to="{path:'/ticket/refund-detail',query:{orderFormId:massage.orderFormId}}"> -->
+          <router-link :to="{path:'/ticket/refund-detail'}">
+            <p class="static"  v-for="passenger in massage.passengers" >{{passengerStatus[passenger.status-1]}}<p>
+          </router-link>
         </div>
       </li>
     </ul>
   </div>
-
 </template>
 
 <script lang="babel">
@@ -31,22 +32,30 @@
     data () {
       return {
         massages: [],
-        getPost: null
+        passengerStatus:["票初始化","出票成功","出票失败","退票中","退票请求成功","退票成功","退票失败","订单取消"]
       }
     },
     beforeRouteEnter (to, from, next) {
+        //Vue.http.post('/order/queryMyOrder',{"uid": "123456"})
       Vue.http.get('/static/test.json')
         .then(function (response) {
           next(vm=> {
-            vm.$data.massages = response.data
+            if(response.data.code==1){
+              vm.$data.massages = response.data.data;
+            }
           })
         })
         .catch(function (response) {
           next(false)
         })
-    }
-  }
+    },
+    methods:{
 
+    },
+    computed:{
+
+    }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -116,6 +125,7 @@
             width: 183px;
             margin-bottom: 15px;
             overflow: hidden;
+            font-weight: bold;
 
             .form{
               float: left;
@@ -125,19 +135,8 @@
               float: right;
             }
 
-            .icon{
-              vertical-align: middle;
-              display: inline-block;
-              width: 45px;
-              height: 0;
-              border-bottom: 2px solid #000;
-            }
-
             img{
-              float: left;
-              position: relative;
-              top: 5px;
-              left: 67px;
+              vertical-align: 5px;
             }
           }
 
@@ -145,10 +144,12 @@
             float: left;
             font-size: 12px;
             color: #999;
+            margin-right: 8px;
           }
 
           .price{
             color: #f14242;
+            font-weight: bold;
             position:absolute;
             top: 18px;
             right: 17px;
@@ -165,7 +166,7 @@
             font-size: 12px;
             color: #fff;
             text-align: center;
-            background: #f14242
+            background: #fe6969;
           }
         }
       }

@@ -18,7 +18,8 @@ const state = {
     'ticketTrain': '北京 → 深圳',
     'ticketContacts': '常用联系人',
     'ticketLogin': '12306登录',
-    'firstAdd': '确认订单'
+    'firstAdd': '确认订单',
+    'ticketRefundDetail':'订单详情'
   }
 };
 

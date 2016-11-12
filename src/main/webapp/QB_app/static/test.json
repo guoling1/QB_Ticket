@@ -1,26 +1,48 @@
-[{
-  "date":"11月1号 17:58",
-  "checi":"G307",
-  "fromstation":"北京西",
-  "tostation":"深圳",
-  "name":"刘思思",
-  "price":"850",
-  "static":"0"
-},{
-  "date":"11月1号 17:58",
-  "checi":"G307",
-  "fromstation":"北京西",
-  "tostation":"深圳",
-  "name":"刘思思",
-  "price":"850",
-  "static":"0"
-},{
-  "date":"11月1号 17:58",
-  "checi":"G307",
-  "fromstation":"北京西",
-  "tostation":"深圳",
-  "name":"刘思思",
-  "price":"850",
-  "static":"0"
+
+{
+  "code": 1,
+  "message": "success",
+  "data": [
+    {
+      "orderFormId": 46,
+      "uid": "123456",
+      "price": 92.50,
+      "ticketTotalPrice":92.50,
+      "totalPrice":100.00,
+      "fromStationName": "上海南",
+      "fromStationCode": "SNH",
+      "toStationName": "南京",
+      "toStationCode": "NJH",
+      "checi": "K526",
+      "zwCode": "3",
+      "zwName": "硬卧",
+      "startDate": "2016-11-10",
+      "endDate": "2016-11-10",
+      "startTime": "04:14",
+      "endTime": "08:09",
+      "runTime": "235",
+      "expireTime":"1000000000",
+      "status": 10,
+      "passengers": [
+        {
+          "name": "张玉龙",
+          "passportSeNo": "412724199010251531",
+          "piaoType": "1",
+          "piaoTypeName": "成人票",
+          "cxin": "几车厢，几号",
+          "price": 92.50,
+          "status":1
+        },
+        {
+          "name": "刘思思",
+          "passportSeNo": "412724199010251531",
+          "piaoType": "1",
+          "piaoTypeName": "成人票",
+          "cxin": "几车厢，几号",
+          "price": 92.50,
+          "status":1
+        }
+      ]
+    }
+  ]
 }
-]
