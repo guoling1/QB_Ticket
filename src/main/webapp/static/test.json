@@ -31,7 +31,7 @@
           "piaoTypeName": "成人票",
           "cxin": "几车厢，几号",
           "price": 92.50,
-          "status":1
+          "status":2
         },
         {
           "name": "刘思思",
@@ -40,7 +40,7 @@
           "piaoTypeName": "成人票",
           "cxin": "几车厢，几号",
           "price": 92.50,
-          "status":1
+          "status":2
         }
       ]
     }

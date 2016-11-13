@@ -15,8 +15,7 @@
           </div>
           <span class="name" v-for="passenger in massage.passengers">{{passenger.name}}</span>
           <span class="price" v-for="passenger in massage.passengers">￥{{passenger.price}}</span>
-          <!-- <router-link :to="{path:'/ticket/refund-detail',query:{orderFormId:massage.orderFormId}}"> -->
-          <router-link :to="{path:'/ticket/refund-detail'}">
+          <router-link :to="{path:'/ticket/refund-detail',query:{orderFormId:massage.orderFormId}}">
             <p class="static"  v-for="passenger in massage.passengers" >{{passengerStatus[passenger.status-1]}}<p>
           </router-link>
         </div>
@@ -32,7 +31,8 @@
     data () {
       return {
         massages: [],
-        passengerStatus:["票初始化","出票成功","出票失败","退票中","退票请求成功","退票成功","退票失败","订单取消"]
+        passengerStatus:["票初始化","出票成功","出票失败","退票中","退票请求成功","退票成功","退票失败","订单取消"],
+        orderStatus:["订单已删除"," ","订单初始化","占座申请中","占座成功","占座失败","支付中","客户付款成功","客户付款失败","确认出票请求失败","确认出票请求成功","出票成功","出票失败","订单已经退票","订单取消","退票中","退票成功","退票失败"],
       }
     },
     beforeRouteEnter (to, from, next) {

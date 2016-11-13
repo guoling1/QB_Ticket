@@ -19,7 +19,7 @@ const state = {
     'ticketContacts': '常用联系人',
     'ticketLogin': '12306登录',
     'firstAdd': '确认订单',
-    'ticketRefundDetail':'订单详情'
+    'ticketRefundDetail':'订单详情',
     'secondAdd': '确认订单'
   }
 };

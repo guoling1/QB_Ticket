@@ -28,8 +28,8 @@
           <p class="number">
             {{passenger.passportSeNo}}
           </p>
-          <p class="state">{{orderStatus[massages.status+1]}}
-            <span @click="show(index)" v-if="massages.status==10">退票</span>
+          <p class="state">{{passengerStatus[passenger.status-1]}}
+            <span @click="show(index)" v-if="passenger.status==2">退票</span>
           </p>
         </div>
         <div class="right">
@@ -73,7 +73,7 @@
                 <p class="number">
                   {{massages.passengers[this.$data.$index].passportSeNo}}
                 </p>
-                <p class="state">{{orderStatus[massages.status+1]}}</p>
+                <p class="state">{{passengerStatus[massages.passengers[this.$data.$index].status-1]}}</p>
               </div>
               <div class="right">
                 <p class="seat">{{massages.passengers[this.$data.$index].cxin}}</p>
@@ -95,7 +95,7 @@
         </div>
         <div class="button">
           <p @click="show">不退了</p>
-          <p @click="confirm">确定退票</p>
+          <p @click.self="confirm">确定退票</p>
         </div>
       </div>
       <!-- 第二层：退票成功 -->
@@ -104,7 +104,7 @@
           <img src="../../assets/success.png" alt="" />
           <p>退票成功</p>
         </div>
-        <div class="sure">确定</div>
+        <div class="sure" @click.self="success()">确定</div>
       </div>
     </div>
   </div>
@@ -119,19 +119,21 @@
         open:false,
         $open:true,
         massages:[],
-        orderStatus:["订单已删除"," ","订单初始化","占座申请中","占座成功","占座失败","支付中","客户付款成功","客户付款失败","确认出票请求失败","确认出票请求成功","出票成功","出票失败","订单已经退票","订单取消","退票中","退票成功","退票失败"],
-        $index:0
+        passengerStatus:["票初始化","出票成功","出票失败","退票中","退票请求成功","退票成功","退票失败","订单取消"]
       }
     },
     beforeRouteEnter (to, from, next) {
-      //let orderFormId = to.query.orderFormId;
-      Vue.http.get('/static/test.json')
-      //Vue.http.post('/order/queryById',{"orderFormId":orderFormId})
+      let orderFormId = to.query.orderFormId;
+      Vue.http.post('/order/queryById',{"orderFormId":orderFormId})
       .then(function (res) {
         next(vm=> {
           console.log(res);
           if(res.data.code==1){
             vm.$data.massages=res.data.data[0];
+            var m=vm.$data.massages.runTime;
+            var h=Math.floor(m/60);
+            m%=60;
+            vm.$data.massages.runTime="耗时"+h+"小时"+m+"分";
             console.log(res.data.data);
           }
         });
@@ -152,21 +154,23 @@
       back: function () {
         this.$router.go(-1);
       },
-      // $show:function(){
-      //
-      // },
       confirm:function(){
         Vue.http.post('/ticket/refund',{"orderFormDetailId":this.$data.massages.orderFormId})
-        .then(function (res) {
-          next(vm=> {
-            if(res.data.code==1){
-              this.$data.$open=!this.$data.$open;
+         .then(function (res) {
+           next(vm=> {
+             if(res.data.code==1){
+               this.$data.$open=!this.$data.$open;
             }
           });
         }, function (err) {
           console.log(err);
           next(false);
         })
+      },
+      success:function(){
+        this.$data.open=false;
+        this.$data.$open=true;
+        this.$data.massages.passengers[this.$data.$index].status=6
       }
     },
     computed:{
