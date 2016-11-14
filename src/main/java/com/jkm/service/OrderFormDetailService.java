@@ -1,6 +1,7 @@
 package com.jkm.service;
 
 import com.google.common.base.Optional;
+import com.jkm.entity.GrabTicketForm;
 import com.jkm.entity.OrderFormDetail;
 import com.jkm.enums.EnumOrderFormDetailStatus;
 import com.jkm.enums.EnumOrderFormStatus;
@@ -125,4 +126,11 @@ public interface OrderFormDetailService {
      * @return
      */
     Optional<OrderFormDetail> selectByTicketNo(String ticketNo);
+
+    /**
+     * 根据抢票单号查
+     * @param grabTicketFormIds
+     * @return
+     */
+    List<OrderFormDetail> selectByGrabTicketFormIds(List<Long> grabTicketFormIds);
 }

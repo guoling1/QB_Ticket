@@ -136,7 +136,7 @@ public class TicketController extends BaseController{
                 result.setCode(1);
                 result.setMessage(pair.getRight());
             }else{
-                result.setCode(-2);
+                result.setCode(-1);
                 result.setMessage(pair.getRight());
             }
         }catch(final Throwable throwable){
@@ -154,23 +154,16 @@ public class TicketController extends BaseController{
     @RequestMapping(value = "/grab", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntityBase<ResponseGrabTicket> grabTicket(@RequestBody final RequestGrabTicket requset) throws Exception {
-       // this.ticketService.requestGrabImpl(10);
+        //this.ticketService.requestGrabImpl(14);
         requset.setUid(super.getUid(requset.getAppId(), requset.getUid()));
         Preconditions.checkState(ValidateUtils.isMobile(requset.getPhone()));
         final ResponseEntityBase<ResponseGrabTicket> result = new ResponseEntityBase<>();
         try{
             logger.info("用户uid=" + requset.getUid() + "下了一个抢票单");
-            Pair<Boolean,String> pair = this.ticketService.grabTicket(requset);
-            if(pair.getLeft()){
+            ResponseGrabTicket responseGrabTicket = this.ticketService.grabTicket(requset);
                 result.setCode(1);
                 result.setMessage("抢票单受理成功");
-                final ResponseGrabTicket responseGrabTicket = new ResponseGrabTicket();
-                responseGrabTicket.setGrabTicketFormId(Long.parseLong(pair.getRight()));
                 result.setData(responseGrabTicket);
-            }else{
-                result.setCode(-2);
-                result.setMessage(pair.getRight());
-            }
         }catch(final Throwable throwable){
             logger.error("下抢票单异常 异常信息:" + throwable.getMessage());
             result.setCode(-1);

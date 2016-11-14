@@ -2,6 +2,7 @@ package com.jkm.service;
 
 import com.jkm.controller.helper.request.RequestGrabTicket;
 import com.jkm.controller.helper.request.RequestSubmitOrder;
+import com.jkm.controller.helper.response.ResponseGrabTicket;
 import com.jkm.entity.OrderForm;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.tuple.Pair;
@@ -78,7 +79,7 @@ public interface TicketService {
      * 抢票受理
      * @return
      */
-    Pair<Boolean,String> grabTicket(final RequestGrabTicket req);
+    ResponseGrabTicket grabTicket(final RequestGrabTicket req);
 
     /**
      * 抢票客户支付结果处理接口

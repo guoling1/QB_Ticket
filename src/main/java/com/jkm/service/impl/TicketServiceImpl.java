@@ -4,8 +4,10 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.controller.helper.request.RequestGrabTicket;
 import com.jkm.controller.helper.request.RequestSubmitOrder;
+import com.jkm.controller.helper.response.ResponseGrabTicket;
 import com.jkm.entity.*;
 import com.jkm.entity.fusion.SingleRefundData;
+import com.jkm.entity.helper.UserBankCardSupporter;
 import com.jkm.enums.*;
 import com.jkm.helper.InsurancePolicyUtil;
 import com.jkm.helper.TicketMessageParams.SendBuyTicketFailParam;
@@ -895,7 +897,7 @@ public class TicketServiceImpl implements TicketService {
      */
     @Override
     @Transactional
-    public Pair<Boolean, String> grabTicket(final RequestGrabTicket req) {
+    public ResponseGrabTicket grabTicket(final RequestGrabTicket req) {
 
         final JSONObject jsonObject = this.queryTicketPriceService.queryTicket(req.getUid(),HySdkConstans.QUERY_PARTNER_ID, "train_query", req.getFromStationCode(), req.getToStationCode(),req.getFromStationName(), req.getToStationName(), req.getGrabStartTime(), "ADULT");
         //获取列车信息
@@ -933,6 +935,7 @@ public class TicketServiceImpl implements TicketService {
         grabTicketForm.setGrabTicketPackage(req.getGrabTicketPackageId());
         grabTicketForm.setBuyTicketPackage(req.getBuyTicketPackageId());
         grabTicketForm.setPassengerInfo(JSONArray.fromObject(req.getGrabPassengers()).toString());
+        grabTicketForm.setExpireTime(new Date(new Date().getTime() + 15*60*1000));
         grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_PAY_WAIT.getId());
         //初始化抢票单, 创建收款单收款
         this.grabTicketFormService.init(grabTicketForm);
@@ -949,9 +952,12 @@ public class TicketServiceImpl implements TicketService {
         //放入消息队列 , 15分钟支付时间
         JSONObject mqJo = new JSONObject();
         mqJo.put("grabTicketFormId",grabTicketForm.getId());
-       // MqProducer.sendMessage(mqJo, MqConfig.TICKET_CANCEL_EXPIRED_GRAB_ORDER, 1000*15*60);
+        MqProducer.sendMessage(mqJo, MqConfig.TICKET_CANCEL_EXPIRED_GRAB_ORDER, 1000*15*60);
 
-        return Pair.of(true,String.valueOf(grabTicketForm.getId()));
+        final ResponseGrabTicket responseGrabTicket = new ResponseGrabTicket();
+        responseGrabTicket.setGrabTicketFormId(grabTicketForm.getId());
+        responseGrabTicket.setPrice(grabTicketForm.getGrabTotalPrice());
+        return responseGrabTicket;
     }
 
     /**
@@ -1016,7 +1022,6 @@ public class TicketServiceImpl implements TicketService {
             grabTicketForm.setEndTime(getTimeStr(jsonParams.getString("arrive_time")));
             grabTicketForm.setTransactionId(jsonParams.getString("transactionid"));
             grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_SUCCESS.getId());
-            this.grabTicketFormService.update(grabTicketForm);
 
             final JSONArray passengers = jsonParams.getJSONArray("passengers");
             for (Object object : passengers){
@@ -1028,7 +1033,7 @@ public class TicketServiceImpl implements TicketService {
                 orderFormDetail.setMobile(grabTicketForm.getPhone());
                 orderFormDetail.setPassengerId(obj.getLong("passengerid"));
                 orderFormDetail.setPassengerName(obj.getString("passengersename"));
-                orderFormDetail.setPassportSeNo(obj.getString("passportseno"));
+                orderFormDetail.setPassportSeNo(UserBankCardSupporter.encryptCardId(obj.getString("passportseno")));
                 orderFormDetail.setPassportTypeSeId(obj.getString("passporttypeseid"));
                 orderFormDetail.setPassportTypeSeName(obj.getString("passporttypeseidname"));
                 orderFormDetail.setTicketNo(obj.getString("ticket_no"));
@@ -1036,8 +1041,12 @@ public class TicketServiceImpl implements TicketService {
                 orderFormDetail.setCheci(grabTicketForm.getCheci());
                 orderFormDetail.setPiaoType(obj.getString("piaotype"));
                 orderFormDetail.setCxin(obj.getString("cxin"));
+                if(obj.getString("piaotype").equals(EnumTrainTicketType.ADULT.getId())){
+                    grabTicketForm.setPrice(new BigDecimal(obj.getString("price")));
+                }
                 this.orderFormDetailService.add(orderFormDetail);
             }
+            this.grabTicketFormService.update(grabTicketForm);
             //退差价
             final BigDecimal subtract = grabTicketForm.getTicketTotalPrice().subtract(grabTicketForm.getGrabTicketTotalPrice());
             if (subtract.compareTo(new BigDecimal(0)) != 0){
@@ -1096,7 +1105,7 @@ public class TicketServiceImpl implements TicketService {
                 param.setMobile(grabTicketForm.getPhone());
                 param.setStartStation(grabTicketForm.getFromStationName());
                 param.setEndStation(grabTicketForm.getToStationName());
-                param.setTicketNo(grabTicketForm.getCheci());
+                param.setTrainNo(grabTicketForm.getCheci());
                 param.setStartDate(grabTicketForm.getStartDate());
                 param.setStartTime(grabTicketForm.getStartTime());
                 param.setTicketNo(grabTicketForm.getOrderNumber());
@@ -1298,7 +1307,8 @@ public class TicketServiceImpl implements TicketService {
                 DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss) + MD5Util.MD5(HySdkConstans.GRAB_SIGN_KEY)));
         jsonObject.put("qorderid", grabTicketForm.getOrderId());
         jsonObject.put("callback_url", "");
-        jsonObject.put("train_type", "G,D,Z,T,K,C,Q");
+        final String trainType = this.getGrabTrainType(grabTicketForm.getTrainCodes());
+        jsonObject.put("train_type", trainType);
         jsonObject.put("from_station_code", grabTicketForm.getFromStationCode());
         jsonObject.put("from_station_name",grabTicketForm.getFromStationName());
         jsonObject.put("to_station_code", grabTicketForm.getToStationCode());
@@ -1339,6 +1349,30 @@ public class TicketServiceImpl implements TicketService {
             grabTicketForm.setRemark(jsonResponse.getString("msg"));
             this.grabTicketFormService.update(grabTicketForm);
         }
+    }
+
+    private String getGrabTrainType(String trainCodes) {
+
+        final String[] split = trainCodes.split(",");
+        final StringBuilder builder = new StringBuilder();
+        for (String str : split) {
+            if (str.startsWith("G")) {
+                builder.append("G,");
+            } else if (str.startsWith("D")) {
+                builder.append("D,");
+            } else if (str.startsWith("Z")) {
+                builder.append("Z,");
+            } else if (str.startsWith("T")) {
+                builder.append("T,");
+            } else if (str.startsWith("K")) {
+                builder.append("K,");
+            } else if (str.startsWith("C")) {
+                builder.append("C,");
+            } else{
+                builder.append("Q,");
+            }
+        }
+      return  builder.substring(0, builder.lastIndexOf(","));
     }
 
     /**

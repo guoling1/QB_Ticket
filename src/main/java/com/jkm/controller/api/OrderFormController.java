@@ -5,6 +5,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
+import com.jkm.controller.helper.request.RequestQueryGrabOrder;
 import com.jkm.controller.helper.request.RequestQueryOrderForm;
 import com.jkm.controller.helper.response.ResponseQueryGrabOrder;
 import com.jkm.controller.helper.response.ResponseQueryOrderForm;
@@ -99,9 +100,9 @@ public class OrderFormController extends BaseController {
      * @param request
      * @return
      */
-   /* @ResponseBody
+    @ResponseBody
     @RequestMapping(value = "queryGrabOrder", method = RequestMethod.POST)
-    public ResponseEntityBase<Object[]> queryGrabOrderForm(@RequestBody final RequestQueryOrderForm request) {
+    public ResponseEntityBase<Object[]> queryGrabOrderForm(@RequestBody final RequestQueryGrabOrder request) {
         final ResponseEntityBase<Object[]> results = new ResponseEntityBase<>();
         final List<GrabTicketForm> grabTicketForms = this.grabTicketFormService.selectByUid(request.getUid());
         if (CollectionUtils.isEmpty(grabTicketForms)) {
@@ -114,46 +115,106 @@ public class OrderFormController extends BaseController {
                 return grabTicketForm.getId();
             }
         });
-        final List<OrderFormDetail> orderFormDetails = this.orderFormDetailService.selectByOrderFormIds(grabTicketFormIds);
+        final List<OrderFormDetail> orderFormDetails = this.orderFormDetailService.selectByGrabTicketFormIds(grabTicketFormIds);
         final List<ResponseQueryGrabOrder> orderFormList = Lists.transform(grabTicketForms, new Function<GrabTicketForm, ResponseQueryGrabOrder>() {
             @Override
             public ResponseQueryGrabOrder apply(GrabTicketForm grabTicketForm) {
-                return getGrabResponse(grabTicketForm, orderFormDetails);
+                //判断是否抢到票
+                if(!(grabTicketForm.getCheci() == null)){
+                    //抢到
+                    return getGrabResponse(grabTicketForm, orderFormDetails);
+                }else{
+                    //未抢到
+                    final ResponseQueryGrabOrder responseQueryGrabOrder = new ResponseQueryGrabOrder();
+                    responseQueryGrabOrder.setUid(grabTicketForm.getUid());
+                    responseQueryGrabOrder.setGrabTicketFormId(grabTicketForm.getId());
+                    responseQueryGrabOrder.setIsGrab(0);
+                    responseQueryGrabOrder.setGrabTotalPrice(grabTicketForm.getGrabTotalPrice());
+                    responseQueryGrabOrder.setGrabStartTime(grabTicketForm.getFirstStartTime().substring(0,10));
+                    responseQueryGrabOrder.setGrabTimeType(grabTicketForm.getGrabTimeType());
+                    responseQueryGrabOrder.setFromStationName(grabTicketForm.getFromStationName());
+                    responseQueryGrabOrder.setToStationName(grabTicketForm.getToStationName());
+                    responseQueryGrabOrder.setTrainCodes(grabTicketForm.getTrainCodes());
+                    responseQueryGrabOrder.setSeatTypes(grabTicketForm.getSeatTypes());
+                    responseQueryGrabOrder.setPassengerInfo(grabTicketForm.getPassengerInfo());
+                    responseQueryGrabOrder.setExpireTime(grabTicketForm.getExpireTime());
+                    responseQueryGrabOrder.setStatus(grabTicketForm.getStatus());
+                    return responseQueryGrabOrder;
+                }
             }
         });
         results.setData(orderFormList.toArray());
         return results;
     }
 
+    /**
+     * 按id查询抢票订单
+     *
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/grab/queryById", method = RequestMethod.POST)
+    public ResponseEntityBase<ResponseQueryGrabOrder> grabQueryById(@RequestBody final RequestQueryGrabOrder request) {
+        final ResponseEntityBase<ResponseQueryGrabOrder> results = new ResponseEntityBase<>();
+        final Optional<GrabTicketForm> grabTicketFormOptional = this.grabTicketFormService.selectById(request.getGrabTicketFormId());
+        final GrabTicketForm grabTicketForm = grabTicketFormOptional.get();
+        final List<OrderFormDetail> orderFormDetails = this.orderFormDetailService.selectByGrabTicketFormId(request.getGrabTicketFormId());
+        //判断是否抢到票
+        if(!grabTicketForm.getCheci().isEmpty()){
+            //抢到
+            results.setData(getGrabResponse(grabTicketForm, orderFormDetails));
+            return results;
+        }else{
+            //未抢到
+            final ResponseQueryGrabOrder responseQueryGrabOrder = new ResponseQueryGrabOrder();
+            responseQueryGrabOrder.setUid(grabTicketForm.getUid());
+            responseQueryGrabOrder.setGrabTicketFormId(grabTicketForm.getId());
+            responseQueryGrabOrder.setIsGrab(0);
+            responseQueryGrabOrder.setGrabTotalPrice(grabTicketForm.getGrabTotalPrice());
+            responseQueryGrabOrder.setGrabStartTime(grabTicketForm.getFirstStartTime().substring(0,10));
+            responseQueryGrabOrder.setGrabTimeType(grabTicketForm.getGrabTimeType());
+            responseQueryGrabOrder.setFromStationName(grabTicketForm.getFromStationName());
+            responseQueryGrabOrder.setToStationName(grabTicketForm.getToStationName());
+            responseQueryGrabOrder.setTrainCodes(grabTicketForm.getTrainCodes());
+            responseQueryGrabOrder.setSeatTypes(grabTicketForm.getSeatTypes());
+            responseQueryGrabOrder.setPassengerInfo(grabTicketForm.getPassengerInfo());
+            responseQueryGrabOrder.setExpireTime(grabTicketForm.getExpireTime());
+            responseQueryGrabOrder.setPassengerInfo(grabTicketForm.getPassengerInfo());
+            responseQueryGrabOrder.setStatus(grabTicketForm.getStatus());
+            results.setData(responseQueryGrabOrder);
+            return results;
+        }
+
+    }
+
     private ResponseQueryGrabOrder getGrabResponse(GrabTicketForm grabTicketForm, List<OrderFormDetail> orderFormDetails) {
-        final ResponseQueryOrderForm responseQueryOrderForm = new ResponseQueryOrderForm();
-        final ArrayList<ResponseQueryOrderForm.passenger> passengers = new ArrayList<>();
-        responseQueryOrderForm.setPassengers(passengers);
-        responseQueryOrderForm.setOrderFormId(0);
-        responseQueryOrderForm.setGrabTicketFormId(grabTicketForm.getId());
-        responseQueryOrderForm.setUid(grabTicketForm.getUid());
-        responseQueryOrderForm.setPrice(grabTicketForm.getPrice());
-        responseQueryOrderForm.setTotalPrice(orderForm.getTotalPrice());
-        responseQueryOrderForm.setTicketTotalPrice(orderForm.getTicketTotalPrice());
-        responseQueryOrderForm.setFromStationName(orderForm.getFromStationName());
-        responseQueryOrderForm.setFromStationCode(orderForm.getFromStationCode());
-        responseQueryOrderForm.setToStationName(orderForm.getToStationName());
-        responseQueryOrderForm.setToStationCode(orderForm.getToStationCode());
-        responseQueryOrderForm.setCheci(orderForm.getCheci());
-        responseQueryOrderForm.setZwCode(orderForm.getZwCode());
-        responseQueryOrderForm.setZwName(orderForm.getZwName());
-        responseQueryOrderForm.setStartDate(orderForm.getStartDate());
-        responseQueryOrderForm.setEndDate(orderForm.getEndDate());
-        responseQueryOrderForm.setStartTime(orderForm.getStartTime());
-        responseQueryOrderForm.setEndTime(orderForm.getEndTime());
-        responseQueryOrderForm.setRunTime(orderForm.getRunTime());
-        responseQueryOrderForm.setExpireTime(orderForm.getExpireTime());
-        responseQueryOrderForm.setStatus(orderForm.getStatus());
+        final ResponseQueryGrabOrder responseQueryGrabOrder = new ResponseQueryGrabOrder();
+        final ArrayList<ResponseQueryGrabOrder.passenger> passengers = new ArrayList<>();
+        responseQueryGrabOrder.setPassengers(passengers);
+        responseQueryGrabOrder.setUid(grabTicketForm.getUid());
+        responseQueryGrabOrder.setGrabTicketFormId(grabTicketForm.getId());
+        responseQueryGrabOrder.setIsGrab(1);
+        responseQueryGrabOrder.setPrice(grabTicketForm.getPrice());
+        responseQueryGrabOrder.setTicketTotalPrice(grabTicketForm.getTicketTotalPrice());
+        responseQueryGrabOrder.setTotalPrice(grabTicketForm.getTotalPrice());
+        responseQueryGrabOrder.setFromStationName(grabTicketForm.getFromStationName());
+        responseQueryGrabOrder.setFromStationCode(grabTicketForm.getFromStationCode());
+        responseQueryGrabOrder.setToStationCode(grabTicketForm.getToStationCode());
+        responseQueryGrabOrder.setToStationName(grabTicketForm.getToStationName());
+        responseQueryGrabOrder.setCheci(grabTicketForm.getCheci());
+        responseQueryGrabOrder.setStartDate(grabTicketForm.getStartDate());
+        responseQueryGrabOrder.setStartTime(grabTicketForm.getStartTime());
+        responseQueryGrabOrder.setEndDate(grabTicketForm.getEndDate());
+        responseQueryGrabOrder.setEndTime(grabTicketForm.getEndTime());
+        responseQueryGrabOrder.setRunTime(grabTicketForm.getRunTime());
+        responseQueryGrabOrder.setExpireTime(grabTicketForm.getExpireTime());
+        responseQueryGrabOrder.setStatus(grabTicketForm.getStatus());
         final Iterator<OrderFormDetail> iterator = orderFormDetails.iterator();
         while (iterator.hasNext()) {
             final OrderFormDetail next = iterator.next();
-            if (orderForm.getId() == next.getOrderFormId()) {
-                final ResponseQueryOrderForm.passenger passenger = responseQueryOrderForm.new passenger();
+            if (grabTicketForm.getId() == next.getGrabTicketFormId()) {
+                final ResponseQueryGrabOrder.passenger passenger = responseQueryGrabOrder.new passenger();
                 passenger.setName(next.getPassengerName());
                 passenger.setPassportSeNo(next.getPassportSeNoPlain().substring(0, 3) + "***********" + next.getPassportSeNoPlain().substring(14));
                 passenger.setPiaoType(next.getPiaoType());
@@ -165,9 +226,9 @@ public class OrderFormController extends BaseController {
                 iterator.remove();
             }
         }
-        return responseQueryOrderForm;
+        return responseQueryGrabOrder;
     }
-*/
+
     private ResponseQueryOrderForm getResponse(final OrderForm orderForm, final List<OrderFormDetail> orderFormDetails) {
         final ResponseQueryOrderForm responseQueryOrderForm = new ResponseQueryOrderForm();
         final ArrayList<ResponseQueryOrderForm.passenger> passengers = new ArrayList<>();
