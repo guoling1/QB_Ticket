@@ -171,8 +171,8 @@
         this.$http.post('/ticket/grab', data).then(function (res) {
           if(res.data.code==1){
             this.$http.post('/card/list', {
-              appid: this.$data.common.appid,
-              uid: this.$data.common.uid
+              appid: this.$data.submitInfo.appId,
+              uid: this.$data.submitInfo.uid
             }).then(function (rs) {
               console.log(rs);
               if (rs.data.code == 1) {
@@ -184,9 +184,9 @@
                   this.$router.push({
                     path: '/pay/first-add',
                     query: {
-                      appid: this.$data.common.appid,
-                      uid: this.$data.common.uid,
-                      id: res.data.orderFormId,
+                      appid: this.$data.submitInfo.appId,
+                      uid: this.$data.submitInfo.uid,
+                      id: res.data.grabTicketFormId,
                       price: res.data.price
                     }
                   });
