@@ -122,7 +122,7 @@ public class HyCallBackController extends BaseController {
         final String data = request.getParameter("data");
         final JSONObject jsonParams = JSONObject.fromObject(data);
         log.info("收到订单提交的异步通知:[" + jsonParams + "]");
-        this.postHandle("", "订单提交回调", 0, response.toString(), "", 0);
+        this.postHandle("", "订单提交回调", 0, jsonParams.toString(), "", 0);
         this.ticketService.handleSubmitOrderCallbackResponse(jsonParams);
         ResponseWriter.writeTxtResponse(response, "success");
         log.info("订单提交异步通知处理结束！！ 已经发送[success]");
