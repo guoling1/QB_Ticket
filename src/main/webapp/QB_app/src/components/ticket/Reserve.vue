@@ -26,7 +26,7 @@
         </div>
       </div>
       <router-link class="submit"
-                   :to="{path:'/ticket/train-menu/train',query:{appid:common.appid,uid:common.uid,date:$from.date,from:$from.from,to:$from.to,only:$onlyG}}">
+                   :to="{path:'/ticket/train-menu/train',query:{appid:common.appid,uid:common.uid,date:$from.date,fromCode:$from.from,toCode:$from.to,fromName:$dataT.from,toName:$dataT.to,only:$onlyG}}">
         查询
       </router-link>
       <div class="history">
