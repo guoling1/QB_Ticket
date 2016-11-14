@@ -22,6 +22,7 @@
 
         <jetty-maven-plugin.port>8250</jetty-maven-plugin.port>
         <tomcat-maven-plugin.port>8250</tomcat-maven-plugin.port>
+        <skipTests>true</skipTests>
     </properties>
 
     <dependencies>
