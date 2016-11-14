@@ -13,6 +13,8 @@ import com.jkm.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by yuxiang on 2016-11-07.
  */
@@ -124,5 +126,15 @@ public class GrabTicketFormServiceImpl implements GrabTicketFormService {
                 grabTicketForm.getStatus() == EnumGrabTicketStatus.GRAB_FORM_REQUEST_FAIL.getId()){
             this.ticketService.returnToGrabFail(grabTicketFormId);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param uid
+     * @return
+     */
+    @Override
+    public List<GrabTicketForm> selectByUid(String uid) {
+        return this.grabTicketFromDao.selectByUid(uid);
     }
 }

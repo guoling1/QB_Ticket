@@ -6,7 +6,10 @@ import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
 import com.jkm.controller.helper.request.*;
 import com.jkm.controller.helper.response.*;
+import com.jkm.entity.GrabTicketForm;
 import com.jkm.entity.OrderForm;
+import com.jkm.enums.EnumGrabTicketStatus;
+import com.jkm.service.GrabTicketFormService;
 import com.jkm.service.OrderFormService;
 import com.jkm.service.TicketService;
 import com.jkm.service.TrainTripsQueryService;
@@ -43,6 +46,8 @@ public class TicketController extends BaseController{
     @Autowired
     private OrderFormService orderFormService;
 
+    @Autowired
+    private GrabTicketFormService grabTicketFormService;
 
     /**
      * 火车车次查询
@@ -170,12 +175,13 @@ public class TicketController extends BaseController{
         return result;
     }
 
+
     /**
-     * 火车车票取消抢票受理
+     * 火车车票取消抢票受理(付款后)
      * @param req
      * @return
      */
-    @RequestMapping(value = "/cancel/grap", method = RequestMethod.POST)
+    @RequestMapping(value = "/cancel/grab", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntityBase<Object> cancelGrabTicket(final RequestCancelGrabTicket req) {
         final ResponseEntityBase<Object> result = new ResponseEntityBase<>();
@@ -191,10 +197,43 @@ public class TicketController extends BaseController{
             }
         }catch(final Throwable throwable){
             result.setCode(-1);
-            result.setMessage("退票失败");
+            result.setMessage("取消订单失败");
         }
         return result;
     }
 
+    /**
+     * 火车车票取消抢票订单(付款前)
+     * 抢票单未付款前取消
+     * @param req
+     * @return
+     */
+    @RequestMapping(value = "/cancel/grabForm", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntityBase<Object> cancelGrabForm(final RequestCancelGrabTicket req) {
+        final ResponseEntityBase<Object> result = new ResponseEntityBase<>();
+
+        try{
+            final Optional<GrabTicketForm> grabTicketFormOptional = this.grabTicketFormService.selectByIdWithLock(req.getGrabTicketFormId());
+            Preconditions.checkState(grabTicketFormOptional.isPresent(), "抢票订单不存在");
+            final GrabTicketForm grabTicketForm = grabTicketFormOptional.get();
+            if (grabTicketForm.isCanCancelBeforeCharge()){
+                //修改状态
+                this.grabTicketFormService.updateStatusById(EnumGrabTicketStatus.GRAB_FORM_CANCEL, grabTicketForm.getId());
+                result.setCode(1);
+                result.setMessage("订单取消成功");
+                return result;
+            }else{
+                result.setCode(-1);
+                result.setMessage("取消订单失败");
+                return result;
+            }
+
+        }catch(final Throwable throwable){
+            result.setCode(-1);
+            result.setMessage("取消订单失败");
+        }
+        return result;
+    }
 
 }
