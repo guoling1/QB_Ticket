@@ -101,11 +101,13 @@
     },
     methods:{
       importCon:function(){
-        Vue.http.post('/website/importContacts',{uid:this.$route.query.uid,appid:this.$route.query.appid})
+        Vue.http.post('/website/importContacts',{uid:1,appid:1})
+        //Vue.http.post('/website/importContacts',{uid:this.$route.query.uid,appid:this.$route.query.appid})
           .then((res)=>{
             if(res.data.code==1){
-              this.$http.post('/contactInfo/list',{uid:this.$route.query.uid,appid:this.$route.query.appid})
-                .then(function (response) {
+              Vue.$http.post('/contactInfo/list',{uid:1,appid:1})
+              //Vue.$http.post('/contactInfo/list',{uid:this.$route.query.uid,appid:this.$route.query.appid})
+                .then((response)=>{
                     let massages = response.data.data;
                     for (var i = 0; i < massages.length; i++) {
                       //性别
@@ -113,10 +115,13 @@
                     }
                   this.$data.massages = massages;
                 })
-                .catch(function (err) {
+                .catch((err)=> {
                   console.log(err);
                 })
             }
+          })
+          .catch((err)=> {
+            this.$router.push({path:'/ticket/login',query:{appid:this.$route.query.uid,appid:this.$route.query.appid}})
           })
       },
       close: function(){
@@ -144,9 +149,9 @@
           mask.style.display="block";
           this.$data.$index=idx;
           document.querySelector('#name').value=this.$data.massages[idx].name;
-          document.querySelector('#identyType').value=this.$data.massages[idx].identyType;
+          document.querySelector('#identyType').value="二代身份证";
           document.querySelector('#identy').value=this.$data.massages[idx].identy;
-          document.querySelector('#personType').value=this.$data.massages[idx].personType;
+          document.querySelector('#personType').value="成人";
           var addPerson={
             uid:1,
             appid:1,
@@ -192,7 +197,7 @@
                   addPerson.id=res.data.data;
                   this.$data.massages.push(addPerson);
                   document.querySelector("#mask").style.display="none";
-                  this.$data.index="";
+                  this.$data.$index="";
                 }
               })
           }else{
@@ -205,7 +210,7 @@
                     this.$set(this.$data.massages[idx],i,addPerson[i])
                   }
                   document.querySelector("#mask").style.display="none";
-                  this.$data.index="";
+                  this.$data.$index="";
                 }
               })
           }

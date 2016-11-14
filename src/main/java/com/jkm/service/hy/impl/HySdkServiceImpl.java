@@ -3,6 +3,7 @@ package com.jkm.service.hy.impl;
 
 import com.jkm.entity.HyChannelRequestRecord;
 import com.jkm.entity.OrderForm;
+import com.jkm.entity.helper.UserBankCardSupporter;
 import com.jkm.enums.EnumHTHYMethodCode;
 import com.jkm.service.hy.HySdkRequestRecordService;
 import com.jkm.service.hy.HySdkService;
@@ -68,7 +69,7 @@ public class HySdkServiceImpl implements HySdkService{
             jsonObject.put("from_station_code", orderform.getFromStationCode());
             jsonObject.put("to_station_name", orderform.getToStationName());
             jsonObject.put("LoginUserName", orderform.getLoginUserName());
-            jsonObject.put("LoginUserPassword", orderform.getLoginUserPassword());
+            jsonObject.put("LoginUserPassword", UserBankCardSupporter.decryptPwd(orderform.getLoginUserPassword()));
         } catch (Exception e) {
             e.printStackTrace();
         }

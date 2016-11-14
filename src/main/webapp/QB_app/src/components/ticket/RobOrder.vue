@@ -43,7 +43,9 @@
         <div class="handle">
           <div class="btn" @click="contact">添加/编辑乘客</div>
           <div class="line"></div>
-          <div class="btn">添加儿童</div>
+          <!-- <router-link to="/ticket/add-child"> -->
+            <div class="btn" @click="addChild">添加儿童</div>
+          <!-- </router-link> -->
         </div>
       </div>
       <div class="space">
@@ -162,6 +164,9 @@
       });
     },
     methods: {
+      addChild:function(){
+        this.$router.push("/ticket/add-child")
+      },
       login: function () {
         this.$router.push({
           path: '/ticket/login',
