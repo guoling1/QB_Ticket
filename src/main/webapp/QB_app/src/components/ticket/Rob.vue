@@ -119,13 +119,13 @@
         <ul>
           <!--<li @click="$shortSeat[0]=!$shortSeat[0]" v-bind:class="{active:$shortSeat[0]}"><span>无座</span></li>-->
           <li @click="$shortSeat[1]=!$shortSeat[1]" v-bind:class="{active:$shortSeat[1]}"><span>硬座</span></li>
-          <li @click="$shortSeat[2]=!$shortSeat[2]" v-bind:class="{active:$shortSeat[2]}"><span>软座</span></li>
+          <!--<li @click="$shortSeat[2]=!$shortSeat[2]" v-bind:class="{active:$shortSeat[2]}"><span>软座</span></li>-->
           <li @click="$shortSeat[3]=!$shortSeat[3]" v-bind:class="{active:$shortSeat[3]}"><span>硬卧</span></li>
           <li @click="$shortSeat[4]=!$shortSeat[4]" v-bind:class="{active:$shortSeat[4]}"><span>软卧</span></li>
-          <li @click="$shortSeat[6]=!$shortSeat[6]" v-bind:class="{active:$shortSeat[6]}"><span>高级软卧</span></li>
+          <!--<li @click="$shortSeat[6]=!$shortSeat[6]" v-bind:class="{active:$shortSeat[6]}"><span>高级软卧</span></li>-->
           <li @click="$shortSeat.O=!$shortSeat.O" v-bind:class="{active:$shortSeat.O}"><span>二等座</span></li>
           <li @click="$shortSeat.M=!$shortSeat.M" v-bind:class="{active:$shortSeat.M}"><span>一等座</span></li>
-          <li @click="$shortSeat.P=!$shortSeat.P" v-bind:class="{active:$shortSeat.P}"><span>特等座</span></li>
+          <!--<li @click="$shortSeat.P=!$shortSeat.P" v-bind:class="{active:$shortSeat.P}"><span>特等座</span></li>-->
           <li @click="$shortSeat[9]=!$shortSeat[9]" v-bind:class="{active:$shortSeat[9]}"><span>商务座</span></li>
         </ul>
         <div class="btn" @click="seatEnter">确定</div>
@@ -158,7 +158,7 @@
           grabTimeType: 1,
           firstStartTime: "",
           trainCodes: "请选择车次",
-          seatTypes: "1,2,3,4,6,O,M,P,9",
+          seatTypes: "1,3,4,6,M,9",
           buyTicketPackageId: 3,
           grabTicketPackageId: 4,
           phone: "",
@@ -304,18 +304,18 @@
         this.$data.submitInfo.toStationCode = this.$store.state.station.scope.stationFOUR.code;
         this.$data.submitInfo.grabStartTime = this.$store.state.date.scope.dateTWO.code;
         let data = this.$data.submitInfo;
-        if (data.seatTypes == '1,2,3,4,6,O,M,P,9') {
+        if (data.seatTypes == '1,3,4,O,M,9') {
           data.seatTypes = '全部坐席';
         } else {
           //data.seatTypes = data.seatTypes.replace('0', '无座');
           data.seatTypes = data.seatTypes.replace('1', '硬座');
-          data.seatTypes = data.seatTypes.replace('2', '软座');
+          //data.seatTypes = data.seatTypes.replace('2', '软座');
           data.seatTypes = data.seatTypes.replace('3', '硬卧');
           data.seatTypes = data.seatTypes.replace('4', '软卧');
-          data.seatTypes = data.seatTypes.replace('6', '高级软卧');
+          //data.seatTypes = data.seatTypes.replace('6', '高级软卧');
           data.seatTypes = data.seatTypes.replace('O', '二等座');
           data.seatTypes = data.seatTypes.replace('M', '一等座');
-          data.seatTypes = data.seatTypes.replace('P', '特等座');
+          //data.seatTypes = data.seatTypes.replace('P', '特等座');
           data.seatTypes = data.seatTypes.replace('9', '商务座');
         }
         return data;

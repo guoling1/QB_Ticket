@@ -184,7 +184,7 @@
             identy:document.querySelector('#identy').value,
             tel:document.querySelector('#tel').value,
             personType:document.querySelector('#personType').value
-          }
+          };
           if((typeof idx)!=='number'){
             if(addPerson.personType=="成人"){
               addPerson.personType=1;

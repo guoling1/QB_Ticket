@@ -64,6 +64,7 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("立即支付(首次)失败");
+            logger.info(e.getMessage());
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
