@@ -136,18 +136,18 @@
       },
       submit: function () {
         let data = this.$data.submitInfo;
-        if (data.seatTypes == '1,2,3,4,6,O,M,P,9') {
+        if (data.seatTypes == '1,3,4,O,M,9') {
           data.seatTypes = '全部坐席';
         } else {
           //data.seatTypes = data.seatTypes.replace('无座', '0');
           data.seatTypes = data.seatTypes.replace('硬座', '1');
-          data.seatTypes = data.seatTypes.replace('软座', '2');
+          //data.seatTypes = data.seatTypes.replace('软座', '2');
           data.seatTypes = data.seatTypes.replace('硬卧', '3');
           data.seatTypes = data.seatTypes.replace('软卧', '4');
-          data.seatTypes = data.seatTypes.replace('高级软卧', '6');
+          //data.seatTypes = data.seatTypes.replace('高级软卧', '6');
           data.seatTypes = data.seatTypes.replace('二等座', 'O');
           data.seatTypes = data.seatTypes.replace('一等座', 'M');
-          data.seatTypes = data.seatTypes.replace('特等座', 'P');
+          //data.seatTypes = data.seatTypes.replace('特等座', 'P');
           data.seatTypes = data.seatTypes.replace('商务座', '9');
         }
         this.$http.post('/ticket/grab', data).then(function (res) {

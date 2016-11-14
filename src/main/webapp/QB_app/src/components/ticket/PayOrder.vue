@@ -180,7 +180,7 @@
       },
       submit: function () {
         // 首先判断订单状态,决定是否能支付
-        if (this.$data.orderInfo.status == 3 && this.$data.countdown) {
+        if (this.$data.orderInfo.status == 3 /*&& this.$data.countdown*/) {
           this.$http.post('/card/list', {
             appid: this.$data.common.appid,
             uid: this.$data.common.uid
