@@ -637,7 +637,7 @@ public class AuthenServiceImpl implements AuthenService {
 		}
 
 		Optional<OrderForm>  orderFormOptional = orderFormService.selectById(requestData.getLong("orderId"));
-		Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + orderFormOptional.get().getId() + "]不存在");
+		Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + requestData.getLong("orderId") + "]不存在");
 		if(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId()==orderFormOptional.get().getStatus()){
 			jo.put("result",false);
 			jo.put("message","该订单已支付完毕");
@@ -738,7 +738,7 @@ public class AuthenServiceImpl implements AuthenService {
 		sendMessageCountRecordDao.insertSelective(sendMessageCountRecord);
 
 		Optional<OrderForm>  orderFormOptional = orderFormService.selectById(requestData.getLong("orderId"));
-		Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + orderFormOptional.get().getId() + "]不存在");
+		Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + requestData.getLong("orderId") + "]不存在");
 		if(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId()==orderFormOptional.get().getStatus()){
 			jo.put("result",false);
 			jo.put("message","该订单已支付完毕");
@@ -854,7 +854,7 @@ public class AuthenServiceImpl implements AuthenService {
 		}
 
 		Optional<GrabTicketForm> grabTicketFormOptional = grabTicketFormService.selectById(requestData.getLong("orderId"));
-		Preconditions.checkState(grabTicketFormOptional.isPresent(), "订单[" + grabTicketFormOptional.get().getId() + "]不存在");
+		Preconditions.checkState(grabTicketFormOptional.isPresent(), "订单[" + requestData.getLong("orderId") + "]不存在");
 
 		if(EnumGrabTicketStatus.GRAB_FORM_PAY_SUCCESS.getId()==grabTicketFormOptional.get().getStatus()){
 			jo.put("result",false);
@@ -958,7 +958,7 @@ public class AuthenServiceImpl implements AuthenService {
 
 
 		Optional<GrabTicketForm> grabTicketFormOptional = grabTicketFormService.selectById(requestData.getLong("orderId"));
-		Preconditions.checkState(grabTicketFormOptional.isPresent(), "订单[" + grabTicketFormOptional.get().getId() + "]不存在");
+		Preconditions.checkState(grabTicketFormOptional.isPresent(), "订单[" + requestData.getLong("orderId") + "]不存在");
 
 		if(EnumGrabTicketStatus.GRAB_FORM_PAY_SUCCESS.getId()==grabTicketFormOptional.get().getStatus()){
 			jo.put("result",false);

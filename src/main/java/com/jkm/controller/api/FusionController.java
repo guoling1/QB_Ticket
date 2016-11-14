@@ -290,7 +290,7 @@ public class FusionController extends BaseController {
             mqJo.put("dt", "20161111");
             mqJo.put("sendCount",0);
             mqJo.put("orderId",165);
-            MqProducer.sendMessage(mqJo, MqConfig.FAST_PAY_QUERY,2000);
+            MqProducer.sendMessage(mqJo, MqConfig.FAST_PAY_QUERY,100);
         }catch(Exception e){
             responseJo.put("result",false);
             responseJo.put("message",e.getMessage());
