@@ -158,7 +158,7 @@
           grabTimeType: 1,
           firstStartTime: "",
           trainCodes: "请选择车次",
-          seatTypes: "1,3,4,6,M,9",
+          seatTypes: "1,3,4,O,M,9",
           buyTicketPackageId: 3,
           grabTicketPackageId: 4,
           phone: "",

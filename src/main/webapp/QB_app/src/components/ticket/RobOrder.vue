@@ -85,7 +85,7 @@
           </li>
         </ul>
         <div class="new" @click="newCard">使用新卡支付</div>
-        <div class="btn">确认付款 ￥{{orderInfo.price}}</div>
+        <div class="btn">确认付款 ￥</div>
       </div>
     </div>
     <contacts></contacts>
@@ -120,6 +120,8 @@
           grabPassengers: []
         },
         pack: false,
+        cardList: '',
+        peopleInfo: '',
         bank: false
       }
     },
@@ -169,23 +171,23 @@
         this.$http.post('/ticket/grab', data).then(function (res) {
           if(res.data.code==1){
             this.$http.post('/card/list', {
-              appid: this.$data.common.appid,
-              uid: this.$data.common.uid
-            }).then(function (res) {
-              console.log(res);
-              if (res.data.code == 1) {
-                if (res.data.data.cardList) {
-                  this.$data.cardList = res.data.data.cardList;
-                  this.$data.peopleInfo = res.data.data.userCardInfo;
+              appid: this.$data.submitInfo.appId,
+              uid: this.$data.submitInfo.uid
+            }).then(function (rs) {
+              console.log(rs);
+              if (rs.data.code == 1) {
+                if (rs.data.data.cardList) {
+                  this.$data.cardList = rs.data.data.cardList;
+                  this.$data.peopleInfo = rs.data.data.userCardInfo;
                   this.$data.bank = true;
                 } else {
                   this.$router.push({
                     path: '/pay/first-add',
                     query: {
-                      appid: this.$data.common.appid,
-                      uid: this.$data.common.uid,
-                      id: this.$data.orderInfo.orderFormId,
-                      price: this.$data.orderInfo.price
+                      appid: this.$data.submitInfo.appId,
+                      uid: this.$data.submitInfo.uid,
+                      id: res.data.grabTicketFormId,
+                      price: res.data.price
                     }
                   });
                 }
@@ -195,6 +197,8 @@
             }, function (err) {
               console.log(err);
             });
+          }else{
+            console.log(res.data.message);
           }
         }, function (err) {
           console.log(err);
