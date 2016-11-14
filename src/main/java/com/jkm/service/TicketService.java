@@ -152,4 +152,13 @@ public interface TicketService {
      * @param string
      */
     void handleGrabAllRefundResult(long grabTicketFormId, boolean flag, String string);
+
+    /**
+     * 取消抢票单全额退款的消息
+     *
+     * @param grabTicketFormId
+     * @param
+     * @param
+     */
+    void handleCancelGrabRefundResult(long grabTicketFormId, boolean flag, String string);
 }

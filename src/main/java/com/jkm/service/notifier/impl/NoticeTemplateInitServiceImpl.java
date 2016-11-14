@@ -28,9 +28,9 @@ public class NoticeTemplateInitServiceImpl implements NoticeTemplateInitService 
         addSmsTemplate(EnumNoticeType.BUY_TICKET_FAIL,
                 "很抱歉，您预订的${trainStationAndTrainNo}次列车出票失败，资金已全额退至您支付银行卡，请注意查收【" + platformName + "】");
         addSmsTemplate(EnumNoticeType.GRAB_TICKET_SUCCESS_HAVE_RESIDUE_YES,
-                "已抢到${trainStationAndTrainNo}次列车，于${runTime}从北京南站发车，12306订单号${ticketNo}。余款${residueAmount}元已退至您支付银行卡，请注意查收【" + platformName + "】");
+                "已抢到${trainStationAndTrainNo}次列车，于${runTime}从${startStation}发车，12306订单号${ticketNo}。余款${residueAmount}元已退至您支付银行卡，请注意查收【" + platformName + "】");
         addSmsTemplate(EnumNoticeType.GRAB_TICKET_SUCCESS_HAVE_RESIDUE_NO,
-                "已抢到${trainStationAndTrainNo}次列车，于${runTime}从北京南站发车，12306订单号${ticketNo}【" + platformName + "】");
+                "已抢到${trainStationAndTrainNo}次列车，于${runTime}从${startStation}发车，12306订单号${ticketNo}【" + platformName + "】");
         addSmsTemplate(EnumNoticeType.GRAB_TICKET_FAIL,
                 "未抢到${dateAndTrainStation}的列车，系统已取消抢票。资金已全额退至您支付银行卡，请注意查收【" + platformName + "】");
     }

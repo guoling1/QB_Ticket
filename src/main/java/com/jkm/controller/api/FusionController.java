@@ -96,6 +96,7 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("立即支付(多次)失败");
+            logger.info(e.getMessage());
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -128,6 +129,7 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("抢票单立即支付(首次)失败");
+            logger.info(e.getMessage());
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -159,6 +161,7 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("立即支付(多次)异常");
+            logger.info(e.getMessage());
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -287,7 +290,7 @@ public class FusionController extends BaseController {
             mqJo.put("dt", "20161111");
             mqJo.put("sendCount",0);
             mqJo.put("orderId",165);
-            MqProducer.sendMessage(mqJo, MqConfig.FAST_PAY_QUERY,2000);
+            MqProducer.sendMessage(mqJo, MqConfig.FAST_PAY_QUERY,100);
         }catch(Exception e){
             responseJo.put("result",false);
             responseJo.put("message",e.getMessage());

@@ -1,7 +1,9 @@
 package com.jkm.service.impl;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.dao.BindCardDao;
+import com.jkm.entity.BankCardBin;
 import com.jkm.entity.BindCard;
 import com.jkm.entity.helper.UserBankCardSupporter;
 import com.jkm.service.BankCardBinService;
@@ -67,10 +69,11 @@ public class BindCardServiceImpl implements BindCardService{
         Preconditions.checkNotNull(requestJson.get("isAgree"),"同意协议才能绑定银行卡");
         Preconditions.checkNotNull(requestJson.get("vCode"),"请输入验证码");
         Preconditions.checkNotNull(requestJson.get("bankCode"),"卡宾不能为空");
-//        if(!ValidateUtils.isIDCard(requestJson.getString("cardNo"))){
-//            jo.put("result",false);
-//            jo.put("message","银行卡号不正确");
-//        }
+        Optional<BankCardBin> bb = bankCardBinService.analyseCardNo(requestJson.getString("cardNo"));
+        if(!bb.isPresent()){
+            jo.put("result",false);
+            jo.put("message","银行卡号不正确");
+        }
         if(!ValidationUtil.isIdCard(requestJson.getString("cardId"))){
             jo.put("result",false);
             jo.put("message","身份证号不正确");
