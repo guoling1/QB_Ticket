@@ -20,7 +20,8 @@
       <div class="group">
         <div>手机号</div>
         <input type="text" placeholder="开户银行预留手机号" v-model="submitInfo.phoneNo">
-        <button @click="send">获取验证码</button>
+        <button v-show="sendCtrl" @click="send">获取验证码</button>
+        <button v-show="!sendCtrl">{{timer}}</button>
       </div>
       <div class="group">
         <div>验证码</div>
@@ -43,6 +44,8 @@
     data () {
       return {
         submitInfo: {
+          appid: '',
+          uid: '',
           orderId: "", //订单编号，不是订单号，是金开门系统唯一id
           nonceStr: "", //随机字符串，每次请求都不一样，生成规则（yyyyMMddHHmmssSSS+5个随机数字）
           crdNo: "", //卡号
@@ -53,12 +56,16 @@
           vCode: "", //验证码
           bankCode: "" //卡bin
         },
-        price: 0.0
+        price: 0.0,
+        sendCtrl: true,
+        timer: 60
       }
     },
     beforeRouteEnter (to, from, next) {
       next(function (vm) {
         vm.$data.submitInfo.orderId = to.query.id;
+        vm.$data.submitInfo.appid = to.query.appid;
+        vm.$data.submitInfo.uid = to.query.uid;
         vm.$data.price = to.query.price;
       });
     },
@@ -73,7 +80,7 @@
       bin: function (event) {
         const val = event.target.value;
         this.$http.post('/bankCardBin/cardNoInfo', {cardNo: val}).then(function (res) {
-          if (res.$data.code == 1) {
+          if (res.data.code == 1) {
             this.$data.submitInfo.bankCode = res.data.data.shorthand;
           } else {
             console.log(res.data.message);
@@ -84,6 +91,30 @@
       },
       send: function () {
         console.log('发送验证码');
+        this.$http.post('/authen/getCode', {
+          phone: this.$data.submitInfo.phoneNo,//手机号
+          amount: this.$data.price, //支付金额
+          uid: this.$data.submitInfo.uid, //三方商户用户id
+          appid: this.$data.submitInfo.appid //三方商户唯一标示appid
+        }).then(function (res) {
+          if (res.data.code == 1) {
+            this.$data.sendCtrl = false;
+            let polling = '';
+            const pollFun = ()=>{
+              this.$data.timer--;
+              if(this.$data.timer<0){
+                this.$data.timer = 60;
+                this.$data.sendCtrl = true;
+                clearInterval(polling);
+              }
+            }
+            polling = setInterval(pollFun, 1000);
+          } else {
+            console.log(res.data.message);
+          }
+        }, function (err) {
+          console.log(err);
+        })
       },
       submit: function () {
         // 生成随机字符串

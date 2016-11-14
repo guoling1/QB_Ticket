@@ -67,18 +67,18 @@
         only: false,
         initStations: [],
         // 火车票筛选信息
-        screenConfig: this.$store.state.screen.config,
-
+        screenConfig: this.$store.state.screen.config
       }
     },
     beforeRouteEnter (to, from, next) {
-      let date = to.query.date;
-      let froms = to.query.from;
-      let tos = to.query.to;
       Vue.http.post('/queryTicketPrice/query', {
-        from_station: froms, //出发站简码
-        to_station: tos, //到达站简码
-        train_date: date //乘车日期（yyyy-MM-dd）
+        appid: to.query.appid, //商户
+        uid: to.query.uid, //用户id
+        from_station: to.query.fromCode, //出发站简码
+        to_station: to.query.toCode, //到达站简码
+        from_station_name: to.query.fromName,
+        to_station_name: to.query.toName,
+        train_date: to.query.date //乘车日期（yyyy-MM-dd）
       }).then(function (res) {
         next(function (vm) {
           vm.$data.only = to.query.only;
@@ -127,30 +127,31 @@
         if (this.initStations) {
           // 优先筛选条件
           //只看动车
-           if(this.$data.only){
-             for (var i=0;i<this.initStations.length;i++){
-               if(this.initStations[i].train_type==("G"||"D")){
-                 this.$store.state.screen.config.trains.D=false;
-                 this.$store.state.screen.config.trains.G=false;
-                 this.$store.state.screen.config.trains.Z=true;
-                 this.$store.state.screen.config.trains.K=true;
-               }else {}
-             }
-           }
+          if (this.$data.only) {
+            for (var i = 0; i < this.initStations.length; i++) {
+              if (this.initStations[i].train_type == ("G" || "D")) {
+                this.$store.state.screen.config.trains.D = false;
+                this.$store.state.screen.config.trains.G = false;
+                this.$store.state.screen.config.trains.Z = true;
+                this.$store.state.screen.config.trains.K = true;
+              } else {
+              }
+            }
+          }
           let config = this.$store.state.screen.config;
           //坐席
-          function table(arr){
-            let ary=[];
-            var flag=false;
-            for(let j in config.table){
-              if(config.table[j]==false){
-                flag=true
+          function table(arr) {
+            let ary = [];
+            var flag = false;
+            for (let j in config.table) {
+              if (config.table[j] == false) {
+                flag = true
               }
             }
-            if(flag){
-              for (let i=0;i<arr.length;i++){
-                for (let j in config.table){
-                  if(config.table[j]==false&&!!arr[i][j+"_num"]&&arr[i][j+"_num"]!="--"){
+            if (flag) {
+              for (let i = 0; i < arr.length; i++) {
+                for (let j in config.table) {
+                  if (config.table[j] == false && !!arr[i][j + "_num"] && arr[i][j + "_num"] != "--") {
                     ary.push(arr[i]);
                     break;
                   }
@@ -160,19 +161,20 @@
             }
             return arr;
           }
+
           //车次类型
-          function trains(arr){
-            let ary=[];
-            var flag=false;
-            for(let j in config.trains){
-              if(config.trains[j]==false){
-                flag=true;
+          function trains(arr) {
+            let ary = [];
+            var flag = false;
+            for (let j in config.trains) {
+              if (config.trains[j] == false) {
+                flag = true;
               }
             }
-            if(flag){
-              for (let i=0;i<arr.length;i++){
-                for (let j in config.trains){
-                  if(config.trains[j]==false&&arr[i].train_type==j){
+            if (flag) {
+              for (let i = 0; i < arr.length; i++) {
+                for (let j in config.trains) {
+                  if (config.trains[j] == false && arr[i].train_type == j) {
                     ary.push(arr[i]);
                     break;
                   }
@@ -182,72 +184,78 @@
             }
             return arr;
           }
+
           //出发时间
-          function fromTime(arr){
-            let ary=[];
-            for (var i=0;i<arr.length;i++){
-              var t=parseInt(arr[i].start_time)
-              if(0<=t&&t<6){
-                 t=1
-              }else if(6<=t&&t<12) {
-                t=2;
-              }else if(12<=t&&t<18){
-                 t=3;
-              }else if(18<=t&&t<24){
-                 t=4
-               };
-              if((t==config.startTime)||(0==config.startTime)){
-                ary.push(arr[i]);
+          function fromTime(arr) {
+            let ary = [];
+            for (var i = 0; i < arr.length; i++) {
+              var t = parseInt(arr[i].start_time)
+              if (0 <= t && t < 6) {
+                t = 1
+              } else if (6 <= t && t < 12) {
+                t = 2;
+              } else if (12 <= t && t < 18) {
+                t = 3;
+              } else if (18 <= t && t < 24) {
+                t = 4
               }
-            }
-            return ary;
-          }
-          //到达时间
-          function toTime(arr){
-            let ary=[];
-            for (var i=0;i<arr.length;i++){
-              var t=parseInt(arr[i].arrive_time)
-              if(0<t&&t<=6){
-                 t=1
-              }else if(6<t&&t<=12) {
-                t=2;
-              }else if(12<t&&t<=18){
-                 t=3;
-              }else if(18<t&&t<=24){
-                 t=4
-               };
-              if(t==config.endTime||0==config.endTime){
+              ;
+              if ((t == config.startTime) || (0 == config.startTime)) {
                 ary.push(arr[i]);
               }
             }
             return ary;
           }
 
-          var arr=toTime(fromTime(trains(table(this.initStations))))
+          //到达时间
+          function toTime(arr) {
+            let ary = [];
+            for (var i = 0; i < arr.length; i++) {
+              var t = parseInt(arr[i].arrive_time)
+              if (0 < t && t <= 6) {
+                t = 1
+              } else if (6 < t && t <= 12) {
+                t = 2;
+              } else if (12 < t && t <= 18) {
+                t = 3;
+              } else if (18 < t && t <= 24) {
+                t = 4
+              }
+              ;
+              if (t == config.endTime || 0 == config.endTime) {
+                ary.push(arr[i]);
+              }
+            }
+            return ary;
+          }
+
+          var arr = toTime(fromTime(trains(table(this.initStations))))
           //出发早晚
-          function sort(arr){
-            arr.sort(function(a,b){
-              return a.run_time_minute-b.run_time_minute;
+          function sort(arr) {
+            arr.sort(function (a, b) {
+              return a.run_time_minute - b.run_time_minute;
             })
           }
-          if(!config.sort){
+
+          if (!config.sort) {
             sort(arr)
           }
           //只看有票
-          function ticket(arr){
-            let ary=[];
-            for(let i=0;i<arr.length;i++){
-              var reg=/_num/g;
-              for(var j in arr[i]){
-                if(reg.test(j)==true&&arr[i][j]!="0"&&arr[i][j]!="--"){
-                   ary.push(arr[i]);
+          function ticket(arr) {
+            let ary = [];
+            for (let i = 0; i < arr.length; i++) {
+              var reg = /_num/g;
+              for (var j in arr[i]) {
+                if (reg.test(j) == true && arr[i][j] != "0" && arr[i][j] != "--") {
+                  ary.push(arr[i]);
                 }
               }
             }
             return ary;
-        }
-          if(!config.ticket){
-            arr=ticket(arr);
+          }
+
+          if (!config.ticket) {
+            arr = ticket(arr);
           }
 
 

@@ -127,14 +127,12 @@
       Vue.http.post('/order/queryById',{"orderFormId":orderFormId})
       .then(function (res) {
         next(vm=> {
-          console.log(res);
           if(res.data.code==1){
             vm.$data.massages=res.data.data[0];
             var m=vm.$data.massages.runTime;
             var h=Math.floor(m/60);
             m%=60;
             vm.$data.massages.runTime="耗时"+h+"小时"+m+"分";
-            console.log(res.data.data);
           }
         });
       }, function (err) {
