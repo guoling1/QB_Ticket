@@ -70,13 +70,13 @@ public class MessageListenerTGrabPartRefundImpl implements MessageListener {
         log.info("抢票单[" + jo.getLong("grabTicketFormId") + "]重发退款消费消息");
         if (jo.getInt("sendCount") < 5) {
             jo.put("sendCount", jo.getInt("sendCount") + 1);
-            MqProducer.sendMessage(jo, MqConfig.RETURN_TICKET_REFUND_ING, 2000);//再次发请求
+            MqProducer.sendMessage(jo, MqConfig.CANCEL_GRAB_TICKET_REFUND_ALL, 2000);//再次发请求
         } else if (jo.getInt("sendCount") >= 5 && jo.getInt("sendCount") < 10) {
             jo.put("sendCount",jo.getInt("sendCount") + 1);
-            MqProducer.sendMessage(jo, MqConfig.RETURN_TICKET_REFUND_ING, 60 * 1000);//再次发请求
+            MqProducer.sendMessage(jo, MqConfig.CANCEL_GRAB_TICKET_REFUND_ALL, 60 * 1000);//再次发请求
         }  else if (jo.getInt("sendCount") >= 10 && jo.getInt("sendCount") < 15) {
             jo.put("sendCount",jo.getInt("sendCount") + 1);
-            MqProducer.sendMessage(jo, MqConfig.RETURN_TICKET_REFUND_ING, 5 * 60 * 1000);//再次发请求
+            MqProducer.sendMessage(jo, MqConfig.CANCEL_GRAB_TICKET_REFUND_ALL, 5 * 60 * 1000);//再次发请求
         } else {
             this.recordExceptionOrderFormRefund(jo);
             this.ticketService.handleGrabPartRefundResult(jo.getLong("grabTicketFormId"), false, "退款失败");
