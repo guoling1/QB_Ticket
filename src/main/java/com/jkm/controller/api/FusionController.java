@@ -96,6 +96,7 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("立即支付(多次)失败");
+            logger.info(e.getMessage());
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -128,6 +129,7 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("抢票单立即支付(首次)失败");
+            logger.info(e.getMessage());
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -159,6 +161,7 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("立即支付(多次)异常");
+            logger.info(e.getMessage());
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{

@@ -59,8 +59,13 @@ public class WebsiteController extends BaseController {
             }
         }catch(Exception e){
             log.info("添加12306账号失败");
+            log.info(e.getMessage());
+            if(e.getMessage()==null){
+                responseEntityBase.setMessage("添加账号失败");
+            }else{
+                responseEntityBase.setMessage(e.getMessage().toString());
+            }
             responseEntityBase.setCode(500);
-            responseEntityBase.setMessage("添加账号失败");
         }
         return responseEntityBase;
     }
@@ -80,8 +85,13 @@ public class WebsiteController extends BaseController {
             responseEntityBase.setMessage("导入成功");
         } catch (Exception e) {
             log.info("导入失败");
+            log.info(e.getMessage());
+            if(e.getMessage()==null){
+                responseEntityBase.setMessage("导入异常");
+            }else{
+                responseEntityBase.setMessage(e.getMessage().toString());
+            }
             responseEntityBase.setCode(500);
-            responseEntityBase.setMessage("导入异常");
         }
         return responseEntityBase;
     }

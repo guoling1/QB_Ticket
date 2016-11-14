@@ -74,10 +74,10 @@ public class MessageListenerImpl implements MessageListener {
                     if("S".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//成功
                         ticketService.handleCustomerPayMsg(jo.getLong("orderId"),jo.getString("reqSn"),true);
                     }else if("U".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//处理中 再次发送请求
-                        if(jo.getInt("sendCount")<5){
+                        if(jo.getInt("sendCount")<12){
                             jo.put("sendCount",jo.getInt("sendCount")+1);
-                            MqProducer.sendMessage(jo,MqConfig.FAST_PAY_QUERY,10000);//再次发请求
-                        }else if(jo.getInt("sendCount")>5&&jo.getInt("sendCount")<15){
+                            MqProducer.sendMessage(jo,MqConfig.FAST_PAY_QUERY,5000);//再次发请求
+                        }else if(jo.getInt("sendCount")>12&&jo.getInt("sendCount")<25){
                             jo.put("sendCount",jo.getInt("sendCount")+1);
                             MqProducer.sendMessage(jo,MqConfig.FAST_PAY_QUERY,60000);//再次发请求
                         }else{
@@ -89,8 +89,8 @@ public class MessageListenerImpl implements MessageListener {
                 }else if("-1000".equals(resultMap.get("retCode").toString())){//连接超时
                     if(jo.getInt("sendCount")<5){
                         jo.put("sendCount",jo.getInt("sendCount")+1);
-                        MqProducer.sendMessage(jo,MqConfig.FAST_PAY_QUERY,10000);//再次发请求
-                    }else if(jo.getInt("sendCount")>5&&jo.getInt("sendCount")<15){
+                        MqProducer.sendMessage(jo,MqConfig.FAST_PAY_QUERY,5000);//再次发请求
+                    }else if(jo.getInt("sendCount")>5&&jo.getInt("sendCount")<25){
                         jo.put("sendCount",jo.getInt("sendCount")+1);
                         MqProducer.sendMessage(jo,MqConfig.FAST_PAY_QUERY,60000);//再次发请求
                     }else{
