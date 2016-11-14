@@ -53,6 +53,8 @@ public class OrderFormController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "queryMyOrder", method = RequestMethod.POST)
     public ResponseEntityBase<Object[]> queryMyOrderForm(@RequestBody final RequestQueryOrderForm request) {
+        final String uid = super.getUid(request.getAppid(), request.getUid());
+        request.setUid(uid);
         final ResponseEntityBase<Object[]> results = new ResponseEntityBase<>();
         final List<OrderForm> orderForms = this.orderFormService.selectByUid(request.getUid());
         if (CollectionUtils.isEmpty(orderForms)) {
@@ -103,6 +105,8 @@ public class OrderFormController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "queryGrabOrder", method = RequestMethod.POST)
     public ResponseEntityBase<Object[]> queryGrabOrderForm(@RequestBody final RequestQueryGrabOrder request) {
+        final String uid = super.getUid(request.getAppid(), request.getUid());
+        request.setUid(uid);
         final ResponseEntityBase<Object[]> results = new ResponseEntityBase<>();
         final List<GrabTicketForm> grabTicketForms = this.grabTicketFormService.selectByUid(request.getUid());
         if (CollectionUtils.isEmpty(grabTicketForms)) {
