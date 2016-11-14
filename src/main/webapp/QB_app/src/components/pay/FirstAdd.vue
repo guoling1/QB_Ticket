@@ -43,6 +43,8 @@
     name: 'menu',
     data () {
       return {
+        payAddress: ['/authen/toPay', '/authen/toPayGrab'],
+        payType: '',
         submitInfo: {
           appid: '',
           uid: '',
@@ -54,7 +56,8 @@
           phoneNo: "", //手机号
           isAgree: 0, //是否同意服务协议
           vCode: "", //验证码
-          bankCode: "" //卡bin
+          bankCode: "", //卡bin
+          sn: ''
         },
         price: 0.0,
         sendCtrl: true,
@@ -67,6 +70,7 @@
         vm.$data.submitInfo.appid = to.query.appid;
         vm.$data.submitInfo.uid = to.query.uid;
         vm.$data.price = to.query.price;
+        vm.$data.payType = to.query.payType;
       });
     },
     methods: {
@@ -90,7 +94,6 @@
         })
       },
       send: function () {
-        console.log('发送验证码');
         this.$http.post('/authen/getCode', {
           phone: this.$data.submitInfo.phoneNo,//手机号
           amount: this.$data.price, //支付金额
@@ -99,10 +102,11 @@
         }).then(function (res) {
           if (res.data.code == 1) {
             this.$data.sendCtrl = false;
+            this.$data.submitInfo.sn = res.data.data;
             let polling = '';
             const pollFun = ()=>{
               this.$data.timer--;
-              if(this.$data.timer<0){
+              if (this.$data.timer < 0) {
                 this.$data.timer = 60;
                 this.$data.sendCtrl = true;
                 clearInterval(polling);
@@ -127,8 +131,7 @@
           ss = data.getSeconds() + '';
         let random = parseInt(Math.random() * 89999 + 10000) + '';
         this.$data.submitInfo.nonceStr = year + month + day + hour + min + ss + random;
-        console.log(this.$data.submitInfo);
-        this.$http.post('/authen/toPay', this.$data.submitInfo).then(function (res) {
+        this.$http.post(this.$data.payAddress[this.$data.payType], this.$data.submitInfo).then(function (res) {
           if (res.data.code == 1) {
             console.log('跳转出票页');
           } else {

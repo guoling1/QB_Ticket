@@ -49,12 +49,13 @@ public class HyCallBackController extends BaseController {
         final String data = request.getParameter("data");
         final JSONObject jsonParams = JSONObject.fromObject(data);
        // final boolean flag = this.isSignCorrect(jsonParams);
-        //log.info("收到hy抢票回调通知:" + jsonParams.toString() + "签名结果:" + flag);
+        log.info("收到hy抢票回调通知:" + jsonParams.toString());
         //记录回调请求
         this.postHandle("", "抢票回调通知", 0, jsonParams.toString(), "", 0);
         if (true) {
-            this.ticketService.handleGrabCallBackMsg(jsonParams);
+            log.info(jsonParams.toString() + "给hy返回success成功");
             ResponseWriter.writeTxtResponse(httpServletResponse, "SUCCESS");
+            this.ticketService.handleGrabCallBackMsg(jsonParams);
         } else {
             log.error("######收到hy抢票回调通知 sign check error,request[" + request.getParameterMap() + "]");
             ResponseWriter.writeTxtResponse(response, "false");
@@ -122,7 +123,7 @@ public class HyCallBackController extends BaseController {
         final String data = request.getParameter("data");
         final JSONObject jsonParams = JSONObject.fromObject(data);
         log.info("收到订单提交的异步通知:[" + jsonParams + "]");
-        this.postHandle("", "订单提交回调", 0, response.toString(), "", 0);
+        this.postHandle("", "订单提交回调", 0, jsonParams.toString(), "", 0);
         this.ticketService.handleSubmitOrderCallbackResponse(jsonParams);
         ResponseWriter.writeTxtResponse(response, "success");
         log.info("订单提交异步通知处理结束！！ 已经发送[success]");
