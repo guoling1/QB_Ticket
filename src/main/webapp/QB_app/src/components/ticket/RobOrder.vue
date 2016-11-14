@@ -76,6 +76,18 @@
         </ul>
       </div>
     </div>
+    <div class="bank" v-show="bank">
+      <div class="bankList">
+        <div class="xx"></div>
+        <ul>
+          <li v-for="card in cardList">
+            {{card}}
+          </li>
+        </ul>
+        <div class="new" @click="newCard">使用新卡支付</div>
+        <div class="btn">确认付款 ￥{{orderInfo.price}}</div>
+      </div>
+    </div>
     <contacts></contacts>
   </div>
 </template>
@@ -107,7 +119,8 @@
           phone: "",
           grabPassengers: []
         },
-        pack: false
+        pack: false,
+        bank: false
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -121,6 +134,9 @@
           path: '/ticket/login',
           query: {appid: this.$data.submitInfo.appId, uid: this.$data.submitInfo.uid}
         });
+      },
+      newCard: function () {
+        this.$router.push({path: '/pay/second-add', query: this.$data.peopleInfo});
       },
       packShow: function () {
         this.$data.pack = true;
@@ -151,7 +167,35 @@
           data.seatTypes = data.seatTypes.replace('商务座', '9');
         }
         this.$http.post('/ticket/grab', data).then(function (res) {
-          console.log(res);
+          if(res.data.code==1){
+            this.$http.post('/card/list', {
+              appid: this.$data.common.appid,
+              uid: this.$data.common.uid
+            }).then(function (res) {
+              console.log(res);
+              if (res.data.code == 1) {
+                if (res.data.data.cardList) {
+                  this.$data.cardList = res.data.data.cardList;
+                  this.$data.peopleInfo = res.data.data.userCardInfo;
+                  this.$data.bank = true;
+                } else {
+                  this.$router.push({
+                    path: '/pay/first-add',
+                    query: {
+                      appid: this.$data.common.appid,
+                      uid: this.$data.common.uid,
+                      id: this.$data.orderInfo.orderFormId,
+                      price: this.$data.orderInfo.price
+                    }
+                  });
+                }
+              } else {
+                console.log(res.data.message);
+              }
+            }, function (err) {
+              console.log(err);
+            });
+          }
         }, function (err) {
           console.log(err);
         })
