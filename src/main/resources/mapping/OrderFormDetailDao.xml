@@ -117,5 +117,12 @@
     <select id="selectByTicketNo" resultType="com.jkm.entity.OrderFormDetail">
         SELECT * FROM tb_order_form_detail WHERE ticket_no = #{ticketNo}
     </select>
+    <select id="selectByGrabTicketFormIds" resultType="com.jkm.entity.OrderFormDetail">
+        SELECT * FROM tb_order_form_detail
+        WHERE grab_ticket_form_id IN
+        <foreach collection="grabTicketFormIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
 
 </mapper>

@@ -2,6 +2,7 @@ package com.jkm.service.impl;
 
 import com.google.common.base.Optional;
 import com.jkm.dao.OrderFormDetailDao;
+import com.jkm.entity.GrabTicketForm;
 import com.jkm.entity.OrderForm;
 import com.jkm.entity.OrderFormDetail;
 import com.jkm.enums.EnumOrderFormDetailStatus;
@@ -192,5 +193,16 @@ public class OrderFormDetailServiceImpl implements OrderFormDetailService {
     @Override
     public Optional<OrderFormDetail> selectByTicketNo(String ticketNo) {
         return Optional.fromNullable(this.orderFormDetailDao.selectByTicketNo(ticketNo));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param grabTicketFormIds
+     * @return
+     */
+    @Override
+    public List<OrderFormDetail> selectByGrabTicketFormIds(List<Long> grabTicketFormIds) {
+        return this.orderFormDetailDao.selectByGrabTicketFormIds(grabTicketFormIds);
     }
 }

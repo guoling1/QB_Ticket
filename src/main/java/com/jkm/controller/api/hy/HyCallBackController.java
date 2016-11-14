@@ -48,11 +48,11 @@ public class HyCallBackController extends BaseController {
         log.info("callback request params : " + request.getParameter("data"));
         final String data = request.getParameter("data");
         final JSONObject jsonParams = JSONObject.fromObject(data);
-        final boolean flag = this.isSignCorrect(jsonParams);
-        log.info("收到hy抢票回调通知:" + jsonParams.toString() + "签名结果:" + flag);
+       // final boolean flag = this.isSignCorrect(jsonParams);
+        //log.info("收到hy抢票回调通知:" + jsonParams.toString() + "签名结果:" + flag);
         //记录回调请求
         this.postHandle("", "抢票回调通知", 0, jsonParams.toString(), "", 0);
-        if (flag) {
+        if (true) {
             this.ticketService.handleGrabCallBackMsg(jsonParams);
             ResponseWriter.writeTxtResponse(httpServletResponse, "SUCCESS");
         } else {
