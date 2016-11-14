@@ -175,14 +175,15 @@ public class FusionController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/getCode", method = RequestMethod.POST)
-    public ResponseEntityBase<Object> getCode() {
-        ResponseEntityBase<Object> responseEntityBase = new ResponseEntityBase<Object>();
+    public ResponseEntityBase<Long> getCode() {
+        ResponseEntityBase<Long> responseEntityBase = new ResponseEntityBase<Long>();
         try{
             JSONObject jo = super.getRequestJsonParams();
             String uid = super.getUid(jo.getString("appid"),jo.getString("uid"));
             jo.put("uid",uid);
             JSONObject responseJo = authenService.getCode(jo);
             if(responseJo.getBoolean("result")==true){
+                responseEntityBase.setData(responseJo.getLong("data"));
                 responseEntityBase.setMessage(responseJo.getString("message"));
             }else{
                 responseEntityBase.setMessage(responseJo.getString("message"));

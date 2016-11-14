@@ -29,7 +29,7 @@ public class TicketSendMessageServiceImpl implements TicketSendMessageService {
      */
     @Override
     @Transactional
-    public void sendPaymentMessage(final SendPaymentParam sendPaymentParam) {
+    public long sendPaymentMessage(final SendPaymentParam sendPaymentParam) {
         final HashMap<String, String> data = new HashMap<>();
         data.put("code", sendPaymentParam.getCode());
         data.put("amount", sendPaymentParam.getAmount());
@@ -40,7 +40,8 @@ public class TicketSendMessageServiceImpl implements TicketSendMessageService {
                 .mobile(sendPaymentParam.getMobile())
                 .data(data).sendTime(new Timestamp(System.currentTimeMillis()))
                 .build();
-        this.sendMessageService.sendMessage(sendMessageParams);
+        long sn = this.sendMessageService.sendMessage(sendMessageParams);
+        return sn;
     }
 
     /**

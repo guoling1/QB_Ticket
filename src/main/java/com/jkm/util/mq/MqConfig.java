@@ -17,9 +17,14 @@ public class MqConfig {
     public static final String ACCESS_KEY;
     public static final String SECRET_KEY;
     public static final String ONSADDR;
-    public static final String SINGLE_REFUND_QUERY = "singlRefundQuery";//单笔退款查询
-    public static final String FAST_PAY_QUERY = "fastPayQuery";//快捷支付查询
-    public static final String FAST_PAY_GRAB_QUERY = "fastPayGrabQuery";//快捷支付抢票单查询
+    /**
+     * 快捷支付查询
+     */
+    public static final String FAST_PAY_QUERY = "fastPayQuery";
+    /**
+     * 快捷支付抢票单查询
+     */
+    public static final String FAST_PAY_GRAB_QUERY = "fastPayGrabQuery";
 
     /**
      * 取消失去有效支付时间的订单
