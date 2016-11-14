@@ -9,7 +9,7 @@
 	</sql>
 
 	<!-- 查询（根据主键ID查询） -->
-	<select id="selctCountBySn"  parameterType="java.lang.Long">
+	<select id="selctCountBySn" resultType="java.lang.Integer" parameterType="java.lang.Long">
 		 SELECT count(1)
 		 FROM tb_send_message_count_record
 		 WHERE sn = #{sn} and status=0
