@@ -20,11 +20,6 @@ public class ResponseQueryOrderForm {
     private long orderFormId;
 
     /**
-     * 抢票单id
-     */
-    private long grabTicketFormId;
-
-    /**
      * 用户id
      */
     private String uid;

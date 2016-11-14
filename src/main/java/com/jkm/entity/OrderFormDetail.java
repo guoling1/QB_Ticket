@@ -31,7 +31,7 @@ public class OrderFormDetail extends BaseEntity{
     /**
      * 是否是抢票单(0(正常代购单)否  1是)
      */
-    private int isGrab;
+    private int isGrab =0;
     /**
      * 手机号
      */

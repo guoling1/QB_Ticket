@@ -6,14 +6,14 @@
     </div>
     <div class="banner con">
       <div class="bannerLeft" @click="show">新增联系人</div>
-      <div class="bannerRight">导入12306联系人</div>
+      <div class="bannerRight" @click="importCon">导入12306联系人</div>
     </div>
     <ul id="list">
       <li v-for="(people,index) in peoples" @click="change(index,people)">
         <span class="option"></span>
         <div class="passen">
           <span class="name">{{people.name}}</span>
-          <span class="type">({{people.personType}})</span>
+          <span class="type">(成人)</span>
           <p>{{people.identy}}</p>
         </div>
         <span class="edit" @click="show(index)"></span>
@@ -40,7 +40,8 @@
           </li>
           <li class="typeLi">
             <label for="identyType">证件类型</label>
-            <input type="text" name="identyType" id='identyType' value="二代身份证">
+            <input type="text" name="identyType" id='identyType' readOnly="true" value="二代身份证">
+
           </li>
           <li>
             <label for="identy">证件号码</label>
@@ -48,7 +49,7 @@
           </li>
           <li>
             <label for="personType">乘客类型</label>
-            <input type="text" name="personType" id='personType' value="成人">
+            <input type="text" name="personType" id='personType'  readOnly="true" value="成人">
           </li>
           <li style="border:none">
             <label for="tel">手机号码</label>
@@ -69,7 +70,7 @@
         massages:[],
         selected: {},
         people:'',
-        index:''
+        $index:''
       }
     },
     computed:{
@@ -79,30 +80,6 @@
             .then(function (response) {
                 let massages = response.data.data;
                 for (var i = 0; i < massages.length; i++) {
-                  //设置乘客类型
-                  var personType=massages[i].personType;
-                  if(personType==1){
-                    massages[i].personType='成人';
-                  }else if(personType==2){
-                    massages[i].personType='儿童';
-                  }else if(personType==3){
-                    massages[i].personType='学生';
-                  }else if(personType==4){
-                    massages[i].personType='伤残军人';
-                  }
-                  //设置证件
-                  var identyType=massages[i].identyType;
-                  if(identyType==1){
-                    massages[i].identyType='二代身份证';
-                  }else if(identyType==2){
-                    massages[i].identyType='一代身份证';
-                  }else if(identyType=='C'){
-                    massages[i].identyType='港澳通行证';
-                  }else if(identyType=='G'){
-                    massages[i].identyType='台湾通行证';
-                  }else if(identyType=='B'){
-                    massages[i].identyType='护照'
-                  }
                   //性别
                   massages[i].sex=massages[i].sex==0?"男":"女";
                 }
@@ -117,9 +94,31 @@
       },
       peoples:function(){
         return this.$data.massages;
+      },
+      index:function(){
+        return this.$data.$index
       }
     },
     methods:{
+      importCon:function(){
+        Vue.http.post('/website/importContacts',{uid:this.$route.query.uid,appid:this.$route.query.appid})
+          .then((res)=>{
+            if(res.data.code==1){
+              this.$http.post('/contactInfo/list',{uid:this.$route.query.uid,appid:this.$route.query.appid})
+                .then(function (response) {
+                    let massages = response.data.data;
+                    for (var i = 0; i < massages.length; i++) {
+                      //性别
+                      massages[i].sex=massages[i].sex==0?"男":"女";
+                    }
+                  this.$data.massages = massages;
+                })
+                .catch(function (err) {
+                  console.log(err);
+                })
+            }
+          })
+      },
       close: function(){
         this.$store.commit("CONTACT_CLOSE", {
           ctrl: false,
@@ -143,7 +142,7 @@
           mask.style.display="block";
         }else {
           mask.style.display="block";
-          this.$data.index=idx;
+          this.$data.$index=idx;
           document.querySelector('#name').value=this.$data.massages[idx].name;
           document.querySelector('#identyType').value=this.$data.massages[idx].identyType;
           document.querySelector('#identy').value=this.$data.massages[idx].identy;
@@ -153,10 +152,10 @@
             appid:1,
             name:document.querySelector('#name').value,
             sex:document.querySelector(':checked').value,
-            identyType:document.querySelector('#identyType').value,
+            identyType:1,
             identy:document.querySelector('#identy').value,
             tel:document.querySelector('#tel').value,
-            personType:document.querySelector('#personType').value
+            personType:1
           }
         }
       },
@@ -168,7 +167,7 @@
           }
           Vue.http.post('/contactInfo/delete',JSON.stringify(delPerson))
             .then((res)=>{
-              if(res.data.result==true){
+              if(res.data.code==1){
                 this.$data.massages.splice(index,1);
                 document.querySelector("#mask").style.display="none";
               }
@@ -180,71 +179,33 @@
             appid:1,
             name:document.querySelector('#name').value,
             sex:1,
-            identyType:document.querySelector('#identyType').value,
+            identyType:1,
             identy:document.querySelector('#identy').value,
             tel:document.querySelector('#tel').value,
-            personType:document.querySelector('#personType').value
-          };
+            personType:1
+          }
           if((typeof idx)!=='number'){
-            if(addPerson.personType=="成人"){
-              addPerson.personType=1;
-            }else if(addPerson.personType=="儿童"){
-              addPerson.personType=2;
-            }else if(addPerson.personType=="学生"){
-              addPerson.personType=3;
-            }else if(addPerson.personType=="伤残军人"){
-              addPerson.personType=4;
-            }
-            if(addPerson.identyType=="二代身份证"){
-              addPerson.identyType=1;
-            }else if(addPerson.identyType=="一代身份证"){
-              addPerson.identyType=2;
-            }else if(addPerson.identyType=="港澳通行证"){
-              addPerson.identyType='C';
-            }else if(addPerson.identyType=="台湾通行证"){
-              addPerson.identyType='G';
-            }else  if(addPerson.identyType=="护照"){
-              addPerson.identyType='B';
-            }
             addPerson.sex=addPerson.sex=="男"?0:1;
             Vue.http.post('/contactInfo/add',JSON.stringify(addPerson))
               .then((res)=>{
-                if(res.data.result==true){
+                if(res.data.code==1){
                   addPerson.id=res.data.data;
                   this.$data.massages.push(addPerson);
                   document.querySelector("#mask").style.display="none";
+                  this.$data.index="";
                 }
               })
           }else{
             addPerson.id=this.$data.massages[idx].id;
-            if(addPerson.personType=="成人"){
-              addPerson.personType=1;
-            }else if(addPerson.personType=="儿童"){
-              addPerson.personType=2;
-            }else if(addPerson.personType=="学生"){
-              addPerson.personType=3;
-            }else if(addPerson.personType=="伤残军人"){
-              addPerson.personType=4;
-            }
-            if(addPerson.identyType=="二代身份证"){
-              addPerson.identyType=1;
-            }else if(addPerson.identyType=="一代身份证"){
-              addPerson.identyType=2;
-            }else if(addPerson.identyType=="港澳通行证"){
-              addPerson.identyType='C';
-            }else if(addPerson.identyType=="台湾通行证"){
-              addPerson.identyType='G';
-            }else  if(addPerson.identyType=="护照"){
-              addPerson.identyType='B';
-            }
             addPerson.sex=addPerson.sex=="男"?0:1;
             Vue.http.post('/contactInfo/update',JSON.stringify(addPerson))
               .then((res)=>{
-                if(res.data.result==true){
+                if(res.data.code==1){
                   for(var i in addPerson){
                     this.$set(this.$data.massages[idx],i,addPerson[i])
                   }
                   document.querySelector("#mask").style.display="none";
+                  this.$data.index="";
                 }
               })
           }
