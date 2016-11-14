@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.controller.helper.request.RequestGrabTicket;
 import com.jkm.controller.helper.request.RequestSubmitOrder;
+import com.jkm.controller.helper.response.ResponseGrabTicket;
 import com.jkm.entity.*;
 import com.jkm.entity.fusion.SingleRefundData;
 import com.jkm.entity.helper.UserBankCardSupporter;
@@ -896,7 +897,7 @@ public class TicketServiceImpl implements TicketService {
      */
     @Override
     @Transactional
-    public Pair<Boolean, String> grabTicket(final RequestGrabTicket req) {
+    public ResponseGrabTicket grabTicket(final RequestGrabTicket req) {
 
         final JSONObject jsonObject = this.queryTicketPriceService.queryTicket(req.getUid(),HySdkConstans.QUERY_PARTNER_ID, "train_query", req.getFromStationCode(), req.getToStationCode(),req.getFromStationName(), req.getToStationName(), req.getGrabStartTime(), "ADULT");
         //获取列车信息
@@ -953,7 +954,10 @@ public class TicketServiceImpl implements TicketService {
         mqJo.put("grabTicketFormId",grabTicketForm.getId());
         MqProducer.sendMessage(mqJo, MqConfig.TICKET_CANCEL_EXPIRED_GRAB_ORDER, 1000*15*60);
 
-        return Pair.of(true,String.valueOf(grabTicketForm.getId()));
+        final ResponseGrabTicket responseGrabTicket = new ResponseGrabTicket();
+        responseGrabTicket.setGrabTicketFormId(grabTicketForm.getId());
+        responseGrabTicket.setPrice(grabTicketForm.getGrabTotalPrice());
+        return responseGrabTicket;
     }
 
     /**
