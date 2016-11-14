@@ -7,9 +7,12 @@ import lombok.Getter;
  */
 public enum EnumRefundTicketFlowStatus {
 
-    INIT(0, "初始化退票流水单"),
+    INIT(0, "退票中"),
     REFUND_TICKET_SUCCESS(1, "退票成功"),
-    REFUND_TICKET_FAIL(2, "退票失败");
+    REFUND_TICKET_FAIL(2, "退票失败"),
+    TICKET_REFUND_ING(3,"退款中"),
+    TICKET_REFUND_SUCCESS(4, "退款成功"),
+    TICKET_REFUND_FAIL(5, "退款失败");
 
     @Getter
     private int id;

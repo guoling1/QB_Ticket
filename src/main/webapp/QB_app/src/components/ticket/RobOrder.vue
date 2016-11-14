@@ -8,97 +8,240 @@
             <div class="right">到达城市</div>
           </div>
           <div class="side write">
-            <div class="left" @click="station">北京</div>
+            <div class="left">{{$submitInfo.fromStationName}}</div>
             <img class="middle" src="../../assets/exchange-blue.png">
 
-            <div class="right" @click="station">上海</div>
+            <div class="right">{{$submitInfo.toStationName}}</div>
           </div>
         </div>
-        <div class="group" @click="time('dateONE')">
+        <div class="group">
           <div class="prompt">已选车次</div>
-          <div class="write no-prompt right">{{dateONE}}</div>
+          <div class="write no-prompt right">{{$submitInfo.trainCodes}}</div>
         </div>
-        <div class="group no-border" @click="time('dateONE')">
+        <div class="group no-border">
           <div class="prompt">已选坐席</div>
-          <div class="write no-prompt right empty">{{dateONE}}</div>
+          <div class="write no-prompt right">{{$submitInfo.seatTypes}}</div>
         </div>
       </div>
       <div class="space">
-        <div class="group no-border" @click="time('dateONE')">
+        <div class="group no-border" @click="login">
           <div class="logo"></div>
           <div class="write">使用12306账号登录</div>
         </div>
       </div>
       <div class="space no-border">
-        <div class="group no-border" @click="time('dateONE')">
+        <div class="group no-border" v-for="passenger in passengers">
           <div class="list"></div>
-          <div class="write">
-            <span class="name">成龙</span>
-            120********1234
-            <span class="info">成人票</span>
-          </div>
-        </div>
-        <div class="group no-border" @click="time('dateONE')">
-          <div class="list"></div>
-          <div class="write">
-            <span class="name">成凤</span>
-            120********4321
-            <span class="info">成人票</span>
+          <div class="write no-prompt">
+            <span class="name">{{passenger.name}}</span>
+            {{passenger.identy}}
+            <span class="info">{{passenger.personType}}票</span>
           </div>
         </div>
       </div>
       <div class="space no-padding">
         <div class="handle">
-          <router-link class="btn" to="/ticket/contacts">
-            添加/编辑乘客
-          </router-link>
+          <div class="btn" @click="contact">添加/编辑乘客</div>
           <div class="line"></div>
           <div class="btn">添加儿童</div>
         </div>
       </div>
       <div class="space">
-        <div class="group no-border" @click="time('dateONE')">
+        <div class="group no-border" @click="packShow">
           <div class="prompt">套餐类型</div>
-          <div class="write empty">{{dateONE}}</div>
+          <div class="write empty" v-if="submitInfo.buyTicketPackageId==1">不购买</div>
+          <div class="write empty" v-if="submitInfo.buyTicketPackageId==2">￥20/人 极速出票</div>
+          <div class="write empty" v-if="submitInfo.buyTicketPackageId==3">￥30/人 优先出票</div>
         </div>
       </div>
       <div class="space">
-        <div class="group no-border" @click="time('dateONE')">
+        <div class="group no-border">
           <div class="prompt">联系手机</div>
-          <div class="write no-prompt empty">通知出票信息</div>
+          <input type="text" class="ipt" placeholder="通知出票信息" v-model="submitInfo.phone">
         </div>
       </div>
-      <router-link class="submit" to="/ticket/train-menu/train">立即抢票</router-link>
+      <div class="submit" @click="submit">立即抢票</div>
     </div>
+    <div class="pack" v-show="pack">
+      <div class="select">
+        <div class="xx"></div>
+        <ul>
+          <li @click="packHide(2)" v-bind:class="{active:submitInfo.buyTicketPackageId==2}"><span>¥ 20/人套餐</span>
+            极速出票，赠送78万保险
+          </li>
+          <li @click="packHide(3)" v-bind:class="{active:submitInfo.buyTicketPackageId==3}"><span>¥ 30/人套餐</span>
+            优先出票，赠送300万保险
+          </li>
+          <li @click="packHide(1)" v-bind:class="{active:submitInfo.buyTicketPackageId==1}">不购买 出票慢，失败的可能性增加</li>
+        </ul>
+      </div>
+    </div>
+    <div class="bank" v-show="bank">
+      <div class="bankList">
+        <div class="xx"></div>
+        <ul>
+          <li v-for="card in cardList">
+            {{card}}
+          </li>
+        </ul>
+        <div class="new" @click="newCard">使用新卡支付</div>
+        <div class="btn">确认付款 ￥</div>
+      </div>
+    </div>
+    <contacts></contacts>
   </div>
 </template>
 
 <script lang="babel">
-  import Datetime from './Datetime.vue';
+  import Contacts from './Contacts.vue'
+
   export default {
     name: 'menu',
     components: {
-      Datetime
+      Contacts
     },
     data: function () {
       return {
-        msg: 'Welcome to Your Vue.js App'
+        submitInfo: {
+          appId: "",
+          uid: "",
+          fromStationName: this.$store.state.station.scope.stationTHREE.station,
+          fromStationCode: this.$store.state.station.scope.stationTHREE.code,
+          toStationName: this.$store.state.station.scope.stationFOUR.station,
+          toStationCode: this.$store.state.station.scope.stationFOUR.code,
+          grabStartTime: this.$store.state.date.scope.dateTWO.code,
+          grabTimeType: 1,
+          firstStartTime: "",
+          trainCodes: "请选择车次",
+          seatTypes: "0,1,2,3,4,6,O,M,P,9",
+          buyTicketPackageId: 3,
+          grabTicketPackageId: 4,
+          phone: "",
+          grabPassengers: []
+        },
+        pack: false,
+        cardList: '',
+        peopleInfo: '',
+        bank: false
       }
     },
+    beforeRouteEnter (to, from, next) {
+      next(function (vm) {
+        vm.$data.submitInfo = JSON.parse(sessionStorage.getItem('robOrder'));
+      });
+    },
     methods: {
-      time: function (name) {
-        this.$store.commit('TIME_OPEN', {
-          name: name,
+      login: function () {
+        this.$router.push({
+          path: '/ticket/login',
+          query: {appid: this.$data.submitInfo.appId, uid: this.$data.submitInfo.uid}
+        });
+      },
+      newCard: function () {
+        this.$router.push({path: '/pay/second-add', query: this.$data.peopleInfo});
+      },
+      packShow: function () {
+        this.$data.pack = true;
+      },
+      packHide: function (num) {
+        this.$data.pack = false;
+        this.$data.submitInfo.buyTicketPackageId = num;
+      },
+      contact: function () {
+        this.$store.commit("CONTACT_OPEN", {
           ctrl: true
         });
       },
-      station: function () {
-        this.$store.commit('STATION_CTRL', true);
+      submit: function () {
+        let data = this.$data.submitInfo;
+        if (data.seatTypes == '1,3,4,O,M,9') {
+          data.seatTypes = '全部坐席';
+        } else {
+          //data.seatTypes = data.seatTypes.replace('无座', '0');
+          data.seatTypes = data.seatTypes.replace('硬座', '1');
+          //data.seatTypes = data.seatTypes.replace('软座', '2');
+          data.seatTypes = data.seatTypes.replace('硬卧', '3');
+          data.seatTypes = data.seatTypes.replace('软卧', '4');
+          //data.seatTypes = data.seatTypes.replace('高级软卧', '6');
+          data.seatTypes = data.seatTypes.replace('二等座', 'O');
+          data.seatTypes = data.seatTypes.replace('一等座', 'M');
+          //data.seatTypes = data.seatTypes.replace('特等座', 'P');
+          data.seatTypes = data.seatTypes.replace('商务座', '9');
+        }
+        this.$http.post('/ticket/grab', data).then(function (res) {
+          if(res.data.code==1){
+            this.$http.post('/card/list', {
+              appid: this.$data.submitInfo.appId,
+              uid: this.$data.submitInfo.uid
+            }).then(function (rs) {
+              console.log(rs);
+              if (rs.data.code == 1) {
+                if (rs.data.data.cardList) {
+                  this.$data.cardList = rs.data.data.cardList;
+                  this.$data.peopleInfo = rs.data.data.userCardInfo;
+                  this.$data.bank = true;
+                } else {
+                  this.$router.push({
+                    path: '/pay/first-add',
+                    query: {
+                      appid: this.$data.submitInfo.appId,
+                      uid: this.$data.submitInfo.uid,
+                      id: res.data.grabTicketFormId,
+                      price: res.data.price
+                    }
+                  });
+                }
+              } else {
+                console.log(res.data.message);
+              }
+            }, function (err) {
+              console.log(err);
+            });
+          }else{
+            console.log(res.data.message);
+          }
+        }, function (err) {
+          console.log(err);
+        })
       }
     },
     computed: {
-      dateONE () {
-        return this.$store.state.date.scope.dateONE.time;
+      passengers: function () {
+        let storeDate = this.$store.state.contact.info;
+        let data = [];
+        this.$data.submitInfo.grabPassengers = [];
+        let type = {
+          '成人': 1, '儿童': 2, '学生': 3, '伤残军人': 4
+        };
+        for (let i in storeDate) {
+          if (storeDate[i]) {
+            data.push(storeDate[i]);
+            this.$data.submitInfo.grabPassengers.push({
+              id: storeDate[i].id,
+              name: storeDate[i].name,
+              piaoType: type[storeDate[i].personType]
+            })
+          }
+        }
+        return data;
+      },
+      $submitInfo: function () {
+        let data = this.$data.submitInfo;
+        if (data.seatTypes == '0,1,2,3,4,6,O,M,P,9') {
+          data.seatTypes = '全部坐席';
+        } else {
+          data.seatTypes = data.seatTypes.replace('0', '无座');
+          data.seatTypes = data.seatTypes.replace('1', '硬座');
+          data.seatTypes = data.seatTypes.replace('2', '软座');
+          data.seatTypes = data.seatTypes.replace('3', '硬卧');
+          data.seatTypes = data.seatTypes.replace('4', '软卧');
+          data.seatTypes = data.seatTypes.replace('6', '高级软卧');
+          data.seatTypes = data.seatTypes.replace('O', '二等座');
+          data.seatTypes = data.seatTypes.replace('M', '一等座');
+          data.seatTypes = data.seatTypes.replace('P', '特等座');
+          data.seatTypes = data.seatTypes.replace('9', '商务座');
+        }
+        return data;
       }
     }
   }
@@ -214,6 +357,11 @@
         background: url("../../assets/prompt-arrow.png") no-repeat right;
         background-size: 7px 12px;
       }
+      .ipt {
+        float: left;
+        height: 54px;
+        border: none;
+      }
     }
 
   }
@@ -244,6 +392,53 @@
       }
       .right {
         float: right;
+      }
+    }
+  }
+
+  .pack {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 88;
+    background: rgba(0, 0, 0, 0.5);
+    .select {
+      position: absolute;
+      width: 100%;
+      height: 50%;
+      background-color: #FFF;
+      left: 0;
+      bottom: 0;
+      .xx {
+        width: 14px;
+        height: 14px;
+        background: url("../../assets/xx.png") no-repeat center;
+        background-size: 14px 14px;
+        padding: 15px;
+      }
+      ul {
+        li {
+          width: 100%;
+          height: 45px;
+          line-height: 45px;
+          text-align: left;
+          padding-left: 15px;
+          color: #999;
+          border-bottom: 1px solid #f5f5f5;
+          span {
+            color: #000;
+          }
+          &.active {
+            color: #2ba7e5;
+            background: url("../../assets/select.png") no-repeat 320px;
+            background-size: 16px 11px;
+            span {
+              font-weight: bold;
+            }
+          }
+        }
       }
     }
   }

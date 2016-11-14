@@ -12,8 +12,11 @@ import com.jkm.entity.fusion.SingleRefundData;
 import com.jkm.enums.notifier.EnumVerificationCodeType;
 import com.jkm.service.AuthenService;
 import com.jkm.service.notifier.SmsAuthService;
+import com.jkm.util.DateFormatUtil;
 import com.jkm.util.SnGenerator;
 import com.jkm.util.ValidationUtil;
+import com.jkm.util.mq.MqConfig;
+import com.jkm.util.mq.MqProducer;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -24,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -60,6 +64,7 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("立即支付(首次)失败");
+            logger.info(e.getMessage());
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -171,14 +176,15 @@ public class FusionController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/getCode", method = RequestMethod.POST)
-    public ResponseEntityBase<Object> getCode() {
-        ResponseEntityBase<Object> responseEntityBase = new ResponseEntityBase<Object>();
+    public ResponseEntityBase<Long> getCode() {
+        ResponseEntityBase<Long> responseEntityBase = new ResponseEntityBase<Long>();
         try{
             JSONObject jo = super.getRequestJsonParams();
             String uid = super.getUid(jo.getString("appid"),jo.getString("uid"));
             jo.put("uid",uid);
             JSONObject responseJo = authenService.getCode(jo);
             if(responseJo.getBoolean("result")==true){
+                responseEntityBase.setData(responseJo.getLong("data"));
                 responseEntityBase.setMessage(responseJo.getString("message"));
             }else{
                 responseEntityBase.setMessage(responseJo.getString("message"));
@@ -259,6 +265,29 @@ public class FusionController extends BaseController {
             queryRefundData.setQueryDate(jo.getString("querySn").substring(0,8));
             Map<String, Object> result = authenService.queryRefund(queryRefundData);
             logger.info("结果："+result);
+        }catch(Exception e){
+            responseJo.put("result",false);
+            responseJo.put("message",e.getMessage());
+        }
+        return responseJo;
+    }
+    /**
+     * 验证退款查询
+     *
+     * @param requestData
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getTest3", method = RequestMethod.POST)
+    public JSONObject getTest3() {
+        JSONObject responseJo = new JSONObject();
+        try{
+            JSONObject mqJo = new JSONObject();
+            mqJo.put("reqSn","20161111132457210572");
+            mqJo.put("dt", "20161111");
+            mqJo.put("sendCount",0);
+            mqJo.put("orderId",165);
+            MqProducer.sendMessage(mqJo, MqConfig.FAST_PAY_QUERY,2000);
         }catch(Exception e){
             responseJo.put("result",false);
             responseJo.put("message",e.getMessage());

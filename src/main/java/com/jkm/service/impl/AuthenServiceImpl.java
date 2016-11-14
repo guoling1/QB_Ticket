@@ -6,6 +6,7 @@ import com.aliyun.openservices.ons.api.bean.ProducerBean;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.jkm.dao.SendMessageCountRecordDao;
 import com.jkm.entity.*;
 import com.jkm.entity.fusion.*;
 import com.jkm.entity.fusion.body.*;
@@ -65,6 +66,8 @@ public class AuthenServiceImpl implements AuthenService {
 	private TicketSendMessageService ticketSendMessageService;
 	@Autowired
 	private GrabTicketFormService grabTicketFormService;
+	@Autowired
+	private SendMessageCountRecordDao sendMessageCountRecordDao;
 	/**
 	 * 快捷支付
 	 * @param requestData
@@ -578,6 +581,7 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkNotNull(requestData.get("vCode"),"请输入验证码");
 		Preconditions.checkNotNull(requestData.get("bankCode"),"卡宾不能为空");
 		Preconditions.checkNotNull(requestData.get("nonceStr"),"随机参数有误");
+//		Preconditions.checkNotNull(requestData.get("sn"),"短信序列码不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("orderId")+""), "订单信息不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("crdNo")), "卡号不能不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("capCrdNm")), "开户姓名不能为空");
@@ -586,6 +590,7 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("bankCode")), "卡宾不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("vCode")), "验证码不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("nonceStr")), "随机参数有误");
+//		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("sn")+""), "短信序列码不能为空");
 
 //		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(requestData.getString("phoneNo"),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
 //		int resultType = codeStatus.getKey();
@@ -594,7 +599,19 @@ public class AuthenServiceImpl implements AuthenService {
 //			jo.put("message",codeStatus.getValue());
 //			return jo;
 //		}
-
+//		//防止刷验证码
+//		int count = sendMessageCountRecordDao.selctCountBySn(requestData.getLong("sn"));
+//		if(count>3){
+//			jo.put("result",false);
+//			jo.put("message","验证码已失效");
+//			return jo;
+//		}
+//		SendMessageCountRecord sendMessageCountRecord= new SendMessageCountRecord();
+//		sendMessageCountRecord.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+//		sendMessageCountRecord.setMessageTemplateId((long)EnumVerificationCodeType.PAYMENT.getId());
+//		sendMessageCountRecord.setMobile(requestData.getString("phoneNo"));
+//		sendMessageCountRecord.setSn(requestData.getLong("sn"));
+//		sendMessageCountRecordDao.insertSelective(sendMessageCountRecord);
 		if(!ValidationUtil.checkBankCard(requestData.getString("crdNo"))){
 			jo.put("result",false);
 			jo.put("message","银行卡号不正确");
@@ -687,15 +704,41 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkNotNull(requestData.get("orderId"),"订单号不能为空");
 		Preconditions.checkNotNull(requestData.get("cId"),"银行信息不能为空");
 		Preconditions.checkNotNull(requestData.get("nonceStr"),"随机参数有误");
+		Preconditions.checkNotNull(requestData.get("vCode"),"请输入验证码");
+		Preconditions.checkNotNull(requestData.get("sn"),"短信序列码不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("orderId")+""), "订单号不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("nonceStr")), "随机参数有误");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("cId")+""), "银行信息不能为空");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("vCode")), "验证码不能为空");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("sn")+""), "短信序列码不能为空");
 		BindCard bindCard = bindCardService.selectByPrimaryKey(requestData.getLong("cId"));
 		if(bindCard==null){
 			jo.put("result",false);
 			jo.put("message","无此银行卡信息");
 			return jo;
 		}
+
+		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(bindCard.getPhone(),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
+		int resultType = codeStatus.getKey();
+		if(resultType!=1){
+			jo.put("result",false);
+			jo.put("message",codeStatus.getValue());
+			return jo;
+		}
+
+		int count = sendMessageCountRecordDao.selctCountBySn(requestData.getLong("sn"));
+		if(count>3){
+			jo.put("result",false);
+			jo.put("message","验证码已失效");
+			return jo;
+		}
+		SendMessageCountRecord sendMessageCountRecord= new SendMessageCountRecord();
+		sendMessageCountRecord.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+		sendMessageCountRecord.setMessageTemplateId((long)EnumVerificationCodeType.PAYMENT.getId());
+		sendMessageCountRecord.setMobile(bindCard.getPhone());
+		sendMessageCountRecord.setSn(requestData.getLong("sn"));
+		sendMessageCountRecordDao.insertSelective(sendMessageCountRecord);
+
 		Optional<OrderForm>  orderFormOptional = orderFormService.selectById(requestData.getLong("orderId"));
 		Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + orderFormOptional.get().getId() + "]不存在");
 		if(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId()==orderFormOptional.get().getStatus()){
@@ -763,6 +806,7 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkNotNull(requestData.get("vCode"),"请输入验证码");
 		Preconditions.checkNotNull(requestData.get("bankCode"),"卡宾不能为空");
 		Preconditions.checkNotNull(requestData.get("nonceStr"),"随机参数有误");
+		Preconditions.checkNotNull(requestData.get("sn"),"短信序列码不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("orderId")+""), "订单信息不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("crdNo")), "卡号不能不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("capCrdNm")), "开户姓名不能为空");
@@ -771,6 +815,7 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("bankCode")), "卡宾不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("vCode")), "验证码不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("nonceStr")), "随机参数有误");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("sn")+""), "短信序列码不能为空");
 
 		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(requestData.getString("phoneNo"),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
 		int resultType = codeStatus.getKey();
@@ -779,6 +824,20 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("message",codeStatus.getValue());
 			return jo;
 		}
+
+		int count = sendMessageCountRecordDao.selctCountBySn(requestData.getLong("sn"));
+		if(count>3){
+			jo.put("result",false);
+			jo.put("message","验证码已失效");
+			return jo;
+		}
+		SendMessageCountRecord sendMessageCountRecord= new SendMessageCountRecord();
+		sendMessageCountRecord.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+		sendMessageCountRecord.setMessageTemplateId((long)EnumVerificationCodeType.PAYMENT.getId());
+		sendMessageCountRecord.setMobile(requestData.getString("phoneNo"));
+		sendMessageCountRecord.setSn(requestData.getLong("sn"));
+		sendMessageCountRecordDao.insertSelective(sendMessageCountRecord);
+
 
 		if(!ValidationUtil.checkBankCard(requestData.getString("crdNo"))){
 			jo.put("result",false);
@@ -874,15 +933,40 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkNotNull(requestData.get("orderId"),"订单号不能为空");
 		Preconditions.checkNotNull(requestData.get("cId"),"银行信息不能为空");
 		Preconditions.checkNotNull(requestData.get("nonceStr"),"随机参数有误");
+		Preconditions.checkNotNull(requestData.get("vCode"),"请输入验证码");
+		Preconditions.checkNotNull(requestData.get("sn"),"短信序列码不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("orderId")+""), "订单号不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("nonceStr")), "随机参数有误");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("cId")+""), "银行信息不能为空");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("vCode")), "验证码不能为空");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("sn")+""), "短信序列码不能为空");
 		BindCard bindCard = bindCardService.selectByPrimaryKey(requestData.getLong("cId"));
 		if(bindCard==null){
 			jo.put("result",false);
 			jo.put("message","无此银行卡信息");
 			return jo;
 		}
+		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(bindCard.getPhone(),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
+		int resultType = codeStatus.getKey();
+		if(resultType!=1){
+			jo.put("result",false);
+			jo.put("message",codeStatus.getValue());
+			return jo;
+		}
+
+		int count = sendMessageCountRecordDao.selctCountBySn(requestData.getLong("sn"));
+		if(count>3){
+			jo.put("result",false);
+			jo.put("message","验证码已失效");
+			return jo;
+		}
+		SendMessageCountRecord sendMessageCountRecord= new SendMessageCountRecord();
+		sendMessageCountRecord.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+		sendMessageCountRecord.setMessageTemplateId((long)EnumVerificationCodeType.PAYMENT.getId());
+		sendMessageCountRecord.setMobile(bindCard.getPhone());
+		sendMessageCountRecord.setSn(requestData.getLong("sn"));
+		sendMessageCountRecordDao.insertSelective(sendMessageCountRecord);
+
 
 		Optional<GrabTicketForm> grabTicketFormOptional = grabTicketFormService.selectById(requestData.getLong("orderId"));
 		Preconditions.checkState(grabTicketFormOptional.isPresent(), "订单[" + grabTicketFormOptional.get().getId() + "]不存在");
@@ -964,8 +1048,9 @@ public class AuthenServiceImpl implements AuthenService {
 		sendPaymentParam.setCode(codeStatus.getValue());
 		sendPaymentParam.setMobile(requestData.getString("phone"));
 		sendPaymentParam.setUid(requestData.getString("uid"));
-		ticketSendMessageService.sendPaymentMessage(sendPaymentParam);
+		long sn = ticketSendMessageService.sendPaymentMessage(sendPaymentParam);
 		jo.put("result",true);
+		jo.put("data",sn);
 		jo.put("message","发送验证码成功");
 		return jo;
 	}

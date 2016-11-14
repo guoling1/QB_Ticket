@@ -19,17 +19,17 @@ public class OrderFormRefundExceptionRecord extends BaseEntity {
     /**
      * 订单id
      */
-    private long orderFormId;
+    private long orderFormId =0;
 
     /**
      * 抢票的id
      */
-    private long grabOrderFormId;
+    private long grabOrderFormId =0;
 
     /**
-     * 是否是抢票单  0：代购票单， 1：抢票单
+     * 出票单
      */
-    private int isGrab;
+    private long orderFormDetailId =0;
 
     /**
      * 支付流水号

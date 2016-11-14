@@ -97,6 +97,8 @@ public class RequestGrabTicket {
          */
         private long id;
 
+        private String name;
+
         /**
          * 票的类型
          */

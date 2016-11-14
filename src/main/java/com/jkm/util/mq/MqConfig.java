@@ -17,9 +17,14 @@ public class MqConfig {
     public static final String ACCESS_KEY;
     public static final String SECRET_KEY;
     public static final String ONSADDR;
-    public static final String SINGLE_REFUND_QUERY = "singlRefundQuery";//单笔退款查询
-    public static final String FAST_PAY_QUERY = "fastPayQuery";//快捷支付查询
-    public static final String FAST_PAY_GRAB_QUERY = "fastPayGrabQuery";//快捷支付抢票单查询
+    /**
+     * 快捷支付查询
+     */
+    public static final String FAST_PAY_QUERY = "fastPayQuery";
+    /**
+     * 快捷支付抢票单查询
+     */
+    public static final String FAST_PAY_GRAB_QUERY = "fastPayGrabQuery";
 
     /**
      * 取消失去有效支付时间的订单
@@ -40,6 +45,27 @@ public class MqConfig {
      * 客户未购买套餐到期自动退款
      */
     public static final String NO_PACKAGE_WAIT_REFUND = "noPackageWaitRefund";
+
+    /**
+     * 抢票下单失败,到期自动退款
+     */
+    public static final String GRAB_FORM_FAIL_WAIT_REFUND = "grabFormFailWaitRefund";
+
+    /**
+     * 退票退款处理请求中的消息
+     */
+    public static final String RETURN_TICKET_REFUND_ING = "returnTicketRefundIng";
+
+    /**
+     * 抢票差价退款的消息
+     */
+    public static final String GRAB_TICKET_REFUND_PART = "grabTicketRefundPart";
+
+    /**
+     * 抢票全额退款的消息
+     */
+    public static final String GRAB_TICKET_REFUND_ALL = "grabTicketRefundAll";
+
 
     static {
         final MqConfigs mqConfigs = getMqConfigs();

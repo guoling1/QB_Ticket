@@ -1,3 +1,4 @@
+/*
 import com.google.common.collect.Lists;
 import com.jkm.entity.PolicyOrder;
 import com.jkm.enums.EnumHTHYMethodCode;
@@ -19,24 +20,28 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+*/
 /**
  * Created by yuxiang on 2016-10-31.
- */
+ *//*
 
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations = {"classpath:spring-mybatis.xml","classpath:spring-mvc.xml"})
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:spring-mybatis.xml","classpath:spring-mvc.xml"})
 public class Test3Des {
 
 //   @Autowired
 //    private HySdkService hySdkService;
-//    @Autowired
-//    private PolicyOrderService policyOrderService;
+   @Autowired
+   private PolicyOrderService policyOrderService;
 //
-//    @Test
-//    public void test(){
+   @Test
+   public void test(){
+       this.policyOrderService.batchBuyGrabPolicy(14);
 //
 //        this.policyOrderService.batchBuyPolicy(127);
-   /*     HyPostPolicyOrderRequest request = new HyPostPolicyOrderRequest();
+   */
+/*     HyPostPolicyOrderRequest request = new HyPostPolicyOrderRequest();
         request.setUsername(HySdkConstans.USERNAME);
         request.setReqtime(DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss));
         request.setMethod(EnumHTHYMethodCode.POST_POLICY_ORDER.getCode());
@@ -72,16 +77,20 @@ public class Test3Des {
         requestList.add(request);
         requestList.add(request1);
         this.hySdkService.postPolicyOrder(requestList);
-*/
-       /* HyCancelPolicyOrderRequest request = new HyCancelPolicyOrderRequest();
+*//*
+
+       */
+/* HyCancelPolicyOrderRequest request = new HyCancelPolicyOrderRequest();
         request.setUsername(HySdkConstans.USERNAME);
         request.setMethod(EnumHTHYMethodCode.CANCEL_POLICY_ORDER.getCode());
         request.setReqtime(DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss));
         request.setPolicyNo("5044809552807120710");
 
-        this.hySdkService.cancelPolicyOrder(request);*/
+        this.hySdkService.cancelPolicyOrder(request);*//*
 
-       /* HyReturnTicketRequest request = new HyReturnTicketRequest();
+
+       */
+/* HyReturnTicketRequest request = new HyReturnTicketRequest();
         request.setPartnerId(HySdkConstans.PARTNERID);
         request.setMethod(EnumHTHYMethodCode.RETURN_TICKET.getCode());
         request.setReqTime(DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss));
@@ -101,8 +110,10 @@ public class Test3Des {
 
         JSONArray jsonArray = new JSONArray();
         jsonArray.add(obj);
-        final HyReturnTicketResponse hyReturnTicketResponse = this.hySdkService.returnTicket(request ,jsonArray );*/
+        final HyReturnTicketResponse hyReturnTicketResponse = this.hySdkService.returnTicket(request ,jsonArray );*//*
 
-//    }
+
+    }
 }
 
+*/

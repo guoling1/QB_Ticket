@@ -6,6 +6,7 @@ import com.jkm.entity.BindCard;
 import com.jkm.entity.helper.UserBankCardSupporter;
 import com.jkm.service.BankCardBinService;
 import com.jkm.service.BindCardService;
+import com.jkm.util.ValidateUtils;
 import com.jkm.util.ValidationUtil;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
@@ -31,12 +32,11 @@ public class BindCardServiceImpl implements BindCardService{
             for(int i=0;i<cardList.size();i++){
                 cardList.get(i).setCardId(UserBankCardSupporter.decryptCardId(cardList.get(i).getCardId()));
                 cardList.get(i).setCardNo(ValidationUtil.getShortCardNo(UserBankCardSupporter.decryptCardNo(cardList.get(i).getCardNo())));
-                bankCardBinService.analyseCardNo(UserBankCardSupporter.decryptCardId(cardList.get(i).getCardId()));
             }
             jo.put("cardList",cardList);
             JSONObject ju = new JSONObject();
             ju.put("accountName",cardList.get(0).getAccountName());
-            ju.put("cardId",UserBankCardSupporter.decryptCardNo(cardList.get(0).getCardId()));
+            ju.put("cardId",cardList.get(0).getCardId());
             jo.put("userCardInfo",ju);
         }
         return jo;
@@ -67,10 +67,10 @@ public class BindCardServiceImpl implements BindCardService{
         Preconditions.checkNotNull(requestJson.get("isAgree"),"同意协议才能绑定银行卡");
         Preconditions.checkNotNull(requestJson.get("vCode"),"请输入验证码");
         Preconditions.checkNotNull(requestJson.get("bankCode"),"卡宾不能为空");
-        if(!ValidationUtil.checkBankCard(requestJson.getString("cardNo"))){
-            jo.put("result",false);
-            jo.put("message","银行卡号不正确");
-        }
+//        if(!ValidateUtils.isIDCard(requestJson.getString("cardNo"))){
+//            jo.put("result",false);
+//            jo.put("message","银行卡号不正确");
+//        }
         if(!ValidationUtil.isIdCard(requestJson.getString("cardId"))){
             jo.put("result",false);
             jo.put("message","身份证号不正确");
@@ -90,6 +90,7 @@ public class BindCardServiceImpl implements BindCardService{
         bindCard.setAccountName(requestJson.getString("accountName"));
         bindCard.setCardId(UserBankCardSupporter.encryptCardId(requestJson.getString("cardId")));
         bindCard.setPhone(requestJson.getString("phone"));
+        bindCard.setBankCode(requestJson.getString("bankCode"));
         bindCard.setStatus(0);
         int returnNum = bindCardDao.isAdd(bindCard.getCardNo());
         if(returnNum>0){

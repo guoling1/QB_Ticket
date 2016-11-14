@@ -13,7 +13,7 @@ public interface TicketSendMessageService {
      *
      * @param sendPaymentParam
      */
-    void sendPaymentMessage(SendPaymentParam sendPaymentParam);
+    long sendPaymentMessage(SendPaymentParam sendPaymentParam);
 
     /**
      * 出票成功短信

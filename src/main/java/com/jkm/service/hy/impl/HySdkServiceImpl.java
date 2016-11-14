@@ -263,7 +263,7 @@ public class HySdkServiceImpl implements HySdkService{
         this.postHandle("",
                 EnumHTHYMethodCode.POST_POLICY_ORDER.getCode(),
                 0,
-                json.toString(),
+                jsonObject.toString(),
                 json.toString(),
                 stopWatch.getTime());
         return json;
@@ -296,7 +296,7 @@ public class HySdkServiceImpl implements HySdkService{
         this.postHandle(request.getPolicyNo(),
                 request.getMethod(),
                 json.getInt("code"),
-                json.toString(),
+                jsonObject.toString(),
                 json.toString(),
                 stopWatch.getTime());
         return json;
@@ -322,11 +322,11 @@ public class HySdkServiceImpl implements HySdkService{
     @Override
     public JSONObject grabTickets(JSONObject jsonObject) {
         final StopWatch stopWatch = new StopWatch();
-        final JSONObject json = requestImpl(jsonObject,  HySdkConstans.POLICY_GATEWAY_URL, "", EnumHTHYMethodCode.QIANG_PIAO_ORDER.getCode(), stopWatch);
+        final JSONObject json = requestImpl(jsonObject,  HySdkConstans.GRAB_TICKET_URL, "", EnumHTHYMethodCode.QIANG_PIAO_ORDER.getCode(), stopWatch);
         this.postHandle("",
                 EnumHTHYMethodCode.QIANG_PIAO_ORDER.getCode(),
                 json.getInt("code"),
-                json.toString(),
+                jsonObject.toString(),
                 json.toString(),
                 stopWatch.getTime());
         return json;
@@ -341,11 +341,11 @@ public class HySdkServiceImpl implements HySdkService{
     @Override
     public JSONObject cancelGrabTickets(JSONObject jsonObject) {
         final StopWatch stopWatch = new StopWatch();
-        final JSONObject json = requestImpl(jsonObject,  HySdkConstans.POLICY_GATEWAY_URL, "", "取消抢票", stopWatch);
+        final JSONObject json = requestImpl(jsonObject,  HySdkConstans.GRAB_TICKET_CANCEL_URL, "", "取消抢票", stopWatch);
         this.postHandle("",
                 "取消抢票",
                 json.getInt("code"),
-                json.toString(),
+                jsonObject.toString(),
                 json.toString(),
                 stopWatch.getTime());
         return json;

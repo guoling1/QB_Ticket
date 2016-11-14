@@ -118,26 +118,50 @@
                     <key>
                         <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
                             <property name="topic" value="${mq.topic}"/> <!-- Topic,请替换 -->
-                            <property name="expression" value="fastPayQuery||fastPayGrabQuery"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
+                            <property name="expression" value="*"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
                         </bean>
                     </key>
                 </entry>
-                <entry value-ref="MessageListenerOfExpiredOrder">
-                    <key>
-                        <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
-                            <property name="topic" value="${mq.topic}"/> <!-- Topic,请替换 -->
-                            <property name="expression" value="ticketCancelExpiredOrder||ticketCancelExpiredGrabOrder||noPackageWaitRefund"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
-                        </bean>
-                    </key>
-                </entry>
-                <entry value-ref="messageListenerOfOrderRefund">
-                    <key>
-                        <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
-                            <property name="topic" value="${mq.topic}"/> <!-- Topic,请替换 -->
-                            <property name="expression" value="ticketHandleRefundOrderResult"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
-                        </bean>
-                    </key>
-                </entry>
+                <!--<entry value-ref="MessageListenerOfExpiredOrder">-->
+                    <!--<key>-->
+                        <!--<bean class="com.aliyun.openservices.ons.api.bean.Subscription">-->
+                            <!--<property name="topic" value="${mq.topic}"/> &lt;!&ndash; Topic,请替换 &ndash;&gt;-->
+                            <!--<property name="expression" value="ticketCancelExpiredOrder||ticketCancelExpiredGrabOrder||noPackageWaitRefund"/>&lt;!&ndash; MessageType名: 多个messageType 用 “||”分割 &ndash;&gt;-->
+                        <!--</bean>-->
+                    <!--</key>-->
+                <!--</entry>-->
+                <!--<entry value-ref="messageListenerOfOrderRefund">-->
+                    <!--<key>-->
+                        <!--<bean class="com.aliyun.openservices.ons.api.bean.Subscription">-->
+                            <!--<property name="topic" value="${mq.topic}"/> &lt;!&ndash; Topic,请替换 &ndash;&gt;-->
+                            <!--<property name="expression" value="ticketHandleRefundOrderResult"/>&lt;!&ndash; MessageType名: 多个messageType 用 “||”分割 &ndash;&gt;-->
+                        <!--</bean>-->
+                    <!--</key>-->
+                <!--</entry>-->
+                <!--<entry value-ref="messageListenerTicketRefundImpl">-->
+                    <!--<key>-->
+                        <!--<bean class="com.aliyun.openservices.ons.api.bean.Subscription">-->
+                            <!--<property name="topic" value="${mq.topic}"/> &lt;!&ndash; Topic,请替换 &ndash;&gt;-->
+                            <!--<property name="expression" value="returnTicketRefundIng"/>&lt;!&ndash; MessageType名: 多个messageType 用 “||”分割 &ndash;&gt;-->
+                        <!--</bean>-->
+                    <!--</key>-->
+                <!--</entry>-->
+                <!--<entry value-ref="messageListenerTGrabPartRefundImpl">-->
+                    <!--<key>-->
+                        <!--<bean class="com.aliyun.openservices.ons.api.bean.Subscription">-->
+                            <!--<property name="topic" value="${mq.topic}"/> &lt;!&ndash; Topic,请替换 &ndash;&gt;-->
+                            <!--<property name="expression" value="grabTicketRefundPart"/>&lt;!&ndash; MessageType名: 多个messageType 用 “||”分割 &ndash;&gt;-->
+                        <!--</bean>-->
+                    <!--</key>-->
+                <!--</entry>-->
+                <!--<entry value-ref="messageListenerTGrabAllRefundImpl">-->
+                    <!--<key>-->
+                        <!--<bean class="com.aliyun.openservices.ons.api.bean.Subscription">-->
+                            <!--<property name="topic" value="${mq.topic}"/> &lt;!&ndash; Topic,请替换 &ndash;&gt;-->
+                            <!--<property name="expression" value="grabTicketRefundAll"/>&lt;!&ndash; MessageType名: 多个messageType 用 “||”分割 &ndash;&gt;-->
+                        <!--</bean>-->
+                    <!--</key>-->
+                <!--</entry>-->
             </map>
 
         </property>
@@ -146,12 +170,20 @@
     <!-- 快捷支付消息处理器 -->
     <bean id="messageListener" class="com.jkm.controller.common.MessageListenerImpl"/>
 
-    <!-- 处理过了支付时间的订单的消息处理器 -->
-    <bean id="MessageListenerOfExpiredOrder" class="com.jkm.controller.common.MessageListenerOfExpiredOrderImpl"/>
+    <!--&lt;!&ndash; 处理过了支付时间的订单的消息处理器 &ndash;&gt;-->
+    <!--<bean id="MessageListenerOfExpiredOrder" class="com.jkm.controller.common.MessageListenerOfExpiredOrderImpl"/>-->
 
-    <!-- 处理订单退款在请求中的消息处理器 -->
-    <bean id="messageListenerOfOrderRefund" class="com.jkm.controller.common.MessageListenerOfOrderRefundImpl"/>
+    <!--&lt;!&ndash; 处理订单退款在请求中的消息处理器 &ndash;&gt;-->
+    <!--<bean id="messageListenerOfOrderRefund" class="com.jkm.controller.common.MessageListenerOfOrderRefundImpl"/>-->
 
+    <!--&lt;!&ndash; 处理退票时退款在请求中的消息处理器 &ndash;&gt;-->
+    <!--<bean id="messageListenerTicketRefundImpl" class="com.jkm.controller.common.MessageListenerTicketRefundImpl"/>-->
+
+    <!--&lt;!&ndash; 处理抢票单部分退款的消息 &ndash;&gt;-->
+    <!--<bean id="messageListenerTGrabPartRefundImpl" class="com.jkm.controller.common.MessageListenerTGrabPartRefundImpl"/>-->
+
+    <!--&lt;!&ndash; 处理抢票单全额退款的消息 &ndash;&gt;-->
+    <!--<bean id="messageListenerTGrabAllRefundImpl" class="com.jkm.controller.common.MessageListenerTGrabAllRefundImpl"/>-->
     <!--生产端-->
     <bean id="producer" class="com.aliyun.openservices.ons.api.bean.ProducerBean"
           init-method="start" destroy-method="shutdown">

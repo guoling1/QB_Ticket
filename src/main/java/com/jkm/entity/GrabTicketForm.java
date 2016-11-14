@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by yuxiang on 2016-11-04.
@@ -59,18 +60,18 @@ public class GrabTicketForm extends BaseEntity {
      */
     private BigDecimal totalPrice;
     /**
-     * 抢票出发日期 2015-09-09
+     * 抢票发车时间
      */
     private String grabStartTime;
+    /**
+     * 最早发车时间 2015-09-10 13:00
+     */
+    private String firstStartTime;
     /**
      * 抢票时效类型
      * {@link EnumGrabTimeType}
      */
     private int grabTimeType;
-    /**
-     * 最早发车时间 2015-09-10 13:00
-     */
-    private String firstStartTime;
     /**
      * 出发站名称
      */
@@ -109,6 +110,10 @@ public class GrabTicketForm extends BaseEntity {
      * {@link EnumBuyTicketPackageType}
      */
     private int buyTicketPackage;
+    /**
+     * 单张火车票正常价格 (已抢到)
+     */
+    private BigDecimal price;
     /**
      * 抢票成功发车日期 2016-10-08
      */
@@ -150,6 +155,10 @@ public class GrabTicketForm extends BaseEntity {
     private String passengerInfo;
 
     /**
+     * 支付到期时间
+     */
+    private Date expireTime;
+    /**
      * 备注
      */
     private String remark;
@@ -163,5 +172,10 @@ public class GrabTicketForm extends BaseEntity {
     public boolean isCanCancel(){
 
         return EnumGrabTicketStatus.GRAB_FORM_PAY_WAIT.getId() == this.getStatus();
+    }
+
+    public boolean isCanCancelBeforeCharge(){
+        return EnumGrabTicketStatus.GRAB_FORM_PAY_WAIT.getId() == this.getStatus()
+                && EnumGrabTicketStatus.GRAB_FORM_PAY_ING.getId() != this.getStatus();
     }
 }

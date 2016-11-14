@@ -31,13 +31,17 @@ public class QueryTicketPriceController extends BaseController {
         JSONObject responseJson = new JSONObject();
         JSONObject requestJson = null;
         requestJson = super.getRequestJsonParams();
+        String uid = super.getUid(requestJson.getString("appid"),requestJson.getString("uid"));
         String partnerid = HySdkConstans.QUERY_PARTNER_ID;
         String method = "train_query";
         String from_station = requestJson.getString("from_station");
         String to_station = requestJson.getString("to_station");
+        String from_station_name = requestJson.getString("from_station_name");
+        String to_station_name = requestJson.getString("to_station_name");
         String train_date = requestJson.getString("train_date");
         String purpose_codes = "ADULT";
-        responseJson = this.queryTicketPriceService.queryTicket(partnerid, method, from_station, to_station, train_date, purpose_codes);
+        responseJson = this.queryTicketPriceService.queryTicket(uid,partnerid, method, from_station, to_station, from_station_name, to_station_name, train_date, purpose_codes);
+
         final ResponseEntityBase<Object> results = new ResponseEntityBase<>();
         results.setData(responseJson.get("data"));
 

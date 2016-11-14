@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jkm.dao.SendMessageCountRecordDao">
+
+	<!-- 通用查询结果列-->
+	<sql id="Base_Column_List">
+		 id,	uid,	mobile,	message_template_id,	sn,	status,	create_time,	update_time
+	</sql>
+
+	<!-- 查询（根据主键ID查询） -->
+	<select id="selctCountBySn"  parameterType="java.lang.Long">
+		 SELECT count(1)
+		 FROM tb_send_message_count_record
+		 WHERE sn = #{sn} and status=0
+	</select>
+
+
+	<!-- 添加 （匹配有值的字段）-->
+	<insert id="insertSelective" parameterType="com.jkm.entity.SendMessageCountRecord">
+		 INSERT INTO tb_send_message_count_record
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="uid != null">
+				 uid,
+			</if>
+			<if test="mobile != null">
+				 mobile,
+			</if>
+			<if test="messageTemplateId != null">
+				 message_template_id,
+			</if>
+			<if test="sn != null">
+				 sn,
+			</if>
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="uid!=null">
+				 #{uid},
+			</if>
+			<if test="mobile!=null">
+				 #{mobile},
+			</if>
+			<if test="messageTemplateId!=null">
+				 #{messageTemplateId},
+			</if>
+			<if test="sn!=null">
+				 #{sn},
+			</if>
+		 </trim>
+	</insert>
+
+</mapper>

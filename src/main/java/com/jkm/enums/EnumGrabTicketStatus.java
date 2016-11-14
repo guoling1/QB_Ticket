@@ -70,7 +70,7 @@ public enum EnumGrabTicketStatus {
     GRAB_FORM_SUCCESS(9, "抢票成功并出票成功"),
 
     /**
-     * 抢票订单取消
+     * 抢票订单取消*(付款前取消)
      */
     GRAB_FORM_CANCEL(10, "订单取消"),
 
@@ -121,4 +121,5 @@ public enum EnumGrabTicketStatus {
         Preconditions.checkState(INIT_MAP.containsKey(status), "unknow enumOrderFormStatus[%s]", status);
         return INIT_MAP.get(status);
     }
+
 }
