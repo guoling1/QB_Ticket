@@ -1,10 +1,12 @@
 package com.jkm.service.impl;
 
+import com.jkm.service.QueryHistoryService;
 import com.jkm.service.QueryTicketPriceService;
 import com.jkm.service.hy.helper.HySdkConstans;
 import com.jkm.util.HttpMethod;
 import com.jkm.util.MD5Util;
 import net.sf.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -15,9 +17,11 @@ import java.util.Date;
  */
 @Service
 public class QueryTicketPriceServiceImpl implements QueryTicketPriceService {
+    @Autowired
+    private QueryHistoryService queryHistoryService;
     @Override
-    public JSONObject queryTicket(String partnerid, String method,String from_station, String to_station,
-                                  String train_date, String purpose_codes) {
+    public JSONObject queryTicket(String uid, String partnerid, String method, String from_station, String to_station,
+                                  String from_station_name, String to_station_name, String train_date, String purpose_codes) {
 
         JSONObject jsonObject = null;
         SimpleDateFormat date = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -41,7 +45,8 @@ public class QueryTicketPriceServiceImpl implements QueryTicketPriceService {
 
         JSONObject responseJson = new JSONObject();
         responseJson = HttpMethod.httpClient(jsonObject, "http://searchtrain.hangtian123.net/trainSearch");
-
+        queryHistoryService.save(uid,from_station,to_station,from_station_name,to_station_name);
         return responseJson;
     }
+
 }

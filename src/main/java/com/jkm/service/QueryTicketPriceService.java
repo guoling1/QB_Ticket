@@ -14,5 +14,5 @@ public interface QueryTicketPriceService {
      * @param to_station
      * @return
      */
-    JSONObject queryTicket(String partnerid, String method, String from_station,String to_station, String train_date, String purpose_codes);
+    JSONObject queryTicket(String uid,String partnerid, String method, String from_station,String to_station,String from_station_name,String to_station_name, String train_date, String purpose_codes);
 }

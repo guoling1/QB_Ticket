@@ -7,4 +7,9 @@ import lombok.Data;
  */
 @Data
 public class ResponseGrabTicket {
+
+    /**
+     * 抢票单id
+     */
+    private long grabTicketFormId;
 }

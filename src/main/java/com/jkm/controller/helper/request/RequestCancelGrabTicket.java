@@ -9,7 +9,7 @@ import lombok.Data;
 public class RequestCancelGrabTicket {
 
     /**
-     * 小订单号
+     * 大订单号
      */
     private long grabTicketFormId;
 }

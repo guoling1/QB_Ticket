@@ -119,4 +119,8 @@
         SELECT * FROM tb_grab_ticket_form
         WHERE id = #{id}
     </select>
+    <select id="selectByUid" resultType="com.jkm.entity.GrabTicketForm">
+        SELECT * FROM tb_grab_ticket_form
+        WHERE uid = #{uid}
+    </select>
 </mapper>

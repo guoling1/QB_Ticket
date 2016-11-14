@@ -65,4 +65,12 @@ public interface GrabTicketFormService {
      * @param grabTicketFormId
      */
     void handleNoPackageWaitRefund(long grabTicketFormId);
+
+    /**
+     * 根据uid查询
+     *
+     * @param uid
+     * @return
+     */
+    List<GrabTicketForm> selectByUid(String uid);
 }

@@ -2,6 +2,8 @@ package com.jkm.dao;
 
 import com.jkm.entity.GrabTicketForm;
 
+import java.util.List;
+
 /**
  * Created by yuxiang on 2016-11-07.
  */
@@ -46,4 +48,11 @@ public interface GrabTicketFromDao {
      * @param id
      */
     void updateStatusById(int status, long id);
+
+    /**
+     * 根据uid查询
+     * @param uid
+     * @return
+     */
+    List<GrabTicketForm> selectByUid(String uid);
 }
