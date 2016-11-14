@@ -109,7 +109,7 @@
     },
     created: function () {
       // 这里 轮询 等待回调
-      var polling = '';
+      let polling = '';
       const pollFun = ()=>{
         this.$http.post('/order/queryById', {orderFormId: this.$data.orderInfo.orderFormId}).then(function (res) {
           if (res.data.code == 1 && res.data.data.status == 3) {
@@ -127,7 +127,7 @@
           }
         })
       }
-      polling = setInterval(pollFun, 5000);
+      polling = setInterval(pollFun, 1500);
     },
     beforeRouteEnter (to, from, next) {
       Vue.http.post('/order/queryById', {
@@ -149,14 +149,22 @@
     },
     methods: {
       timer: function (t) {
-        let time = t - new Date().getTime();
-        if (time <= 0) {
-          this.$data.countdown = false;
-        } else {
-          let min = time / (1000 * 60);
-          let ss = (time - min) / (1000 * 60);
-          this.$data.countdown = min + ':' + ss;
+        let polling2 = '';
+        const pollFun2 = ()=>{
+          let time = t - new Date().getTime();
+          if (time <= 0) {
+            this.$data.countdown = false;
+            clearInterval(polling2);
+          } else {
+            let min = parseInt(time / (1000 * 60));
+            let ss = parseInt((time - min*(1000*60)) / 1000);
+            if(ss<10){
+              ss = '0' + ss;
+            }
+            this.$data.countdown = min + ':' + ss;
+          }
         }
+        polling2 = setInterval(pollFun2, 1000);
       },
       newCard: function () {
         this.$router.push({path: '/pay/second-add', query: this.$data.peopleInfo});

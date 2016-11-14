@@ -117,7 +117,7 @@
       <div class="select">
         <div class="xx"></div>
         <ul>
-          <li @click="$shortSeat[0]=!$shortSeat[0]" v-bind:class="{active:$shortSeat[0]}"><span>无座</span></li>
+          <!--<li @click="$shortSeat[0]=!$shortSeat[0]" v-bind:class="{active:$shortSeat[0]}"><span>无座</span></li>-->
           <li @click="$shortSeat[1]=!$shortSeat[1]" v-bind:class="{active:$shortSeat[1]}"><span>硬座</span></li>
           <li @click="$shortSeat[2]=!$shortSeat[2]" v-bind:class="{active:$shortSeat[2]}"><span>软座</span></li>
           <li @click="$shortSeat[3]=!$shortSeat[3]" v-bind:class="{active:$shortSeat[3]}"><span>硬卧</span></li>
@@ -158,7 +158,7 @@
           grabTimeType: 1,
           firstStartTime: "",
           trainCodes: "请选择车次",
-          seatTypes: "0,1,2,3,4,6,O,M,P,9",
+          seatTypes: "1,2,3,4,6,O,M,P,9",
           buyTicketPackageId: 3,
           grabTicketPackageId: 4,
           phone: "",
@@ -253,7 +253,7 @@
         });
       },
       submit: function () {
-        sessionStorage.setItem('robOrder', JSON.stringify(this.$from));
+        sessionStorage.setItem('robOrder', JSON.stringify(this.$data.submitInfo));
         this.$router.push({path: '/ticket/rob-order',query:{appid:this.$data.submitInfo.appId,uid:this.$data.submitInfo.uid}})
       }
     },
@@ -283,12 +283,11 @@
         }
       },
       $from: function () {
-        this.$data.submitInfo.fromStationName = this.$store.state.station.scope.stationTHREE.station;
-        this.$data.submitInfo.fromStationCode = this.$store.state.station.scope.stationTHREE.code;
-        this.$data.submitInfo.toStationName = this.$store.state.station.scope.stationFOUR.station;
-        this.$data.submitInfo.toStationCode = this.$store.state.station.scope.stationFOUR.code;
-        this.$data.submitInfo.grabStartTime = this.$store.state.date.scope.dateTWO.code;
-        return this.$data.submitInfo;
+        return {
+          date: this.$store.state.date.scope.dateTWO.code,
+          from: this.$store.state.station.scope.stationTHREE.code,
+          to: this.$store.state.station.scope.stationFOUR.code
+        }
       },
       $shortSeat: function () {
         return this.$data.shortSeat;
@@ -300,11 +299,16 @@
         return this.$data.trains;
       },
       $submitInfo: function () {
+        this.$data.submitInfo.fromStationName = this.$store.state.station.scope.stationTHREE.station;
+        this.$data.submitInfo.fromStationCode = this.$store.state.station.scope.stationTHREE.code;
+        this.$data.submitInfo.toStationName = this.$store.state.station.scope.stationFOUR.station;
+        this.$data.submitInfo.toStationCode = this.$store.state.station.scope.stationFOUR.code;
+        this.$data.submitInfo.grabStartTime = this.$store.state.date.scope.dateTWO.code;
         let data = this.$data.submitInfo;
-        if (data.seatTypes == '0,1,2,3,4,6,O,M,P,9') {
+        if (data.seatTypes == '1,2,3,4,6,O,M,P,9') {
           data.seatTypes = '全部坐席';
         } else {
-          data.seatTypes = data.seatTypes.replace('0', '无座');
+          //data.seatTypes = data.seatTypes.replace('0', '无座');
           data.seatTypes = data.seatTypes.replace('1', '硬座');
           data.seatTypes = data.seatTypes.replace('2', '软座');
           data.seatTypes = data.seatTypes.replace('3', '硬卧');

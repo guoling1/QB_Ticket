@@ -43,6 +43,8 @@
     data () {
       return {
         submitInfo: {
+          appid: '',
+          uid: '',
           orderId: "", //订单编号，不是订单号，是金开门系统唯一id
           nonceStr: "", //随机字符串，每次请求都不一样，生成规则（yyyyMMddHHmmssSSS+5个随机数字）
           crdNo: "", //卡号
@@ -59,6 +61,8 @@
     beforeRouteEnter (to, from, next) {
       next(function (vm) {
         vm.$data.submitInfo.orderId = to.query.id;
+        vm.$data.submitInfo.appid = to.query.appid;
+        vm.$data.submitInfo.uid = to.query.uid;
         vm.$data.price = to.query.price;
       });
     },
@@ -73,7 +77,7 @@
       bin: function (event) {
         const val = event.target.value;
         this.$http.post('/bankCardBin/cardNoInfo', {cardNo: val}).then(function (res) {
-          if (res.$data.code == 1) {
+          if (res.data.code == 1) {
             this.$data.submitInfo.bankCode = res.data.data.shorthand;
           } else {
             console.log(res.data.message);
