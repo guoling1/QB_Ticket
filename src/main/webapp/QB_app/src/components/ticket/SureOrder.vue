@@ -241,15 +241,12 @@
         let storeDate = this.$store.state.contact.info;
         let data = [];
         this.$data.sureOrder.passengers = [];
-        let type = {
-          '成人': 1, '儿童': 2, '学生': 3, '伤残军人': 4
-        };
         for (let i in storeDate) {
           if (storeDate[i]) {
             data.push(storeDate[i]);
             this.$data.sureOrder.passengers.push({
               id: storeDate[i].id,
-              piaoType: type[storeDate[i].personType]
+              piaoType: storeDate[i].personType
             })
           }
         }

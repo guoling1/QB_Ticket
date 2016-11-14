@@ -585,6 +585,7 @@ public class TicketServiceImpl implements TicketService {
                 flow.setReturnmoney(obj.getString("returnmoney"));
                 flow.setSuccessTime(obj.getString("returntime"));
                 flow.setRemark("线上退票成功");
+                log.info("线上退票结果推送" + flow.getOrderFormDetailId() + "订单退票成功,退款中");
                 this.refundTicketFlowService.update(flow);
                 this.orderFormDetailService.updateStatusById(flow.getOrderFormDetailId(), EnumOrderFormDetailStatus.TICKET_RETURN_SUCCESS);
                 // 给用户退款, 是否有出票套餐, 创建退款单 , 先退保险 , 再退票款 , 抢票套餐不退
@@ -703,6 +704,7 @@ public class TicketServiceImpl implements TicketService {
                         //退票失败
                         JSONObject obj = (JSONObject) jsonArray.get(0);
                         final RefundTicketFlow flow = this.refundTicketFlowService.getByTicketNo(obj.getString("ticket_no"));
+                log.info("线上退票结果推送" + flow.getOrderFormDetailId() + "订单退票失败");
                         flow.setRemark("线上退票失败" + obj.getString("returnfailmsg"));
                         this.refundTicketFlowService.update(flow);
                         this.orderFormDetailService.updateStatusById(flow.getOrderFormDetailId(), EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
@@ -717,6 +719,7 @@ public class TicketServiceImpl implements TicketService {
                     Preconditions.checkState(orderFormDetailOptional.isPresent(), "出票订单不存在");
                     final OrderFormDetail orderFormDetail = orderFormDetailOptional.get();
                     //更新出票订单状态
+                    log.info("线下退票结果推送" + orderFormDetail.getId() + "订单退票成功, 退款中......");
                     this.orderFormDetailService.updateStatusById(orderFormDetail.getId(), EnumOrderFormDetailStatus.TICKET_RETURN_SUCCESS);
                     //给用户退款, 是否有出票套餐, 创建退款单 , 先退保险 , 再退票款 , 抢票套餐不退
                     final String paymentSn ;
@@ -950,6 +953,7 @@ public class TicketServiceImpl implements TicketService {
         chargeMoneyOrder.setStatus(EnumChargeMoneyOrderStatus.INIT.getId());
         chargeMoneyOrderService.init(chargeMoneyOrder);
         //放入消息队列 , 15分钟支付时间
+        log.info(grabTicketForm.getId() + "抢票单待支付15分钟,放入消息队列");
         JSONObject mqJo = new JSONObject();
         mqJo.put("grabTicketFormId",grabTicketForm.getId());
         MqProducer.sendMessage(mqJo, MqConfig.TICKET_CANCEL_EXPIRED_GRAB_ORDER, 1000*15*60);
@@ -1009,6 +1013,7 @@ public class TicketServiceImpl implements TicketService {
         Preconditions.checkArgument(grabTicketFormOptional.isPresent(), "抢票单还未创建");
         final GrabTicketForm grabTicketForm = grabTicketFormOptional.get();
         if(jsonParams.getBoolean("success") == true && jsonParams.getInt("code") == 100){
+            log.info("hy抢票回调通知" + grabTicketForm.getId() + "抢票单抢票成功");
             //抢票成功,创建小订单, 退差价, 买保险
             grabTicketForm.setRunTime(jsonParams.getString("runtime"));
             grabTicketForm.setOrderNumber(jsonParams.getString("ordernumber"));
@@ -1062,15 +1067,26 @@ public class TicketServiceImpl implements TicketService {
                 param.setResidueAmount(subtract.toString());
                 this.ticketSendMessageService.sendGrabTicketSuccessHaveResidueMessage(param);
                 //有差价,才退款
-                final RefundOrderFlow refundOrderFlow = new RefundOrderFlow();
-                refundOrderFlow.setOrderFormId(0);
-                refundOrderFlow.setGrabTicketFormId(grabTicketForm.getId());
-                refundOrderFlow.setPaymentSn(grabTicketForm.getPaymentSn());
-                refundOrderFlow.setOrderDate(DateFormatUtil.format(grabTicketForm.getCreateTime(), DateFormatUtil.yyyyMMdd));
-                refundOrderFlow.setRefundAmount(subtract);
-                refundOrderFlow.setOriginalAmount(grabTicketForm.getGrabTotalPrice());
-                refundOrderFlow.setRefundReason("抢票成功差价退款");
-                this.refundOrderFlowService.insert(refundOrderFlow);
+                final RefundOrderFlow refundOrderFlow = this.refundOrderFlowService.selectByGrabTicketFormId(grabTicketForm.getId()).get();
+                if (refundOrderFlow !=null){
+                    refundOrderFlow.setOrderFormId(0);
+                    refundOrderFlow.setGrabTicketFormId(grabTicketForm.getId());
+                    refundOrderFlow.setPaymentSn(grabTicketForm.getPaymentSn());
+                    refundOrderFlow.setOrderDate(DateFormatUtil.format(grabTicketForm.getCreateTime(), DateFormatUtil.yyyyMMdd));
+                    refundOrderFlow.setRefundAmount(subtract);
+                    refundOrderFlow.setOriginalAmount(grabTicketForm.getGrabTotalPrice());
+                    refundOrderFlow.setRefundReason("抢票成功差价退款");
+                    this.refundOrderFlowService.update(refundOrderFlow);
+                }else{
+                    refundOrderFlow.setOrderFormId(0);
+                    refundOrderFlow.setGrabTicketFormId(grabTicketForm.getId());
+                    refundOrderFlow.setPaymentSn(grabTicketForm.getPaymentSn());
+                    refundOrderFlow.setOrderDate(DateFormatUtil.format(grabTicketForm.getCreateTime(), DateFormatUtil.yyyyMMdd));
+                    refundOrderFlow.setRefundAmount(subtract);
+                    refundOrderFlow.setOriginalAmount(grabTicketForm.getGrabTotalPrice());
+                    refundOrderFlow.setRefundReason("抢票成功差价退款");
+                    this.refundOrderFlowService.insert(refundOrderFlow);
+                }
 
                 //请求退款接口 , 退款
                 final SingleRefundData data = new SingleRefundData();
@@ -1115,6 +1131,7 @@ public class TicketServiceImpl implements TicketService {
             this.policyOrderService.batchBuyGrabPolicy(grabTicketForm.getId());
 
         }else{
+            log.info("hy抢票回调通知" + grabTicketForm.getId() + "抢票单抢票失败,全额退款");
             //抢票时间到期,抢票失败 , 全额退款
             //TODO 更新抢票单状态
             this.grabTicketFormService.updateStatusById(EnumGrabTicketStatus.GRAB_FORM_FAIL, grabTicketForm.getId());
@@ -1132,15 +1149,26 @@ public class TicketServiceImpl implements TicketService {
         Preconditions.checkArgument(grabTicketFormOptional.isPresent(), "订单不存在");
         final GrabTicketForm grabTicketForm = grabTicketFormOptional.get();
 
-        final RefundOrderFlow refundOrderFlow = new RefundOrderFlow();
-        refundOrderFlow.setOrderFormId(0);
-        refundOrderFlow.setGrabTicketFormId(grabTicketForm.getId());
-        refundOrderFlow.setPaymentSn(grabTicketForm.getPaymentSn());
-        refundOrderFlow.setOrderDate(DateFormatUtil.format(grabTicketForm.getCreateTime(), DateFormatUtil.yyyyMMdd));
-        refundOrderFlow.setRefundAmount(grabTicketForm.getGrabTotalPrice());
-        refundOrderFlow.setOriginalAmount(grabTicketForm.getGrabTotalPrice());
-        refundOrderFlow.setRefundReason("抢票失败,全额退款");
-        this.refundOrderFlowService.insert(refundOrderFlow);
+        final RefundOrderFlow refundOrderFlow = this.refundOrderFlowService.selectByGrabTicketFormId(grabTicketFormId).get();
+        if (refundOrderFlow !=null){
+            refundOrderFlow.setOrderFormId(0);
+            refundOrderFlow.setGrabTicketFormId(grabTicketForm.getId());
+            refundOrderFlow.setPaymentSn(grabTicketForm.getPaymentSn());
+            refundOrderFlow.setOrderDate(DateFormatUtil.format(grabTicketForm.getCreateTime(), DateFormatUtil.yyyyMMdd));
+            refundOrderFlow.setRefundAmount(grabTicketForm.getGrabTotalPrice());
+            refundOrderFlow.setOriginalAmount(grabTicketForm.getGrabTotalPrice());
+            refundOrderFlow.setRefundReason("抢票失败,全额退款");
+            this.refundOrderFlowService.update(refundOrderFlow);
+        }else{
+            refundOrderFlow.setOrderFormId(0);
+            refundOrderFlow.setGrabTicketFormId(grabTicketForm.getId());
+            refundOrderFlow.setPaymentSn(grabTicketForm.getPaymentSn());
+            refundOrderFlow.setOrderDate(DateFormatUtil.format(grabTicketForm.getCreateTime(), DateFormatUtil.yyyyMMdd));
+            refundOrderFlow.setRefundAmount(grabTicketForm.getGrabTotalPrice());
+            refundOrderFlow.setOriginalAmount(grabTicketForm.getGrabTotalPrice());
+            refundOrderFlow.setRefundReason("抢票失败,全额退款");
+            this.refundOrderFlowService.insert(refundOrderFlow);
+        }
         //抢票失败, 发送退款短信
         final SendGrabTicketFailParam param = new SendGrabTicketFailParam();
         param.setUid(grabTicketForm.getUid());
@@ -1168,7 +1196,6 @@ public class TicketServiceImpl implements TicketService {
             mqJo.put("refundAmount", data.getRefundAmount());
             mqJo.put("sendCount", 0);
             MqProducer.sendMessage(mqJo, MqConfig.GRAB_TICKET_REFUND_ALL, 2000);
-            //
             // refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.REFUND_SUCCESS.getId());
             //this.refundOrderFlowService.update(refundOrderFlow);
         }else{
@@ -1198,45 +1225,67 @@ public class TicketServiceImpl implements TicketService {
         jsonObject.put("qorderid", grabTicketForm.getOrderId());
         jsonObject.put("partnerid", HySdkConstans.GRAB_PARTNER_ID);
         jsonObject.put("reqtime", DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss));
-        jsonObject.put("sign", MD5Util.MD5(HySdkConstans.GRAB_PARTNER_ID +
-                DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss) + MD5Util.MD5(HySdkConstans.GRAB_SIGN_KEY)));
+        jsonObject.put("sign", MD5Util.MD5(HySdkConstans.GRAB_PARTNER_ID + DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss) + MD5Util.MD5(HySdkConstans.GRAB_SIGN_KEY)));
+        log.info(grabTicketFormId + "抢票单请求hy取消订单,请求中........");
         final JSONObject jsonResponse = this.hySdkService.cancelGrabTickets(jsonObject);
-
         if(jsonResponse.getBoolean("isSuccess")){
+            log.info(grabTicketFormId + "抢票单请求hy取消订单,请求成功,取消成功........");
             //抢票单取消成功, 退款
-            final ReturnMoneyOrder returnMoneyOrder = new ReturnMoneyOrder();
-            returnMoneyOrder.setOrderFormDetailId(0);
-            returnMoneyOrder.setOrderFormSn(grabTicketForm.getPaymentSn());
-            returnMoneyOrder.setRemark("取消抢票退款");
-            returnMoneyOrder.setOrgDate(grabTicketForm.getCreateTime());
-            returnMoneyOrder.setReturnTotalMoney(grabTicketForm.getTotalPrice());
-            returnMoneyOrder.setOrgMoney(grabTicketForm.getTotalPrice());
-            returnMoneyOrder.setReturnTicketMoney(grabTicketForm.getGrabTicketTotalPrice());
-            final BigDecimal buyPackage = new BigDecimal(EnumBuyTicketPackageType.of(grabTicketForm.getBuyTicketPackage()).getPrice()).multiply(new BigDecimal(grabTicketForm.getTicketNum()));
-            final BigDecimal grabPackage = new BigDecimal(EnumGrabTicketPackageType.of(grabTicketForm.getGrabTicketPackage()).getPrice()).multiply(new BigDecimal(grabTicketForm.getTicketNum()));
-            returnMoneyOrder.setReturnBuyTicketPackage(buyPackage);
-            returnMoneyOrder.setReturnGrabTicketPackage(grabPackage);
-            returnMoneyOrder.setStatus(EnumReturnMoneyOrderStatus.INIT.getId());
-            this.returnMoneyOrderService.init(returnMoneyOrder);
-
+            final RefundOrderFlow refundOrderFlow = this.refundOrderFlowService.selectByGrabTicketFormId(grabTicketFormId).get();
+            if (refundOrderFlow !=null){
+               refundOrderFlow.setOrderFormId(0);
+               refundOrderFlow.setGrabTicketFormId(grabTicketForm.getId());
+               refundOrderFlow.setPaymentSn(grabTicketForm.getPaymentSn());
+               refundOrderFlow.setOrderDate(DateFormatUtil.format(grabTicketForm.getCreateTime(),DateFormatUtil.yyyyMMdd));
+               refundOrderFlow.setRefundAmount(grabTicketForm.getGrabTotalPrice());
+               refundOrderFlow.setOriginalAmount(grabTicketForm.getGrabTotalPrice());
+               refundOrderFlow.setRefundReason("取消抢票退款");
+               refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.INIT.getId());
+               this.refundOrderFlowService.update(refundOrderFlow);
+            }else{
+               refundOrderFlow.setOrderFormId(0);
+               refundOrderFlow.setGrabTicketFormId(grabTicketForm.getId());
+               refundOrderFlow.setPaymentSn(grabTicketForm.getPaymentSn());
+               refundOrderFlow.setOrderDate(DateFormatUtil.format(grabTicketForm.getCreateTime(),DateFormatUtil.yyyyMMdd));
+               refundOrderFlow.setRefundAmount(grabTicketForm.getGrabTotalPrice());
+               refundOrderFlow.setOriginalAmount(grabTicketForm.getGrabTotalPrice());
+               refundOrderFlow.setRefundReason("取消抢票退款");
+               refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.INIT.getId());
+               this.refundOrderFlowService.insert(refundOrderFlow);
+           }
             //请求退款接口 , 退款
             final SingleRefundData data = new SingleRefundData();
-            data.setOrgSn(returnMoneyOrder.getOrderFormSn());
-            data.setOrdDate(DateFormatUtil.format(returnMoneyOrder.getOrgDate(), DateFormatUtil.yyyyMMdd));
-            data.setRefundAmount(returnMoneyOrder.getReturnTotalMoney().toString());
-            data.setOrgAmount(returnMoneyOrder.getOrgMoney().toString());
-            data.setRefundReason(returnMoneyOrder.getRemark());
+            data.setOrgSn(refundOrderFlow.getPaymentSn());
+            data.setOrdDate(refundOrderFlow.getOrderDate());
+            data.setRefundAmount(refundOrderFlow.getRefundAmount().toString());
+            data.setOrgAmount(refundOrderFlow.getOriginalAmount().toString());
+            data.setRefundReason(refundOrderFlow.getRefundReason());
+            log.info(grabTicketFormId + "抢票单请求全额退款");
             final Map<String, Object> map = this.authenService.singlRefund(data);
-            //判断退款是否成功 ,
+            //判断退款受理是否成功 ,
             if ((boolean) map.get("retCode") == true){
-                //成功 , 修改退款单状态,
-                this.returnMoneyOrderService.updateStatusById(returnMoneyOrder.getId(), EnumReturnMoneyOrderStatus.RETURN_MONEY_SUCCESS);
+                //成功 ,
+                //TODO 取消抢票单退款
+                //消息
+                JSONObject mqJo = new JSONObject();
+                mqJo.put("grabTicketFormId", grabTicketForm.getId());
+                mqJo.put("reqSn", grabTicketForm.getPaymentSn());
+                mqJo.put("refundAmount", data.getRefundAmount());
+                mqJo.put("sendCount", 0);
+                MqProducer.sendMessage(mqJo, MqConfig.CANCEL_GRAB_TICKET_REFUND_ALL, 2000);
+                grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_REFUND_ING.getId());
+                this.grabTicketFormService.update(grabTicketForm);
+                //this.returnMoneyOrderService.updateStatusById(returnMoneyOrder.getId(), EnumReturnMoneyOrderStatus.RETURN_MONEY_SUCCESS);
             }else{
                 //失败.
-                this.returnMoneyOrderService.updateStatusById(returnMoneyOrder.getId(), EnumReturnMoneyOrderStatus.RETURN_MONEY_FAIL);
+                grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_REFUND_FAIL.getId());
+                this.grabTicketFormService.update(grabTicketForm);
+                refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.REFUND_FAIL.getId());
+                this.refundOrderFlowService.update(refundOrderFlow);
             }
             return Pair.of(true, "取消抢票单成功");
         }else{
+            log.info(grabTicketFormId + "抢票单请求hy取消订单,请求成功,取消失败........");
             //失败 , 记录
             grabTicketForm.setRemark(jsonResponse.getString("msg"));
             this.grabTicketFormService.update(grabTicketForm);
@@ -1445,6 +1494,34 @@ public class TicketServiceImpl implements TicketService {
             //失败
             refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.REFUND_FAIL.getId());
             this.refundOrderFlowService.update(refundOrderFlow);
+        }
+    }
+
+
+    /**
+     *
+     * @param grabTicketFormId
+     * @param
+     * @param
+     */
+    @Override
+    public void handleCancelGrabRefundResult(long grabTicketFormId, boolean flag, String string) {
+        final GrabTicketForm grabTicketForm = this.grabTicketFormService.selectByIdWithLock(grabTicketFormId).get();
+        final Optional<RefundOrderFlow> optional = this.refundOrderFlowService.selectByGrabTicketFormId(grabTicketFormId);
+        Preconditions.checkState(optional.isPresent(), "订单退款流水不存在");
+        final RefundOrderFlow refundOrderFlow = optional.get();
+        if (flag){
+            //成功
+            grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_REFUND_SUCCESS.getId());
+            refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.REFUND_SUCCESS.getId());
+            this.refundOrderFlowService.update(refundOrderFlow);
+            this.grabTicketFormService.update(grabTicketForm);
+        }else{
+            //失败
+            grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_REFUND_FAIL.getId());
+            refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.REFUND_FAIL.getId());
+            this.refundOrderFlowService.update(refundOrderFlow);
+            this.grabTicketFormService.update(grabTicketForm);
         }
     }
 

@@ -7,11 +7,7 @@
     <div class="form">
       <div class="group">
         <div>姓名</div>
-        <input type="text" placeholder="银行卡开户姓名" v-model="submitInfo.capCrdNm">
-      </div>
-      <div class="group">
-        <div>身份证</div>
-        <input type="text" placeholder="请输入身份证号" v-model="submitInfo.idNo">
+        <div class="no-margin">{{submitInfo.capCrdNm}}</div>
       </div>
       <div class="group">
         <div>银行卡</div>
@@ -20,7 +16,8 @@
       <div class="group">
         <div>手机号</div>
         <input type="text" placeholder="开户银行预留手机号" v-model="submitInfo.phoneNo">
-        <button @click="send">获取验证码</button>
+        <button v-show="sendCtrl" @click="send">获取验证码</button>
+        <button v-show="!sendCtrl">{{timer}}</button>
       </div>
       <div class="group">
         <div>验证码</div>
@@ -42,7 +39,11 @@
     name: 'menu',
     data () {
       return {
+        payAddress: ['/authen/toPay', '/authen/toPayGrab'],
+        payType: '',
         submitInfo: {
+          appid: '',
+          uid: '',
           orderId: "", //订单编号，不是订单号，是金开门系统唯一id
           nonceStr: "", //随机字符串，每次请求都不一样，生成规则（yyyyMMddHHmmssSSS+5个随机数字）
           crdNo: "", //卡号
@@ -51,15 +52,23 @@
           phoneNo: "", //手机号
           isAgree: 0, //是否同意服务协议
           vCode: "", //验证码
-          bankCode: "" //卡bin
+          bankCode: "", //卡bin
+          sn: ''
         },
-        price: 0.0
+        price: 0.0,
+        sendCtrl: true,
+        timer: 60
       }
     },
     beforeRouteEnter (to, from, next) {
       next(function (vm) {
-        vm.$data.submitInfo.orderId = to.query.id;
+        vm.$data.submitInfo.appid = to.query.appid;
+        vm.$data.submitInfo.uid = to.query.uid;
+        vm.$data.submitInfo.orderId = to.query.orderid;
+        vm.$data.submitInfo.capCrdNm = to.query.name;
+        vm.$data.submitInfo.idNo = to.query.card;
         vm.$data.price = to.query.price;
+        vm.$data.payType = to.query.payType;
       });
     },
     methods: {
@@ -73,7 +82,7 @@
       bin: function (event) {
         const val = event.target.value;
         this.$http.post('/bankCardBin/cardNoInfo', {cardNo: val}).then(function (res) {
-          if (res.$data.code == 1) {
+          if (res.data.code == 1) {
             this.$data.submitInfo.bankCode = res.data.data.shorthand;
           } else {
             console.log(res.data.message);
@@ -83,7 +92,31 @@
         })
       },
       send: function () {
-        console.log('发送验证码');
+        this.$http.post('/authen/getCode', {
+          phone: this.$data.submitInfo.phoneNo,//手机号
+          amount: this.$data.price, //支付金额
+          uid: this.$data.submitInfo.uid, //三方商户用户id
+          appid: this.$data.submitInfo.appid //三方商户唯一标示appid
+        }).then(function (res) {
+          if (res.data.code == 1) {
+            this.$data.sendCtrl = false;
+            this.$data.submitInfo.sn = res.data.data;
+            let polling = '';
+            const pollFun = ()=>{
+              this.$data.timer--;
+              if(this.$data.timer<0){
+                this.$data.timer = 60;
+                this.$data.sendCtrl = true;
+                clearInterval(polling);
+              }
+            }
+            polling = setInterval(pollFun, 1000);
+          } else {
+            console.log(res.data.message);
+          }
+        }, function (err) {
+          console.log(err);
+        })
       },
       submit: function () {
         // 生成随机字符串
@@ -96,8 +129,7 @@
           ss = data.getSeconds() + '';
         let random = parseInt(Math.random() * 89999 + 10000) + '';
         this.$data.submitInfo.nonceStr = year + month + day + hour + min + ss + random;
-        console.log(this.$data.submitInfo);
-        this.$http.post('/authen/toPay', this.$data.submitInfo).then(function (res) {
+        this.$http.post(this.$data.payAddress[this.$data.payType], this.$data.submitInfo).then(function (res) {
           if (res.data.code == 1) {
             console.log('跳转出票页');
           } else {
@@ -162,6 +194,9 @@
         width: 50px;
         font-size: 15px;
         color: #000;
+        &.no-margin{
+          margin-left: 0;
+        }
       }
       input {
         width: 200px;

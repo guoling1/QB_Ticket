@@ -1,6 +1,7 @@
 package com.jkm.dao;
 
 import com.jkm.entity.GrabTicketForm;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -47,7 +48,7 @@ public interface GrabTicketFromDao {
      * @param status
      * @param id
      */
-    void updateStatusById(int status, long id);
+    void updateStatusById(@Param("status") int status, @Param("id") long id);
 
     /**
      * 根据uid查询

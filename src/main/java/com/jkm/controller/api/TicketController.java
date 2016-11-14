@@ -142,6 +142,7 @@ public class TicketController extends BaseController{
         }catch(final Throwable throwable){
             result.setCode(-1);
             result.setMessage("退票失败");
+            logger.error(req.getOrderFormDetailId() + "订单退票失败,失败原因:" + throwable.getMessage());
         }
         return result;
     }
@@ -154,7 +155,7 @@ public class TicketController extends BaseController{
     @RequestMapping(value = "/grab", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntityBase<ResponseGrabTicket> grabTicket(@RequestBody final RequestGrabTicket requset) throws Exception {
-        //this.ticketService.requestGrabImpl(14);
+        this.ticketService.requestGrabImpl(37);
         requset.setUid(super.getUid(requset.getAppId(), requset.getUid()));
         Preconditions.checkState(ValidateUtils.isMobile(requset.getPhone()));
         final ResponseEntityBase<ResponseGrabTicket> result = new ResponseEntityBase<>();
@@ -167,7 +168,7 @@ public class TicketController extends BaseController{
         }catch(final Throwable throwable){
             logger.error("下抢票单异常 异常信息:" + throwable.getMessage());
             result.setCode(-1);
-            result.setMessage("失败");
+            result.setMessage("抢票订单受理失败");
         }
         return result;
     }
@@ -180,21 +181,22 @@ public class TicketController extends BaseController{
      */
     @RequestMapping(value = "/cancel/grab", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntityBase<Object> cancelGrabTicket(final RequestCancelGrabTicket req) {
+    public ResponseEntityBase<Object> cancelGrabTicket(@RequestBody final RequestCancelGrabTicket req) {
         final ResponseEntityBase<Object> result = new ResponseEntityBase<>();
 
         try{
             Pair<Boolean,String> pair = this.ticketService.cancelGrabTicket(req.getGrabTicketFormId());
             if(pair.getLeft()){
                 result.setCode(1);
-                result.setMessage(pair.getRight());
+                result.setMessage("订单取消成功");
             }else{
-                result.setCode(-2);
+                result.setCode(-1);
                 result.setMessage(pair.getRight());
             }
         }catch(final Throwable throwable){
             result.setCode(-1);
             result.setMessage("取消订单失败");
+            logger.error(req.getGrabTicketFormId() + "抢票单取消订单失败,失败原因:"+ throwable.getMessage());
         }
         return result;
     }
@@ -207,9 +209,8 @@ public class TicketController extends BaseController{
      */
     @RequestMapping(value = "/cancel/grabForm", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntityBase<Object> cancelGrabForm(final RequestCancelGrabTicket req) {
+    public ResponseEntityBase<Object> cancelGrabForm(@RequestBody final RequestCancelGrabTicket req) {
         final ResponseEntityBase<Object> result = new ResponseEntityBase<>();
-
         try{
             final Optional<GrabTicketForm> grabTicketFormOptional = this.grabTicketFormService.selectByIdWithLock(req.getGrabTicketFormId());
             Preconditions.checkState(grabTicketFormOptional.isPresent(), "抢票订单不存在");
@@ -229,6 +230,7 @@ public class TicketController extends BaseController{
         }catch(final Throwable throwable){
             result.setCode(-1);
             result.setMessage("取消订单失败");
+            logger.error(req.getGrabTicketFormId() + "抢票单取消订单失败,失败原因:"+ throwable.getMessage());
         }
         return result;
     }
