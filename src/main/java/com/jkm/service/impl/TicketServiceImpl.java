@@ -301,7 +301,7 @@ public class TicketServiceImpl implements TicketService {
         } else {
             log.info("订单[" + orderForm.getId() + "]--确认订单受理失败");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUEST_FAIL.getId());
-            orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_CONFIRM_TICKET_REQUEST_FAIL.getValue());
+            orderForm.setRemark(jsonObject.getString("msg"));
             this.orderFormService.update(orderForm);
             this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getValue(),
                     EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getId(), orderForm.getId());
@@ -360,7 +360,7 @@ public class TicketServiceImpl implements TicketService {
         } else {
             log.info("确认订单回调函数--出票失败");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_TICKET_FAIL.getId());
-            orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_TICKET_FAIL.getValue());
+            orderForm.setRemark(jsonObject.getString("code"));
             this.orderFormService.update(orderForm);
             this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getValue(),
                     EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getId(), orderForm.getId());
