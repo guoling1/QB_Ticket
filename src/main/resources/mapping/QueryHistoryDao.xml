@@ -1,6 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.dao.QueryHistoryDao">
+    <select id="queryHistory" resultType="com.jkm.entity.QueryHistory" parameterType="java.lang.String">
+SELECT DISTINCT from_station,from_station_name,to_station,to_station_name FROM  tb_query_history WHERE uid = #{uid}
+    </select>
 
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" >
+        INSERT INTO tb_query_history
+        (
+          uid,
+          from_station,
+          to_station,
+          from_station_name,
+          to_station_name
+        )
+        VALUES
+         (
+         #{uid},
+         #{from_station},
+         #{to_station},
+         #{from_station_name},
+         #{to_station_name}
+         )
+    </insert>
+
+    <update id="update">
+        UPDATE tb_query_history
+        SET
+          uid = #{uid},
+          from_station = #{from_station},
+          to_station = #{to_station},
+          from_station_name = #{from_station_name},
+          to_station_name = #{to_station_name},
+          update_time = #{update_time}
+          WHERE id = #{id}
+    </update>
 
 </mapper>
