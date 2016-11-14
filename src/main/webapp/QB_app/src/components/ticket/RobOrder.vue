@@ -170,6 +170,7 @@
             data.push(storeDate[i]);
             this.$data.submitInfo.grabPassengers.push({
               id: storeDate[i].id,
+              name: storeDate[i].name,
               piaoType: type[storeDate[i].personType]
             })
           }

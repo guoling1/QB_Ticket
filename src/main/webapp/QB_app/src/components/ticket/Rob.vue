@@ -259,7 +259,7 @@
     },
     watch: {
       $dataT: function () {
-        this.$http.post('/queryTicketPrice/query', {
+        this.$http.post('/grabTicketQuery/query', {
           from_station: this.$store.state.station.scope.stationTHREE.code, //出发站简码
           to_station: this.$store.state.station.scope.stationFOUR.code, //到达站简码
           train_date: this.$store.state.date.scope.dateTWO.code //乘车日期（yyyy-MM-dd）
