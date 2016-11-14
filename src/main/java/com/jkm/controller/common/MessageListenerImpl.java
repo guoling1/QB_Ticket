@@ -49,6 +49,8 @@ public class MessageListenerImpl implements MessageListener {
     private OrderFormService orderFormService;
     @Override
     public Action consume(Message message, ConsumeContext consumeContext) {
+        System.out.println(new Date() + " Receive message, Topic is:" +
+                message.getTopic() + ", MsgId is:" + message.getMsgID());
         try {
             if(MqConfig.FAST_PAY_QUERY.equals(message.getTag())){//流水单支付结果查询
                 String body = new String(message.getBody(),"UTF-8");

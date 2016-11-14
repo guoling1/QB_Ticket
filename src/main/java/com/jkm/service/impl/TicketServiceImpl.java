@@ -897,7 +897,7 @@ public class TicketServiceImpl implements TicketService {
     @Transactional
     public Pair<Boolean, String> grabTicket(final RequestGrabTicket req) {
 
-        final JSONObject jsonObject = this.queryTicketPriceService.queryTicket(HySdkConstans.QUERY_PARTNER_ID, "train_query", req.getFromStationCode(), req.getToStationCode(), req.getGrabStartTime(), "ADULT");
+        final JSONObject jsonObject = this.queryTicketPriceService.queryTicket(req.getUid(),HySdkConstans.QUERY_PARTNER_ID, "train_query", req.getFromStationCode(), req.getToStationCode(),req.getFromStationName(), req.getToStationName(), req.getGrabStartTime(), "ADULT");
         //获取列车信息
         final JSONArray jsonArray = jsonObject.getJSONArray("data");
         //获取车次信息

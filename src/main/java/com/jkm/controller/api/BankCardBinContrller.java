@@ -27,7 +27,7 @@ public class BankCardBinContrller extends BaseController {
     @RequestMapping(value = "/cardNoInfo")
     public ResponseEntityBase cardNoInfo() throws IOException {
 
-        JSONObject responseJson = new JSONObject();
+//        JSONObject responseJson = new JSONObject();
         JSONObject requestJson = null;
 
         requestJson = super.getRequestJsonParams();
