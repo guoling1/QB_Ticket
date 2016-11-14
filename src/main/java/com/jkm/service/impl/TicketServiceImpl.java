@@ -730,8 +730,8 @@ public class TicketServiceImpl implements TicketService {
                         //订购退票
                         final OrderForm orderForm = this.orderFormService.selectByOrderId(jsonObject.getString("apiorderid")).get();
                         final RefundTicketFlow flow = new RefundTicketFlow();
-                        flow.setReqToken(obj.getString("reqtoken"));
-                        flow.setReturnType(obj.getInt("returntype"));
+                        flow.setReqToken(jsonObject.getString("reqtoken"));
+                        flow.setReturnType(jsonObject.getInt("returntype"));
                         flow.setOrderFormId(orderForm.getId());
                         flow.setGrabTicketFormId(0);
                         flow.setOrderFormDetailId(orderFormDetail.getId());
@@ -756,8 +756,8 @@ public class TicketServiceImpl implements TicketService {
                         //抢票单退票
                         final GrabTicketForm grabTicketForm = this.grabTicketFormService.selectByOrderIdWithLock(jsonObject.getString("apiorderid")).get();
                         final RefundTicketFlow flow = new RefundTicketFlow();
-                        flow.setReqToken(obj.getString("reqtoken"));
-                        flow.setReturnType(obj.getInt("returntype"));
+                        flow.setReqToken(jsonObject.getString("reqtoken"));
+                        flow.setReturnType(jsonObject.getInt("returntype"));
                         flow.setOrderFormId(0);
                         flow.setGrabTicketFormId(grabTicketForm.getId());
                         flow.setOrderFormDetailId(orderFormDetail.getId());
@@ -1046,6 +1046,7 @@ public class TicketServiceImpl implements TicketService {
                 orderFormDetail.setCheci(grabTicketForm.getCheci());
                 orderFormDetail.setPiaoType(obj.getString("piaotype"));
                 orderFormDetail.setCxin(obj.getString("cxin"));
+                orderFormDetail.setStatus(EnumOrderFormDetailStatus.TICKET_BUY_SUCCESS.getId());
                 if(obj.getString("piaotype").equals(EnumTrainTicketType.ADULT.getId())){
                     grabTicketForm.setPrice(new BigDecimal(obj.getString("price")));
                 }
