@@ -20,7 +20,8 @@
       <div class="group">
         <div>手机号</div>
         <input type="text" placeholder="开户银行预留手机号" v-model="submitInfo.phoneNo">
-        <button @click="send">获取验证码</button>
+        <button v-show="sendCtrl" @click="send">获取验证码</button>
+        <button v-show="!sendCtrl">{{timer}}</button>
       </div>
       <div class="group">
         <div>验证码</div>
@@ -55,7 +56,9 @@
           vCode: "", //验证码
           bankCode: "" //卡bin
         },
-        price: 0.0
+        price: 0.0,
+        sendCtrl: true,
+        timer: 60
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -88,6 +91,30 @@
       },
       send: function () {
         console.log('发送验证码');
+        this.$http.post('/authen/getCode', {
+          phone: this.$data.submitInfo.phoneNo,//手机号
+          amount: this.$data.price, //支付金额
+          uid: this.$data.submitInfo.uid, //三方商户用户id
+          appid: this.$data.submitInfo.appid //三方商户唯一标示appid
+        }).then(function (res) {
+          if (res.data.code == 1) {
+            this.$data.sendCtrl = false;
+            let polling = '';
+            const pollFun = ()=>{
+              this.$data.timer--;
+              if(this.$data.timer<0){
+                this.$data.timer = 60;
+                this.$data.sendCtrl = true;
+                clearInterval(polling);
+              }
+            }
+            polling = setInterval(pollFun, 1000);
+          } else {
+            console.log(res.data.message);
+          }
+        }, function (err) {
+          console.log(err);
+        })
       },
       submit: function () {
         // 生成随机字符串
