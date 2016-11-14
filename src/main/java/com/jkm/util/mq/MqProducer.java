@@ -1,6 +1,7 @@
 package com.jkm.util.mq;
 
 import com.aliyun.openservices.ons.api.Message;
+import com.aliyun.openservices.ons.api.SendResult;
 import com.aliyun.openservices.ons.api.bean.ProducerBean;
 import com.jkm.util.BeanUtils;
 import net.sf.json.JSONObject;
@@ -14,7 +15,8 @@ public class MqProducer {
         try {
             Message message = new Message(MqConfig.TOPIC, mqType, requestData.toString().getBytes("UTF8"));
             message.setStartDeliverTime(System.currentTimeMillis() + delayTime);//毫秒
-            producer.send(message);
+            SendResult result = producer.send(message);
+            System.out.println("msgId:"+result.getMessageId());
         } catch (UnsupportedEncodingException e) {
             System.out.print("消息发送失败"+e.getMessage());
         }

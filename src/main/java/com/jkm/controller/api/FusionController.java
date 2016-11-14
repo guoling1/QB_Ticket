@@ -12,8 +12,11 @@ import com.jkm.entity.fusion.SingleRefundData;
 import com.jkm.enums.notifier.EnumVerificationCodeType;
 import com.jkm.service.AuthenService;
 import com.jkm.service.notifier.SmsAuthService;
+import com.jkm.util.DateFormatUtil;
 import com.jkm.util.SnGenerator;
 import com.jkm.util.ValidationUtil;
+import com.jkm.util.mq.MqConfig;
+import com.jkm.util.mq.MqProducer;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -24,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -259,6 +263,29 @@ public class FusionController extends BaseController {
             queryRefundData.setQueryDate(jo.getString("querySn").substring(0,8));
             Map<String, Object> result = authenService.queryRefund(queryRefundData);
             logger.info("结果："+result);
+        }catch(Exception e){
+            responseJo.put("result",false);
+            responseJo.put("message",e.getMessage());
+        }
+        return responseJo;
+    }
+    /**
+     * 验证退款查询
+     *
+     * @param requestData
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getTest3", method = RequestMethod.POST)
+    public JSONObject getTest3() {
+        JSONObject responseJo = new JSONObject();
+        try{
+            JSONObject mqJo = new JSONObject();
+            mqJo.put("reqSn","20161111132457210572");
+            mqJo.put("dt", "20161111");
+            mqJo.put("sendCount",0);
+            mqJo.put("orderId",165);
+            MqProducer.sendMessage(mqJo, MqConfig.FAST_PAY_QUERY,2000);
         }catch(Exception e){
             responseJo.put("result",false);
             responseJo.put("message",e.getMessage());
