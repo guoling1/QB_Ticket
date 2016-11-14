@@ -270,7 +270,6 @@
           this.$data.trains = res.data.data;
         }, function (err) {
           console.log(err);
-          next(false);
         })
       }
     },

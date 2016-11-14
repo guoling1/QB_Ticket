@@ -137,7 +137,6 @@
           aLi[index].className = "select"
         }
       },
-
       show:function(idx){
         var mask=document.getElementById("mask");
         if(isNaN(idx)){
