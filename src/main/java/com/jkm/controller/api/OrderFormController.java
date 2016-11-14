@@ -123,9 +123,9 @@ public class OrderFormController extends BaseController {
         });
         results.setData(orderFormList.toArray());
         return results;
-    }*/
+    }
 
-    /*private ResponseQueryGrabOrder getGrabResponse(GrabTicketForm grabTicketForm, List<OrderFormDetail> orderFormDetails) {
+    private ResponseQueryGrabOrder getGrabResponse(GrabTicketForm grabTicketForm, List<OrderFormDetail> orderFormDetails) {
         final ResponseQueryOrderForm responseQueryOrderForm = new ResponseQueryOrderForm();
         final ArrayList<ResponseQueryOrderForm.passenger> passengers = new ArrayList<>();
         responseQueryOrderForm.setPassengers(passengers);
@@ -166,8 +166,8 @@ public class OrderFormController extends BaseController {
             }
         }
         return responseQueryOrderForm;
-    }*/
-
+    }
+*/
     private ResponseQueryOrderForm getResponse(final OrderForm orderForm, final List<OrderFormDetail> orderFormDetails) {
         final ResponseQueryOrderForm responseQueryOrderForm = new ResponseQueryOrderForm();
         final ArrayList<ResponseQueryOrderForm.passenger> passengers = new ArrayList<>();

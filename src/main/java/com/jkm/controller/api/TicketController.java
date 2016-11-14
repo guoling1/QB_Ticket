@@ -16,6 +16,7 @@ import com.jkm.service.TrainTripsQueryService;
 import com.jkm.util.ValidateUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import org.apache.http.client.fluent.Response;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -162,7 +163,10 @@ public class TicketController extends BaseController{
             Pair<Boolean,String> pair = this.ticketService.grabTicket(requset);
             if(pair.getLeft()){
                 result.setCode(1);
-                result.setMessage(pair.getRight());
+                result.setMessage("抢票单受理成功");
+                final ResponseGrabTicket responseGrabTicket = new ResponseGrabTicket();
+                responseGrabTicket.setGrabTicketFormId(Long.parseLong(pair.getRight()));
+                result.setData(responseGrabTicket);
             }else{
                 result.setCode(-2);
                 result.setMessage(pair.getRight());
