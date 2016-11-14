@@ -36,8 +36,7 @@
       }
     },
     beforeRouteEnter (to, from, next) {
-        //Vue.http.post('/order/queryMyOrder',{"uid": "123456"})
-      Vue.http.get('/static/test.json')
+      Vue.http.post('/order/queryMyOrder',{"uid": "123456"})
         .then(function (response) {
           next(vm=> {
             if(response.data.code==1){
@@ -48,12 +47,6 @@
         .catch(function (response) {
           next(false)
         })
-    },
-    methods:{
-
-    },
-    computed:{
-
     }
 }
 </script>
