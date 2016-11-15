@@ -25,7 +25,7 @@ public enum EnumOrderFormDetailStatus {
     TICKET_BUY_FAIL(3, "出票失败"),
 
     /**
-     * 退票请求中
+     * 退票中
      */
     TICKET_RETURN_REQUESTING(4, "退票中"),
 

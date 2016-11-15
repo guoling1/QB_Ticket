@@ -443,6 +443,7 @@ public class TicketServiceImpl implements TicketService {
             final Date startTime = DateFormatUtil.parse(orderForm.getStartDate()+" "+orderForm.getStartTime()+ ":00",
                     DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
             if((applyTime.getTime() + 2*60*60*1000 + 1*60*1000) >= startTime.getTime()){
+                this.orderFormDetailService.updateStatusById(orderFormDetailId,EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
                 return Pair.of(false , "距离发车时间不到2小时,不能退票");
             }
             //可退票, 创建退票流水订单
@@ -483,12 +484,42 @@ public class TicketServiceImpl implements TicketService {
                 final HyReturnTicketResponse response = this.hySdkService.returnTicket(request, jsonArray);
                 if(response.getSuccess().equals("true")){
                     log.info("订单号:"+ orderFormDetailId + "请求退票, 退票请求已接收......");
-                    this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_REQUEST_SUCCESS);
-                    return Pair.of(true , "退票受理成功");
+                    this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_REQUESTING);
+                    return Pair.of(true , "退票中,请等待");
                 }else{
-                    log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求失败......");
-                    //this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
-                    return Pair.of(false, "退票受理失败");
+                    switch (response.getCode()){
+                        case 116:
+                            flow.setStatus(EnumRefundTicketFlowStatus.REFUND_TICKET_FAIL.getId());
+                            this.refundTicketFlowService.update(flow);
+                            this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
+                            log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求失败......");
+                            return Pair.of(false, "退票失败");
+                        case 117:
+                            flow.setStatus(EnumRefundTicketFlowStatus.INIT.getId());
+                            this.refundTicketFlowService.update(flow);
+                            this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_REQUESTING);
+                            log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求成功......");
+                            return Pair.of(true, "退票中,请等待");
+                        case 118:
+                            flow.setStatus(EnumRefundTicketFlowStatus.REFUND_TICKET_FAIL.getId());
+                            this.refundTicketFlowService.update(flow);
+                            this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
+                            log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求失败......");
+                            return Pair.of(false, "退票失败");
+                        case 701:
+                            flow.setStatus(EnumRefundTicketFlowStatus.REFUND_TICKET_FAIL.getId());
+                            this.refundTicketFlowService.update(flow);
+                            this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
+                            log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求失败......");
+                            return Pair.of(false, "退票失败");
+                        default:
+                            flow.setStatus(EnumRefundTicketFlowStatus.REFUND_TICKET_FAIL.getId());
+                            this.refundTicketFlowService.update(flow);
+                            this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
+                            log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求失败......");
+                            return Pair.of(false, "退票失败");
+                    }
+
                 }
             }catch (Throwable e){
                 log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求异常......");
@@ -505,6 +536,7 @@ public class TicketServiceImpl implements TicketService {
             final Date startTime = DateFormatUtil.parse(orderForm.getStartDate()+" "+orderForm.getStartTime()+ ":00",
                     DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
             if((applyTime.getTime() + 2*60*60*1000 + 1*60*1000) >= startTime.getTime()){
+                this.orderFormDetailService.updateStatusById(orderFormDetailId,EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
                 return Pair.of(false , "距离发车时间不到2小时,不能退票");
             }
             //可退票, 创建退票流水订单
@@ -545,18 +577,43 @@ public class TicketServiceImpl implements TicketService {
                     flow.setReqToken(response.getReqToken());
                     this.refundTicketFlowService.update(flow);
                     log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求成功......");
-                    this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_REQUEST_SUCCESS);
-                    return Pair.of(true , "退票请求已接收");
+                    this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_REQUESTING);
+                    return Pair.of(true , "退票中,请等待");
                 }else{
-                    flow.setStatus(EnumRefundTicketFlowStatus.REFUND_TICKET_FAIL.getId());
-                    this.refundTicketFlowService.update(flow);
-                    log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求失败......");
-                    //this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
-                    return Pair.of(false, "退票请求失败");
+                    switch (response.getCode()){
+                        case 116:
+                            flow.setStatus(EnumRefundTicketFlowStatus.REFUND_TICKET_FAIL.getId());
+                            this.refundTicketFlowService.update(flow);
+                            this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
+                            log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求失败......");
+                            return Pair.of(false, "退票失败");
+                        case 117:
+                            flow.setStatus(EnumRefundTicketFlowStatus.INIT.getId());
+                            this.refundTicketFlowService.update(flow);
+                            this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_REQUESTING);
+                            log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求成功......");
+                            return Pair.of(true, "退票中,请等待");
+                        case 118:
+                            flow.setStatus(EnumRefundTicketFlowStatus.REFUND_TICKET_FAIL.getId());
+                            this.refundTicketFlowService.update(flow);
+                            this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
+                            log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求失败......");
+                            return Pair.of(false, "退票失败");
+                        case 701:
+                            flow.setStatus(EnumRefundTicketFlowStatus.REFUND_TICKET_FAIL.getId());
+                            this.refundTicketFlowService.update(flow);
+                            this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
+                            log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求失败......");
+                            return Pair.of(false, "退票失败");
+                        default:
+                            flow.setStatus(EnumRefundTicketFlowStatus.REFUND_TICKET_FAIL.getId());
+                            this.refundTicketFlowService.update(flow);
+                            this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
+                            log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求失败......");
+                            return Pair.of(false, "退票失败");
+                    }
                 }
             }catch (Throwable e){
-                flow.setStatus(EnumRefundTicketFlowStatus.REFUND_TICKET_FAIL.getId());
-                this.refundTicketFlowService.update(flow);
                 log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求异常......");
                 //this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
                 return Pair.of(false, e.getMessage());
@@ -580,7 +637,7 @@ public class TicketServiceImpl implements TicketService {
             if (jsonObject.getBoolean("returnstate")) {
                 //退票成功
                 JSONObject obj = (JSONObject) jsonArray.get(0);
-                final RefundTicketFlow flow = this.refundTicketFlowService.getByReqToken(obj.getString("reqtoken"));
+                final RefundTicketFlow flow = this.refundTicketFlowService.getByReqToken(jsonObject.getString("reqtoken"));
                 flow.setReturnType(1);
                 flow.setReturnmoney(obj.getString("returnmoney"));
                 flow.setSuccessTime(obj.getString("returntime"));
@@ -590,6 +647,9 @@ public class TicketServiceImpl implements TicketService {
                 this.orderFormDetailService.updateStatusById(flow.getOrderFormDetailId(), EnumOrderFormDetailStatus.TICKET_RETURN_SUCCESS);
                 // 给用户退款, 是否有出票套餐, 创建退款单 , 先退保险 , 再退票款 , 抢票套餐不退
                 final OrderFormDetail orderFormDetail = this.orderFormDetailService.selectById(flow.getOrderFormDetailId()).get();
+                if(orderFormDetail.getStatus() == EnumOrderFormDetailStatus.TICKET_RETURN_SUCCESS.getId()){
+                    return;
+                }
                 final String paymentSn ;
                 final int buyTicketPackageId ;
                 final BigDecimal totalPrice;
@@ -612,7 +672,7 @@ public class TicketServiceImpl implements TicketService {
                     final GrabTicketForm orderForm = this.grabTicketFormService.selectById(flow.getGrabTicketFormId()).get();
                     paymentSn = orderForm.getPaymentSn();
                     buyTicketPackageId = orderForm.getBuyTicketPackage();
-                    totalPrice = orderForm.getTotalPrice();
+                    totalPrice = orderForm.getGrabTotalPrice();
                     createTime = orderForm.getCreateTime();
                     //如果退票成功, 判断大订单是否全部退票
                     final List<OrderFormDetail> list = this.orderFormDetailService.selectAllTicketsNoReFundGrab(orderForm.getId(), EnumOrderFormDetailStatus.TICKET_RETURN_SUCCESS);
@@ -666,7 +726,7 @@ public class TicketServiceImpl implements TicketService {
                     //请求退款接口 , 退款
                     final SingleRefundData data = new SingleRefundData();
                     data.setOrgSn(returnMoneyOrder.getOrderFormSn());
-                    data.setOrdDate(DateFormatUtil.format(returnMoneyOrder.getOrgDate(), DateFormatUtil.yyyyMMdd));
+                    data.setOrgDate(DateFormatUtil.format(returnMoneyOrder.getOrgDate(), DateFormatUtil.yyyyMMdd));
                     data.setRefundAmount(returnMoneyOrder.getReturnTotalMoney().toString());
                     data.setOrgAmount(returnMoneyOrder.getOrgMoney().toString());
                     data.setRefundReason(returnMoneyOrder.getRemark());
@@ -711,6 +771,9 @@ public class TicketServiceImpl implements TicketService {
                     final Optional<OrderFormDetail> orderFormDetailOptional = this.orderFormDetailService.selectByTicketNo(obj.getString("ticket_no"));
                     Preconditions.checkState(orderFormDetailOptional.isPresent(), "出票订单不存在");
                     final OrderFormDetail orderFormDetail = orderFormDetailOptional.get();
+                    if(orderFormDetail.getStatus() == EnumOrderFormDetailStatus.TICKET_RETURN_SUCCESS.getId()){
+                        return;
+                    }
                     //更新出票订单状态
                     log.info("线下退票结果推送" + orderFormDetail.getId() + "订单退票成功, 退款中......");
                     this.orderFormDetailService.updateStatusById(orderFormDetail.getId(), EnumOrderFormDetailStatus.TICKET_RETURN_SUCCESS);
@@ -775,7 +838,7 @@ public class TicketServiceImpl implements TicketService {
                     ReturnMoneyOrder returnMoneyOrder = new ReturnMoneyOrder();
                     returnMoneyOrder.setOrderFormDetailId(orderFormDetail.getId());
                     returnMoneyOrder.setOrderFormSn(paymentSn);
-                    returnMoneyOrder.setRemark("线上退票退款");
+                    returnMoneyOrder.setRemark("线下退票退款");
                     //先判断是否有出票套餐,有则退保险 , 无则不退
                     if (buyTicketPackageId != EnumBuyTicketPackageType.TICKET_PACKAGE_FIRST.getId()){
                         final PolicyOrder policyOrder = this.policyOrderService.getByOrderFormDetailId(orderFormDetail.getId());
@@ -817,7 +880,7 @@ public class TicketServiceImpl implements TicketService {
                     //请求退款接口 , 退款
                     final SingleRefundData data = new SingleRefundData();
                     data.setOrgSn(returnMoneyOrder.getOrderFormSn());
-                    data.setOrdDate(DateFormatUtil.format(returnMoneyOrder.getOrgDate(), DateFormatUtil.yyyyMMdd));
+                    data.setOrgDate(DateFormatUtil.format(returnMoneyOrder.getOrgDate(), DateFormatUtil.yyyyMMdd));
                     data.setRefundAmount(returnMoneyOrder.getReturnTotalMoney().toString());
                     data.setOrgAmount(returnMoneyOrder.getOrgMoney().toString());
                     data.setRefundReason(returnMoneyOrder.getRemark());
@@ -1079,7 +1142,7 @@ public class TicketServiceImpl implements TicketService {
                 //请求退款接口 , 退款
                 final SingleRefundData data = new SingleRefundData();
                 data.setOrgSn(refundOrderFlow.getPaymentSn());
-                data.setOrdDate(refundOrderFlow.getOrderDate());
+                data.setOrgDate(refundOrderFlow.getOrderDate());
                 data.setRefundAmount(refundOrderFlow.getRefundAmount().toString());
                 data.setOrgAmount(refundOrderFlow.getOriginalAmount().toString());
                 data.setRefundReason(refundOrderFlow.getRefundReason());
@@ -1168,7 +1231,7 @@ public class TicketServiceImpl implements TicketService {
         //请求退款接口 , 退款
         final SingleRefundData data = new SingleRefundData();
         data.setOrgSn(refundOrderFlow.getPaymentSn());
-        data.setOrdDate(refundOrderFlow.getOrderDate());
+        data.setOrgDate(refundOrderFlow.getOrderDate());
         data.setRefundAmount(refundOrderFlow.getRefundAmount().toString());
         data.setOrgAmount(refundOrderFlow.getOriginalAmount().toString());
         data.setRefundReason(refundOrderFlow.getRefundReason());
@@ -1244,7 +1307,7 @@ public class TicketServiceImpl implements TicketService {
             //请求退款接口 , 退款
             final SingleRefundData data = new SingleRefundData();
             data.setOrgSn(refundOrderFlow.getPaymentSn());
-            data.setOrdDate(refundOrderFlow.getOrderDate());
+            data.setOrgDate(refundOrderFlow.getOrderDate());
             data.setRefundAmount(refundOrderFlow.getRefundAmount().toString());
             data.setOrgAmount(refundOrderFlow.getOriginalAmount().toString());
             data.setRefundReason(refundOrderFlow.getRefundReason());

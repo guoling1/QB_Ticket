@@ -54,7 +54,7 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("立即支付(首次)失败");
-            logger.info(e.getMessage());
+            logger.info("错误信息"+e.getStackTrace());
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -86,7 +86,7 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("立即支付(多次)失败");
-            logger.info(e.getMessage());
+            logger.info("错误信息"+e.getStackTrace());
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -119,7 +119,7 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("抢票单立即支付(首次)失败");
-            logger.info(e.getMessage());
+            logger.info("错误信息"+e.getStackTrace());
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -151,7 +151,7 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("立即支付(多次)异常");
-            logger.info(e.getMessage());
+            logger.info("错误信息"+e.getStackTrace());
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -185,7 +185,7 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("获取验证码异常");
-            logger.info(e.getMessage());
+            logger.info("错误信息"+e.getStackTrace());
             responseEntityBase.setMessage("获取验证码异常");
             responseEntityBase.setCode(500);
         }
@@ -260,7 +260,7 @@ public class FusionController extends BaseController {
             Map<String, Object> result = authenService.queryRefund(queryRefundData);
             logger.info("结果："+result);
         }catch(Exception e){
-            logger.info(e.getMessage());
+            logger.info("错误信息"+e.getStackTrace());
             responseJo.put("result",false);
             responseJo.put("message",e.getMessage());
         }
@@ -285,7 +285,7 @@ public class FusionController extends BaseController {
             mqJo.put("orderId",165);
             MqProducer.sendMessage(mqJo, MqConfig.FAST_PAY_QUERY,2000);
         }catch(Exception e){
-            logger.info(e.getMessage());
+            logger.info("错误信息"+e.getStackTrace());
             responseJo.put("result",false);
             responseJo.put("message",e.getMessage());
         }

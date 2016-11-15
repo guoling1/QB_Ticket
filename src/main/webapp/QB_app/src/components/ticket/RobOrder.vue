@@ -202,7 +202,6 @@
         }else{
           this.$data.show=!this.$data.show
         }
-
       },
       sev:function(){
         var addPerson={

@@ -143,7 +143,7 @@ public class TicketController extends BaseController{
             }
         }catch(final Throwable throwable){
             result.setCode(-1);
-            result.setMessage("退票受理失败");
+            result.setMessage("退票失败");
             logger.error(req.getOrderFormDetailId() + "订单退票失败,失败原因:" + throwable.getMessage());
         }
         return result;
@@ -164,12 +164,12 @@ public class TicketController extends BaseController{
             logger.info("用户uid=" + requset.getUid() + "下了一个抢票单");
             ResponseGrabTicket responseGrabTicket = this.ticketService.grabTicket(requset);
                 result.setCode(1);
-                result.setMessage("抢票单受理成功");
+                result.setMessage("订单受理成功");
                 result.setData(responseGrabTicket);
         }catch(final Throwable throwable){
             logger.error("下抢票单异常 异常信息:" + throwable.getMessage());
             result.setCode(-1);
-            result.setMessage("抢票订单受理失败");
+            result.setMessage("订单受理失败");
         }
         return result;
     }
@@ -196,7 +196,7 @@ public class TicketController extends BaseController{
             }
         }catch(final Throwable throwable){
             result.setCode(-1);
-            result.setMessage("取消订单失败");
+            result.setMessage("订单取消失败");
             logger.error(req.getGrabTicketFormId() + "抢票单取消订单失败,失败原因:"+ throwable.getMessage());
         }
         return result;
@@ -224,13 +224,13 @@ public class TicketController extends BaseController{
                 return result;
             }else{
                 result.setCode(-1);
-                result.setMessage("取消订单失败");
+                result.setMessage("订单取消失败");
                 return result;
             }
 
         }catch(final Throwable throwable){
             result.setCode(-1);
-            result.setMessage("取消订单失败");
+            result.setMessage("订单取消失败");
             logger.error(req.getGrabTicketFormId() + "抢票单取消订单失败,失败原因:"+ throwable.getMessage());
         }
         return result;
