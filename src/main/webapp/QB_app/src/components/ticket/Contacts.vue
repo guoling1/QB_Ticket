@@ -267,7 +267,6 @@
   padding: 0 15px;
   background: #fff;
   width: 100%;
-  z-index: 100;
 }
 .banner{
   height: 45px;

@@ -39,12 +39,19 @@
             <span class="info">{{passenger.personType}}票</span>
           </div>
         </div>
+        <div class="group no-border" v-for="(child,index) in childs">
+          <div class="list" @click="minus(index,$event)"></div>
+          <div class="write no-prompt">
+            <span class="name">{{child.name}}</span>
+            <span class="info">{{child.personType}}票</span>
+          </div>
+        </div>
       </div>
       <div class="space no-padding">
         <div class="handle">
           <div class="btn" @click="contact">添加/编辑乘客</div>
           <div class="line"></div>
-          <div class="btn">添加儿童</div>
+          <div class="btn" @click="addChild">添加儿童</div>
         </div>
       </div>
       <div class="space">
@@ -114,6 +121,25 @@
       </div>
     </div>
     <contacts></contacts>
+    <!-- 添加儿童 -->
+    <div class="content" v-if="show">
+      <ul>
+        <li>
+          <label for="name">乘客姓名</label>
+          <input type="text" name="name" id='name' value="">
+        </li>
+        <li>
+          <label for="sex">乘客性别</label>
+          <label style="margin-left:10px;color:#999"><input type="radio" name="sex" value="0" checked="checked">男</label>
+          <label style="margin-left:20px;color:#999"><input type="radio" name="sex" value="1">女</label>
+        </li>
+        <li class="typeLi">
+          <label for="birthday">出生日期</label>
+          <input type="text" name="birthday" id='birthday' placeholder="出生年月日，如：20160101">
+        </li>
+      </ul>
+      <div class="sure" @click="sev">保存</div>
+    </div>
   </div>
 </template>
 
@@ -168,7 +194,9 @@
         },
         detail: false,
         pack: false,
-        skip: false
+        skip: false,
+        show:false,
+        childs:[]
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -201,6 +229,37 @@
           path: '/ticket/login',
           query: {appid: this.$data.sureOrder.appId, uid: this.$data.sureOrder.uid}
         });
+      },
+      addChild:function(){
+        if(this.$data.sureOrder.passengers.length==0){
+          console.log("请先添加成人");
+        }else{
+          this.$data.show=!this.$data.show
+        }
+      },
+      sev:function(){
+        var addPerson={
+          uid:1,
+          appid:1,
+          name:document.querySelector('#name').value,
+          sex:document.querySelector(':checked').value,
+          birthday:document.querySelector('#birthday').value,
+          personType:2
+        }
+        Vue.http.post('/contactInfo/add',JSON.stringify(addPerson))
+          .then((res)=>{
+            if(res.data.code==1){
+              this.$data.show=!this.$data.show
+              addPerson.id=res.data.data;
+              if(addPerson.personType==2){
+                addPerson.personType="儿童"
+              }
+              this.$data.childs.push(addPerson);
+          }
+        })
+        .catch(function(err){
+          console.log(err);
+        })
       },
       detailShow: function () {
         this.$data.detail = !this.$data.detail;
@@ -694,4 +753,48 @@
       }
     }
   }
+  .content{
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    position: absolute;;
+    top: 64px;
+    left: 0;
+    ul{
+      li{
+        width: 100%;
+        height: 48px;
+        line-height: 48px;
+        font-size: 15px;
+        text-align: left;
+        padding:0 15px;
+        background: #fff;
+        border-bottom: 1px solid #ebebeb;
+
+        &.typeLi{
+          background: url("../../assets/prompt-arrow.png") no-repeat 96%;
+          background-size: 8px 11px;
+        }
+
+        input{
+          border: none;
+          color:#999;
+          &:focus{
+            outline: none;
+          }
+        }
+      }
+    }
+    .sure{
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+      font-size: 15px;
+      background: #4ab9f1;
+      color: #fff;
+    }
+    }
 </style>
