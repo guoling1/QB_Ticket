@@ -244,7 +244,6 @@
           function ticket(arr) {
             let ary = [];
             for (let i = 0; i < arr.length; i++) {
-              console.log(ary);
               var reg = /_num/g;
               for (var j in arr[i]) {
                 if (reg.test(j) == true && arr[i][j] != "0" && arr[i][j] != "--"&& arr[i][j] != "*") {
