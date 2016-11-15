@@ -3,6 +3,7 @@ package com.jkm.service.impl;
 import com.jkm.dao.UserInfoDao;
 import com.jkm.entity.UserInfo;
 import com.jkm.service.UserInfoService;
+import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,5 +69,42 @@ public class UserInfoServiceImpl implements UserInfoService {
     public int updatePhoneByUid(UserInfo record) {
         int rown = userInfoDao.updatePhoneByUid(record);
         return rown;
+    }
+
+    @Override
+    public JSONObject bindAuthenUserInfo(UserInfo record) {
+        JSONObject jo = new JSONObject();
+        UserInfo userInfo = userInfoDao.selectByUid(record.getUid());
+        if(userInfo==null){
+            UserInfo u = new UserInfo();
+            u.setAppId(record.getAppId());
+            u.setUid(record.getUid());
+            u.setPhone(record.getPhone());
+            u.setAccount(record.getAccount());
+            u.setPwd(record.getPwd());
+            u.setCardId(record.getCardId());
+            u.setCardNo(record.getCardNo());
+            u.setRealName(record.getRealName());
+            u.setStatus(0);
+            userInfoDao.insert(u);
+            jo.put("result",true);
+        }else{
+            if(userInfo.getCardId()!=null&&userInfo.getRealName()!=null
+                    &&!"".equals(userInfo.getCardId())&&!"".equals(userInfo.getRealName())){
+                if(record.getCardId().equals(userInfo.getCardId())&&record.getRealName().equals(userInfo.getRealName())){
+                    jo.put("result",true);
+                }else{
+                    jo.put("result",false);
+                    jo.put("message","请绑定自己银行卡");
+                }
+            }else{
+                userInfo.setRealName(record.getRealName());
+                userInfo.setCardNo(record.getCardNo());
+                userInfo.setCardId(record.getCardId());
+                userInfoDao.updateByPrimaryKeySelective(userInfo);
+                jo.put("result",true);
+            }
+        }
+        return jo;
     }
 }
