@@ -699,7 +699,7 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("result",true);
 			jo.put("data",ret.get("retData"));
 			jo.put("message","支付成功");
-			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),ret.get("reqSn").toString(),true);
+			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),authenData.getReqSn(),true);
 		}else if("6666".equals(ret.get("retCode").toString())){
 			BindCard bindCard = new BindCard();
 			bindCard.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
@@ -735,7 +735,7 @@ public class AuthenServiceImpl implements AuthenService {
 		}else{//支付失败
 			jo.put("result",false);
 			jo.put("message",ret.get("retMsg"));
-			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),ret.get("reqSn").toString(),false);
+			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),authenData.getReqSn(),false);
 		}
 		return jo;
 	}
@@ -821,7 +821,7 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("result",true);
 			jo.put("data",ret.get("retData"));
 			jo.put("message","支付成功");
-			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),ret.get("reqSn").toString(),true);
+			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),authenData.getReqSn(),true);
 		}else if("6666".equals(ret.get("retCode").toString())){
 			jo.put("result",true);
 			jo.put("data",ret.get("retData"));
@@ -847,7 +847,7 @@ public class AuthenServiceImpl implements AuthenService {
 		}else{//支付失败
 			jo.put("result",false);
 			jo.put("message",ret.get("retMsg"));
-			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),ret.get("reqSn").toString(),false);
+			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),authenData.getReqSn(),false);
 		}
 		return jo;
 	}
@@ -968,7 +968,7 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("result",true);
 			jo.put("data",ret.get("retData"));
 			jo.put("message","支付成功");
-			ticketService.handleGrabCustomerPayMsg(requestData.getLong("orderId"),ret.get("reqSn").toString(),true);
+			ticketService.handleGrabCustomerPayMsg(requestData.getLong("orderId"),authenData.getReqSn(),true);
 		}else if("6666".equals(ret.get("retCode").toString())){
 			BindCard bindCard = new BindCard();
 			bindCard.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
@@ -1004,7 +1004,7 @@ public class AuthenServiceImpl implements AuthenService {
 		}else{//支付失败
 			jo.put("result",false);
 			jo.put("message",ret.get("retMsg"));
-			ticketService.handleGrabCustomerPayMsg(requestData.getLong("orderId"),ret.get("reqSn").toString(),false);
+			ticketService.handleGrabCustomerPayMsg(requestData.getLong("orderId"),authenData.getReqSn(),false);
 		}
 		return jo;
 	}
@@ -1094,7 +1094,7 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("result",true);
 			jo.put("data",ret.get("retData"));
 			jo.put("message","支付成功");
-			ticketService.handleGrabCustomerPayMsg(requestData.getLong("orderId"),ret.get("reqSn").toString(),true);
+			ticketService.handleGrabCustomerPayMsg(requestData.getLong("orderId"),authenData.getReqSn(),true);
 		}else if("6666".equals(ret.get("retCode").toString())){
 			jo.put("result",true);
 			jo.put("data",ret.get("retData"));
@@ -1120,7 +1120,7 @@ public class AuthenServiceImpl implements AuthenService {
 		}else{//支付失败
 			jo.put("result",false);
 			jo.put("message",ret.get("retMsg"));
-			ticketService.handleGrabCustomerPayMsg(requestData.getLong("orderId"),ret.get("reqSn").toString(),false);
+			ticketService.handleGrabCustomerPayMsg(requestData.getLong("orderId"),authenData.getReqSn(),false);
 		}
 		return jo;
 	}
