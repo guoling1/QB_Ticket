@@ -3,6 +3,7 @@ package com.jkm.service.impl;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.jkm.controller.api.ContactInfoController;
 import com.jkm.dao.SendMessageCountRecordDao;
 import com.jkm.entity.*;
 import com.jkm.entity.fusion.*;
@@ -27,8 +28,8 @@ import com.jkm.util.mq.MqProducer;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +43,7 @@ import java.util.Map;
  */
 @Service
 public class AuthenServiceImpl implements AuthenService {
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private static Logger logger = Logger.getLogger(AuthenServiceImpl.class);
 	@Autowired
 	private SignatureService signatureService;
 	@Autowired
