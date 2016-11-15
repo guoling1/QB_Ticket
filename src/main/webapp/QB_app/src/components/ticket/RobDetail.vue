@@ -67,7 +67,7 @@
       Vue.http.post('/order/grab/queryById', {
         appid: to.query.appid,
         uid: to.query.uid,
-        orderFormId: to.query.orderid
+        grabTicketFormId: to.query.orderid
       }).then(function (res) {
         console.log(res);
         if (res.data.code == 1) {

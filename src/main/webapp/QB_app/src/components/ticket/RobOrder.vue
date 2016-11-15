@@ -35,7 +35,14 @@
           <div class="write no-prompt">
             <span class="name">{{passenger.name}}</span>
             {{passenger.identy}}
-            <span class="info">{{passenger.personType}}票</span>
+            <span class="info">{{passenger.type}}票</span>
+          </div>
+        </div>
+        <div class="group no-border" v-for="child in childs">
+          <div class="list"></div>
+          <div class="write no-prompt">
+            <span class="name">{{child.name}}</span>
+            <span class="info">{{child.personType}}票</span>
           </div>
         </div>
       </div>
@@ -43,9 +50,7 @@
         <div class="handle">
           <div class="btn" @click="contact">添加/编辑乘客</div>
           <div class="line"></div>
-          <!-- <router-link to="/ticket/add-child"> -->
-            <div class="btn" @click="addChild">添加儿童</div>
-          <!-- </router-link> -->
+          <div class="btn" @click="addChild">添加儿童</div>
         </div>
       </div>
       <div class="space">
@@ -111,11 +116,31 @@
       </div>
     </div>
     <contacts></contacts>
+    <!-- 添加儿童 -->
+    <div class="content" v-if="show">
+      <ul>
+        <li>
+          <label for="name">乘客姓名</label>
+          <input type="text" name="name" id='name' value="">
+        </li>
+        <li>
+          <label for="sex">乘客性别</label>
+          <label style="margin-left:10px;color:#999"><input type="radio" name="sex" value="0" checked="checked">男</label>
+          <label style="margin-left:20px;color:#999"><input type="radio" name="sex" value="1">女</label>
+        </li>
+        <li class="typeLi">
+          <label for="birthday">出生日期</label>
+          <input type="text" name="birthday" id='birthday' placeholder="出生年月日，如：20160101">
+        </li>
+      </ul>
+      <div class="sure" @click="sev">保存</div>
+    </div>
   </div>
 </template>
 
 <script lang="babel">
   import Contacts from './Contacts.vue'
+  import Vue from 'vue'
 
   export default {
     name: 'menu',
@@ -155,7 +180,9 @@
           index: 0,
           checkCode: '',
           sn: ''
-        }
+        },
+        show:false,
+        childs:[]
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -165,7 +192,37 @@
     },
     methods: {
       addChild:function(){
-        this.$router.push("/ticket/add-child")
+        if(this.$data.submitInfo.grabPassengers.length==0){
+          console.log("请先添加成人")
+        }else{
+          this.$data.show=!this.$data.show
+        }
+
+      },
+      sev:function(){
+        var addPerson={
+          uid:1,
+          appid:1,
+          name:document.querySelector('#name').value,
+          sex:document.querySelector(':checked').value,
+          birthday:document.querySelector('#birthday').value,
+          personType:2
+        }
+        Vue.http.post('/contactInfo/add',JSON.stringify(addPerson))
+          .then((res)=>{
+            console.log(res);
+            if(res.data.code==1){
+              this.$data.show=!this.$data.show
+              addPerson.id=res.data.data;
+              if(addPerson.personType==2){
+                addPerson.personType="儿童"
+              }
+              this.$data.childs.push(addPerson);
+          }
+        })
+        .catch(function(err){
+          console.log(err);
+        })
       },
       login: function () {
         this.$router.push({
@@ -268,6 +325,7 @@
         });
       },
       submit: function () {
+        this.$data.submitInfo.grabPassengers.concat(this.$data.child)
         let data = this.$data.submitInfo;
         if (data.seatTypes == '1,3,4,O,M,9') {
           data.seatTypes = '全部坐席';
@@ -329,10 +387,11 @@
       },
       passengers: function () {
         let storeDate = this.$store.state.contact.info;
+        console.log(storeDate);
         let data = [];
         this.$data.submitInfo.grabPassengers = [];
         let type = {
-          '成人': 1, '儿童': 2, '学生': 3, '伤残军人': 4
+          1:'成人',2: '儿童',3: '学生',4: '伤残军人'
         };
         for (let i in storeDate) {
           if (storeDate[i]) {
@@ -677,4 +736,50 @@
       }
     }
   }
+
+  .content{
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    position: absolute;;
+    top: 64px;
+    left: 0;
+    ul{
+      li{
+        width: 100%;
+        height: 48px;
+        line-height: 48px;
+        font-size: 15px;
+        text-align: left;
+        padding:0 15px;
+        background: #fff;
+        border-bottom: 1px solid #ebebeb;
+
+        &.typeLi{
+          background: url("../../assets/prompt-arrow.png") no-repeat 96%;
+          background-size: 8px 11px;
+        }
+
+        input{
+          border: none;
+          color:#999;
+          &:focus{
+            outline: none;
+          }
+        }
+      }
+    }
+    .sure{
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+      font-size: 15px;
+      background: #4ab9f1;
+      color: #fff;
+    }
+    }
+
 </style>

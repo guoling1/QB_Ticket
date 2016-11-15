@@ -5,7 +5,7 @@
 
 	<!-- 通用查询结果列-->
 	<sql id="Base_Column_List">
-		 id,	uid,	app_id,	account, pwd, phone,  status,	create_time,	update_time
+		 id,	uid,	app_id,	account,card_no,card_id,real_name, pwd, phone,  status,	create_time,	update_time
 	</sql>
 
 	<!-- 查询（根据Uid查询） -->
@@ -33,9 +33,9 @@
 	<!-- 添加 -->
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.entity.UserInfo">
 		 INSERT INTO tb_user_info
- 		(uid,app_id,phone,account,pwd,status)
+ 		(uid,app_id,phone,card_no,card_id,real_name,account,pwd,status)
 		 VALUES 
- 		(#{uid},#{appId},#{phone},#{account},#{pwd},#{status})
+ 		(#{uid},#{appId},#{phone},#{cardNo},#{cardId},#{realName},#{account},#{pwd},#{status})
 	</insert>
 
 	<!-- 添加 （匹配有值的字段）-->
@@ -53,6 +53,15 @@
 			</if>
 			 <if test="phone != null">
 				 phone,
+			 </if>
+			 <if test="cardId != null">
+				 cardId,
+			 </if>
+			 <if test="cardNo != null">
+				 cardNo,
+			 </if>
+			 <if test="realName != null">
+				 realName,
 			 </if>
 			<if test="pwd != null">
 				 pwd,
@@ -74,6 +83,15 @@
 			</if>
 			 <if test="phone!=null">
 				 #{phone},
+			 </if>
+			 <if test="cardId!=null">
+				 #{card_id},
+			 </if>
+			 <if test="cardNo!=null">
+				 #{card_no},
+			 </if>
+			 <if test="realName!=null">
+				 #{real_name},
 			 </if>
 			<if test="pwd!=null">
 				 #{pwd},
@@ -97,6 +115,15 @@
 			<if test="account != null">
 				 account = #{account},
 			</if>
+			 <if test="cardId != null">
+				 card_id = #{cardId},
+			 </if>
+			 <if test="cardNo != null">
+				 card_no = #{cardNo},
+			 </if>
+			 <if test="realName != null">
+				 real_name = #{realName},
+			 </if>
 			 <if test="phone != null">
 				 phone = #{phone},
 			 </if>
@@ -118,6 +145,9 @@
 			 phone = #{phone},
 			 app_id = #{appId},
 			 account = #{account},
+			 card_id = #{cardId},
+			 card_no = #{cardNo},
+			 real_name = #{realName},
 			 pwd = #{pwd},
 			 status = #{status}
 		 WHERE id = #{id}

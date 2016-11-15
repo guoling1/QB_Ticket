@@ -176,7 +176,7 @@
                 this.$data.massages.splice(index,1);
                 document.querySelector("#mask").style.display="none";
               }
-            })
+          })
       },
       sev:function (idx) {
           var addPerson={

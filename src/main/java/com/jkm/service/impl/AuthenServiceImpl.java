@@ -67,6 +67,8 @@ public class AuthenServiceImpl implements AuthenService {
 	private SendMessageCountRecordDao sendMessageCountRecordDao;
 	@Autowired
 	private BankCardBinService bankCardBinService;
+	@Autowired
+	private UserInfoService userInfoService;
 	/**
 	 * 快捷支付
 	 * @param requestData
@@ -598,7 +600,7 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkNotNull(requestData.get("nonceStr"),"随机参数有误");
 		Preconditions.checkNotNull(requestData.get("sn"),"短信序列码不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("orderId")+""), "订单信息不能为空");
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("crdNo")), "卡号不能不能为空");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("crdNo")), "卡号不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("capCrdNm")), "开户姓名不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("idNo")), "身份证号不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("phoneNo")), "手机号不能为空");
@@ -656,6 +658,20 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("message","该订单已支付完毕");
 			return jo;
 		}
+		//实名绑卡
+		UserInfo u = new UserInfo();
+		u.setAppId(requestData.getString("appid"));
+		u.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+		u.setPhone(requestData.getString("phoneNo"));
+		u.setCardId(requestData.getString("idNo"));
+		u.setCardNo(requestData.getString("crdNo"));
+		u.setRealName(requestData.getString("capCrdNm"));
+		JSONObject userInfo = userInfoService.bindAuthenUserInfo(u);
+		if(!userInfo.getBoolean("result")){
+			jo.put("result",false);
+			jo.put("message",userInfo.getString("message"));
+			return jo;
+		}
 		BigDecimal amount = orderFormOptional.get().getTotalPrice();
 		AuthenData authenData = new AuthenData();
 		authenData.setAmount(amount+"");
@@ -683,6 +699,7 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("result",true);
 			jo.put("data",ret.get("retData"));
 			jo.put("message","支付成功");
+			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),ret.get("reqSn").toString(),true);
 		}else if("6666".equals(ret.get("retCode").toString())){
 			BindCard bindCard = new BindCard();
 			bindCard.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
@@ -703,7 +720,6 @@ public class AuthenServiceImpl implements AuthenService {
 			mqJo.put("sendCount",0);
 			mqJo.put("orderId",requestData.getLong("orderId"));
 			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_QUERY,2000);
-			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),ret.get("reqSn").toString(),true);
 		}else if("5000".equals(ret.get("retCode").toString())){
 			jo.put("result",false);
 			jo.put("message","付款接口连接失败,等待10s重新链接");
@@ -765,11 +781,27 @@ public class AuthenServiceImpl implements AuthenService {
 		sendMessageCountRecord.setSn(requestData.getLong("sn"));
 		sendMessageCountRecordDao.insertSelective(sendMessageCountRecord);
 
+
 		Optional<OrderForm>  orderFormOptional = orderFormService.selectById(requestData.getLong("orderId"));
 		Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + requestData.getLong("orderId") + "]不存在");
+
 		if(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_SUCCESS.getId()==orderFormOptional.get().getStatus()){
 			jo.put("result",false);
 			jo.put("message","该订单已支付完毕");
+			return jo;
+		}
+		//实名绑卡
+		UserInfo u = new UserInfo();
+		u.setAppId(requestData.getString("appid"));
+		u.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+		u.setPhone(bindCard.getPhone());
+		u.setCardId(bindCard.getCardId());
+		u.setCardNo(bindCard.getCardNo());
+		u.setRealName(bindCard.getAccountName());
+		JSONObject userInfo = userInfoService.bindAuthenUserInfo(u);
+		if(!userInfo.getBoolean("result")){
+			jo.put("result",false);
+			jo.put("message",userInfo.getString("message"));
 			return jo;
 		}
 		BigDecimal amount = orderFormOptional.get().getTotalPrice();
@@ -788,7 +820,12 @@ public class AuthenServiceImpl implements AuthenService {
 		if("0000".equals(ret.get("retCode").toString())){//支付成功
 			jo.put("result",true);
 			jo.put("data",ret.get("retData"));
-			jo.put("message","支付成功,可能会有一段时间的延迟");
+			jo.put("message","支付成功");
+			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),ret.get("reqSn").toString(),true);
+		}else if("6666".equals(ret.get("retCode").toString())){
+			jo.put("result",true);
+			jo.put("data",ret.get("retData"));
+			jo.put("message","支付处理中");
 			JSONObject mqJo = new JSONObject();
 			mqJo.put("reqSn",authenData.getReqSn());
 			mqJo.put("dt", DateFormatUtil.format(new Date(), "yyyyMMdd"));
@@ -889,6 +926,20 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("message","该订单已支付完毕");
 			return jo;
 		}
+		//实名绑卡
+		UserInfo u = new UserInfo();
+		u.setAppId(requestData.getString("appid"));
+		u.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+		u.setPhone(requestData.getString("phoneNo"));
+		u.setCardId(requestData.getString("idNo"));
+		u.setCardNo(requestData.getString("crdNo"));
+		u.setRealName(requestData.getString("capCrdNm"));
+		JSONObject userInfo = userInfoService.bindAuthenUserInfo(u);
+		if(!userInfo.getBoolean("result")){
+			jo.put("result",false);
+			jo.put("message",userInfo.getString("message"));
+			return jo;
+		}
 		BigDecimal amount = grabTicketFormOptional.get().getTotalPrice();
 		grabTicketFormService.updateStatusById(EnumGrabTicketStatus.GRAB_FORM_PAY_ING,requestData.getLong("orderId"));
 
@@ -917,7 +968,21 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("result",true);
 			jo.put("data",ret.get("retData"));
 			jo.put("message","支付成功");
-
+			ticketService.handleGrabCustomerPayMsg(requestData.getLong("orderId"),ret.get("reqSn").toString(),true);
+		}else if("6666".equals(ret.get("retCode").toString())){
+			BindCard bindCard = new BindCard();
+			bindCard.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+			bindCard.setCardNo(UserBankCardSupporter.encryptCardNo(requestData.getString("crdNo")));
+			bindCard.setAccountName(requestData.getString("capCrdNm"));
+			bindCard.setCardType("00");
+			bindCard.setCardId(UserBankCardSupporter.encryptCardId(requestData.getString("idNo")));
+			bindCard.setPhone(requestData.getString("phoneNo"));
+			bindCard.setBankCode(requestData.getString("bankCode"));
+			bindCard.setStatus(0);
+			bindCardService.insertBindCard(bindCard);
+			jo.put("result",true);
+			jo.put("data",ret.get("retData"));
+			jo.put("message","支付处理中");
 			JSONObject mqJo = new JSONObject();
 			mqJo.put("reqSn",authenData.getReqSn());
 			mqJo.put("dt", DateFormatUtil.format(new Date(), "yyyyMMdd"));
@@ -926,7 +991,7 @@ public class AuthenServiceImpl implements AuthenService {
 			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_GRAB_QUERY,2000);
 		}else if("5000".equals(ret.get("retCode").toString())){
 			jo.put("result",false);
-			jo.put("message","付款接口连接失败,等待10s重新链接");
+			jo.put("message","付款接口连接失败");
 			JSONObject mqJo = new JSONObject();
 			mqJo.put("reqSn",authenData.getReqSn());
 			mqJo.put("dt", DateFormatUtil.format(new Date(), "yyyyMMdd"));
@@ -988,9 +1053,26 @@ public class AuthenServiceImpl implements AuthenService {
 		Optional<GrabTicketForm> grabTicketFormOptional = grabTicketFormService.selectById(requestData.getLong("orderId"));
 		Preconditions.checkState(grabTicketFormOptional.isPresent(), "订单[" + requestData.getLong("orderId") + "]不存在");
 
+
+
 		if(EnumGrabTicketStatus.GRAB_FORM_PAY_SUCCESS.getId()==grabTicketFormOptional.get().getStatus()){
 			jo.put("result",false);
 			jo.put("message","该订单已支付完毕");
+			return jo;
+		}
+
+		//实名绑卡
+		UserInfo u = new UserInfo();
+		u.setAppId(requestData.getString("appid"));
+		u.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+		u.setPhone(bindCard.getPhone());
+		u.setCardId(bindCard.getCardId());
+		u.setCardNo(bindCard.getCardNo());
+		u.setRealName(bindCard.getAccountName());
+		JSONObject userInfo = userInfoService.bindAuthenUserInfo(u);
+		if(!userInfo.getBoolean("result")){
+			jo.put("result",false);
+			jo.put("message",userInfo.getString("message"));
 			return jo;
 		}
 
@@ -1011,7 +1093,12 @@ public class AuthenServiceImpl implements AuthenService {
 		if("0000".equals(ret.get("retCode").toString())){//支付成功
 			jo.put("result",true);
 			jo.put("data",ret.get("retData"));
-			jo.put("message","支付成功,可能会有一段时间的延迟");
+			jo.put("message","支付成功");
+			ticketService.handleGrabCustomerPayMsg(requestData.getLong("orderId"),ret.get("reqSn").toString(),true);
+		}else if("6666".equals(ret.get("retCode").toString())){
+			jo.put("result",true);
+			jo.put("data",ret.get("retData"));
+			jo.put("message","支付处理中");
 			JSONObject mqJo = new JSONObject();
 			mqJo.put("reqSn",authenData.getReqSn());
 			mqJo.put("dt", DateFormatUtil.format(new Date(), "yyyyMMdd"));
