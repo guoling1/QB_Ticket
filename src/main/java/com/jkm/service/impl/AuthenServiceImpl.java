@@ -177,10 +177,11 @@ public class AuthenServiceImpl implements AuthenService {
 					+ "*********************");
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("支付错误信息:"+e.getStackTrace());
-			ret.put("retCode", "4000");
-			ret.put("retMsg", "参数有误");
+//			e.printStackTrace();
+			System.out.print(e.getStackTrace());
+			logger.debug("支付错误信息:"+e.getStackTrace(), e);
+//			ret.put("retCode", "4000");
+//			ret.put("retMsg", "参数有误");
 		}
 		return ret;
 	}
