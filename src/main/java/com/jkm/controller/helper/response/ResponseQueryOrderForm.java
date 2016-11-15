@@ -114,6 +114,10 @@ public class ResponseQueryOrderForm {
     private int status;
 
     /**
+     * 提示
+     */
+    private String remark;
+    /**
      * 乘客
      */
     private List<passenger> passengers;

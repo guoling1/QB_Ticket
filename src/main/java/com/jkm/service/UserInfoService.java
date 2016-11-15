@@ -1,6 +1,7 @@
 package com.jkm.service;
 
 import com.jkm.entity.UserInfo;
+import net.sf.json.JSONObject;
 
 
 public interface UserInfoService {
@@ -63,4 +64,10 @@ public interface UserInfoService {
      *
      **/
     int updatePhoneByUid ( UserInfo record );
+    /**
+     *
+     * 实名
+     *
+     **/
+    JSONObject bindAuthenUserInfo(UserInfo record );
 }

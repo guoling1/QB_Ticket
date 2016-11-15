@@ -95,7 +95,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
         tbContactInfo.setCountry("CN");
         tbContactInfo.setCheckStatus(0);
         tbContactInfo.setIsUserSelf(1);
-        if("1".equals(tbContactInfo.getIdentyType())){
+        if((EnumTrainTicketType.ADULT.getId()).equals(tbContactInfo.getPersonType())){
             IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(UserBankCardSupporter.decryptCardId(tbContactInfo.getIdenty()));
             tbContactInfo.setBirthday(idcardInfo.getYear()+"-"+idcardInfo.getMonth()+"-"+idcardInfo.getDay());
         }
@@ -157,7 +157,10 @@ public class ContactInfoServiceImpl implements ContactInfoService {
         List<TbContactInfo> list = this.contactInfoDao.selectListByUid(uid);
         if(list!=null&&list.size()>0){
             for(int i=0;i<list.size();i++){
-                list.get(i).setIdenty(UserBankCardSupporter.decryptCardId(list.get(i).getIdenty()));
+                if(list.get(i).getIdenty()!=null&&!"".equals(list.get(i).getIdenty())){
+                    list.get(i).setIdenty(UserBankCardSupporter.decryptCardId(list.get(i).getIdenty()));
+                }
+
             }
         }
         return list;

@@ -28,4 +28,16 @@ public class UserInfo extends BaseEntity{
      * 用户手机号
      */
     private String phone;
+    /**
+     * 身份证号
+     */
+    private String cardId;
+    /**
+     * 银行卡号
+     */
+    private String cardNo;
+    /**
+     * 真实姓名
+     */
+    private String realName;
 }

@@ -14,6 +14,7 @@ import com.jkm.service.OrderFormService;
 import com.jkm.service.TicketService;
 import com.jkm.service.TrainTripsQueryService;
 import com.jkm.util.ValidateUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.http.client.fluent.Response;
@@ -82,7 +83,8 @@ public class TicketController extends BaseController{
     public ResponseEntityBase<ResponseSubmitOrder> submitOrder(@RequestBody final RequestSubmitOrder request) {
         final ResponseEntityBase<ResponseSubmitOrder> results = new ResponseEntityBase<>();
         request.setUid(super.getUid(request.getAppId(), request.getUid()));
-        Preconditions.checkState(ValidateUtils.isMobile(request.getMobile()));
+        Preconditions.checkState(!StringUtils.isEmpty(request.getMobile()), "手机号不能为空");
+        Preconditions.checkState(ValidateUtils.isMobile(request.getMobile()), "手机号格式不对");
         final Triple<Boolean, String, Long> submitOrderResult = this.ticketService.submitOrder(request);
         final ResponseSubmitOrder responseBookTicket = new ResponseSubmitOrder();
         if (submitOrderResult.getLeft()) {
@@ -141,7 +143,7 @@ public class TicketController extends BaseController{
             }
         }catch(final Throwable throwable){
             result.setCode(-1);
-            result.setMessage("退票失败");
+            result.setMessage("退票受理失败");
             logger.error(req.getOrderFormDetailId() + "订单退票失败,失败原因:" + throwable.getMessage());
         }
         return result;

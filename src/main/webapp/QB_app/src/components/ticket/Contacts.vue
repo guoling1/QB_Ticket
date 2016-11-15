@@ -13,7 +13,7 @@
         <span class="option"></span>
         <div class="passen">
           <span class="name">{{people.name}}</span>
-          <span class="type">(成人)</span>
+          <span class="type">({{people.piaoType}})</span>
           <p>{{people.identy}}</p>
         </div>
         <span class="edit" @click="show(index)"></span>
@@ -41,7 +41,6 @@
           <li class="typeLi">
             <label for="identyType">证件类型</label>
             <input type="text" name="identyType" id='identyType' readOnly="true" value="二代身份证">
-
           </li>
           <li>
             <label for="identy">证件号码</label>
@@ -76,11 +75,14 @@
     computed:{
       showModule:function () {
         if(this.$store.state.contact.ctrl){
+          let type = {
+            1:'成人',2: '儿童',3: '学生',4: '伤残军人'
+          };
           this.$http.post('/contactInfo/list',{uid:this.$route.query.uid,appid:this.$route.query.appid})
             .then(function (response) {
                 let massages = response.data.data;
                 for (var i = 0; i < massages.length; i++) {
-                  //性别
+                  massages[i].piaoType=type[massages[i].personType];
                   massages[i].sex=massages[i].sex==0?"男":"女";
                 }
               this.$data.massages = massages;
@@ -176,7 +178,7 @@
                 this.$data.massages.splice(index,1);
                 document.querySelector("#mask").style.display="none";
               }
-            })
+          })
       },
       sev:function (idx) {
           var addPerson={
@@ -233,7 +235,7 @@
 .main {
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
   .flexItem(1, 100%);
   background-color: #f5f5f5;
   position: absolute;
@@ -245,6 +247,7 @@
   width: 100%;
   height: 64px;
   color: #fefefe;
+  position: fixed;
   background-color: #4ab9f1;
   padding: 30px 10px 0;
   .close {
@@ -262,9 +265,13 @@
   }
 }
 .con{
+  background: #fff;
+  position: fixed;
+  top: 64px;
   padding: 0 15px;
   background: #fff;
   width: 100%;
+  z-index: 100;
 }
 .banner{
   height: 45px;
@@ -283,7 +290,8 @@
   }
 }
 ul{
-
+  overflow: auto;
+  padding: 111px 0 50px 0;
   li{
     background: #fff;
     height: 65px;

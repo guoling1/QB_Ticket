@@ -6,6 +6,7 @@ import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
 import com.jkm.entity.TbContactInfo;
 import com.jkm.entity.helper.UserBankCardSupporter;
+import com.jkm.enums.EnumTrainTicketType;
 import com.jkm.service.ContactInfoService;
 import com.jkm.util.ValidationUtil;
 import net.sf.json.JSONObject;
@@ -48,8 +49,12 @@ public class ContactInfoController extends BaseController {
 //            Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getString("identy")), "证件号码不能为空");
 //            Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getString("identyType")), "请选择证件类型");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getString("personType")), "请选择乘客类型");
-
-            if("1".equals(requestJson.getString("identyType"))&&!ValidationUtil.isIdCard(requestJson.getString("identy"))){
+            if((EnumTrainTicketType.ADULT.getId()).equals(requestJson.getString("personType"))&&requestJson.get("identy")==null){
+                responseEntityBase.setCode(500);
+                responseEntityBase.setMessage("身份证号不能为空");
+                return responseEntityBase;
+            }
+            if((EnumTrainTicketType.ADULT.getId()).equals(requestJson.getString("personType"))&&!ValidationUtil.isIdCard(requestJson.getString("identy"))){
                 responseEntityBase.setCode(401);
                 responseEntityBase.setMessage("身份证号不正确");
                 return responseEntityBase;
