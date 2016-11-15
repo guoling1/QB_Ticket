@@ -264,10 +264,12 @@
           to_station: this.$store.state.station.scope.stationFOUR.code, //到达站简码
           train_date: this.$store.state.date.scope.dateTWO.code //乘车日期（yyyy-MM-dd）
         }).then(function (res) {
-          for (let i = 0; i < res.data.data.length; i++) {
-            res.data.data[i].select = false;
+          if(res.data.code==1&&!!res.data.data){
+            for (let i = 0; i < res.data.data.length; i++) {
+              res.data.data[i].select = false;
+            }
+            this.$data.trains = res.data.data;
           }
-          this.$data.trains = res.data.data;
         }, function (err) {
           console.log(err);
         })

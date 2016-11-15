@@ -1,51 +1,53 @@
 <template lang="html">
-  <div class="main">
-    <div class="reserve" v-bind:class="{show:preShow}" @click="teb(1)">预订单</div>
-    <div class="rob" v-bind:class="{show:robShow}" @click="teb(2)">抢票单</div>
-    <ul v-show="preShow">
-      <li v-for="massage in preMassages">
-        <div class="top">
-          <span class="date">{{massage.startDate}} {{massage.startTime}}出发</span><span
-          class="checi">{{massage.checi}}</span>
-        </div>
-        <div class="bottom">
-          <div>
-            <span class="form">{{massage.fromStationName}}</span>
-            <img src="../../assets/jiantou.png" alt=""/>
-            <span class="to">{{massage.toStationName}}</span>
+  <div class="main flex-box-column flexBox">
+    <div class="teb-title">
+      <div class="reserve" v-bind:class="{show:preShow}" @click="teb(1)">预订单</div>
+      <div class="rob" v-bind:class="{show:robShow}" @click="teb(2)">抢票单</div>
+    </div>
+    <div class="window">
+      <ul v-show="preShow">
+        <li v-for="massage in preMassages">
+          <div class="top">
+            <span class="date">{{massage.startDate}} {{massage.startTime}}出发</span><span
+            class="checi">{{massage.checi}}</span>
           </div>
-          <span class="name" v-for="passenger in massage.passengers">{{passenger.name}}</span>
-          <span class="price" v-for="passenger in massage.passengers">￥{{passenger.price}}</span>
-          <router-link :to="{path:'/ticket/refund-detail',query:{orderFormId:massage.orderFormId}}">
-            <p class="static" v-for="passenger in massage.passengers">{{passengerStatus[passenger.status-1]}}
-
-            <p>
-          </router-link>
-        </div>
-      </li>
-    </ul>
-    <ul v-show="robShow">
-      <li v-for="massage in robMassages">
-        <div class="top">
-          <span class="date">{{massage.startDate}} {{massage.startTime}}出发</span><span
-          class="checi">{{massage.checi}}</span>
-        </div>
-        <div class="bottom">
-          <div>
-            <span class="form">{{massage.fromStationName}}</span>
-            <img src="../../assets/jiantou.png" alt=""/>
-            <span class="to">{{massage.toStationName}}</span>
+          <div class="bottom">
+            <div>
+              <span class="form">{{massage.fromStationName}}</span>
+              <img src="../../assets/jiantou.png" alt=""/>
+              <span class="to">{{massage.toStationName}}</span>
+            </div>
+            <span class="name" v-for="passenger in massage.passengers">{{passenger.name}}</span>
+            <span class="price" v-for="passenger in massage.passengers">￥{{passenger.price}}</span>
+            <router-link :to="{path:'/ticket/refund-detail',query:{orderFormId:massage.orderFormId}}">
+              <p class="static" v-for="passenger in massage.passengers">{{passengerStatus[passenger.status-1]}}</p>
+            </router-link>
           </div>
-          <span class="name" v-for="passenger in massage.passengers">{{passenger.name}}</span>
-          <span class="price" v-for="passenger in massage.passengers">￥{{passenger.price}}</span>
-          <router-link :to="{path:'/ticket/refund-detail',query:{orderFormId:massage.orderFormId}}">
-            <p class="static" v-for="passenger in massage.passengers">{{passengerStatus[passenger.status-1]}}
-
-            <p>
-          </router-link>
-        </div>
-      </li>
-    </ul>
+        </li>
+      </ul>
+      <ul v-show="robShow">
+        <li v-for="massage in robMassages">
+          <div class="top" v-show="massage.isGrab==1">
+            <span class="date">{{massage.startDate}} {{massage.startTime}}出发</span>
+            <span class="checi">{{massage.checi}}</span>
+          </div>
+          <div class="top" v-show="massage.isGrab==0">
+            <span class="date">{{massage.startDate}}出发</span>
+          </div>
+          <div class="bottom">
+            <div>
+              <span class="form">{{massage.fromStationName}}</span>
+              <img src="../../assets/jiantou.png" alt=""/>
+              <span class="to">{{massage.toStationName}}</span>
+            </div>
+            <span class="name" v-for="passenger in massage.passengerInfo">{{passenger.name}}</span>
+            <router-link :to="{path:'/ticket/refund-detail',query:{orderFormId:massage.orderFormId}}">
+              <p class="static" v-for="passenger in massage.passengerInfo">{{passengerStatus[passenger.status-1]}}</p>
+            </router-link>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -81,7 +83,15 @@
               appid: this.$data.common.appid,
               uid: this.$data.common.uid
             }).then(function (res) {
-              console.log(res);
+              if (res.data.code == 1) {
+                for (let i = 0; i < res.data.data.length; i++) {
+                  res.data.data[i].passengerInfo = JSON.parse(res.data.data[i].passengerInfo);
+                }
+                console.log(res.data.data);
+                this.$data.robMassages = res.data.data;
+              } else {
+                console.log(res.data.message);
+              }
             }, function (err) {
               console.log(err);
             })
@@ -90,11 +100,13 @@
       }
     },
     beforeRouteEnter (to, from, next) {
+      console.log(to.query);
       Vue.http.post('/order/queryMyOrder', {
         appid: to.query.appid,
-        uid: to.query.uid
+        uid: to.query.uid,
+        orderFormId: 0
       }).then(function (response) {
-        next(vm=>{
+        next(function (vm) {
           vm.$data.common.appid = to.query.appid;
           vm.$data.common.uid = to.query.uid;
           if (response.data.code == 1) {
@@ -126,102 +138,100 @@
     background: #f5f5f5;
     .flexItem(1, 100%);
     overflow: hidden;
+  }
 
-    .reserve, .rob {
-      width: 50%;
-      height: 44px;
-      color: #ccc;
+  .teb-title {
+    width: 100%;
+    height: 44px;
+  }
+
+  .window {
+    .flexItem(1);
+    width: 100%;
+    overflow: auto;
+  }
+
+  .reserve, .rob {
+    width: 50%;
+    height: 44px;
+    color: #ccc;
+    background: #fff;
+    font-size: 15px;
+    text-align: center;
+    line-height: 44px;
+    float: left;
+  }
+
+  .show {
+    color: #4ab9f1;
+  }
+
+  ul {
+    li {
+      height: 113px;
       background: #fff;
-      font-size: 15px;
-      text-align: center;
-      line-height: 44px;
-      float: left;
-    }
-
-    .show {
-      color: #4ab9f1;
-    }
-
-    ul {
-      margin-top: 49px;
-
-      li {
-        height: 113px;
-        background: #fff;
-        margin-top: 5px;
-
-        .top {
-          font-size: 14px;
-          height: 37px;
-          line-height: 37px;
-          border-bottom: 1px solid #efefef;
-          padding-left: 17px;
-          padding-right: 17px;
-
-          .date {
+      margin-top: 5px;
+      .top {
+        font-size: 14px;
+        height: 37px;
+        line-height: 37px;
+        border-bottom: 1px solid #efefef;
+        padding-left: 17px;
+        padding-right: 17px;
+        .date {
+          float: left;
+        }
+        .checi {
+          float: right;
+        }
+      }
+      .bottom {
+        font-size: 18px;
+        padding: 17px 17px 10px;
+        position: relative;
+        overflow: hidden;
+        div {
+          width: 183px;
+          margin-bottom: 15px;
+          overflow: hidden;
+          font-weight: bold;
+          .form {
             float: left;
           }
-          .checi {
+          .to {
             float: right;
           }
+          img {
+            vertical-align: 5px;
+          }
         }
-
-        .bottom {
-          font-size: 18px;
-          padding: 17px 17px 10px;
-          position: relative;
-          overflow: hidden;
-
-          div {
-            width: 183px;
-            margin-bottom: 15px;
-            overflow: hidden;
-            font-weight: bold;
-
-            .form {
-              float: left;
-            }
-
-            .to {
-              float: right;
-            }
-
-            img {
-              vertical-align: 5px;
-            }
-          }
-
-          .name {
-            float: left;
-            font-size: 12px;
-            color: #999;
-            margin-right: 8px;
-          }
-
-          .price {
-            color: #f14242;
-            font-weight: bold;
-            position: absolute;
-            top: 18px;
-            right: 17px;
-          }
-
-          .static {
-            position: absolute;
-            bottom: 10px;
-            right: 15px;
-            border-radius: 2px;
-            width: 50px;
-            height: 23px;
-            line-height: 23px;
-            font-size: 12px;
-            color: #fff;
-            text-align: center;
-            background: #fe6969;
-          }
+        .name {
+          float: left;
+          font-size: 12px;
+          color: #999;
+          margin-right: 8px;
+        }
+        .price {
+          color: #f14242;
+          font-weight: bold;
+          position: absolute;
+          top: 18px;
+          right: 17px;
+        }
+        .static {
+          position: absolute;
+          bottom: 10px;
+          right: 15px;
+          border-radius: 2px;
+          width: 50px;
+          height: 23px;
+          line-height: 23px;
+          font-size: 12px;
+          color: #fff;
+          text-align: center;
+          background: #fe6969;
         }
       }
     }
-
   }
 </style>

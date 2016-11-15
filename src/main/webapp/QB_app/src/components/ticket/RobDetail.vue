@@ -19,11 +19,11 @@
       </div>
       <div class="group" @click="time('dateONE')">
         <div class="prompt">已选车次</div>
-        <div class="write no-prompt right">  K51  T508  G203</div>
+        <div class="write no-prompt right"> K51 T508 G203</div>
       </div>
       <div class="group no-border" @click="time('dateONE')">
         <div class="prompt">已选坐席</div>
-        <div class="write no-prompt right"> 硬座  二等座  硬卧</div>
+        <div class="write no-prompt right"> 硬座 二等座 硬卧</div>
       </div>
     </div>
     <div class="space padding-word">
@@ -40,13 +40,14 @@
       </div>
     </div>
     <div class="space">
-      <div class="cancel">取消抢票</div>
+      <div class="cancel" @click="cancel">取消抢票</div>
     </div>
     <router-link class="submit" to="/ticket/train-menu/train">返回</router-link>
   </div>
 </template>
 
 <script lang="babel">
+  import Vue from 'vue'
   import Datetime from './Datetime.vue';
   export default {
     name: 'menu',
@@ -55,23 +56,41 @@
     },
     data: function () {
       return {
-        msg: 'Welcome to Your Vue.js App'
+        common: {
+          appid: '',
+          uid: ''
+        },
+        cancelInfo: ''
       }
+    },
+    beforeRouteEnter (to, from, next) {
+      Vue.http.post('/order/grab/queryById', {
+        appid: to.query.appid,
+        uid: to.query.uid,
+        orderFormId: to.query.orderid
+      }).then(function (res) {
+        console.log(res);
+        if (res.data.code == 1) {
+          next(function (vm) {
+            vm.$data.common.appid = to.query.appid;
+            vm.$data.common.uid = to.query.uid;
+            vm.$data.cancelInfo = res.data.data;
+          });
+        }
+      }, function (err) {
+        console.log(err);
+        next(false);
+      });
     },
     methods: {
-      time: function (name) {
-        this.$store.commit('TIME_OPEN', {
-          name: name,
-          ctrl: true
-        });
-      },
-      station: function () {
-        this.$store.commit('STATION_CTRL', true);
-      }
-    },
-    computed: {
-      dateONE () {
-        return this.$store.state.date.scope.dateONE.time;
+      cancel: function () {
+        this.$http.post('', this.$data.cancelInfo).then(function (res) {
+          if (res.data.code==1) {
+            console.log(res);
+          }
+        }, function (err) {
+          console.log(err);
+        })
       }
     }
   }
@@ -98,20 +117,21 @@
 
   .state {
     width: 100%;
-    height: 46px;
-    line-height: 46px;
-    text-align: center;
+    height: 50px;
     background-color: #fef0f0;
     border: 1px solid #fed4d4;
+    line-height: 50px;
     font-size: 15px;
-    color: #fe6969;
+    color: #ff6565;
+    text-align: center;
     i {
       display: inline-block;
+      margin-right: 5px;
+      transform: translate3d(0, 2px, 0);
       width: 16px;
       height: 16px;
-      background: url("../../assets/state.png") no-repeat center;
+      background: url("../../assets/time.gif") no-repeat center;
       background-size: 16px 16px;
-      transform: translate3d(0, 2px, 0);
     }
   }
 
