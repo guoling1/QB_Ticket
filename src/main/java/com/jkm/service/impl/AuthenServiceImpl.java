@@ -609,26 +609,26 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("nonceStr")), "随机参数有误");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("sn")+""), "短信序列码不能为空");
 
-		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(requestData.getString("phoneNo"),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
-		int resultType = codeStatus.getKey();
-		if(resultType!=1){
-			jo.put("result",false);
-			jo.put("message",codeStatus.getValue());
-			return jo;
-		}
-		//防止刷验证码
-		int count = sendMessageCountRecordDao.selctCountBySn(requestData.getLong("sn"));
-		if(count>3){
-			jo.put("result",false);
-			jo.put("message","验证码已失效");
-			return jo;
-		}
-		SendMessageCountRecord sendMessageCountRecord= new SendMessageCountRecord();
-		sendMessageCountRecord.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
-		sendMessageCountRecord.setMessageTemplateId((long)EnumVerificationCodeType.PAYMENT.getId());
-		sendMessageCountRecord.setMobile(requestData.getString("phoneNo"));
-		sendMessageCountRecord.setSn(requestData.getLong("sn"));
-		sendMessageCountRecordDao.insertSelective(sendMessageCountRecord);
+//		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(requestData.getString("phoneNo"),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
+//		int resultType = codeStatus.getKey();
+//		if(resultType!=1){
+//			jo.put("result",false);
+//			jo.put("message",codeStatus.getValue());
+//			return jo;
+//		}
+//		//防止刷验证码
+//		int count = sendMessageCountRecordDao.selctCountBySn(requestData.getLong("sn"));
+//		if(count>3){
+//			jo.put("result",false);
+//			jo.put("message","验证码已失效");
+//			return jo;
+//		}
+//		SendMessageCountRecord sendMessageCountRecord= new SendMessageCountRecord();
+//		sendMessageCountRecord.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+//		sendMessageCountRecord.setMessageTemplateId((long)EnumVerificationCodeType.PAYMENT.getId());
+//		sendMessageCountRecord.setMobile(requestData.getString("phoneNo"));
+//		sendMessageCountRecord.setSn(requestData.getLong("sn"));
+//		sendMessageCountRecordDao.insertSelective(sendMessageCountRecord);
 		Optional<BankCardBin> bb = bankCardBinService.analyseCardNo(requestData.getString("crdNo"));
 		if(!bb.isPresent()){
 			jo.put("result",false);

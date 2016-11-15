@@ -266,8 +266,9 @@ public class FusionController extends BaseController {
         }
         return responseJo;
     }
+
     /**
-     * 验证退款查询
+     * 验证消息
      *
      * @param requestData
      * @return
