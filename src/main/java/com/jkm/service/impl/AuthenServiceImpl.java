@@ -1,8 +1,5 @@
 package com.jkm.service.impl;
 
-import com.aliyun.openservices.ons.api.Message;
-import com.aliyun.openservices.ons.api.SendResult;
-import com.aliyun.openservices.ons.api.bean.ProducerBean;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -21,20 +18,20 @@ import com.jkm.enums.notifier.EnumVerificationCodeType;
 import com.jkm.helper.TicketMessageParams.SendPaymentParam;
 import com.jkm.service.*;
 import com.jkm.service.notifier.SmsAuthService;
-import com.jkm.util.*;
+import com.jkm.util.DateFormatUtil;
+import com.jkm.util.SnGenerator;
+import com.jkm.util.ValidationUtil;
 import com.jkm.util.fusion.*;
 import com.jkm.util.mq.MqConfig;
 import com.jkm.util.mq.MqProducer;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
@@ -139,8 +136,24 @@ public class AuthenServiceImpl implements AuthenService {
 					payResultRecord.setReqSn(request100005.getInfo().getReqSn());
 					payResultRecord.setResultParams(response100005.toString());
 					payResultRecordService.insertSelective(payResultRecord);
-				} else {
-					ret.put("retCode", false);
+				} else if("6666".equals(response100005.getInfo().getRetCode())){
+					JSONObject jo = new JSONObject();
+					jo.put("reqSn",request100005.getInfo().getReqSn());
+					jo.put("amount",request100005.getBody().getTransDetail().getAMOUNT());
+					ret.put("retCode", response100005.getInfo().getRetCode());
+					ret.put("retMsg", response100005.getInfo().getErrMsg());
+					ret.put("retData",jo);
+					PayResultRecord payResultRecord = new PayResultRecord();
+					payResultRecord.setStatus(0);
+					payResultRecord.setAmount(request100005.getBody().getTransDetail().getAMOUNT());
+					payResultRecord.setPayChannel("fastpay");
+					payResultRecord.setPayParams(xml);
+					payResultRecord.setPayResult("3");
+					payResultRecord.setReqSn(request100005.getInfo().getReqSn());
+					payResultRecord.setResultParams(response100005.toString());
+					payResultRecordService.insertSelective(payResultRecord);
+				}else {
+					ret.put("retCode", response100005.getInfo().getRetCode());
 					ret.put("retMsg", response100005.getInfo().getErrMsg());
 					PayResultRecord payResultRecord = new PayResultRecord();
 					payResultRecord.setStatus(0);
@@ -670,12 +683,27 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("result",true);
 			jo.put("data",ret.get("retData"));
 			jo.put("message","支付成功");
+		}else if("6666".equals(ret.get("retCode").toString())){
+			BindCard bindCard = new BindCard();
+			bindCard.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+			bindCard.setCardNo(UserBankCardSupporter.encryptCardNo(requestData.getString("crdNo")));
+			bindCard.setAccountName(requestData.getString("capCrdNm"));
+			bindCard.setCardType("00");
+			bindCard.setCardId(UserBankCardSupporter.encryptCardId(requestData.getString("idNo")));
+			bindCard.setPhone(requestData.getString("phoneNo"));
+			bindCard.setBankCode(requestData.getString("bankCode"));
+			bindCard.setStatus(0);
+			bindCardService.insertBindCard(bindCard);
+			jo.put("result",true);
+			jo.put("data",ret.get("retData"));
+			jo.put("message","支付处理中");
 			JSONObject mqJo = new JSONObject();
 			mqJo.put("reqSn",authenData.getReqSn());
 			mqJo.put("dt", DateFormatUtil.format(new Date(), "yyyyMMdd"));
 			mqJo.put("sendCount",0);
 			mqJo.put("orderId",requestData.getLong("orderId"));
 			MqProducer.sendMessage(mqJo,MqConfig.FAST_PAY_QUERY,2000);
+			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),ret.get("reqSn").toString(),true);
 		}else if("5000".equals(ret.get("retCode").toString())){
 			jo.put("result",false);
 			jo.put("message","付款接口连接失败,等待10s重新链接");

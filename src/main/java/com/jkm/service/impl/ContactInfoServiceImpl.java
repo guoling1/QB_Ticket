@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.jkm.dao.ContactInfoDao;
 import com.jkm.entity.TbContactInfo;
 import com.jkm.entity.helper.UserBankCardSupporter;
+import com.jkm.enums.EnumTrainTicketType;
 import com.jkm.service.ContactInfoService;
 import com.jkm.util.IdcardInfoExtractor;
 import com.jkm.util.ValidationUtil;
@@ -98,6 +99,15 @@ public class ContactInfoServiceImpl implements ContactInfoService {
             IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(UserBankCardSupporter.decryptCardId(tbContactInfo.getIdenty()));
             tbContactInfo.setBirthday(idcardInfo.getYear()+"-"+idcardInfo.getMonth()+"-"+idcardInfo.getDay());
         }
+        TbContactInfo tt = contactInfoDao.selectOneListByUid(tbContactInfo.getUid());
+        if(tt!=null&& (EnumTrainTicketType.CHILDREN.getId()).equals(tbContactInfo.getPersonType())){
+            tbContactInfo.setIdenty(tt.getIdenty());
+        }
+        if(tt==null&&(EnumTrainTicketType.CHILDREN.getId()).equals(tbContactInfo.getPersonType())){
+            jo.put("result",false);
+            jo.put("message","请先添加成人");
+            return jo;
+        }
         int count = contactInfoDao.selectCountByIdenty(tbContactInfo.getIdenty());
         if(count>0){
             jo.put("result",false);
@@ -152,5 +162,6 @@ public class ContactInfoServiceImpl implements ContactInfoService {
         }
         return list;
     }
+
 
 }

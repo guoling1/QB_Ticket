@@ -131,7 +131,7 @@
    </select>
 
     <select id="selectByUid" resultType="com.jkm.entity.OrderForm">
-      SELECT * FROM tb_order_form WHERE uid = #{uid}
+      SELECT * FROM tb_order_form WHERE uid = #{uid} AND status NOT IN (-1, 4)
     </select>
 
     <select id="selectByOrderId" resultType="com.jkm.entity.OrderForm">
