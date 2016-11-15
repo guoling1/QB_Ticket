@@ -35,14 +35,14 @@
           <div class="write no-prompt">
             <span class="name">{{passenger.name}}</span>
             {{passenger.identy}}
-            <span class="info">{{passenger.piaoType}}票</span>
+            <span class="info">{{passenger.type}}票</span>
           </div>
         </div>
         <div class="group no-border" v-for="child in childs">
           <div class="list"></div>
           <div class="write no-prompt">
             <span class="name">{{child.name}}</span>
-            <span class="info">{{child.piaoType}}票</span>
+            <span class="info">{{child.personType}}票</span>
           </div>
         </div>
       </div>
@@ -214,6 +214,9 @@
             if(res.data.code==1){
               this.$data.show=!this.$data.show
               addPerson.id=res.data.data;
+              if(addPerson.personType==2){
+                addPerson.personType="儿童"
+              }
               this.$data.childs.push(addPerson);
           }
         })
@@ -388,7 +391,7 @@
         let data = [];
         this.$data.submitInfo.grabPassengers = [];
         let type = {
-          '成人': 1, '儿童': 2, '学生': 3, '伤残军人': 4
+          1:'成人',2: '儿童',3: '学生',4: '伤残军人'
         };
         for (let i in storeDate) {
           if (storeDate[i]) {
