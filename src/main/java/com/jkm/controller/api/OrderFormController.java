@@ -165,7 +165,7 @@ public class OrderFormController extends BaseController {
         final GrabTicketForm grabTicketForm = grabTicketFormOptional.get();
         final List<OrderFormDetail> orderFormDetails = this.orderFormDetailService.selectByGrabTicketFormId(request.getGrabTicketFormId());
         //判断是否抢到票
-        if(!grabTicketForm.getCheci().isEmpty()){
+        if(!(grabTicketForm.getCheci() == null)){
             //抢到
             results.setData(getGrabResponse(grabTicketForm, orderFormDetails));
             return results;
