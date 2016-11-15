@@ -83,8 +83,8 @@ public class TicketController extends BaseController{
     public ResponseEntityBase<ResponseSubmitOrder> submitOrder(@RequestBody final RequestSubmitOrder request) {
         final ResponseEntityBase<ResponseSubmitOrder> results = new ResponseEntityBase<>();
         request.setUid(super.getUid(request.getAppId(), request.getUid()));
-        Preconditions.checkState(StringUtils.isEmpty(request.getMobile()));
-        Preconditions.checkState(ValidateUtils.isMobile(request.getMobile()));
+        Preconditions.checkState(!StringUtils.isEmpty(request.getMobile()), "手机号不能为空");
+        Preconditions.checkState(ValidateUtils.isMobile(request.getMobile()), "手机号格式不对");
         final Triple<Boolean, String, Long> submitOrderResult = this.ticketService.submitOrder(request);
         final ResponseSubmitOrder responseBookTicket = new ResponseSubmitOrder();
         if (submitOrderResult.getLeft()) {
