@@ -1,9 +1,9 @@
 <template lang="html">
   <div class="main">
     <div class="date-time">
-      <div class="btn left dis">前一天</div>
-      <div class="middle">10月28日 周五</div>
-      <div class="btn right">后一天</div>
+      <!--<div class="btn left dis">前一天</div>-->
+      <div class="middle">{{dateWeek}}</div>
+      <!--<div class="btn right">后一天</div>-->
     </div>
     <div class="space">
       <div class="left">
@@ -110,19 +110,21 @@
           uid: ''
         },
         orderInfo: JSON.parse(sessionStorage.getItem('preOrder')),
-        startTime: ''
+        dateHttp: '',
+        dateWeek: ''
       }
     },
     beforeRouteEnter (to, from, next) {
       next(function (vm) {
-        vm.$data.startTime = to.query.startTime;
+        vm.$data.dateHttp = to.query.dateHttp;
+        vm.$data.dateWeek = to.query.dateWeek;
         vm.$data.common.appid = to.query.appid;
         vm.$data.common.uid = to.query.uid;
       });
     },
     computed: {
       time: function () {
-        let startD = (this.$data.startTime + '').split("-");
+        let startD = (this.$data.dateHttp + '').split("-");
         let startT = this.$data.orderInfo.start_time.split(":");
         let start = new Date(startD[0], startD[1] - 1, startD[2], startT[0], startT[1]);
         let runMin = this.$data.orderInfo.run_time_minute;
@@ -137,7 +139,7 @@
         let arrive = new Date(arriveMs);
         let sessionDate = {
           startTime: {
-            post: this.$data.startTime,
+            post: this.$data.dateHttp,
             show: (start.getMonth() + 1) + '月' + start.getDate() + '日 ' + weekWord[start.getDay()]
           },
           arriveTime: {

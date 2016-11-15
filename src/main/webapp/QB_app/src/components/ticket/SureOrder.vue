@@ -101,6 +101,11 @@
     <div class="skip" v-show="skip">
       <div class="show">
         <div class="xx"></div>
+        <div class="content">
+          <div class="image"></div>
+          <div class="word">您没有选择“出票套餐”</div>
+          <div class="small">出票失败率提高，安全保障降低</div>
+        </div>
         <div class="btn">
           <div class="sub" @click="submit($event)">放弃</div>
           <div class="close" @click="skipHide">增加保障</div>
@@ -190,7 +195,10 @@
     },
     methods: {
       login: function () {
-        this.$router.push({path: '/ticket/login',query:{appid:this.$data.sureOrder.appId,uid:this.$data.sureOrder.uid}});
+        this.$router.push({
+          path: '/ticket/login',
+          query: {appid: this.$data.sureOrder.appId, uid: this.$data.sureOrder.uid}
+        });
       },
       packShow: function () {
         this.$data.pack = true;
@@ -199,12 +207,12 @@
         this.$data.pack = false;
         this.$data.sureOrder.buyTicketPackageId = num;
       },
-      skipHide: function(){
+      skipHide: function () {
         this.$data.skip = false;
       },
-      submit: function (event,skip) {
+      submit: function (event, skip) {
         // 判断是否选择了套餐
-        if(this.$data.sureOrder.buyTicketPackageId==1&&!!skip){
+        if (this.$data.sureOrder.buyTicketPackageId == 1 && !!skip) {
           console.log('请选择抢票套餐');
           this.$data.skip = true;
           return false;
@@ -234,7 +242,6 @@
     },
     computed: {
       price: function () {
-        console.log(this.$data.sureOrder.passengers);
         return this.$data.sureOrder.passengers;
       },
       passengers: function () {
@@ -333,6 +340,7 @@
   }
 
   .from {
+    padding-bottom: 50px;
     .space {
       padding: 0 15px;
       background-color: #FFF;
@@ -591,7 +599,8 @@
       }
     }
   }
-  .skip{
+
+  .skip {
     position: fixed;
     top: 0;
     left: 0;
@@ -599,7 +608,7 @@
     height: 100%;
     z-index: 88;
     background: rgba(0, 0, 0, 0.5);
-    .show{
+    .show {
       position: absolute;
       width: 100%;
       height: 50%;
@@ -613,24 +622,46 @@
         background-size: 14px 14px;
         padding: 15px;
       }
-      .btn{
+      .content {
+        .image {
+          width: 82px;
+          height: 82px;
+          margin: 50px auto 0;
+          background: url("../../assets/no-package.png") no-repeat center;
+          background-size: 82px 82px;
+        }
+        .word {
+          font-size: 18px;
+          color: #000;
+          font-weight: bold;
+          text-align: center;
+          margin-top: 20px;
+        }
+        .small {
+          font-size: 12px;
+          color: #000;
+          text-align: center;
+          margin-top: 5px;
+        }
+      }
+      .btn {
         position: absolute;
         left: 0;
         bottom: 0;
         width: 100%;
         height: 50px;
-        div{
+        div {
           float: left;
           width: 50%;
           height: 50px;
           line-height: 50px;
           text-align: center;
-          &.sub{
+          &.sub {
             font-size: 15px;
             color: #4ab9f1;
             border-top: 1px solid #f5f5f5;
           }
-          &.close{
+          &.close {
             font-size: 15px;
             color: #FFF;
             background-color: #4ab9f1;

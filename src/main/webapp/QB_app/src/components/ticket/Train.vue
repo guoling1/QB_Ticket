@@ -1,13 +1,13 @@
 <template lang="html">
   <div class="main">
     <div class="banner">
-      <span class="first">前一天</span>
+      <!--<span class="first">前一天</span>-->
 
       <div class="calendar">
-        10月31日 周五
+        {{dateWeek}}
         <img src="../../assets/calendar.png" alt=""/>
       </div>
-      <span class="next show">后一天</span>
+      <!--<span class="next show">后一天</span>-->
     </div>
     <div v-if="stations.empty">没有符合查询条件的车次</div>
     <ul v-if="!stations.empty">
@@ -63,7 +63,8 @@
           appid: '',
           uid: ''
         },
-        startTime: '',
+        dateHttp: '',
+        dateWeek: '',
         only: false,
         initStations: [],
         // 火车票筛选信息
@@ -74,11 +75,11 @@
       Vue.http.post('/queryTicketPrice/query', {
         appid: to.query.appid, //商户
         uid: to.query.uid, //用户id
-        from_station: to.query.fromCode, //出发站简码
+        from_station: to.query.formCode, //出发站简码
         to_station: to.query.toCode, //到达站简码
-        from_station_name: to.query.fromName,
+        from_station_name: to.query.formName,
         to_station_name: to.query.toName,
-        train_date: to.query.date //乘车日期（yyyy-MM-dd）
+        train_date: to.query.dateHttp //乘车日期（yyyy-MM-dd）
       }).then(function (res) {
         next(function (vm) {
           vm.$data.only = to.query.only;
@@ -93,7 +94,8 @@
             res.body.data[i]['runTimeShow'] = runH + '小时' + runM + '分钟';
           }
           vm.$data.initStations = res.body.data;
-          vm.$data.startTime = to.query.date;
+          vm.$data.dateHttp = to.query.dateHttp;
+          vm.$data.dateWeek = to.query.dateWeek;
           vm.$data.common.appid = to.query.appid;
           vm.$data.common.uid = to.query.uid;
         });
@@ -108,7 +110,12 @@
         sessionStorage.setItem('preOrder', JSON.stringify(station));
         this.$router.push({
           path: '/ticket/submit-order',
-          query: {appid: this.$data.common.appid, uid: this.$data.common.uid, startTime: this.$data.startTime}
+          query: {
+            appid: this.$data.common.appid,
+            uid: this.$data.common.uid,
+            dateHttp: this.$data.dateHttp,
+            dateWeek: this.$data.dateWeek
+          }
         });
       }
     },
