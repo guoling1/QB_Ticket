@@ -95,7 +95,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
         tbContactInfo.setCountry("CN");
         tbContactInfo.setCheckStatus(0);
         tbContactInfo.setIsUserSelf(1);
-        if("1".equals(tbContactInfo.getIdentyType())){
+        if((EnumTrainTicketType.ADULT.getId()).equals(tbContactInfo.getPersonType())){
             IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(UserBankCardSupporter.decryptCardId(tbContactInfo.getIdenty()));
             tbContactInfo.setBirthday(idcardInfo.getYear()+"-"+idcardInfo.getMonth()+"-"+idcardInfo.getDay());
         }
