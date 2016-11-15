@@ -157,7 +157,10 @@ public class ContactInfoServiceImpl implements ContactInfoService {
         List<TbContactInfo> list = this.contactInfoDao.selectListByUid(uid);
         if(list!=null&&list.size()>0){
             for(int i=0;i<list.size();i++){
-                list.get(i).setIdenty(UserBankCardSupporter.decryptCardId(list.get(i).getIdenty()));
+                if(list.get(i).getIdenty()!=null&&!"".equals(list.get(i).getIdenty())){
+                    list.get(i).setIdenty(UserBankCardSupporter.decryptCardId(list.get(i).getIdenty()));
+                }
+
             }
         }
         return list;
