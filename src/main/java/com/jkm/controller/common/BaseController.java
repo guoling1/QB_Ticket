@@ -43,11 +43,11 @@ public class BaseController {
     public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException {
         this.request = request;
         this.response = response;
-        Enumeration enumeration = this.request.getHeaderNames();
-        while (enumeration.hasMoreElements()) {
-            String name = (String) enumeration.nextElement();
-            logger.info("获取的header信息为 [ " + name + "=" + this.request.getHeader(name) + " ]");
-        }
+//        Enumeration enumeration = this.request.getHeaderNames();
+//        while (enumeration.hasMoreElements()) {
+//            String name = (String) enumeration.nextElement();
+//            logger.info("获取的header信息为 [ " + name + "=" + this.request.getHeader(name) + " ]");
+//        }
 
     }
 
