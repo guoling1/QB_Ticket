@@ -1656,7 +1656,7 @@ public class TicketServiceImpl implements TicketService {
                 "]对应的退款单[" + refundOrderFlow.getId()+ "]已经退款");
         final SingleRefundData singleRefundData = new SingleRefundData();
         singleRefundData.setOrgSn(refundOrderFlow.getPaymentSn());
-        singleRefundData.setOrdDate(refundOrderFlow.getOrderDate());
+        singleRefundData.setOrgDate(refundOrderFlow.getOrderDate());
         singleRefundData.setRefundAmount(refundOrderFlow.getRefundAmount().toString());
         singleRefundData.setOrgAmount(refundOrderFlow.getOriginalAmount().toString());
         singleRefundData.setRefundReason(refundOrderFlow.getRefundReason());
