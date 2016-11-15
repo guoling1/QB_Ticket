@@ -56,29 +56,30 @@
       <div class="space">
         <div class="group no-border" @click="packShow">
           <div class="prompt">套餐类型</div>
-          <div class="write empty" v-if="sureOrder.buyTicketPackageId==1">不购买</div>
-          <div class="write empty" v-if="sureOrder.buyTicketPackageId==2">￥20/人 极速出票</div>
-          <div class="write empty" v-if="sureOrder.buyTicketPackageId==3">￥30/人 优先出票</div>
+          <div class="write" v-if="sureOrder.buyTicketPackageId==1">不购买</div>
+          <div class="write" v-if="sureOrder.buyTicketPackageId==2">￥20/人 极速出票</div>
+          <div class="write" v-if="sureOrder.buyTicketPackageId==3">￥30/人 优先出票</div>
         </div>
       </div>
       <div class="submit">
-        <div class="detail">
+        <div class="detail" v-bind:class="{active:detail}">
           <div class="tt">金额详情</div>
           <div class="tt_detail">
             <div class="left">火车票</div>
-            <div class="right">x1人</div>
-            <div class="right margin">￥128.5</div>
+            <div class="right">x{{$amountDetail.number}}人</div>
+            <div class="right margin">￥{{$amountDetail.ticketPrice}}</div>
           </div>
           <div class="tt_detail">
-            <div class="left">火车票</div>
-            <div class="right">x1人</div>
-            <div class="right margin">￥128.5</div>
+            <div class="left">出票套餐</div>
+            <div class="right">x{{$amountDetail.number}}人</div>
+            <div class="right margin">￥{{$amountDetail.packagePrice}}</div>
           </div>
         </div>
         <div class="btn">
-          <div class="left">
-            <div class="amount">实付款<span class="red">￥</span><span class="red big">128.5</span></div>
-            <div class="i"></div>
+          <div class="left" @click="detailShow">
+            <div class="amount">实付款<span class="red">￥</span><span class="red big">{{$amountDetail.totalPrice}}</span>
+            </div>
+            <div class="i" v-bind:class="{active:detail}"></div>
           </div>
           <div class="right" @click="submit($event,true)">提交订单</div>
         </div>
@@ -165,6 +166,7 @@
           runShow: '',
           passengers: []
         },
+        detail: false,
         pack: false,
         skip: false
       }
@@ -200,6 +202,9 @@
           query: {appid: this.$data.sureOrder.appId, uid: this.$data.sureOrder.uid}
         });
       },
+      detailShow: function () {
+        this.$data.detail = !this.$data.detail;
+      },
       packShow: function () {
         this.$data.pack = true;
       },
@@ -213,7 +218,6 @@
       submit: function (event, skip) {
         // 判断是否选择了套餐
         if (this.$data.sureOrder.buyTicketPackageId == 1 && !!skip) {
-          console.log('请选择抢票套餐');
           this.$data.skip = true;
           return false;
         }
@@ -241,6 +245,18 @@
       }
     },
     computed: {
+      $amountDetail: function () {
+        let number = this.$data.sureOrder.passengers.length;
+        let ticketPrice = this.$data.sureOrder.price;
+        let packagePrice = ['', '0', '20', '30'];
+        let packageId = this.$data.sureOrder.buyTicketPackageId;
+        return {
+          number: number,
+          ticketPrice: ticketPrice,
+          packagePrice: packagePrice[packageId],
+          totalPrice: (ticketPrice * number) + (packagePrice[packageId] * number)
+        }
+      },
       price: function () {
         return this.$data.sureOrder.passengers;
       },
@@ -485,9 +501,13 @@
       z-index: 1;
       background-color: #FFF;
       width: 100%;
-      top: -88px;
+      top: 0;
       left: 0;
       padding: 15px;
+      transition: all .5s;
+      &.active {
+        top: -88px;
+      }
       .tt {
         font-size: 12px;
         color: #111;
@@ -539,6 +559,10 @@
           margin-top: 20px;
           background: url("../../assets/detail.png") no-repeat center;
           background-size: 12px 7px;
+          transform: rotate(180deg);
+          &.active {
+            transform: rotate(0deg);
+          }
         }
       }
       .right {
