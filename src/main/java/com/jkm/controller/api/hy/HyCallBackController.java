@@ -93,6 +93,7 @@ public class HyCallBackController extends BaseController {
             log.info("收到hy线下退票或线下改签的异步通知:" + jsonParams.toString() + "签名结果:" + flag);
         }
         this.postHandle("", "线上线下退票结果推送", 0, jsonParams.toString(), "", 0);
+        this.ticketService.handleRefundCallbackMsg(jsonParams);
         if (flag) {
             this.ticketService.handleRefundCallbackMsg(jsonParams);
             ResponseWriter.writeTxtResponse(httpServletResponse, "SUCCESS");
