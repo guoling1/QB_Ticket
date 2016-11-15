@@ -148,7 +148,7 @@
             clearInterval(polling);
             console.log('改变信息');
             this.$data.orderInfo = res.data.data;
-            vm.$data.payInfo.price = res.data.data.totalPrice;
+            this.$data.payInfo.price = res.data.data.totalPrice;
             // 调用定时器
             this.timer(this.$data.orderInfo.expireTime);
           } else if (res.data.code == 1 && res.data.data.status == 4) {
