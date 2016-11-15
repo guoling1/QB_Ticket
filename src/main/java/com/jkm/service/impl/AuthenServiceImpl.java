@@ -651,7 +651,6 @@ public class AuthenServiceImpl implements AuthenService {
 		UserInfo u = new UserInfo();
 		u.setAppId(requestData.getString("appid"));
 		u.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
-		u.setPhone(requestData.getString("phoneNo"));
 		u.setCardId(requestData.getString("idNo"));
 		u.setCardNo(requestData.getString("crdNo"));
 		u.setRealName(requestData.getString("capCrdNm"));
@@ -757,20 +756,6 @@ public class AuthenServiceImpl implements AuthenService {
 			return jo;
 		}
 
-//		int count = sendMessageCountRecordDao.selctCountBySn(requestData.getLong("sn"));
-//		if(count>3){
-//			jo.put("result",false);
-//			jo.put("message","验证码已失效");
-//			return jo;
-//		}
-//		SendMessageCountRecord sendMessageCountRecord= new SendMessageCountRecord();
-//		sendMessageCountRecord.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
-//		sendMessageCountRecord.setMessageTemplateId((long)EnumVerificationCodeType.PAYMENT.getId());
-//		sendMessageCountRecord.setMobile(bindCard.getPhone());
-//		sendMessageCountRecord.setSn(requestData.getLong("sn"));
-//		sendMessageCountRecordDao.insertSelective(sendMessageCountRecord);
-
-
 		Optional<OrderForm>  orderFormOptional = orderFormService.selectById(requestData.getLong("orderId"));
 		Preconditions.checkState(orderFormOptional.isPresent(), "订单[" + requestData.getLong("orderId") + "]不存在");
 
@@ -783,7 +768,6 @@ public class AuthenServiceImpl implements AuthenService {
 		UserInfo u = new UserInfo();
 		u.setAppId(requestData.getString("appid"));
 		u.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
-		u.setPhone(bindCard.getPhone());
 		u.setCardId(bindCard.getCardId());
 		u.setCardNo(bindCard.getCardNo());
 		u.setRealName(bindCard.getAccountName());
@@ -872,18 +856,6 @@ public class AuthenServiceImpl implements AuthenService {
 			return jo;
 		}
 
-//		int count = sendMessageCountRecordDao.selctCountBySn(requestData.getLong("sn"));
-//		if(count>3){
-//			jo.put("result",false);
-//			jo.put("message","验证码已失效");
-//			return jo;
-//		}
-//		SendMessageCountRecord sendMessageCountRecord= new SendMessageCountRecord();
-//		sendMessageCountRecord.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
-//		sendMessageCountRecord.setMessageTemplateId((long)EnumVerificationCodeType.PAYMENT.getId());
-//		sendMessageCountRecord.setMobile(requestData.getString("phoneNo"));
-//		sendMessageCountRecord.setSn(requestData.getLong("sn"));
-//		sendMessageCountRecordDao.insertSelective(sendMessageCountRecord);
 
 		Optional<BankCardBin> bb = bankCardBinService.analyseCardNo(requestData.getString("crdNo"));
 		if(!bb.isPresent()){
@@ -919,7 +891,6 @@ public class AuthenServiceImpl implements AuthenService {
 		UserInfo u = new UserInfo();
 		u.setAppId(requestData.getString("appid"));
 		u.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
-		u.setPhone(requestData.getString("phoneNo"));
 		u.setCardId(requestData.getString("idNo"));
 		u.setCardNo(requestData.getString("crdNo"));
 		u.setRealName(requestData.getString("capCrdNm"));
@@ -1025,19 +996,6 @@ public class AuthenServiceImpl implements AuthenService {
 			return jo;
 		}
 
-//		int count = sendMessageCountRecordDao.selctCountBySn(requestData.getLong("sn"));
-//		if(count>3){
-//			jo.put("result",false);
-//			jo.put("message","验证码已失效");
-//			return jo;
-//		}
-//		SendMessageCountRecord sendMessageCountRecord= new SendMessageCountRecord();
-//		sendMessageCountRecord.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
-//		sendMessageCountRecord.setMessageTemplateId((long)EnumVerificationCodeType.PAYMENT.getId());
-//		sendMessageCountRecord.setMobile(bindCard.getPhone());
-//		sendMessageCountRecord.setSn(requestData.getLong("sn"));
-//		sendMessageCountRecordDao.insertSelective(sendMessageCountRecord);
-
 
 		Optional<GrabTicketForm> grabTicketFormOptional = grabTicketFormService.selectById(requestData.getLong("orderId"));
 		Preconditions.checkState(grabTicketFormOptional.isPresent(), "订单[" + requestData.getLong("orderId") + "]不存在");
@@ -1054,7 +1012,6 @@ public class AuthenServiceImpl implements AuthenService {
 		UserInfo u = new UserInfo();
 		u.setAppId(requestData.getString("appid"));
 		u.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
-		u.setPhone(bindCard.getPhone());
 		u.setCardId(bindCard.getCardId());
 		u.setCardNo(bindCard.getCardNo());
 		u.setRealName(bindCard.getAccountName());
