@@ -3,6 +3,7 @@ package com.jkm.service;
 import com.google.common.base.Optional;
 import com.jkm.entity.TbContactInfo;
 import net.sf.json.JSONObject;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -90,4 +91,5 @@ public interface ContactInfoService {
      * @return
      */
     List<TbContactInfo> selectListByUid(String uid);
+
 }

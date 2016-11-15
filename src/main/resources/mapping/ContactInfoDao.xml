@@ -97,7 +97,7 @@
     </update>
 
     <select id="selectById" resultType="com.jkm.entity.TbContactInfo">
-        SELECT * FROM tb_contact_info WHERE id = #{id} and status=0
+        SELECT <include refid="Base_Column_List" /> FROM tb_contact_info WHERE id = #{id} and status=0
     </select>
 
     <select id="findByUidAndIdenty" resultType="com.jkm.entity.TbContactInfo">
@@ -118,7 +118,7 @@
     </select>
 
     <select id="selectCountByIdenty" resultType="java.lang.Integer">
-        SELECT count(1) FROM tb_contact_info WHERE identy = #{identy} and status=0
+        SELECT count(1) FROM tb_contact_info WHERE identy = #{identy} and status=0 and person_type='1'
     </select>
     <!-- 修改状态-->
     <update id="updateStatus" parameterType="java.lang.Long">
@@ -161,5 +161,11 @@
         SELECT
         <include refid="Base_Column_List" />
          FROM tb_contact_info WHERE uid = #{uid} and status=0
+    </select>
+    <!--根据uid查询单个人信息-->
+    <select id="selectOneListByUid" resultType="com.jkm.entity.TbContactInfo" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_contact_info WHERE uid = #{uid} and status=0 and person_type='1' limit 1;
     </select>
 </mapper>
