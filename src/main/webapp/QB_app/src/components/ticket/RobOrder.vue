@@ -55,9 +55,9 @@
       <div class="space">
         <div class="group no-border" @click="packShow">
           <div class="prompt">套餐类型</div>
-          <div class="write empty" v-if="submitInfo.buyTicketPackageId==1">不购买</div>
-          <div class="write empty" v-if="submitInfo.buyTicketPackageId==2">￥20/人 极速出票</div>
-          <div class="write empty" v-if="submitInfo.buyTicketPackageId==3">￥30/人 优先出票</div>
+          <div class="write" v-if="submitInfo.buyTicketPackageId==1">不购买</div>
+          <div class="write" v-if="submitInfo.buyTicketPackageId==2">￥20/人 极速出票</div>
+          <div class="write" v-if="submitInfo.buyTicketPackageId==3">￥30/人 优先出票</div>
         </div>
       </div>
       <div class="space">
