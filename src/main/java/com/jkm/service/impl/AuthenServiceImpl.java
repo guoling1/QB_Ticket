@@ -176,6 +176,7 @@ public class AuthenServiceImpl implements AuthenService {
 					+ "*********************");
 
 		} catch (Exception e) {
+			logger.debug("支付错误信息:"+e.getStackTrace());
 			ret.put("retCode", "4000");
 			ret.put("retMsg", "参数有误");
 		}
@@ -287,7 +288,7 @@ public class AuthenServiceImpl implements AuthenService {
 					+ "*********************");
 
 		} catch (Exception e) {
-			logger.debug(e.getMessage());
+			logger.debug("退款错误信息:"+e.getStackTrace());
 			ret.put("retCode", false);
 			ret.put("retMsg", "参数有误");
 		}
@@ -380,7 +381,8 @@ public class AuthenServiceImpl implements AuthenService {
 					+ "*********************");
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug("银行卡鉴权错误信息:"+e.getStackTrace());
+
 		}
 		return ret;
 	}
@@ -474,7 +476,7 @@ public class AuthenServiceImpl implements AuthenService {
 					+ "*********************");
 
 		} catch (Exception e) {
-			logger.debug(e.getMessage());
+			logger.debug("快捷支付查询错误:"+e.getStackTrace());
 			ret.put("retCode", "-1001");
 			ret.put("retMsg", "参数有误");
 		}
@@ -558,7 +560,7 @@ public class AuthenServiceImpl implements AuthenService {
 					+ "*********************");
 
 		} catch (Exception e) {
-			logger.debug(e.getMessage());
+			logger.debug("快捷退单查询错误:"+e.getStackTrace());
 			ret.put("retCode", "-1001");
 			ret.put("retMsg", "参数有误");
 		}
