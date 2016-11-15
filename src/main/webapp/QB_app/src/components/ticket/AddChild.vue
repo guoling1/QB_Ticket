@@ -1,27 +1,6 @@
 <template lang="html">
   <div class="main">
-    <div class="content">
-      <ul>
-        <li>
-          <label for="name">乘客姓名</label>
-          <input type="text" name="name" id='name' value="">
-        </li>
-        <li>
-          <label for="sex">乘客性别</label>
-          <label style="margin-left:10px;color:#999"><input type="radio" name="sex" value="男" checked="checked">男</label>
-          <label style="margin-left:20px;color:#999"><input type="radio" name="sex" value="女">女</label>
-        </li>
-        <li class="typeLi">
-          <label for="birthday">出生日期</label>
-          <input type="text" name="birthday" id='birthday' placeholder="出生年月日，如：20160101">
-        </li>
-        <!-- <li class="typeLi" style="border:none">
-          <label for="peer">同行成人</label>
-          <input type="text" name="peer" id='peer' readOnly="true" value="二代身份证">
-        </li> -->
-      </ul>
-      <div class="sure" @click="sev">保存</div>
-    </div>
+
   </div>
 </template>
 <script lang="babel">
@@ -41,18 +20,25 @@
           name:document.querySelector('#name').value,
           sex:document.querySelector(':checked').value,
           birthday:document.querySelector('#birthday').value,
-          personType:2
+          personType:2,
+          identy:311082198605163634,
+          identyType:1
         }
         Vue.http.post('/contactInfo/add',JSON.stringify(addPerson))
           .then((res)=>{
+            console.log(res);
             if(res.data.code==1){
               addPerson.id=res.data.data;
               this.$data.massage=addPerson;
+              console.log(this.$data.massage);
               this.$store.commit("CONTACT_CLOSE", {
                 ctrl: false,
                 info: this.$data.massage
               });
           }
+        })
+        .catch(function(err){
+          console.log(err);
         })
       }
     }
@@ -81,6 +67,7 @@
   }
   .content{
     width: 100%;
+
     background: #fff;
     }
     ul{

@@ -111,11 +111,31 @@
       </div>
     </div>
     <contacts></contacts>
+    <!-- 添加儿童 -->
+    <div class="content" v-if="show">
+      <ul>
+        <li>
+          <label for="name">乘客姓名</label>
+          <input type="text" name="name" id='name' value="">
+        </li>
+        <li>
+          <label for="sex">乘客性别</label>
+          <label style="margin-left:10px;color:#999"><input type="radio" name="sex" value="0" checked="checked">男</label>
+          <label style="margin-left:20px;color:#999"><input type="radio" name="sex" value="1">女</label>
+        </li>
+        <li class="typeLi">
+          <label for="birthday">出生日期</label>
+          <input type="text" name="birthday" id='birthday' placeholder="出生年月日，如：20160101">
+        </li>
+      </ul>
+      <div class="sure" @click="sev">保存</div>
+    </div>
   </div>
 </template>
 
 <script lang="babel">
   import Contacts from './Contacts.vue'
+  import Vue from 'vue'
 
   export default {
     name: 'menu',
@@ -155,7 +175,9 @@
           index: 0,
           checkCode: '',
           sn: ''
-        }
+        },
+        show:false,
+        child:[]
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -165,7 +187,32 @@
     },
     methods: {
       addChild:function(){
-        this.$router.push("/ticket/add-child")
+        this.$data.show=!this.$data.show
+      },
+      sev:function(){
+        var addPerson={
+          uid:1,
+          appid:1,
+          name:document.querySelector('#name').value,
+          sex:document.querySelector(':checked').value,
+          birthday:document.querySelector('#birthday').value,
+          personType:2,
+          identy:120482198605103634,
+          identyType:1
+        }
+        Vue.http.post('/contactInfo/add',JSON.stringify(addPerson))
+          .then((res)=>{
+            console.log(res);
+            if(res.data.code==1){
+              this.$data.show=!this.$data.show
+              addPerson.id=res.data.data;
+              console.log(addPerson);
+              this.$data.child.push(addPerson);
+          }
+        })
+        .catch(function(err){
+          console.log(err);
+        })
       },
       login: function () {
         this.$router.push({
@@ -329,6 +376,7 @@
       },
       passengers: function () {
         let storeDate = this.$store.state.contact.info;
+        console.log(storeDate);
         let data = [];
         this.$data.submitInfo.grabPassengers = [];
         let type = {
@@ -344,6 +392,13 @@
             })
           }
         }
+        for (var i = 0; i < this.$data.child.length; i++) {
+          if(this.$data.child.length!=0){
+            this.$data.submitInfo.grabPassengers.push(this.$data.child[i])
+          }
+        }
+        console.log(this.$data.child);
+        console.log(this.$data.submitInfo.grabPassengers);
         return data;
       },
       $submitInfo: function () {
@@ -677,4 +732,50 @@
       }
     }
   }
+
+  .content{
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    position: absolute;;
+    top: 64px;
+    left: 0;
+    ul{
+      li{
+        width: 100%;
+        height: 48px;
+        line-height: 48px;
+        font-size: 15px;
+        text-align: left;
+        padding:0 15px;
+        background: #fff;
+        border-bottom: 1px solid #ebebeb;
+
+        &.typeLi{
+          background: url("../../assets/prompt-arrow.png") no-repeat 96%;
+          background-size: 8px 11px;
+        }
+
+        input{
+          border: none;
+          color:#999;
+          &:focus{
+            outline: none;
+          }
+        }
+      }
+    }
+    .sure{
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+      font-size: 15px;
+      background: #4ab9f1;
+      color: #fff;
+    }
+    }
+
 </style>
