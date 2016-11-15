@@ -19,9 +19,7 @@
         <span class="edit" @click="show(index)"></span>
       </li>
     </ul>
-    <div class="bottom" @click="close">
-      确定
-    </div>
+    <div class="bottom" @click="close">确定</div>
     <div class="mask" id="mask">
       <div class="content">
         <div class="sub">
@@ -103,12 +101,10 @@
     },
     methods:{
       importCon:function(){
-        Vue.http.post('/website/importContacts',{uid:1,appid:1})
-        //Vue.http.post('/website/importContacts',{uid:this.$route.query.uid,appid:this.$route.query.appid})
+        Vue.http.post('/website/importContacts',{uid:this.$route.query.uid,appid:this.$route.query.appid})
           .then((res)=>{
             if(res.data.code==1){
-              Vue.$http.post('/contactInfo/list',{uid:1,appid:1})
-              //Vue.$http.post('/contactInfo/list',{uid:this.$route.query.uid,appid:this.$route.query.appid})
+              Vue.$http.post('/contactInfo/list',{uid:this.$route.query.uid,appid:this.$route.query.appid})
                 .then((response)=>{
                     let massages = response.data.data;
                     for (var i = 0; i < massages.length; i++) {

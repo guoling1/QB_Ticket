@@ -56,29 +56,30 @@
       <div class="space">
         <div class="group no-border" @click="packShow">
           <div class="prompt">套餐类型</div>
-          <div class="write empty" v-if="sureOrder.buyTicketPackageId==1">不购买</div>
-          <div class="write empty" v-if="sureOrder.buyTicketPackageId==2">￥20/人 极速出票</div>
-          <div class="write empty" v-if="sureOrder.buyTicketPackageId==3">￥30/人 优先出票</div>
+          <div class="write" v-if="sureOrder.buyTicketPackageId==1">不购买</div>
+          <div class="write" v-if="sureOrder.buyTicketPackageId==2">￥20/人 极速出票</div>
+          <div class="write" v-if="sureOrder.buyTicketPackageId==3">￥30/人 优先出票</div>
         </div>
       </div>
       <div class="submit">
-        <div class="detail">
+        <div class="detail" v-bind:class="{active:detail}">
           <div class="tt">金额详情</div>
           <div class="tt_detail">
             <div class="left">火车票</div>
-            <div class="right">x1人</div>
-            <div class="right margin">￥128.5</div>
+            <div class="right">x{{$amountDetail.number}}人</div>
+            <div class="right margin">￥{{$amountDetail.ticketPrice}}</div>
           </div>
           <div class="tt_detail">
-            <div class="left">火车票</div>
-            <div class="right">x1人</div>
-            <div class="right margin">￥128.5</div>
+            <div class="left">出票套餐</div>
+            <div class="right">x{{$amountDetail.number}}人</div>
+            <div class="right margin">￥{{$amountDetail.packagePrice}}</div>
           </div>
         </div>
         <div class="btn">
-          <div class="left">
-            <div class="amount">实付款<span class="red">￥</span><span class="red big">128.5</span></div>
-            <div class="i"></div>
+          <div class="left" @click="detailShow">
+            <div class="amount">实付款<span class="red">￥</span><span class="red big">{{$amountDetail.totalPrice}}</span>
+            </div>
+            <div class="i" v-bind:class="{active:detail}"></div>
           </div>
           <div class="right" @click="submit($event,true)">提交订单</div>
         </div>
@@ -101,6 +102,11 @@
     <div class="skip" v-show="skip">
       <div class="show">
         <div class="xx"></div>
+        <div class="content">
+          <div class="image"></div>
+          <div class="word">您没有选择“出票套餐”</div>
+          <div class="small">出票失败率提高，安全保障降低</div>
+        </div>
         <div class="btn">
           <div class="sub" @click="submit($event)">放弃</div>
           <div class="close" @click="skipHide">增加保障</div>
@@ -160,6 +166,7 @@
           runShow: '',
           passengers: []
         },
+        detail: false,
         pack: false,
         skip: false
       }
@@ -190,7 +197,13 @@
     },
     methods: {
       login: function () {
-        this.$router.push({path: '/ticket/login',query:{appid:this.$data.sureOrder.appId,uid:this.$data.sureOrder.uid}});
+        this.$router.push({
+          path: '/ticket/login',
+          query: {appid: this.$data.sureOrder.appId, uid: this.$data.sureOrder.uid}
+        });
+      },
+      detailShow: function () {
+        this.$data.detail = !this.$data.detail;
       },
       packShow: function () {
         this.$data.pack = true;
@@ -199,13 +212,12 @@
         this.$data.pack = false;
         this.$data.sureOrder.buyTicketPackageId = num;
       },
-      skipHide: function(){
+      skipHide: function () {
         this.$data.skip = false;
       },
-      submit: function (event,skip) {
+      submit: function (event, skip) {
         // 判断是否选择了套餐
-        if(this.$data.sureOrder.buyTicketPackageId==1&&!!skip){
-          console.log('请选择抢票套餐');
+        if (this.$data.sureOrder.buyTicketPackageId == 1 && !!skip) {
           this.$data.skip = true;
           return false;
         }
@@ -233,8 +245,19 @@
       }
     },
     computed: {
+      $amountDetail: function () {
+        let number = this.$data.sureOrder.passengers.length;
+        let ticketPrice = this.$data.sureOrder.price;
+        let packagePrice = ['', '0', '20', '30'];
+        let packageId = this.$data.sureOrder.buyTicketPackageId;
+        return {
+          number: number,
+          ticketPrice: ticketPrice,
+          packagePrice: packagePrice[packageId],
+          totalPrice: (ticketPrice * number) + (packagePrice[packageId] * number)
+        }
+      },
       price: function () {
-        console.log(this.$data.sureOrder.passengers);
         return this.$data.sureOrder.passengers;
       },
       passengers: function () {
@@ -333,6 +356,7 @@
   }
 
   .from {
+    padding-bottom: 50px;
     .space {
       padding: 0 15px;
       background-color: #FFF;
@@ -477,9 +501,13 @@
       z-index: 1;
       background-color: #FFF;
       width: 100%;
-      top: -88px;
+      top: 0;
       left: 0;
       padding: 15px;
+      transition: all .5s;
+      &.active {
+        top: -88px;
+      }
       .tt {
         font-size: 12px;
         color: #111;
@@ -531,6 +559,10 @@
           margin-top: 20px;
           background: url("../../assets/detail.png") no-repeat center;
           background-size: 12px 7px;
+          transform: rotate(180deg);
+          &.active {
+            transform: rotate(0deg);
+          }
         }
       }
       .right {
@@ -591,7 +623,8 @@
       }
     }
   }
-  .skip{
+
+  .skip {
     position: fixed;
     top: 0;
     left: 0;
@@ -599,7 +632,7 @@
     height: 100%;
     z-index: 88;
     background: rgba(0, 0, 0, 0.5);
-    .show{
+    .show {
       position: absolute;
       width: 100%;
       height: 50%;
@@ -613,24 +646,46 @@
         background-size: 14px 14px;
         padding: 15px;
       }
-      .btn{
+      .content {
+        .image {
+          width: 82px;
+          height: 82px;
+          margin: 50px auto 0;
+          background: url("../../assets/no-package.png") no-repeat center;
+          background-size: 82px 82px;
+        }
+        .word {
+          font-size: 18px;
+          color: #000;
+          font-weight: bold;
+          text-align: center;
+          margin-top: 20px;
+        }
+        .small {
+          font-size: 12px;
+          color: #000;
+          text-align: center;
+          margin-top: 5px;
+        }
+      }
+      .btn {
         position: absolute;
         left: 0;
         bottom: 0;
         width: 100%;
         height: 50px;
-        div{
+        div {
           float: left;
           width: 50%;
           height: 50px;
           line-height: 50px;
           text-align: center;
-          &.sub{
+          &.sub {
             font-size: 15px;
             color: #4ab9f1;
             border-top: 1px solid #f5f5f5;
           }
-          &.close{
+          &.close {
             font-size: 15px;
             color: #FFF;
             background-color: #4ab9f1;

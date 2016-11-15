@@ -44,7 +44,7 @@
       </div>
       <div class="group no-border">
         <div class="prompt">抢票成功率约</div>
-        <div class="write red empty no-prompt">99%</div>
+        <div class="write red empty no-prompt">{{$rate}}</div>
       </div>
       <div class="submit" @click="submit">下一步</div>
       <div class="know">抢票须知<span></span></div>
@@ -176,6 +176,9 @@
           P: false,
           9: false
         },
+        success_rate: 17,
+        checi_length: 0,
+        table_length: 0,
         canGrabTimeType: 4,
         trains: '',
         trainsShow: false,
@@ -197,8 +200,10 @@
       seatEnter: function () {
         //先判断用户是否选择了坐席,没选择则为全部坐席
         this.$data.submitInfo.seatTypes = '';
+        this.$data.table_length = 0;
         for (let i in this.$data.shortSeat) {
           if (this.$data.shortSeat[i]) {
+            this.$data.table_length++;
             this.$data.submitInfo.seatTypes += i + ',';
           }
         }
@@ -215,8 +220,10 @@
       },
       trainsEnter: function () {
         let checi = '';
+        this.$data.checi_length = 0;
         for (let i = 0; i < this.$data.trains.length; i++) {
           if (this.$data.trains[i].select) {
+            this.$data.checi_length++;
             checi += this.$data.trains[i].train_code + ','
           }
         }
@@ -254,7 +261,10 @@
       },
       submit: function () {
         sessionStorage.setItem('robOrder', JSON.stringify(this.$data.submitInfo));
-        this.$router.push({path: '/ticket/rob-order',query:{appid:this.$data.submitInfo.appId,uid:this.$data.submitInfo.uid}})
+        this.$router.push({
+          path: '/ticket/rob-order',
+          query: {appid: this.$data.submitInfo.appId, uid: this.$data.submitInfo.uid}
+        })
       }
     },
     watch: {
@@ -264,7 +274,7 @@
           to_station: this.$store.state.station.scope.stationFOUR.code, //到达站简码
           train_date: this.$store.state.date.scope.dateTWO.code //乘车日期（yyyy-MM-dd）
         }).then(function (res) {
-          if(res.data.code==1&&!!res.data.data){
+          if (res.data.code == 1 && !!res.data.data) {
             for (let i = 0; i < res.data.data.length; i++) {
               res.data.data[i].select = false;
             }
@@ -276,6 +286,15 @@
       }
     },
     computed: {
+      $rate: function () {
+        let rate = this.$data.success_rate;
+        let packageId = this.$data.submitInfo.grabTicketPackageId;
+        let checi = this.$data.checi_length;
+        let table = this.$data.table_length;
+        let rateType = ['', '0', '28', '35', '46', '76'];
+        rate = (rate / 1) + (rateType[packageId] / 1) + ((checi * 3) / 1) + (table / 1);
+        return rate + '%';
+      },
       $dataT: function () {
         return {
           date: this.$store.state.date.scope.dateTWO.time,
