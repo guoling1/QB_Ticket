@@ -14,6 +14,7 @@ import com.jkm.service.OrderFormService;
 import com.jkm.service.TicketService;
 import com.jkm.service.TrainTripsQueryService;
 import com.jkm.util.ValidateUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.http.client.fluent.Response;
@@ -82,6 +83,7 @@ public class TicketController extends BaseController{
     public ResponseEntityBase<ResponseSubmitOrder> submitOrder(@RequestBody final RequestSubmitOrder request) {
         final ResponseEntityBase<ResponseSubmitOrder> results = new ResponseEntityBase<>();
         request.setUid(super.getUid(request.getAppId(), request.getUid()));
+        Preconditions.checkState(StringUtils.isEmpty(request.getMobile()));
         Preconditions.checkState(ValidateUtils.isMobile(request.getMobile()));
         final Triple<Boolean, String, Long> submitOrderResult = this.ticketService.submitOrder(request);
         final ResponseSubmitOrder responseBookTicket = new ResponseSubmitOrder();
