@@ -83,6 +83,7 @@ public class HyCallBackController extends BaseController {
                   jsonParams.getString("apiorderid") + jsonParams.getString("trainorderid") + jsonParams.getString("token") +
                   jsonParams.getString("returnmoney") + jsonParams.getString("returnstate") + MD5Util.MD5(HySdkConstans.ORDER_SIGN_KEY));
             flag = sign.equals(jsonParams.getString("sign"));
+            this.postHandle("", "收到hy线上退票结果推送", 0, jsonParams.toString(), "", 0);
             log.info("收到hy线上退票的异步通知:" + jsonParams.toString() + "签名结果:" + flag);
         }else{
             //线下 线下退票或线下改签数字签名
@@ -90,9 +91,9 @@ public class HyCallBackController extends BaseController {
             flag = MD5Util.MD5(HySdkConstans.ORDER_PARTNER_ID + jsonParams.getString("returntype") + jsonParams.getString("timestamp") +
                     jsonParams.getString("apiorderid") + jsonParams.getString("trainorderid") + jsonParams.getString("returnmoney")
                     + jsonParams.getString("returnstate") + MD5Util.MD5(HySdkConstans.ORDER_SIGN_KEY)).equals(jsonParams.getString("sign"));
+            this.postHandle("", "收到hy线下退票结果推送", 0, jsonParams.toString(), "", 0);
             log.info("收到hy线下退票或线下改签的异步通知:" + jsonParams.toString() + "签名结果:" + flag);
         }
-        this.postHandle("", "线上线下退票结果推送", 0, jsonParams.toString(), "", 0);
         this.ticketService.handleRefundCallbackMsg(jsonParams);
         if (flag) {
             this.ticketService.handleRefundCallbackMsg(jsonParams);

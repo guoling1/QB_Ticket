@@ -141,7 +141,7 @@ public class TicketController extends BaseController{
             }
         }catch(final Throwable throwable){
             result.setCode(-1);
-            result.setMessage("退票失败");
+            result.setMessage("退票受理失败");
             logger.error(req.getOrderFormDetailId() + "订单退票失败,失败原因:" + throwable.getMessage());
         }
         return result;
