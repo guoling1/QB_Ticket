@@ -2,7 +2,7 @@
   <div id="app" class="flex-box-column flexBox">
     <div class="title">
       <div class="back" @click='back'></div>
-      <h1>{{title}}</h1>
+      <h1>{{$$title}}</h1>
     </div>
     <router-view></router-view>
   </div>
@@ -14,13 +14,36 @@
     name: 'title',
     data: function () {
       return {
-        title: this.$store.commit('TITLE_CHANGE', this.$route.name)
+        title: this.$store.state.title.title
+      }
+    },
+    created: function () {
+      if (this.$route.name == 'ticketTrain') {
+        this.$store.commit('TITLE_CHANGE', {
+          name: this.$route.name,
+          formName: this.$route.query.formName,
+          toName: this.$route.query.toName
+        });
+      } else {
+        this.$store.commit('TITLE_CHANGE', {
+          name: this.$route.name
+        });
       }
     },
     watch: {
       // 监听路由变化 触发title变更
-      $route: function (val) {
-        this.$store.commit('TITLE_CHANGE', val.name);
+      $route: function (to) {
+        if (to.name == 'ticketTrain') {
+          this.$store.commit('TITLE_CHANGE', {
+            name: to.name,
+            formName: to.query.formName,
+            toName: to.query.toName
+          });
+        } else {
+          this.$store.commit('TITLE_CHANGE', {
+            name: to.name
+          });
+        }
       }
     },
     methods: {
@@ -29,7 +52,7 @@
       }
     },
     computed: {
-      title () {
+      $$title () {
         return this.$store.state.title.title
       }
     }
