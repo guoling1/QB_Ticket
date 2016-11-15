@@ -10,25 +10,22 @@
           <div class="right">到达城市</div>
         </div>
         <div class="side write">
-          <div class="left" @click="station('stationONE')">{{$dataT.from}}</div>
+          <div class="left" @click="station('stationONE')">{{$$data.form_name}}</div>
           <img class="middle" src="../../assets/exchange.png">
 
-          <div class="right" @click="station('stationTWO')">{{$dataT.to}}</div>
+          <div class="right" @click="station('stationTWO')">{{$$data.to_name}}</div>
         </div>
       </div>
       <div class="time" @click="time('dateONE')">
-        <div class="show">{{$dataT.date}}</div>
+        <div class="show">{{$$data.date_week}}</div>
       </div>
       <div class="option">
         <div class="show">只看高铁/动车</div>
-        <div class="check" v-bind:class="{active:$onlyG}" @click="onlyU">
+        <div class="check" v-bind:class="{active:$$data.only_GD}" @click="onlyU">
           <div class="btn"></div>
         </div>
       </div>
-      <router-link class="submit"
-                   :to="{path:'/ticket/train-menu/train',query:{appid:common.appid,uid:common.uid,date:$from.date,fromCode:$from.from,toCode:$from.to,fromName:$dataT.from,toName:$dataT.to,only:$onlyG}}">
-        查询
-      </router-link>
+      <div class="submit" @click="query">查询</div>
       <div class="history">
         <div>查询历史</div>
         <div>清空</div>
@@ -51,20 +48,40 @@
     },
     data: function () {
       return {
-        common: {
-          appid: '',
-          uid: ''
-        },
-        onlyG: false
+        appid: '',
+        uid: '',
+        form_name: this.$store.state.station.scope.stationONE.station,
+        form_code: this.$store.state.station.scope.stationONE.code,
+        to_name: this.$store.state.station.scope.stationTWO.station,
+        to_code: this.$store.state.station.scope.stationTWO.code,
+        date_http: this.$store.state.date.scope.dateONE.code,
+        date_week: this.$store.state.date.scope.dateONE.time,
+        only_GD: false
       }
     },
     beforeRouteEnter (to, from, next) {
       next(function (vm) {
-        vm.$data.common.appid = to.query.appid;
-        vm.$data.common.uid = to.query.uid;
+        vm.$data.appid = to.query.appid;
+        vm.$data.uid = to.query.uid;
       });
     },
     methods: {
+      //点击查询按钮,跳转页面,带上查询必须的参数
+      query: function () {
+        this.$router.push({
+          path: '/ticket/train-menu/train', query: {
+            appid: this.$data.appid,
+            uid: this.$data.uid,
+            formName: this.$data.form_name,
+            formCode: this.$data.form_code,
+            toName: this.$data.to_name,
+            toCode: this.$data.to_code,
+            dateHttp: this.$data.date_http,
+            dateWeek: this.$data.date_week,
+            onlyGD: this.$data.only_GD
+          }
+        })
+      },
       time: function (name) {
         this.$store.commit('TIME_OPEN', {
           name: name,
@@ -78,26 +95,18 @@
         });
       },
       onlyU: function () {
-        this.$data.onlyG = !this.$data.onlyG;
+        this.$data.only_GD = !this.$data.only_GD;
       }
     },
     computed: {
-      $onlyG: function () {
-        return this.$data.onlyG
-      },
-      $dataT: function () {
-        return {
-          date: this.$store.state.date.scope.dateONE.time,
-          from: this.$store.state.station.scope.stationONE.station,
-          to: this.$store.state.station.scope.stationTWO.station
-        }
-      },
-      $from: function () {
-        return {
-          date: this.$store.state.date.scope.dateONE.code,
-          from: this.$store.state.station.scope.stationONE.code,
-          to: this.$store.state.station.scope.stationTWO.code
-        };
+      $$data: function () {
+        this.$data.form_name = this.$store.state.station.scope.stationONE.station;
+        this.$data.form_code = this.$store.state.station.scope.stationONE.code;
+        this.$data.to_name = this.$store.state.station.scope.stationTWO.station;
+        this.$data.to_code = this.$store.state.station.scope.stationTWO.code;
+        this.$data.date_http = this.$store.state.date.scope.dateONE.code;
+        this.$data.date_week = this.$store.state.date.scope.dateONE.time;
+        return this.$data;
       }
     }
   }
@@ -137,6 +146,7 @@
     border-bottom: 1px solid #efefef;
     .side {
       overflow: hidden;
+      position: relative;
       &.show {
         font-size: 12px;
         color: #999;
@@ -155,9 +165,11 @@
       }
       .left {
         float: left;
+        transition: all 1.5s;
       }
       .right {
         float: right;
+        transition: all 1.5s;
       }
     }
   }

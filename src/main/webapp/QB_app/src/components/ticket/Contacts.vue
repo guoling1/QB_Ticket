@@ -19,9 +19,7 @@
         <span class="edit" @click="show(index)"></span>
       </li>
     </ul>
-    <div class="bottom" @click="close">
-      确定
-    </div>
+    <div class="bottom" @click="close">确定</div>
     <div class="mask" id="mask">
       <div class="content">
         <div class="sub">
@@ -48,7 +46,7 @@
           </li>
           <li>
             <label for="personType">乘客类型</label>
-            <input type="text" name="personType" id='personType'  readOnly="true" :value="people.piaoType">
+            <input type="text" name="personType" id='personType'  readOnly="true" value="成人">
           </li>
           <li style="border:none">
             <label for="tel">手机号码</label>
@@ -80,7 +78,6 @@
           };
           this.$http.post('/contactInfo/list',{uid:this.$route.query.uid,appid:this.$route.query.appid})
             .then(function (response) {
-              console.log(response);
                 let massages = response.data.data;
                 for (var i = 0; i < massages.length; i++) {
                   massages[i].piaoType=type[massages[i].personType];
@@ -104,12 +101,10 @@
     },
     methods:{
       importCon:function(){
-        Vue.http.post('/website/importContacts',{uid:1,appid:1})
-        //Vue.http.post('/website/importContacts',{uid:this.$route.query.uid,appid:this.$route.query.appid})
+        Vue.http.post('/website/importContacts',{uid:this.$route.query.uid,appid:this.$route.query.appid})
           .then((res)=>{
             if(res.data.code==1){
-              Vue.$http.post('/contactInfo/list',{uid:1,appid:1})
-              //Vue.$http.post('/contactInfo/list',{uid:this.$route.query.uid,appid:this.$route.query.appid})
+              Vue.$http.post('/contactInfo/list',{uid:this.$route.query.uid,appid:this.$route.query.appid})
                 .then((response)=>{
                     let massages = response.data.data;
                     for (var i = 0; i < massages.length; i++) {
@@ -236,7 +231,7 @@
 .main {
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
   .flexItem(1, 100%);
   background-color: #f5f5f5;
   position: absolute;
@@ -248,6 +243,7 @@
   width: 100%;
   height: 64px;
   color: #fefefe;
+  position: fixed;
   background-color: #4ab9f1;
   padding: 30px 10px 0;
   .close {
@@ -265,9 +261,13 @@
   }
 }
 .con{
+  background: #fff;
+  position: fixed;
+  top: 64px;
   padding: 0 15px;
   background: #fff;
   width: 100%;
+  z-index: 100;
 }
 .banner{
   height: 45px;
@@ -286,7 +286,8 @@
   }
 }
 ul{
-
+  overflow: auto;
+  padding: 111px 0 50px 0;
   li{
     background: #fff;
     height: 65px;

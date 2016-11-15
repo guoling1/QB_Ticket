@@ -10,7 +10,6 @@
           <div class="side write">
             <div class="left">{{$submitInfo.fromStationName}}</div>
             <img class="middle" src="../../assets/exchange-blue.png">
-
             <div class="right">{{$submitInfo.toStationName}}</div>
           </div>
         </div>
@@ -30,16 +29,16 @@
         </div>
       </div>
       <div class="space no-border">
-        <div class="group no-border" v-for="passenger in passengers">
-          <div class="list"></div>
+        <div class="group no-border" v-for="(passenger,index) in passengers">
+          <div class="list" @click="minus(index,$event)"></div>
           <div class="write no-prompt">
             <span class="name">{{passenger.name}}</span>
             {{passenger.identy}}
             <span class="info">{{passenger.piaoType}}票</span>
           </div>
         </div>
-        <div class="group no-border" v-for="child in childs">
-          <div class="list"></div>
+        <div class="group no-border" v-for="(child,index) in childs">
+          <div class="list" @click="minus(index,$event)"></div>
           <div class="write no-prompt">
             <span class="name">{{child.name}}</span>
             <span class="info">{{child.personType}}票</span>
@@ -191,6 +190,12 @@
       });
     },
     methods: {
+      minus:function(index,event){
+        console.log(event);
+        console.log(index);
+        console.log(this.$data.submitInfo.grabPassengers);
+        //this.$data.submitInfo.grabPassengers.splice(index,1)
+      },
       addChild:function(){
         if(this.$data.submitInfo.grabPassengers.length==0){
           console.log("请先添加成人")
@@ -394,10 +399,10 @@
         for (let i in storeDate) {
           if (storeDate[i]) {
             data.push(storeDate[i]);
-            console.log(data);
             this.$data.submitInfo.grabPassengers.push({
               id: storeDate[i].id,
               name: storeDate[i].name,
+              identy:storeDate[i].identy,
               piaoType: type[storeDate[i].personType]
             })
           }

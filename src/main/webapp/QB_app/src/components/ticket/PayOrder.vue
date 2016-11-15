@@ -48,7 +48,7 @@
         <div class="cancel">取消订单</div>
       </div>
       <div class="submit">
-        <div class="detail">
+        <div class="detail" v-bind:class="{active:detail}">
           <div class="tt">金额详情</div>
           <div class="tt_detail">
             <div class="left">火车票</div>
@@ -62,9 +62,9 @@
           </div>
         </div>
         <div class="btn">
-          <div class="left">
+          <div class="left" @click="detailShow">
             <div class="amount">实付款<span class="red">￥</span><span class="red big">{{orderInfo.totalPrice}}</span></div>
-            <div class="i"></div>
+            <div class="i" v-bind:class="{active:detail}"></div>
           </div>
           <div class="right" v-bind:class="{dis:orderInfo.status!=3}" @click="submit">立即支付</div>
         </div>
@@ -135,7 +135,8 @@
           index: 0,
           checkCode: '',
           sn: ''
-        }
+        },
+        detail: false
       }
     },
     created: function () {
@@ -182,6 +183,9 @@
       });
     },
     methods: {
+      detailShow: function () {
+        this.$data.detail = !this.$data.detail;
+      },
       timer: function (t) {
         let polling2 = '';
         const pollFun2 = ()=>{
@@ -633,9 +637,12 @@
       z-index: 1;
       background-color: #FFF;
       width: 100%;
-      top: -88px;
+      top: 0;
       left: 0;
       padding: 15px;
+      &.active {
+        top: -88px;
+      }
       .tt {
         font-size: 12px;
         color: #111;
@@ -687,6 +694,10 @@
           margin-top: 20px;
           background: url("../../assets/detail.png") no-repeat center;
           background-size: 12px 7px;
+          transform: rotate(180deg);
+          &.active {
+            transform: rotate(0deg);
+          }
         }
       }
       .right {
