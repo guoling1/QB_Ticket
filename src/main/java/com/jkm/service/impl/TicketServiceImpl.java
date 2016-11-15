@@ -705,6 +705,7 @@ public class TicketServiceImpl implements TicketService {
                         JSONObject obj = (JSONObject) jsonArray.get(0);
                         final RefundTicketFlow flow = this.refundTicketFlowService.getByTicketNo(obj.getString("ticket_no"));
                 log.info("线上退票结果推送" + flow.getOrderFormDetailId() + "订单退票失败");
+                        flow.setStatus(EnumRefundTicketFlowStatus.REFUND_TICKET_FAIL.getId());
                         flow.setRemark("线上退票失败" + obj.getString("returnfailmsg"));
                         this.refundTicketFlowService.update(flow);
                         this.orderFormDetailService.updateStatusById(flow.getOrderFormDetailId(), EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
