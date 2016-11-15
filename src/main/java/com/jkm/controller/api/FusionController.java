@@ -1,33 +1,23 @@
 package com.jkm.controller.api;
 
-import com.google.common.base.Preconditions;
 import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
-import com.jkm.controller.helper.request.RequestTicketRefund;
-import com.jkm.controller.helper.response.ResponseTicketRefund;
-import com.jkm.entity.fusion.AuthenData;
 import com.jkm.entity.fusion.QueryQuickPayData;
 import com.jkm.entity.fusion.QueryRefundData;
 import com.jkm.entity.fusion.SingleRefundData;
-import com.jkm.enums.notifier.EnumVerificationCodeType;
 import com.jkm.service.AuthenService;
-import com.jkm.service.notifier.SmsAuthService;
-import com.jkm.util.DateFormatUtil;
 import com.jkm.util.SnGenerator;
-import com.jkm.util.ValidationUtil;
 import com.jkm.util.mq.MqConfig;
 import com.jkm.util.mq.MqProducer;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.IOException;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -195,6 +185,7 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.info("获取验证码异常");
+            logger.info(e.getMessage());
             responseEntityBase.setMessage("获取验证码异常");
             responseEntityBase.setCode(500);
         }
@@ -269,6 +260,7 @@ public class FusionController extends BaseController {
             Map<String, Object> result = authenService.queryRefund(queryRefundData);
             logger.info("结果："+result);
         }catch(Exception e){
+            logger.info(e.getMessage());
             responseJo.put("result",false);
             responseJo.put("message",e.getMessage());
         }
@@ -290,8 +282,9 @@ public class FusionController extends BaseController {
             mqJo.put("dt", "20161111");
             mqJo.put("sendCount",0);
             mqJo.put("orderId",165);
-            MqProducer.sendMessage(mqJo, MqConfig.FAST_PAY_QUERY,100);
+            MqProducer.sendMessage(mqJo, MqConfig.FAST_PAY_QUERY,2000);
         }catch(Exception e){
+            logger.info(e.getMessage());
             responseJo.put("result",false);
             responseJo.put("message",e.getMessage());
         }

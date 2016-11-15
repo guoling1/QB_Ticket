@@ -45,6 +45,7 @@ public class BindCardController extends BaseController {
             }
         }catch (Exception e){
             log.info("绑定银行卡异常");
+            log.info(e.getMessage());
             responseEntityBase.setCode(500);
             responseEntityBase.setMessage(e.getMessage());
         }
@@ -68,6 +69,7 @@ public class BindCardController extends BaseController {
             responseEntityBase.setData(list);
         }catch (Exception e){
             log.info("银行卡列表异常");
+            log.info(e.getMessage());
             responseEntityBase.setCode(500);
             responseEntityBase.setMessage("fail");
         }
@@ -97,6 +99,7 @@ public class BindCardController extends BaseController {
             }
         }catch (Exception e){
             log.info("删除银行卡异常");
+            log.info(e.getMessage());
             responseEntityBase.setCode(500);
             responseEntityBase.setMessage("删除失败");
         }

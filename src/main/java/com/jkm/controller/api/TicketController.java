@@ -157,7 +157,6 @@ public class TicketController extends BaseController{
     @RequestMapping(value = "/grab", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntityBase<ResponseGrabTicket> grabTicket(@RequestBody final RequestGrabTicket requset) throws Exception {
-        this.ticketService.requestGrabImpl(37);
         requset.setUid(super.getUid(requset.getAppId(), requset.getUid()));
         Preconditions.checkState(ValidateUtils.isMobile(requset.getPhone()));
         final ResponseEntityBase<ResponseGrabTicket> result = new ResponseEntityBase<>();

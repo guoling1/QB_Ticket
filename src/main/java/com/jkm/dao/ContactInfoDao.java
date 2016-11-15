@@ -84,4 +84,10 @@ public interface ContactInfoDao {
      * @return
      */
     List<TbContactInfo> selectListByUid(@Param("uid") String uid);
+    /**
+     * 根据uid查询一条乘客信息信息
+     * @param uid
+     * @return
+     */
+    TbContactInfo selectOneListByUid(@Param("uid") String uid);
 }
