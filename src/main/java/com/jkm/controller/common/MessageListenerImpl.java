@@ -136,18 +136,14 @@ public class MessageListenerImpl implements MessageListener {
             }else if((MqConfig.TICKET_CANCEL_EXPIRED_ORDER).equals(message.getTag())){
                 log.info("消费[过了支付时间的订单[" + jo.getLong("orderFormId") + "]]");
                 this.orderFormService.handleExpiredOrderForm(jo.getLong("orderFormId"));
-                this.orderFormService.handleExpiredOrderForm(jo.getLong("orderFormId"));
             }else if(MqConfig.TICKET_CANCEL_EXPIRED_GRAB_ORDER.equals(message.getTag())){
                 log.info("取消到期未付款抢票订单");
-                this.orderFormService.handleExpiredOrderForm(jo.getLong("orderFormId"));
                 this.grabTicketFormService.handleExpiredOGrabForm(jo.getLong("grabTicketFormId"));
             }else if(MqConfig.NO_PACKAGE_WAIT_REFUND.equals(message.getTag())){
                 log.info("抢票订单没买套餐自动退款");
-                this.orderFormService.handleExpiredOrderForm(jo.getLong("orderFormId"));
                 this.grabTicketFormService.handleNoPackageWaitRefund(jo.getLong("grabTicketFormId"));
             }else if (MqConfig.GRAB_FORM_FAIL_WAIT_REFUND.equals(message.getTag())) {
                 log.info("抢票下单失败");
-                this.orderFormService.handleExpiredOrderForm(jo.getLong("orderFormId"));
                 this.grabTicketFormService.handleNoPackageWaitRefund(jo.getLong("grabTicketFormId"));
             }else if (MqConfig.TICKET_HANDLE_REFUND_ORDER_RESULT.equals(message.getTag())) {
                 log.info("消费[订单[" + jo.getLong("orderFormId") + "]退款在请求中的消息]");
