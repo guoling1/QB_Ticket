@@ -2,6 +2,7 @@ package com.jkm.service.impl;
 
 import com.jkm.dao.UserInfoDao;
 import com.jkm.entity.UserInfo;
+import com.jkm.entity.helper.UserBankCardSupporter;
 import com.jkm.service.UserInfoService;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
@@ -82,8 +83,8 @@ public class UserInfoServiceImpl implements UserInfoService {
             u.setPhone(record.getPhone());
             u.setAccount(record.getAccount());
             u.setPwd(record.getPwd());
-            u.setCardId(record.getCardId());
-            u.setCardNo(record.getCardNo());
+            u.setCardId(UserBankCardSupporter.encryptCardId(record.getCardId()));
+            u.setCardNo(UserBankCardSupporter.encryptCardNo(record.getCardNo()));
             u.setRealName(record.getRealName());
             u.setStatus(0);
             userInfoDao.insert(u);
@@ -91,7 +92,7 @@ public class UserInfoServiceImpl implements UserInfoService {
         }else{
             if(userInfo.getCardId()!=null&&userInfo.getRealName()!=null
                     &&!"".equals(userInfo.getCardId())&&!"".equals(userInfo.getRealName())){
-                if(record.getCardId().equals(userInfo.getCardId())&&record.getRealName().equals(userInfo.getRealName())){
+                if((record.getCardId()).equals(UserBankCardSupporter.decryptCardId(userInfo.getCardId()))&&record.getRealName().equals(userInfo.getRealName())){
                     jo.put("result",true);
                 }else{
                     jo.put("result",false);
@@ -99,8 +100,8 @@ public class UserInfoServiceImpl implements UserInfoService {
                 }
             }else{
                 userInfo.setRealName(record.getRealName());
-                userInfo.setCardNo(record.getCardNo());
-                userInfo.setCardId(record.getCardId());
+                userInfo.setCardNo(UserBankCardSupporter.encryptCardNo(record.getCardNo()));
+                userInfo.setCardId(UserBankCardSupporter.encryptCardId(record.getCardId()));
                 userInfoDao.updateByPrimaryKeySelective(userInfo);
                 jo.put("result",true);
             }

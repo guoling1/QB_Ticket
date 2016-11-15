@@ -35,7 +35,7 @@
           <div class="write no-prompt">
             <span class="name">{{passenger.name}}</span>
             {{passenger.identy}}
-            <span class="info">{{passenger.type}}票</span>
+            <span class="info">{{passenger.piaoType}}票</span>
           </div>
         </div>
         <div class="group no-border" v-for="child in childs">
@@ -89,7 +89,7 @@
         <ul>
           <li v-for="(card,index) in payInfo.cardList" v-bind:class="{active:payInfo.index==index}"
               @click="select($event,card,index)">
-            <div class="logo">logo</div>
+            <div class="o">o</div>
             <div class="word">这是银行</div>
             <div class="word">{{card.cardNo}}</div>
             <div class="small">储蓄卡</div>
@@ -101,7 +101,7 @@
       <div class="checkout" v-show="!payInfo.list">
         <div class="xx"></div>
         <div class="ul">
-          <div class="logo">logo</div>
+          <div class="o">o</div>
           <div class="word">这是银行</div>
           <div class="word">{{payInfo.checkout.cardNo}}</div>
           <div class="small">储蓄卡</div>
@@ -210,7 +210,6 @@
         }
         Vue.http.post('/contactInfo/add',JSON.stringify(addPerson))
           .then((res)=>{
-            console.log(res);
             if(res.data.code==1){
               this.$data.show=!this.$data.show
               addPerson.id=res.data.data;
@@ -387,7 +386,6 @@
       },
       passengers: function () {
         let storeDate = this.$store.state.contact.info;
-        console.log(storeDate);
         let data = [];
         this.$data.submitInfo.grabPassengers = [];
         let type = {
@@ -396,6 +394,7 @@
         for (let i in storeDate) {
           if (storeDate[i]) {
             data.push(storeDate[i]);
+            console.log(data);
             this.$data.submitInfo.grabPassengers.push({
               id: storeDate[i].id,
               name: storeDate[i].name,
@@ -403,7 +402,7 @@
             })
           }
         }
-        return data;
+        return this.$data.submitInfo.grabPassengers;
       },
       $submitInfo: function () {
         let data = this.$data.submitInfo;

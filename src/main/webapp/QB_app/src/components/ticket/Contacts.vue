@@ -13,7 +13,7 @@
         <span class="option"></span>
         <div class="passen">
           <span class="name">{{people.name}}</span>
-          <span class="type">(成人)</span>
+          <span class="type">({{people.piaoType}})</span>
           <p>{{people.identy}}</p>
         </div>
         <span class="edit" @click="show(index)"></span>
@@ -41,7 +41,6 @@
           <li class="typeLi">
             <label for="identyType">证件类型</label>
             <input type="text" name="identyType" id='identyType' readOnly="true" value="二代身份证">
-
           </li>
           <li>
             <label for="identy">证件号码</label>
@@ -49,7 +48,7 @@
           </li>
           <li>
             <label for="personType">乘客类型</label>
-            <input type="text" name="personType" id='personType'  readOnly="true" value="成人">
+            <input type="text" name="personType" id='personType'  readOnly="true" :value="people.piaoType">
           </li>
           <li style="border:none">
             <label for="tel">手机号码</label>
@@ -76,11 +75,15 @@
     computed:{
       showModule:function () {
         if(this.$store.state.contact.ctrl){
+          let type = {
+            1:'成人',2: '儿童',3: '学生',4: '伤残军人'
+          };
           this.$http.post('/contactInfo/list',{uid:this.$route.query.uid,appid:this.$route.query.appid})
             .then(function (response) {
+              console.log(response);
                 let massages = response.data.data;
                 for (var i = 0; i < massages.length; i++) {
-                  //性别
+                  massages[i].piaoType=type[massages[i].personType];
                   massages[i].sex=massages[i].sex==0?"男":"女";
                 }
               this.$data.massages = massages;
