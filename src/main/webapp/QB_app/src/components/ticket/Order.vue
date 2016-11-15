@@ -28,22 +28,23 @@
       <ul v-show="robShow">
         <li v-for="massage in robMassages">
           <div class="top" v-show="massage.isGrab==1">
-            <span class="date">{{massage.startDate}} {{massage.startTime}}出发</span>
+            <span class="date">{{massage.startDate}} {{massage.startTime}} 出发</span>
             <span class="checi">{{massage.checi}}</span>
           </div>
           <div class="top" v-show="massage.isGrab==0">
-            <span class="date">{{massage.startDate}}出发</span>
+            <span class="date">{{massage.grabStartTime}} 出发</span>
           </div>
           <div class="bottom">
-            <div>
+            <div class="group">
               <span class="form">{{massage.fromStationName}}</span>
               <img src="../../assets/jiantou.png" alt=""/>
               <span class="to">{{massage.toStationName}}</span>
+              <span class="price">￥{{massage.grabTotalPrice}}</span>
             </div>
-            <span class="name" v-for="passenger in massage.passengerInfo">{{passenger.name}}</span>
-            <router-link :to="{path:'/ticket/refund-detail',query:{orderFormId:massage.orderFormId}}">
-              <p class="static" v-for="passenger in massage.passengerInfo">{{passengerStatus[passenger.status-1]}}</p>
-            </router-link>
+            <div class="group">
+              <span class="name" v-for="passenger in massage.passengerInfo">{{passenger.name}}</span>
+              <p class="static">{{robOrderStatus[massage.status]}}</p>
+            </div>
           </div>
         </li>
       </ul>
@@ -67,6 +68,7 @@
         robShow: false,
         passengerStatus: ["票初始化", "出票成功", "出票失败", "退票中", "退票请求成功", "退票成功", "退票失败", "订单取消"],
         orderStatus: ["订单已删除", " ", "订单初始化", "占座申请中", "占座成功", "占座失败", "支付中", "客户付款成功", "客户付款失败", "确认出票请求失败", "确认出票请求成功", "出票成功", "出票失败", "订单已经退票", "订单取消", "退票中", "退票成功", "退票失败"],
+        robOrderStatus: ["", "", "待支付", "抢票中", "未支付", "抢票中", "抢票中", "抢票中", "抢票失败", "抢票成功", "订单已取消", "抢票中", "", "", "退款中", "退款成功", "退款失败", "", "待支付", "待支付"]
       }
     },
     methods: {
@@ -87,7 +89,6 @@
                 for (let i = 0; i < res.data.data.length; i++) {
                   res.data.data[i].passengerInfo = JSON.parse(res.data.data[i].passengerInfo);
                 }
-                console.log(res.data.data);
                 this.$data.robMassages = res.data.data;
               } else {
                 console.log(res.data.message);
@@ -99,7 +100,12 @@
         }
       }
     },
-    beforeRouteEnter (to, from, next) {
+    computed: {
+      $robMassages: function () {
+        return this.$data.robMassages;
+      }
+    },
+    beforeRouteEnter(to, from, next) {
       console.log(to.query);
       Vue.http.post('/order/queryMyOrder', {
         appid: to.query.appid,
@@ -222,8 +228,8 @@
           position: absolute;
           bottom: 10px;
           right: 15px;
+          padding: 0 5px;
           border-radius: 2px;
-          width: 50px;
           height: 23px;
           line-height: 23px;
           font-size: 12px;
