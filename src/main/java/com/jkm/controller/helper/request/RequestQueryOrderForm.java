@@ -10,6 +10,8 @@ import lombok.Data;
 @Data
 public class RequestQueryOrderForm {
 
+    private String appid;
+
     /**
      * 联系人的用户id
      */

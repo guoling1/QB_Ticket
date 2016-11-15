@@ -41,12 +41,12 @@ public class ContactInfoController extends BaseController {
             TbContactInfo ti = new TbContactInfo();
             ti.setUid(super.getUid(requestJson.getString("appid"),requestJson.getString("uid")));
             Preconditions.checkNotNull(requestJson.get("name"),"姓名不能为空");
-            Preconditions.checkNotNull(requestJson.get("identy"),"证件号码不能为空");
-            Preconditions.checkNotNull(requestJson.get("identyType"),"请选择证件类型");
+//            Preconditions.checkNotNull(requestJson.get("identyType"),"请选择证件类型");
+//            Preconditions.checkNotNull(requestJson.get("identy"),"证件号码不能为空");
             Preconditions.checkNotNull(requestJson.get("personType"),"请选择乘客类型");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getString("name")), "姓名不能为空");
-            Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getString("identy")), "证件号码不能为空");
-            Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getString("identyType")), "请选择证件类型");
+//            Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getString("identy")), "证件号码不能为空");
+//            Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getString("identyType")), "请选择证件类型");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getString("personType")), "请选择乘客类型");
 
             if("1".equals(requestJson.getString("identyType"))&&!ValidationUtil.isIdCard(requestJson.getString("identy"))){
@@ -84,6 +84,7 @@ public class ContactInfoController extends BaseController {
             }
         }catch (Exception e){
             log.info("添加联系人信息异常");
+            log.info(e.getMessage());
             responseEntityBase.setMessage(e.getMessage());
             responseEntityBase.setCode(500);
         }
@@ -110,6 +111,7 @@ public class ContactInfoController extends BaseController {
             responseEntityBase.setMessage("查询成功");
         }catch (Exception e){
             log.info("根据id查询用户信息异常");
+            log.info(e.getMessage());
             responseEntityBase.setCode(500);
             responseEntityBase.setMessage("查询异常");
         }
@@ -136,6 +138,7 @@ public class ContactInfoController extends BaseController {
             responseEntityBase.setData(rowNum);
         }catch (Exception e){
             log.info("删除联系人异常");
+            log.info(e.getMessage());
             responseEntityBase.setCode(500);
             responseEntityBase.setMessage("查询异常");
         }
@@ -182,6 +185,7 @@ public class ContactInfoController extends BaseController {
             responseEntityBase.setData(rowNum);
         }catch (Exception e){
             log.info("修改联系人异常");
+            log.info(e.getMessage());
             responseEntityBase.setCode(500);
             responseEntityBase.setMessage("修改异常");
         }
@@ -205,6 +209,7 @@ public class ContactInfoController extends BaseController {
             responseEntityBase.setData(list);
         }catch (Exception e){
             log.info("联系人列表异常");
+            log.info(e.getMessage());
             responseEntityBase.setCode(500);
             responseEntityBase.setMessage("调用失败");
         }

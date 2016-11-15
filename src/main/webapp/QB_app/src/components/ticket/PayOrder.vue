@@ -147,6 +147,7 @@
             clearInterval(polling);
             console.log('改变信息');
             this.$data.orderInfo = res.data.data;
+            vm.$data.payInfo.price = res.data.data.totalPrice;
             // 调用定时器
             this.timer(this.$data.orderInfo.expireTime);
           } else if (res.data.code == 1 && res.data.data.status == 4) {
@@ -170,6 +171,7 @@
             vm.$data.common.appid = to.query.appid;
             vm.$data.common.uid = to.query.uid;
             vm.$data.payInfo.orderId = to.query.id;
+            vm.$data.payInfo.price = res.data.data.totalPrice;
           });
         } else {
           console.log(res.data.message);
@@ -207,7 +209,7 @@
             price: this.$data.payInfo.price,
             name: this.$data.payInfo.peopleInfo.accountName,
             card: this.$data.payInfo.peopleInfo.cardId,
-            payType: 1
+            payType: 0
           }
         });
       },

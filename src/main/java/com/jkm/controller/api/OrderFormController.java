@@ -53,6 +53,8 @@ public class OrderFormController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "queryMyOrder", method = RequestMethod.POST)
     public ResponseEntityBase<Object[]> queryMyOrderForm(@RequestBody final RequestQueryOrderForm request) {
+        final String uid = super.getUid(request.getAppid(), request.getUid());
+        request.setUid(uid);
         final ResponseEntityBase<Object[]> results = new ResponseEntityBase<>();
         final List<OrderForm> orderForms = this.orderFormService.selectByUid(request.getUid());
         if (CollectionUtils.isEmpty(orderForms)) {
@@ -103,6 +105,8 @@ public class OrderFormController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "queryGrabOrder", method = RequestMethod.POST)
     public ResponseEntityBase<Object[]> queryGrabOrderForm(@RequestBody final RequestQueryGrabOrder request) {
+        final String uid = super.getUid(request.getAppid(), request.getUid());
+        request.setUid(uid);
         final ResponseEntityBase<Object[]> results = new ResponseEntityBase<>();
         final List<GrabTicketForm> grabTicketForms = this.grabTicketFormService.selectByUid(request.getUid());
         if (CollectionUtils.isEmpty(grabTicketForms)) {
@@ -161,7 +165,7 @@ public class OrderFormController extends BaseController {
         final GrabTicketForm grabTicketForm = grabTicketFormOptional.get();
         final List<OrderFormDetail> orderFormDetails = this.orderFormDetailService.selectByGrabTicketFormId(request.getGrabTicketFormId());
         //判断是否抢到票
-        if(!grabTicketForm.getCheci().isEmpty()){
+        if(!(grabTicketForm.getCheci() == null)){
             //抢到
             results.setData(getGrabResponse(grabTicketForm, orderFormDetails));
             return results;
