@@ -35,7 +35,14 @@
           <div class="write no-prompt">
             <span class="name">{{passenger.name}}</span>
             {{passenger.identy}}
-            <span class="info">{{passenger.personType}}票</span>
+            <span class="info">{{passenger.piaoType}}票</span>
+          </div>
+        </div>
+        <div class="group no-border" v-for="child in childs">
+          <div class="list"></div>
+          <div class="write no-prompt">
+            <span class="name">{{child.name}}</span>
+            <span class="info">{{child.piaoType}}票</span>
           </div>
         </div>
       </div>
@@ -43,9 +50,7 @@
         <div class="handle">
           <div class="btn" @click="contact">添加/编辑乘客</div>
           <div class="line"></div>
-          <!-- <router-link to="/ticket/add-child"> -->
-            <div class="btn" @click="addChild">添加儿童</div>
-          <!-- </router-link> -->
+          <div class="btn" @click="addChild">添加儿童</div>
         </div>
       </div>
       <div class="space">
@@ -177,7 +182,7 @@
           sn: ''
         },
         show:false,
-        child:[]
+        childs:[]
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -187,7 +192,12 @@
     },
     methods: {
       addChild:function(){
-        this.$data.show=!this.$data.show
+        if(this.$data.submitInfo.grabPassengers.length==0){
+          console.log("请先添加成人")
+        }else{
+          this.$data.show=!this.$data.show
+        }
+
       },
       sev:function(){
         var addPerson={
@@ -196,9 +206,7 @@
           name:document.querySelector('#name').value,
           sex:document.querySelector(':checked').value,
           birthday:document.querySelector('#birthday').value,
-          personType:2,
-          identy:120482198605103634,
-          identyType:1
+          personType:2
         }
         Vue.http.post('/contactInfo/add',JSON.stringify(addPerson))
           .then((res)=>{
@@ -206,8 +214,7 @@
             if(res.data.code==1){
               this.$data.show=!this.$data.show
               addPerson.id=res.data.data;
-              console.log(addPerson);
-              this.$data.child.push(addPerson);
+              this.$data.childs.push(addPerson);
           }
         })
         .catch(function(err){
@@ -315,6 +322,7 @@
         });
       },
       submit: function () {
+        this.$data.submitInfo.grabPassengers.concat(this.$data.child)
         let data = this.$data.submitInfo;
         if (data.seatTypes == '1,3,4,O,M,9') {
           data.seatTypes = '全部坐席';
@@ -392,13 +400,6 @@
             })
           }
         }
-        for (var i = 0; i < this.$data.child.length; i++) {
-          if(this.$data.child.length!=0){
-            this.$data.submitInfo.grabPassengers.push(this.$data.child[i])
-          }
-        }
-        console.log(this.$data.child);
-        console.log(this.$data.submitInfo.grabPassengers);
         return data;
       },
       $submitInfo: function () {
