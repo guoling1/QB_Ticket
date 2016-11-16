@@ -131,7 +131,6 @@ public class TicketController extends BaseController{
     @ResponseBody
     public ResponseEntityBase<ResponseTicketRefund> refund(@RequestBody final RequestTicketRefund req) {
         final ResponseEntityBase<ResponseTicketRefund> result = new ResponseEntityBase<>();
-
         try{
             Pair<Boolean,String> pair = this.ticketService.refund(req.getOrderFormDetailId());
             if(pair.getLeft()){

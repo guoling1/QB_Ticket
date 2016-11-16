@@ -1003,7 +1003,7 @@ public class TicketServiceImpl implements TicketService {
         chargeMoneyOrder.setStatus(EnumChargeMoneyOrderStatus.INIT.getId());
         chargeMoneyOrderService.init(chargeMoneyOrder);
         //放入消息队列 , 15分钟支付时间
-        log.info(grabTicketForm.getId() + "抢票单待支付15分钟,放入消息队列");
+        log.info("抢票单ID:"+ grabTicketForm.getId() + "抢票单待支付15分钟,放入消息队列");
         JSONObject mqJo = new JSONObject();
         mqJo.put("grabTicketFormId",grabTicketForm.getId());
         MqProducer.sendMessage(mqJo, MqConfig.TICKET_CANCEL_EXPIRED_GRAB_ORDER, 1000*15*60);
