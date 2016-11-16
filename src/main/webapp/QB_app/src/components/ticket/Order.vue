@@ -106,7 +106,6 @@
       }
     },
     beforeRouteEnter(to, from, next) {
-      console.log(to.query);
       Vue.http.post('/order/queryMyOrder', {
         appid: to.query.appid,
         uid: to.query.uid,
