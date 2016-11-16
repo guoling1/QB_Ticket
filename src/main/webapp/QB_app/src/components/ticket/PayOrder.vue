@@ -280,7 +280,11 @@
           sn: this.$data.payInfo.sn //调用短信接口返回的值
         }).then(function (res) {
           if (res.data.code == 1) {
-            console.log('跳转出票页');
+            this.$router.push({path:'/ticket/refund-success',query:{
+              appid: this.$data.common.appid,
+              uid: this.$data.common.uid,
+              orderid: this.$data.payInfo.orderId
+            }})
           } else {
             console.log(res);
           }
@@ -306,8 +310,8 @@
                 this.$router.push({
                   path: '/pay/first-add',
                   query: {
-                    appid: this.$data.submitInfo.appId,
-                    uid: this.$data.submitInfo.uid,
+                    appid: this.$data.common.appid,
+                    uid: this.$data.common.uid,
                     id: this.$data.payInfo.orderId,
                     price: res.data.payInfo.price,
                     payType: 0
