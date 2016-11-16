@@ -203,25 +203,33 @@
     beforeRouteEnter (to, from, next) {
       let sessionPreOrder = JSON.parse(sessionStorage.getItem('preOrder'));
       let sessionPreDate = JSON.parse(sessionStorage.getItem('preDate'));
-      next(function (vm) {
-        vm.$data.sureOrder.appId = to.query.appid;
-        vm.$data.sureOrder.uid = to.query.uid;
-        vm.$data.sureOrder.price = to.query.price;
-        vm.$data.otherData.table = to.query.table;
-        vm.$data.sureOrder.fromStationName = sessionPreOrder.from_station_name;
-        vm.$data.sureOrder.fromStationCode = sessionPreOrder.from_station_code;
-        vm.$data.sureOrder.toStationName = sessionPreOrder.to_station_name;
-        vm.$data.sureOrder.toStationCode = sessionPreOrder.to_station_code;
-        vm.$data.sureOrder.zwCode = zwCode[to.query.table];
-        vm.$data.sureOrder.startTime = sessionPreOrder.start_time;
-        vm.$data.sureOrder.endTime = sessionPreOrder.arrive_time;
-        vm.$data.sureOrder.runTime = sessionPreOrder.run_time_minute;
-        vm.$data.sureOrder.checi = sessionPreOrder.train_code;
-        vm.$data.sureOrder.startDate = sessionPreDate.startTime.post;
-        vm.$data.sureOrder.endDate = sessionPreDate.arriveTime.post;
-        vm.$data.otherData.startShow = sessionPreDate.startTime.show;
-        vm.$data.otherData.arriveShow = sessionPreDate.arriveTime.show;
-        vm.$data.otherData.runShow = sessionPreDate.runTime;
+      Vue.http.post('/userInfo/findPhone',{
+        appid: to.query.appid,
+        uid: to.query.uid
+      }).then(function(res){
+        next(function (vm) {
+          vm.$data.sureOrder.mobile = res.data.data;
+          vm.$data.sureOrder.appId = to.query.appid;
+          vm.$data.sureOrder.uid = to.query.uid;
+          vm.$data.sureOrder.price = to.query.price;
+          vm.$data.otherData.table = to.query.table;
+          vm.$data.sureOrder.fromStationName = sessionPreOrder.from_station_name;
+          vm.$data.sureOrder.fromStationCode = sessionPreOrder.from_station_code;
+          vm.$data.sureOrder.toStationName = sessionPreOrder.to_station_name;
+          vm.$data.sureOrder.toStationCode = sessionPreOrder.to_station_code;
+          vm.$data.sureOrder.zwCode = zwCode[to.query.table];
+          vm.$data.sureOrder.startTime = sessionPreOrder.start_time;
+          vm.$data.sureOrder.endTime = sessionPreOrder.arrive_time;
+          vm.$data.sureOrder.runTime = sessionPreOrder.run_time_minute;
+          vm.$data.sureOrder.checi = sessionPreOrder.train_code;
+          vm.$data.sureOrder.startDate = sessionPreDate.startTime.post;
+          vm.$data.sureOrder.endDate = sessionPreDate.arriveTime.post;
+          vm.$data.otherData.startShow = sessionPreDate.startTime.show;
+          vm.$data.otherData.arriveShow = sessionPreDate.arriveTime.show;
+          vm.$data.otherData.runShow = sessionPreDate.runTime;
+        });
+      },function(err){
+        console.log(err)
       });
     },
     methods: {

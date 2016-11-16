@@ -186,10 +186,20 @@
         childs: []
       }
     },
-    beforeRouteEnter (to, from, next) {
-      next(function (vm) {
-        vm.$data.submitInfo = JSON.parse(sessionStorage.getItem('robOrder'));
-      });
+    created: function () {
+      this.$data.submitInfo = JSON.parse(sessionStorage.getItem('robOrder'));
+      this.$http.post('/userInfo/findPhone',{
+        appid: this.$data.submitInfo.appId,
+        uid: this.$data.submitInfo.uid
+      }).then(function(res){
+        if(res.data.code==1){
+          this.$data.submitInfo.phone = res.data.data;
+        }else{
+          console.lg(res.data.message);
+        }
+      },function(err){
+        console.log(err)
+      })
     },
     methods: {
       minusChild: function (event, index) {
@@ -213,7 +223,7 @@
           sex: document.querySelector(':checked').value,
           birthday: document.querySelector('#birthday').value,
           personType: 2
-        }
+        };
         Vue.http.post('/contactInfo/add', JSON.stringify(addPerson))
           .then((res)=>{
           if (res.data.code == 1) {
@@ -245,6 +255,7 @@
         this.$http.post('/authen/getCode', {
           phone: this.$data.payInfo.checkout.phone,//手机号
           amount: this.$data.payInfo.price, //支付金额
+          verificationCodeType: '7',
           uid: this.$data.submitInfo.uid, //三方商户用户id
           appid: this.$data.submitInfo.appId //三方商户唯一标示appid
         }).then(function (res) {

@@ -228,6 +228,7 @@
         this.$http.post('/authen/getCode', {
           phone: this.$data.payInfo.checkout.phone,//手机号
           amount: this.$data.payInfo.price, //支付金额
+          verificationCodeType: '5',
           uid: this.$data.common.uid, //三方商户用户id
           appid: this.$data.common.appid //三方商户唯一标示appid
         }).then(function (res) {

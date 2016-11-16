@@ -33,6 +33,12 @@ public class NoticeTemplateInitServiceImpl implements NoticeTemplateInitService 
                 "已抢到${trainStationAndTrainNo}次列车，于${runTime}从${startStation}发车，12306订单号${ticketNo}【" + platformName + "】");
         addSmsTemplate(EnumNoticeType.GRAB_TICKET_FAIL,
                 "未抢到${dateAndTrainStation}的列车，系统已取消抢票。资金已全额退至您支付银行卡，请注意查收【" + platformName + "】");
+        addSmsTemplate(EnumNoticeType.GRAB_CANCEL,
+                "您已取消抢票（${dateAndTrainStation}），资金已全额退至您支付银行卡，2小时内到账，请注意查收【钱包%252b%252b】");
+        addSmsTemplate(EnumNoticeType.RETURN_TICKET_ONLINE,
+                "乘客${userName}退票已申请（${dateAndTrainStationAndTrainNo}），将根据铁路局实退金额为您退款，铁路局退款需要1-15个工作日，请注意查收【钱包%252b%252b】");
+        addSmsTemplate(EnumNoticeType.RETURN_TICKET_DOWN,
+                "乘客${userName}退票成功（${dateAndTrainStationAndTrainNo}），票款及出票套餐${amount}元退至您支付银行卡，2小时内到账，请注意查收【钱包%252b%252b】");
     }
 
     private void addSmsTemplate(final EnumNoticeType noticeType,
