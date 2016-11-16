@@ -1077,6 +1077,7 @@ public class AuthenServiceImpl implements AuthenService {
 		JSONObject jo = new JSONObject();
 		Preconditions.checkNotNull(requestData.get("phone"),"手机号不能为空");
 		Preconditions.checkNotNull(requestData.get("amount"),"支付金额不能为空");
+		Preconditions.checkNotNull(requestData.get("verificationCodeType"),"短信类型不能为空");
 		if(!ValidationUtil.isMobile(requestData.getString("phone"))){
 			jo.put("result",false);
 			jo.put("message","手机号格式不正确");
@@ -1084,21 +1085,69 @@ public class AuthenServiceImpl implements AuthenService {
 		}
 		SendPaymentParam sendPaymentParam = new SendPaymentParam();
 		sendPaymentParam.setAmount(requestData.getString("amount"));
+		if("4".equals(requestData.getString("verificationCodeType"))){
+			Pair<Integer, String> codeStatus = smsAuthService.getVerifyCode(requestData.getString("phone"),EnumVerificationCodeType.PAYMENT);
+			int resultType = codeStatus.getKey();
+			if(resultType!=1){
+				jo.put("result",false);
+				jo.put("message",codeStatus.getValue());
+			}else{
+				sendPaymentParam.setCode(codeStatus.getValue());
+				sendPaymentParam.setMobile(requestData.getString("phone"));
+				sendPaymentParam.setUid(requestData.getString("uid"));
+				long sn = ticketSendMessageService.sendPaymentMessage(sendPaymentParam);
+				jo.put("result",true);
+				jo.put("data",sn);
+				jo.put("message","发送验证码成功");
+			}
 
-		Pair<Integer, String> codeStatus = smsAuthService.getVerifyCode(requestData.getString("phone"),EnumVerificationCodeType.PAYMENT);
-		int resultType = codeStatus.getKey();
-		if(resultType!=1){
-			jo.put("result",false);
-			jo.put("message",codeStatus.getValue());
-			return jo;
+		}else if("5".equals(requestData.getString("verificationCodeType"))){
+			Pair<Integer, String> codeStatus = smsAuthService.getVerifyCode(requestData.getString("phone"),EnumVerificationCodeType.PAYMENT_CID);
+			int resultType = codeStatus.getKey();
+			if(resultType!=1){
+				jo.put("result",false);
+				jo.put("message",codeStatus.getValue());
+			}else{
+				sendPaymentParam.setCode(codeStatus.getValue());
+				sendPaymentParam.setMobile(requestData.getString("phone"));
+				sendPaymentParam.setUid(requestData.getString("uid"));
+				long sn = ticketSendMessageService.sendPaymentMessage(sendPaymentParam);
+				jo.put("result",true);
+				jo.put("data",sn);
+				jo.put("message","发送验证码成功");
+			}
+
+		}else if("6".equals(requestData.getString("verificationCodeType"))){
+			Pair<Integer, String> codeStatus = smsAuthService.getVerifyCode(requestData.getString("phone"),EnumVerificationCodeType.PAYMENT_GRAP);
+			int resultType = codeStatus.getKey();
+			if(resultType!=1){
+				jo.put("result",false);
+				jo.put("message",codeStatus.getValue());
+			}else{
+				sendPaymentParam.setCode(codeStatus.getValue());
+				sendPaymentParam.setMobile(requestData.getString("phone"));
+				sendPaymentParam.setUid(requestData.getString("uid"));
+				long sn = ticketSendMessageService.sendPaymentMessage(sendPaymentParam);
+				jo.put("result",true);
+				jo.put("data",sn);
+				jo.put("message","发送验证码成功");
+			}
+		}else if("7".equals(requestData.getString("verificationCodeType"))){
+			Pair<Integer, String> codeStatus = smsAuthService.getVerifyCode(requestData.getString("phone"),EnumVerificationCodeType.PAYMENT_GRAPCID);
+			int resultType = codeStatus.getKey();
+			if(resultType!=1){
+				jo.put("result",false);
+				jo.put("message",codeStatus.getValue());
+			}else{
+				sendPaymentParam.setCode(codeStatus.getValue());
+				sendPaymentParam.setMobile(requestData.getString("phone"));
+				sendPaymentParam.setUid(requestData.getString("uid"));
+				long sn = ticketSendMessageService.sendPaymentMessage(sendPaymentParam);
+				jo.put("result",true);
+				jo.put("data",sn);
+				jo.put("message","发送验证码成功");
+			}
 		}
-		sendPaymentParam.setCode(codeStatus.getValue());
-		sendPaymentParam.setMobile(requestData.getString("phone"));
-		sendPaymentParam.setUid(requestData.getString("uid"));
-		long sn = ticketSendMessageService.sendPaymentMessage(sendPaymentParam);
-		jo.put("result",true);
-		jo.put("data",sn);
-		jo.put("message","发送验证码成功");
 		return jo;
 	}
 }
