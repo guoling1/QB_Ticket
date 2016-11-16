@@ -10,6 +10,7 @@
           <div class="side write">
             <div class="left">{{$submitInfo.fromStationName}}</div>
             <img class="middle" src="../../assets/exchange-blue.png">
+
             <div class="right">{{$submitInfo.toStationName}}</div>
           </div>
         </div>
@@ -37,11 +38,11 @@
             <span class="info">{{passenger.piaoType}}票</span>
           </div>
         </div>
-        <div class="group no-border" v-for="(child,index) in childs">
+        <div class="group no-border" v-for="(child,index) in $$childs">
           <div class="list" @click="minusChild($event,index)"></div>
           <div class="write no-prompt">
             <span class="name">{{child.name}}</span>
-            <span class="info">{{child.personType}}票</span>
+            <span class="info">{{child.piaoType}}票</span>
           </div>
         </div>
       </div>
@@ -88,7 +89,7 @@
         <ul>
           <li v-for="(card,index) in payInfo.cardList" v-bind:class="{active:payInfo.index==index}"
               @click="select($event,card,index)">
-            <div class="o">o</div>
+            <div class="logo">logo</div>
             <div class="word">这是银行</div>
             <div class="word">{{card.cardNo}}</div>
             <div class="small">储蓄卡</div>
@@ -100,7 +101,7 @@
       <div class="checkout" v-show="!payInfo.list">
         <div class="xx"></div>
         <div class="ul">
-          <div class="o">o</div>
+          <div class="logo">logo</div>
           <div class="word">这是银行</div>
           <div class="word">{{payInfo.checkout.cardNo}}</div>
           <div class="small">储蓄卡</div>
@@ -124,7 +125,8 @@
         </li>
         <li>
           <label for="sex">乘客性别</label>
-          <label style="margin-left:10px;color:#999"><input type="radio" name="sex" value="0" checked="checked">男</label>
+          <label style="margin-left:10px;color:#999"><input type="radio" name="sex" value="0"
+                                                            checked="checked">男</label>
           <label style="margin-left:20px;color:#999"><input type="radio" name="sex" value="1">女</label>
         </li>
         <li class="typeLi">
@@ -180,8 +182,8 @@
           checkCode: '',
           sn: ''
         },
-        show:false,
-        childs:[]
+        show: false,
+        childs: []
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -190,40 +192,39 @@
       });
     },
     methods: {
-      minusChild:function(event,index){
-        this.$data.childs.splice(index,1);
+      minusChild: function (event, index) {
+        this.$data.childs.splice(index, 1);
       },
-      minus:function(event,index){
-        this.$store.state.contact.info.splice(index,1);
+      minus: function (event, index) {
+        this.$store.state.contact.info.splice(index, 1);
       },
-      addChild:function(){
-        if(this.$data.submitInfo.grabPassengers.length==0){
+      addChild: function () {
+        if (this.$data.submitInfo.grabPassengers.length == 0) {
           console.log("请先添加成人")
-        }else{
-          this.$data.show=!this.$data.show
+        } else {
+          this.$data.show = !this.$data.show
         }
       },
-      sev:function(){
-        var addPerson={
-          uid:this.$data.submitInfo.uid,
-          appid:this.$data.submitInfo.appId,
-          name:document.querySelector('#name').value,
-          sex:document.querySelector(':checked').value,
-          birthday:document.querySelector('#birthday').value,
-          personType:2
+      sev: function () {
+        var addPerson = {
+          uid: this.$data.submitInfo.uid,
+          appid: this.$data.submitInfo.appId,
+          name: document.querySelector('#name').value,
+          sex: document.querySelector(':checked').value,
+          birthday: document.querySelector('#birthday').value,
+          personType: 2
         }
-        Vue.http.post('/contactInfo/add',JSON.stringify(addPerson))
+        Vue.http.post('/contactInfo/add', JSON.stringify(addPerson))
           .then((res)=>{
-            if(res.data.code==1){
-              this.$data.show=!this.$data.show
-              addPerson.id=res.data.data;
-              if(addPerson.personType==2){
-                addPerson.personType="儿童"
-              }
-              this.$data.childs.push(addPerson);
+          if (res.data.code == 1) {
+            this.$data.show = !this.$data.show;
+            let newPerson = {};
+            newPerson.id = res.data.data;
+            newPerson.name = document.querySelector('#name').value;
+            newPerson.piaoType = 2;
+            this.$data.childs.push(newPerson);
           }
-        })
-        .catch(function(err){
+        }).catch(function (err) {
           console.log(err);
         })
       },
@@ -323,30 +324,30 @@
         this.$data.submitInfo.buyTicketPackageId = num;
       },
       contact: function () {
-        var ary=[];
-        for(var i=0;i<this.$data.submitInfo.grabPassengers.length;i++){
+        var ary = [];
+        for (var i = 0; i < this.$data.submitInfo.grabPassengers.length; i++) {
           ary.push(this.$data.submitInfo.grabPassengers[i].id)
         }
         this.$store.commit("CONTACT_OPEN", {
           ctrl: true,
-          keepID:ary
+          keepID: ary
         });
       },
       submit: function () {
-        this.$data.submitInfo.grabPassengers.concat(this.$data.child)
+        this.$data.submitInfo.grabPassengers=this.$data.submitInfo.grabPassengers.concat(this.$data.childs);
         let data = this.$data.submitInfo;
-        if (data.seatTypes == '1,3,4,O,M,9') {
+        if (data.seatTypes == '0,1,2,3,4,6,O,M,P,9') {
           data.seatTypes = '全部坐席';
         } else {
-          //data.seatTypes = data.seatTypes.replace('无座', '0');
+          data.seatTypes = data.seatTypes.replace('无座', '0');
           data.seatTypes = data.seatTypes.replace('硬座', '1');
-          //data.seatTypes = data.seatTypes.replace('软座', '2');
+          data.seatTypes = data.seatTypes.replace('软座', '2');
           data.seatTypes = data.seatTypes.replace('硬卧', '3');
           data.seatTypes = data.seatTypes.replace('软卧', '4');
-          //data.seatTypes = data.seatTypes.replace('高级软卧', '6');
+          data.seatTypes = data.seatTypes.replace('高级软卧', '6');
           data.seatTypes = data.seatTypes.replace('二等座', 'O');
           data.seatTypes = data.seatTypes.replace('一等座', 'M');
-          //data.seatTypes = data.seatTypes.replace('特等座', 'P');
+          data.seatTypes = data.seatTypes.replace('特等座', 'P');
           data.seatTypes = data.seatTypes.replace('商务座', '9');
         }
         this.$http.post('/ticket/grab', data).then(function (res) {
@@ -370,7 +371,7 @@
                       appid: this.$data.submitInfo.appId,
                       uid: this.$data.submitInfo.uid,
                       id: this.$data.payInfo.orderId,
-                      price: res.data.payInfo.price,
+                      price: this.$data.payInfo.price,
                       payType: 1
                     }
                   });
@@ -393,22 +394,22 @@
       $payInfo: function () {
         return this.$data.payInfo;
       },
+      $$childs: function () {
+        this.$data.childs.piaoType = '儿童';
+        return this.$data.childs;
+      },
       passengers: function () {
         let storeDate = this.$store.state.contact.info;
         let data = [];
         this.$data.submitInfo.grabPassengers = [];
-        let type = {
-          1:'成人',2: '儿童',3: '学生',4: '伤残军人'
-        };
         for (let i in storeDate) {
           if (storeDate[i]) {
             data.push(storeDate[i]);
             this.$data.submitInfo.grabPassengers.push({
               id: storeDate[i].id,
               name: storeDate[i].name,
-              identy:storeDate[i].identy,
-              piaoType: type[storeDate[i].personType]
-            })
+              piaoType: storeDate[i].personType
+            });
           }
         }
         return data;
@@ -746,39 +747,39 @@
     }
   }
 
-  .content{
+  .content {
     width: 100%;
     height: 100%;
     background: #fff;
     position: absolute;;
     top: 64px;
     left: 0;
-    ul{
-      li{
+    ul {
+      li {
         width: 100%;
         height: 48px;
         line-height: 48px;
         font-size: 15px;
         text-align: left;
-        padding:0 15px;
+        padding: 0 15px;
         background: #fff;
         border-bottom: 1px solid #ebebeb;
 
-        &.typeLi{
+        &.typeLi {
           background: url("../../assets/prompt-arrow.png") no-repeat 96%;
           background-size: 8px 11px;
         }
 
-        input{
+        input {
           border: none;
-          color:#999;
-          &:focus{
+          color: #999;
+          &:focus {
             outline: none;
           }
         }
       }
     }
-    .sure{
+    .sure {
       position: fixed;
       bottom: 0;
       left: 0;
@@ -789,6 +790,6 @@
       background: #4ab9f1;
       color: #fff;
     }
-    }
+  }
 
 </style>
