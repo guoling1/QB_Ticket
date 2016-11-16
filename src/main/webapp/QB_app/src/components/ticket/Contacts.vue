@@ -9,7 +9,7 @@
       <div class="bannerRight" @click="importCon">导入12306联系人</div>
     </div>
     <ul id="list">
-      <li v-for="(people,index) in peoples" @click="change(index,people)">
+      <li v-for="(people,index) in peoples" @click="change(index,people)"  :class="people.selected?'select':''">
         <span class="option"></span>
         <div class="passen">
           <span class="name">{{people.name}}</span>
@@ -26,10 +26,10 @@
             <span class="del" @click="del(index)">删除联系人</span>
             <span class="sev" @click="sev(index)">保存</span>
         </div>
-        <ul>
+        <ul style="padding:0">
           <li>
             <label for="name">乘客姓名</label>
-            <input type="text" name="name" id='name' :value="people==undefined?'':people.name">
+            <input type="text" name="name" id='name' placeholder="必填">
           </li>
           <li>
             <label for="sex">乘客性别</label>
@@ -42,7 +42,7 @@
           </li>
           <li>
             <label for="identy">证件号码</label>
-            <input type="text" name="identy" id='identy' :value="people==undefined?'':people.identy">
+            <input type="text" name="identy" id='identy' placeholder="必填">
           </li>
           <li>
             <label for="personType">乘客类型</label>
@@ -50,7 +50,7 @@
           </li>
           <li style="border:none">
             <label for="tel">手机号码</label>
-            <input type="text" name="tel" id='tel' :value="people==undefined?'':people.tel">
+            <input type="text" name="tel" id='tel'>
           </li>
         </ul>
       </div>
@@ -67,7 +67,10 @@
         massages:[],
         selected: {},
         people:'',
-        $index:''
+        $index:'',
+        keepID:[],
+        uid:'',
+        appid:''
       }
     },
     computed:{
@@ -76,12 +79,23 @@
           let type = {
             1:'成人',2: '儿童',3: '学生',4: '伤残军人'
           };
+          this.$data.uid=this.$route.query.uid,
+          this.$data.appid=this.$route.query.appid,
           this.$http.post('/contactInfo/list',{uid:this.$route.query.uid,appid:this.$route.query.appid})
             .then(function (response) {
                 let massages = response.data.data;
                 for (var i = 0; i < massages.length; i++) {
                   massages[i].piaoType=type[massages[i].personType];
                   massages[i].sex=massages[i].sex==0?"男":"女";
+                  massages[i].selected = false;
+                  if(this.$store.state.contact.keepID.length!=0){
+                    for(var j=0;j<this.$store.state.contact.keepID.length;j++){
+                      if(massages[i].id==this.$store.state.contact.keepID[j]){
+                        massages[i].selected = true;
+                      }
+                    }
+                  }
+                  continue
                 }
               this.$data.massages = massages;
             })
@@ -123,20 +137,25 @@
           })
       },
       close: function(){
+        var ary=[];
+        for(var i=0;i<this.$data.massages.length;i++){
+          if(this.$data.massages[i].selected==true){
+            ary.push(this.$data.massages[i])
+          }
+        }
         this.$store.commit("CONTACT_CLOSE", {
           ctrl: false,
-          info: this.$data.selected
+          info: ary
         });
       },
       change:function(index,people){
         var oUl=document.getElementById("list");
         var aLi=oUl.getElementsByTagName("li");
+        this.$data.massages[index].selected=!this.$data.massages[index].selected
         if(aLi[index].className == "select"){
           this.$data.selected[index] = null;
-          aLi[index].className = "";
         }else {
           this.$data.selected[index] = people;
-          aLi[index].className = "select"
         }
       },
       show:function(idx){
@@ -150,9 +169,10 @@
           document.querySelector('#identyType').value="二代身份证";
           document.querySelector('#identy').value=this.$data.massages[idx].identy;
           document.querySelector('#personType').value="成人";
+          document.querySelector('#tel').value=this.$data.massages[idx].tel;
           var addPerson={
-            uid:1,
-            appid:1,
+            uid:this.$data.uid,
+            appid:this.$data.appid,
             name:document.querySelector('#name').value,
             sex:document.querySelector(':checked').value,
             identyType:1,
@@ -164,8 +184,8 @@
       },
       del:function (index) {
           var delPerson={
-            uid:1,
-            appid:1,
+            uid:this.$data.uid,
+            appid:this.$data.appid,
             id:this.$data.massages[index].id
           }
           Vue.http.post('/contactInfo/delete',JSON.stringify(delPerson))
@@ -178,8 +198,8 @@
       },
       sev:function (idx) {
           var addPerson={
-            uid:1,
-            appid:1,
+            uid:this.$data.uid,
+            appid:this.$data.appid,
             name:document.querySelector('#name').value,
             sex:1,
             identyType:1,
@@ -322,9 +342,7 @@ ul{
         }
         p{
           font-size: 12px;
-          position: relative;
-          top: 9px;
-          left: 3px;
+          margin-top: 9px;
         }
     }
     .edit{

@@ -2,8 +2,8 @@ package com.jkm.service.impl;
 
 import com.jkm.service.SignatureService;
 import com.jkm.util.fusion.UlpayRaTools;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -12,8 +12,7 @@ import java.util.Map;
 
 @Service
 public class SignatureServiceImpl  implements SignatureService {
-
-	private Logger logger = LoggerFactory.getLogger(SignatureServiceImpl.class);
+	private static Logger logger = Logger.getLogger(SignatureServiceImpl.class);
 
 	public boolean isSignature(String orgMsg) {
 		if (StringUtils.isEmpty(orgMsg)) {
@@ -34,9 +33,9 @@ public class SignatureServiceImpl  implements SignatureService {
 				.append(orgMsg.substring(endIndex + endSign.length()));
 		String signStr = orgMsg.substring(startIndex + startSign.length(), endIndex);
 		Map<String, String> signRet = UlpayRaTools.getInstance().verify(signStr, orgBuf.toString());
-		logger.info("验签结果==>{}", signRet);
+		logger.info("验签结果==>{"+signRet+"}");
 		if (!UlpayRaTools.SUCCESS.equals(signRet.get(UlpayRaTools.RET_CODE))) {
-			logger.error("验签失败 ==>", signRet.get(UlpayRaTools.RET_MSG));
+			logger.error("验签失败 ==>"+signRet.get(UlpayRaTools.RET_MSG));
 			throw new IllegalArgumentException(signRet.get(UlpayRaTools.RET_MSG));
 		}
 		return true;

@@ -32,7 +32,7 @@
       </div>
       <div class="space no-border">
         <div class="group no-border" v-for="passenger in passengers">
-          <div class="list"></div>
+          <div class="list" @click="minus($event,index)"></div>
           <div class="write no-prompt">
             <span class="name">{{passenger.name}}</span>
             {{passenger.identy}}
@@ -40,7 +40,7 @@
           </div>
         </div>
         <div class="group no-border" v-for="(child,index) in childs">
-          <div class="list" @click="minus(index,$event)"></div>
+          <div class="list" @click="minusChild($event,index)"></div>
           <div class="write no-prompt">
             <span class="name">{{child.name}}</span>
             <span class="info">{{child.personType}}票</span>
@@ -225,6 +225,12 @@
       });
     },
     methods: {
+      minusChild:function(event,index){
+        this.$data.childs.splice(index,1);
+      },
+      minus:function(event,index){
+        this.$store.state.contact.info.splice(index,1);
+      },
       login: function () {
         this.$router.push({
           path: '/ticket/login',
@@ -240,8 +246,8 @@
       },
       sev: function () {
         var addPerson = {
-          uid: 1,
-          appid: 1,
+          uid:this.$data.sureOrder.uid,
+          appid: this.$data.sureOrder.appId,
           name: document.querySelector('#name').value,
           sex: document.querySelector(':checked').value,
           birthday: document.querySelector('#birthday').value,
@@ -295,8 +301,13 @@
         });
       },
       contact: function () {
+        var ary=[];
+        for(var i=0;i<this.$data.sureOrder.passengers.length;i++){
+          ary.push(this.$data.sureOrder.passengers[i].id)
+        }
         this.$store.commit("CONTACT_OPEN", {
-          ctrl: true
+          ctrl: true,
+          keepID:ary
         });
       },
       station: function () {

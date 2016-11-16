@@ -30,7 +30,7 @@
       </div>
       <div class="space no-border">
         <div class="group no-border" v-for="(passenger,index) in passengers">
-          <div class="list" @click="minus(index,$event)"></div>
+          <div class="list" @click="minus($event,index)"></div>
           <div class="write no-prompt">
             <span class="name">{{passenger.name}}</span>
             {{passenger.identy}}
@@ -38,7 +38,7 @@
           </div>
         </div>
         <div class="group no-border" v-for="(child,index) in childs">
-          <div class="list" @click="minus(index,$event)"></div>
+          <div class="list" @click="minusChild($event,index)"></div>
           <div class="write no-prompt">
             <span class="name">{{child.name}}</span>
             <span class="info">{{child.personType}}票</span>
@@ -190,11 +190,11 @@
       });
     },
     methods: {
-      minus:function(index,event){
-        console.log(event);
-        console.log(index);
-        console.log(this.$data.submitInfo.grabPassengers);
-        //this.$data.submitInfo.grabPassengers.splice(index,1)
+      minusChild:function(event,index){
+        this.$data.childs.splice(index,1);
+      },
+      minus:function(event,index){
+        this.$store.state.contact.info.splice(index,1);
       },
       addChild:function(){
         if(this.$data.submitInfo.grabPassengers.length==0){
@@ -205,8 +205,8 @@
       },
       sev:function(){
         var addPerson={
-          uid:1,
-          appid:1,
+          uid:this.$data.submitInfo.uid,
+          appid:this.$data.submitInfo.appId,
           name:document.querySelector('#name').value,
           sex:document.querySelector(':checked').value,
           birthday:document.querySelector('#birthday').value,
@@ -323,8 +323,13 @@
         this.$data.submitInfo.buyTicketPackageId = num;
       },
       contact: function () {
+        var ary=[];
+        for(var i=0;i<this.$data.submitInfo.grabPassengers.length;i++){
+          ary.push(this.$data.submitInfo.grabPassengers[i].id)
+        }
         this.$store.commit("CONTACT_OPEN", {
-          ctrl: true
+          ctrl: true,
+          keepID:ary
         });
       },
       submit: function () {
@@ -406,7 +411,7 @@
             })
           }
         }
-        return this.$data.submitInfo.grabPassengers;
+        return data;
       },
       $submitInfo: function () {
         let data = this.$data.submitInfo;
@@ -444,7 +449,8 @@
   .main {
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
+    padding-bottom: 50px;
     .flexItem(1, 100%);
     background-color: #f5f5f5;
   }

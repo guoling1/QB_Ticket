@@ -1,5 +1,6 @@
 package com.jkm.util.fusion;
 
+import com.jkm.service.impl.SignatureServiceImpl;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -18,8 +19,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
+
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
@@ -33,18 +34,18 @@ import java.util.List;
  * 2015/6/1.
  */
 public class HttpUtils {
-	private static final Logger logger = LoggerFactory.getLogger(HttpUtils.class);
+	private static Logger logger = Logger.getLogger(HttpUtils.class);
 	public static final int CONNECTION_TIMEOUT = 15000;
 	public static final int SOCKET_TIMEOUT = 60000;
 
 	public static File getFileAndCreateDir(String fileFullPath) {
 		File file = new File(fileFullPath);
 		if (file.exists()) {
-			logger.error("文件已经存在，文件名{}", fileFullPath);
+			logger.error("文件已经存在，文件名{"+fileFullPath+"}");
 			return null;
 		}
 		if (fileFullPath.endsWith(File.separator)) {
-			logger.error("文件名错误，{}", fileFullPath);
+			logger.error("文件名错误，{"+fileFullPath+"}");
 			return null;
 		}
 		// 判断目标文件所在的目录是否存在
@@ -52,7 +53,7 @@ public class HttpUtils {
 			// 如果目标文件所在的目录不存在，则创建父目录
 
 			if (!file.getParentFile().mkdirs()) {
-				logger.error("创建文件目录失败，文件名{}", fileFullPath);
+				logger.error("创建文件目录失败，文件名{"+fileFullPath+"}");
 				return null;
 			}
 		}
@@ -64,7 +65,7 @@ public class HttpUtils {
 		File file = getFileAndCreateDir(filePath);
 		if (file == null) {
 			// 创建路径错误或文件已经存在
-			logger.error("下载文件时，文件名错误或路径错误，{}", filePath);
+			logger.error("下载文件时，文件名错误或路径错误，{"+filePath+"}");
 			return ret;
 		}
 		CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -206,7 +207,7 @@ public class HttpUtils {
 	 * @throws Exception 
 	 */
 	private static String sendPostRequest(HttpEntity httpEntity, String url, String encoding) throws  Exception {
-		logger.debug("发送请求URL==>{}, 字符编码：{}", url , encoding );
+		logger.debug("发送请求URL==>{"+url+"}, 字符编码：{"+encoding+"}");
 		// 创建默认的httpClient实例.
 		CloseableHttpClient httpclient = null;
 		if (url.startsWith("https")) {
@@ -233,7 +234,7 @@ public class HttpUtils {
 			logger.debug("请求URL:" + httppost.getURI());
 			CloseableHttpResponse response = httpclient.execute(httppost);
 			try {
-				logger.info("StatusLine ==> {}", response.getStatusLine());
+				logger.info("StatusLine ==> {"+response.getStatusLine()+"}");
 				HttpEntity entity = response.getEntity();
 				if (entity != null) {
 					resMes = EntityUtils.toString(entity, encoding);
