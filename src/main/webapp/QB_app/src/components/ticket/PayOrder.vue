@@ -313,7 +313,7 @@
                     appid: this.$data.common.appid,
                     uid: this.$data.common.uid,
                     id: this.$data.payInfo.orderId,
-                    price: res.data.payInfo.price,
+                    price: this.$data.payInfo.price,
                     payType: 0
                   }
                 });

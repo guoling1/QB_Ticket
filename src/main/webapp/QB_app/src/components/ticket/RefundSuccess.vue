@@ -49,94 +49,6 @@
         </div>
       </li>
     </ul>
-    <div class="return" @click="back">返回</div>
-    <div class="mask" v-if="$open">
-      <!-- 第一层遮罩：确认退票 -->
-      <div class="floor" v-if="$$open">
-        <p class="x" @click="show">×</p>
-
-        <div class="table">
-          <div class="top">
-            <div class="left">
-              <p class="time">{{massages.startTime}}</p>
-
-              <p class="static">{{massages.fromStationName}}</p>
-
-              <p class="date">{{massages.startDate}}</p>
-            </div>
-            <div class="middle">
-              <p class="checi time">{{massages.checi}}</p>
-
-              <p class="line">
-                <b></b>
-                <img src="../../assets/jiantou.png" alt=""/>
-              </p>
-
-              <p class="suration date">{{massages.runTime}}</p>
-            </div>
-            <div class="right">
-              <p class="time">{{massages.endTime}}</p>
-
-              <p class="static">{{massages.toStationName}}</p>
-
-              <p class="date">{{massages.endDate}}</p>
-            </div>
-          </div>
-          <ul class="bottom">
-            <li>
-              <div class="left">
-                <span class="name">{{massages.passengers[this.$data.$index].name}}</span>
-                <span class="type">{{massages.passengers[this.$data.$index].piaoTypeName}}</span>
-
-                <p class="number">
-                  {{massages.passengers[this.$data.$index].passportSeNo}}
-                </p>
-
-                <p class="state">{{passengerStatus[massages.passengers[this.$data.$index].status-1]}}</p>
-              </div>
-              <div class="right">
-                <p class="seat">{{massages.passengers[this.$data.$index].cxin}}</p>
-
-                <p class="seatType">{{massages.zwName}}</p>
-
-                <p class="price">￥{{massages.passengers[this.$data.$index].price}}</p>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="notice">
-          <p>在线退票时间：6:00-22:55（其他时间须前往火车站窗口办理)</p>
-
-          <p>发车前35分钟且未打印纸质车票，可在“我的订单”中申请退票</p>
-
-          <p>已经打印车票，需要携带车票前往火车站窗口办理。</p>
-
-          <p>退票手续费：</p>
-
-          <p>发车前15天（不含）以上，不收取退票费；</p>
-
-          <p>发车前49小时以上，手续费5%；</p>
-
-          <p>发车前25-49小时，手续费10%；</p>
-
-          <p>发车前25小时内，手续费20%；</p>
-        </div>
-        <div class="button">
-          <p @click="show">不退了</p>
-
-          <p @click.self="confirm">确定退票</p>
-        </div>
-      </div>
-      <!-- 第二层：退票成功 -->
-      <div class="success" v-else="$$open">
-        <div class="content">
-          <img src="../../assets/success.png" alt=""/>
-
-          <p>退票成功</p>
-        </div>
-        <div class="sure" @click.self="success()">确定</div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -158,9 +70,8 @@
       let polling = '';
       const pollFun = ()=>{
         this.$http.post('/order/queryById', {orderFormId: this.$data.orderInfo.orderFormId}).then(function (res) {
-          if (res.data.code == 1 && res.data.data.status == 3) {
+          if (res.data.code == 1 && res.data.data.status == 10) {
             clearInterval(polling);
-            console.log('改变信息');
             this.$data.orderInfo = res.data.data;
             // 调用定时器
           } else if (res.data.code == 1 && res.data.data.status == 4) {
