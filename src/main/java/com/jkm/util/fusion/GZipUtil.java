@@ -1,7 +1,8 @@
 package com.jkm.util.fusion;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+
+import org.apache.log4j.Logger;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -19,8 +20,7 @@ import java.util.zip.GZIPOutputStream;
  */
 @SuppressWarnings("restriction")
 public class GZipUtil {
-	
-	private static Logger log = LoggerFactory.getLogger(GZipUtil.class);
+	private static Logger log = Logger.getLogger(GZipUtil.class);
 	
 	/**
 	 * 将字符串压缩后Base64

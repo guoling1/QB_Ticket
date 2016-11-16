@@ -117,8 +117,8 @@
         SELECT * FROM tb_contact_info WHERE uid = #{uid} and status=0
     </select>
 
-    <select id="selectCountByIdenty" resultType="java.lang.Integer" parameterType="java.lang.String">
-        SELECT count(1) FROM tb_contact_info WHERE identy = #{identy} and status=0 and person_type='1' and uid=#{uid}
+    <select id="selectCountByIdenty" resultType="java.lang.Integer">
+        SELECT count(1) FROM tb_contact_info WHERE identy = #{identy,jdbcType=VARCHAR} and status=0 and person_type='1' and uid=#{uid,jdbcType=VARCHAR}
     </select>
     <!-- 修改状态-->
     <update id="updateStatus" parameterType="java.lang.Long">
