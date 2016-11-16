@@ -62,7 +62,7 @@ public interface ContactInfoDao {
      * @param identy
      * @return
      */
-    int selectCountByIdenty(@Param("identy") String identy);
+    int selectCountByIdenty(@Param("identy") String identy,@Param("uid") String uid);
 
     /**
      * 根据id更改状态

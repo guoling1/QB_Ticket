@@ -108,7 +108,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
             jo.put("message","请先添加成人");
             return jo;
         }
-        int count = contactInfoDao.selectCountByIdenty(tbContactInfo.getIdenty());
+        int count = contactInfoDao.selectCountByIdenty(tbContactInfo.getIdenty(),tbContactInfo.getUid());
         if(count>0){
             jo.put("result",false);
             jo.put("message","已有此乘客信息，不能重复添加");
