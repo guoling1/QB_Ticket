@@ -4,12 +4,14 @@
 
 const state = {
   ctrl: false,
-  info: {}
+  info: {},
+  keepID:[]
 };
 
 const mutations = {
   CONTACT_OPEN (state, obj) {
     state.ctrl = obj.ctrl;
+    state.keepID = obj.keepID;
   },
   CONTACT_CLOSE (state, obj) {
     state.ctrl = obj.ctrl;

@@ -24,7 +24,10 @@
               <span class="static">{{station.from_station_name}}</span>
               <span class="formTime">{{station.start_time}}</span>
             </div>
-            <div class="line"></div>
+            <div>
+              <div class="line"></div>
+            </div>
+
             <div class="to">
               <span class="static">{{station.to_station_name}}</span>
               <span class="toTime">{{station.arrive_time}}</span>
