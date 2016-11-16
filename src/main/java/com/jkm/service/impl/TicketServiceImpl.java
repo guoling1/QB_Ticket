@@ -478,7 +478,6 @@ public class TicketServiceImpl implements TicketService {
             obj.put("ticket_no",orderFormDetail.getTicketNo());
             JSONArray jsonArray = new JSONArray();
             jsonArray.add(obj);
-            try{
                 //发请求
                 log.info("订单号:"+ orderFormDetailId + "请求退票, 退票请求中......");
                 final HyReturnTicketResponse response = this.hySdkService.returnTicket(request, jsonArray);
@@ -521,10 +520,6 @@ public class TicketServiceImpl implements TicketService {
                     }
 
                 }
-            }catch (Throwable e){
-                log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求异常......");
-                return Pair.of(false, e.getMessage());
-            }
         }else{
             //是抢购票
             final Optional<GrabTicketForm> orderFormOptional = this.grabTicketFormService.selectById(orderFormDetail.getGrabTicketFormId());
@@ -571,7 +566,6 @@ public class TicketServiceImpl implements TicketService {
             obj.put("ticket_no",orderFormDetail.getTicketNo());
             JSONArray jsonArray = new JSONArray();
             jsonArray.add(obj);
-            try{
                 final HyReturnTicketResponse response = this.hySdkService.returnTicket(request, jsonArray);
                 if(response.getSuccess().equals("true")){
                     flow.setReqToken(response.getReqToken());
@@ -613,11 +607,6 @@ public class TicketServiceImpl implements TicketService {
                             return Pair.of(false, "退票失败");
                     }
                 }
-            }catch (Throwable e){
-                log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求异常......");
-                //this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
-                return Pair.of(false, e.getMessage());
-            }
         }
 
     }
