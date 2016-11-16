@@ -371,7 +371,7 @@
                       appid: this.$data.submitInfo.appId,
                       uid: this.$data.submitInfo.uid,
                       id: this.$data.payInfo.orderId,
-                      price: res.data.payInfo.price,
+                      price: this.$data.payInfo.price,
                       payType: 1
                     }
                   });
