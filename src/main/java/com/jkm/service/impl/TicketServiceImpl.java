@@ -473,7 +473,7 @@ public class TicketServiceImpl implements TicketService {
             Preconditions.checkArgument(optional.isPresent(), "乘客信息不存在");
             final TbContactInfo tbContactInfo = optional.get();
             obj.put("passengername", tbContactInfo.getName());
-            obj.put("passportseno",tbContactInfo.getIdenty());
+            obj.put("passportseno",tbContactInfo.identyOrg(tbContactInfo.getIdenty()));
             obj.put("passporttypeseid",tbContactInfo.getIdentyType());
             obj.put("ticket_no",orderFormDetail.getTicketNo());
             JSONArray jsonArray = new JSONArray();

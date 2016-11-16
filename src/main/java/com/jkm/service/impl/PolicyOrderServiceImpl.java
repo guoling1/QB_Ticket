@@ -127,7 +127,7 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
                     }
                     // 如果是身份证, 则截取
                     if(input.getPassportTypeSeId().equals(EnumCertificatesType.SECOND_ID_CARD.getId())){
-                        final IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(input.getPassportSeNo());
+                        final IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(input.getPassportSeNoPlain());
                         policyOrder.setGender(idcardInfo.getGender());
                         policyOrder.setCardType(EnumCardType.SECOND_ID_CARD.getId());
                         policyOrder.setCardNo(input.getPassportSeNoPlain());
@@ -251,10 +251,10 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
                     }
                     // 如果是身份证, 则截取
                     if(input.getPassportTypeSeId() .equals( EnumCertificatesType.SECOND_ID_CARD.getId())){
-                        final IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(input.getPassportSeNo());
+                        final IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(input.getPassportSeNoPlain());
                         policyOrder.setGender(idcardInfo.getGender());
                         policyOrder.setCardType(EnumCardType.SECOND_ID_CARD.getId());
-                        policyOrder.setCardNo(input.getPassportSeNo());
+                        policyOrder.setCardNo(input.getPassportSeNoPlain());
                         policyOrder.setBirthday(idcardInfo.getBirthday());
                     }else{
                         //如果是其他证件, 乘客信息取
@@ -292,7 +292,7 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
             request.setFlightNumber(input.getFlightNumber());
             request.setSerialNo(input.getSerialNo());
             request.setContractName(input.getContractName());
-            request.setCardType(input.getCardType());
+            request.setContractType(String.valueOf(input.getCardType()));
             request.setGender(input.getGender());
             request.setCardType(input.getCardType());
             request.setCardNo(input.getCardNo());
