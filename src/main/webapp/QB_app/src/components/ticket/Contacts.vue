@@ -68,7 +68,9 @@
         selected: {},
         people:'',
         $index:'',
-        keepID:[]
+        keepID:[],
+        uid:'',
+        appid:''
       }
     },
     computed:{
@@ -77,6 +79,8 @@
           let type = {
             1:'成人',2: '儿童',3: '学生',4: '伤残军人'
           };
+          this.$data.uid=this.$route.query.uid,
+          this.$data.appid=this.$route.query.appid,
           this.$http.post('/contactInfo/list',{uid:this.$route.query.uid,appid:this.$route.query.appid})
             .then(function (response) {
                 let massages = response.data.data;
@@ -167,8 +171,8 @@
           document.querySelector('#personType').value="成人";
           document.querySelector('#tel').value=this.$data.massages[idx].tel;
           var addPerson={
-            uid:1,
-            appid:1,
+            uid:this.$data.uid,
+            appid:this.$data.appid,
             name:document.querySelector('#name').value,
             sex:document.querySelector(':checked').value,
             identyType:1,
@@ -180,8 +184,8 @@
       },
       del:function (index) {
           var delPerson={
-            uid:1,
-            appid:1,
+            uid:this.$data.uid,
+            appid:this.$data.appid,
             id:this.$data.massages[index].id
           }
           Vue.http.post('/contactInfo/delete',JSON.stringify(delPerson))
@@ -194,8 +198,8 @@
       },
       sev:function (idx) {
           var addPerson={
-            uid:1,
-            appid:1,
+            uid:this.$data.uid,
+            appid:this.$data.appid,
             name:document.querySelector('#name').value,
             sex:1,
             identyType:1,
