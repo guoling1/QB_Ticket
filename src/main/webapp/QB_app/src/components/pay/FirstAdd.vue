@@ -44,6 +44,7 @@
     data () {
       return {
         payAddress: ['/authen/toPay', '/authen/toPayGrab'],
+        payCode: ['4', '6'],
         payType: '',
         submitInfo: {
           appid: '',
@@ -97,6 +98,7 @@
         this.$http.post('/authen/getCode', {
           phone: this.$data.submitInfo.phoneNo,//手机号
           amount: this.$data.price, //支付金额
+          verificationCodeType: this.$data.payCode[this.$data.payType],
           uid: this.$data.submitInfo.uid, //三方商户用户id
           appid: this.$data.submitInfo.appid //三方商户唯一标示appid
         }).then(function (res) {
