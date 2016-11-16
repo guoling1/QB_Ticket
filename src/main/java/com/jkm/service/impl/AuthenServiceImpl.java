@@ -901,7 +901,7 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("message",userInfo.getString("message"));
 			return jo;
 		}
-		BigDecimal amount = grabTicketFormOptional.get().getTotalPrice();
+		BigDecimal amount = grabTicketFormOptional.get().getGrabTotalPrice();
 		grabTicketFormService.updateStatusById(EnumGrabTicketStatus.GRAB_FORM_PAY_ING,requestData.getLong("orderId"));
 
 		AuthenData authenData = new AuthenData();
@@ -1023,7 +1023,7 @@ public class AuthenServiceImpl implements AuthenService {
 			return jo;
 		}
 
-		BigDecimal amount = grabTicketFormOptional.get().getTotalPrice();
+		BigDecimal amount = grabTicketFormOptional.get().getGrabTotalPrice();
 		grabTicketFormService.updateStatusById(EnumGrabTicketStatus.GRAB_FORM_PAY_ING,requestData.getLong("orderId"));
 
 
