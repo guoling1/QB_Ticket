@@ -206,6 +206,7 @@ public class AuthenServiceImpl implements AuthenService {
 		detail.setID_TYPE("00");//只支持身份证
 		detail.setID(requestData.getIdNo());//证件号
 		detail.setTEL(requestData.getPhoneNo());//手机号
+		detail.setSTEP_NO("1");
 		body.setTransDetail(detail);
 		authen.setBody(body);
 		authen.setInfo(head);
