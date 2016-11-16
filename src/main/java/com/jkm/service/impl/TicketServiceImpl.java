@@ -473,7 +473,7 @@ public class TicketServiceImpl implements TicketService {
             Preconditions.checkArgument(optional.isPresent(), "乘客信息不存在");
             final TbContactInfo tbContactInfo = optional.get();
             obj.put("passengername", tbContactInfo.getName());
-            obj.put("passportseno",tbContactInfo.getIdenty());
+            obj.put("passportseno",tbContactInfo.identyOrg(tbContactInfo.getIdenty()));
             obj.put("passporttypeseid",tbContactInfo.getIdentyType());
             obj.put("ticket_no",orderFormDetail.getTicketNo());
             JSONArray jsonArray = new JSONArray();
@@ -1003,7 +1003,7 @@ public class TicketServiceImpl implements TicketService {
         chargeMoneyOrder.setStatus(EnumChargeMoneyOrderStatus.INIT.getId());
         chargeMoneyOrderService.init(chargeMoneyOrder);
         //放入消息队列 , 15分钟支付时间
-        log.info(grabTicketForm.getId() + "抢票单待支付15分钟,放入消息队列");
+        log.info("抢票单ID:"+ grabTicketForm.getId() + "抢票单待支付15分钟,放入消息队列");
         JSONObject mqJo = new JSONObject();
         mqJo.put("grabTicketFormId",grabTicketForm.getId());
         MqProducer.sendMessage(mqJo, MqConfig.TICKET_CANCEL_EXPIRED_GRAB_ORDER, 1000*15*60);

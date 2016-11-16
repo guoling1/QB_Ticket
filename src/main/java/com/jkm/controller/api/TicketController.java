@@ -131,7 +131,6 @@ public class TicketController extends BaseController{
     @ResponseBody
     public ResponseEntityBase<ResponseTicketRefund> refund(@RequestBody final RequestTicketRefund req) {
         final ResponseEntityBase<ResponseTicketRefund> result = new ResponseEntityBase<>();
-
         try{
             Pair<Boolean,String> pair = this.ticketService.refund(req.getOrderFormDetailId());
             if(pair.getLeft()){
@@ -227,7 +226,6 @@ public class TicketController extends BaseController{
                 result.setMessage("订单取消失败");
                 return result;
             }
-
         }catch(final Throwable throwable){
             result.setCode(-1);
             result.setMessage("订单取消失败");

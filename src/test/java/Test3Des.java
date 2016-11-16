@@ -36,8 +36,8 @@ public class Test3Des {
        this.policyOrderService.batchBuyGrabPolicy(14);
 //
 //        this.policyOrderService.batchBuyPolicy(127);
-    */
-/* HyPostPolicyOrderRequest request = new HyPostPolicyOrderRequest();
+ */
+/*HyPostPolicyOrderRequest request = new HyPostPolicyOrderRequest();
         request.setUsername(HySdkConstans.USERNAME);
         request.setReqtime(DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss));
         request.setMethod(EnumHTHYMethodCode.POST_POLICY_ORDER.getCode());
@@ -104,8 +104,9 @@ public class Test3Des {
 
         JSONArray jsonArray = new JSONArray();
         jsonArray.add(obj);
-        final HyReturnTicketResponse hyReturnTicketResponse = this.hySdkService.returnTicket(request ,jsonArray );
-*//*
+        final HyReturnTicketResponse hyReturnTicketResponse = this.hySdkService.returnTicket(request ,jsonArray );*//*
+
+
 
 
    }

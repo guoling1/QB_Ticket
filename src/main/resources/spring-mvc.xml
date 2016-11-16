@@ -123,44 +123,44 @@
                     </key>
                 </entry>
                 <!--<entry value-ref="MessageListenerOfExpiredOrder">-->
-                    <!--<key>-->
-                        <!--<bean class="com.aliyun.openservices.ons.api.bean.Subscription">-->
-                            <!--<property name="topic" value="${mq.topic}"/> &lt;!&ndash; Topic,请替换 &ndash;&gt;-->
-                            <!--<property name="expression" value="ticketCancelExpiredOrder||ticketCancelExpiredGrabOrder||noPackageWaitRefund"/>&lt;!&ndash; MessageType名: 多个messageType 用 “||”分割 &ndash;&gt;-->
-                        <!--</bean>-->
-                    <!--</key>-->
+                <!--<key>-->
+                <!--<bean class="com.aliyun.openservices.ons.api.bean.Subscription">-->
+                <!--<property name="topic" value="${mq.topic}"/> &lt;!&ndash; Topic,请替换 &ndash;&gt;-->
+                <!--<property name="expression" value="ticketCancelExpiredOrder||ticketCancelExpiredGrabOrder||noPackageWaitRefund"/>&lt;!&ndash; MessageType名: 多个messageType 用 “||”分割 &ndash;&gt;-->
+                <!--</bean>-->
+                <!--</key>-->
                 <!--</entry>-->
                 <!--<entry value-ref="messageListenerOfOrderRefund">-->
-                    <!--<key>-->
-                        <!--<bean class="com.aliyun.openservices.ons.api.bean.Subscription">-->
-                            <!--<property name="topic" value="${mq.topic}"/> &lt;!&ndash; Topic,请替换 &ndash;&gt;-->
-                            <!--<property name="expression" value="ticketHandleRefundOrderResult"/>&lt;!&ndash; MessageType名: 多个messageType 用 “||”分割 &ndash;&gt;-->
-                        <!--</bean>-->
-                    <!--</key>-->
+                <!--<key>-->
+                <!--<bean class="com.aliyun.openservices.ons.api.bean.Subscription">-->
+                <!--<property name="topic" value="${mq.topic}"/> &lt;!&ndash; Topic,请替换 &ndash;&gt;-->
+                <!--<property name="expression" value="ticketHandleRefundOrderResult"/>&lt;!&ndash; MessageType名: 多个messageType 用 “||”分割 &ndash;&gt;-->
+                <!--</bean>-->
+                <!--</key>-->
                 <!--</entry>-->
                 <!--<entry value-ref="messageListenerTicketRefundImpl">-->
-                    <!--<key>-->
-                        <!--<bean class="com.aliyun.openservices.ons.api.bean.Subscription">-->
-                            <!--<property name="topic" value="${mq.topic}"/> &lt;!&ndash; Topic,请替换 &ndash;&gt;-->
-                            <!--<property name="expression" value="returnTicketRefundIng"/>&lt;!&ndash; MessageType名: 多个messageType 用 “||”分割 &ndash;&gt;-->
-                        <!--</bean>-->
-                    <!--</key>-->
+                <!--<key>-->
+                <!--<bean class="com.aliyun.openservices.ons.api.bean.Subscription">-->
+                <!--<property name="topic" value="${mq.topic}"/> &lt;!&ndash; Topic,请替换 &ndash;&gt;-->
+                <!--<property name="expression" value="returnTicketRefundIng"/>&lt;!&ndash; MessageType名: 多个messageType 用 “||”分割 &ndash;&gt;-->
+                <!--</bean>-->
+                <!--</key>-->
                 <!--</entry>-->
                 <!--<entry value-ref="messageListenerTGrabPartRefundImpl">-->
-                    <!--<key>-->
-                        <!--<bean class="com.aliyun.openservices.ons.api.bean.Subscription">-->
-                            <!--<property name="topic" value="${mq.topic}"/> &lt;!&ndash; Topic,请替换 &ndash;&gt;-->
-                            <!--<property name="expression" value="grabTicketRefundPart"/>&lt;!&ndash; MessageType名: 多个messageType 用 “||”分割 &ndash;&gt;-->
-                        <!--</bean>-->
-                    <!--</key>-->
+                <!--<key>-->
+                <!--<bean class="com.aliyun.openservices.ons.api.bean.Subscription">-->
+                <!--<property name="topic" value="${mq.topic}"/> &lt;!&ndash; Topic,请替换 &ndash;&gt;-->
+                <!--<property name="expression" value="grabTicketRefundPart"/>&lt;!&ndash; MessageType名: 多个messageType 用 “||”分割 &ndash;&gt;-->
+                <!--</bean>-->
+                <!--</key>-->
                 <!--</entry>-->
                 <!--<entry value-ref="messageListenerTGrabAllRefundImpl">-->
-                    <!--<key>-->
-                        <!--<bean class="com.aliyun.openservices.ons.api.bean.Subscription">-->
-                            <!--<property name="topic" value="${mq.topic}"/> &lt;!&ndash; Topic,请替换 &ndash;&gt;-->
-                            <!--<property name="expression" value="grabTicketRefundAll"/>&lt;!&ndash; MessageType名: 多个messageType 用 “||”分割 &ndash;&gt;-->
-                        <!--</bean>-->
-                    <!--</key>-->
+                <!--<key>-->
+                <!--<bean class="com.aliyun.openservices.ons.api.bean.Subscription">-->
+                <!--<property name="topic" value="${mq.topic}"/> &lt;!&ndash; Topic,请替换 &ndash;&gt;-->
+                <!--<property name="expression" value="grabTicketRefundAll"/>&lt;!&ndash; MessageType名: 多个messageType 用 “||”分割 &ndash;&gt;-->
+                <!--</bean>-->
+                <!--</key>-->
                 <!--</entry>-->
             </map>
 
