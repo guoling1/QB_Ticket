@@ -21,6 +21,9 @@
     </ul>
     <div class="bottom" @click="close">确定</div>
     <div class="mask" id="mask">
+      <div class="err" v-if="this.$data.$err">
+          {{errMsg}}
+      </div>
       <div class="content">
         <div class="sub">
             <span class="del" @click="del(index)">删除联系人</span>
@@ -70,7 +73,9 @@
         $index:'',
         keepID:[],
         uid:'',
-        appid:''
+        appid:'',
+        errMsg:'',
+        $err:false
       }
     },
     computed:{
@@ -162,8 +167,10 @@
         var mask=document.getElementById("mask");
         if(isNaN(idx)){
           mask.style.display="block";
+          this.$data.$err=false
         }else {
           mask.style.display="block";
+          this.$data.errMsg=false
           this.$data.$index=idx;
           document.querySelector('#name').value=this.$data.massages[idx].name;
           document.querySelector('#identyType').value="二代身份证";
@@ -197,6 +204,7 @@
           })
       },
       sev:function (idx) {
+        this.$data.$err=false
           var addPerson={
             uid:this.$data.uid,
             appid:this.$data.appid,
@@ -208,30 +216,63 @@
             personType:1,
             piaoType:"成人"
           }
+          var reg=/^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/i;
           if((typeof idx)!=='number'){
             addPerson.sex=addPerson.sex=="男"?0:1;
-            Vue.http.post('/contactInfo/add',JSON.stringify(addPerson))
-              .then((res)=>{
-                if(res.data.code==1){
-                  addPerson.id=res.data.data;
-                  this.$data.massages.push(addPerson);
-                  document.querySelector("#mask").style.display="none";
-                  this.$data.$index="";
-                }
-              })
+            if(document.querySelector('#name').value==""){
+              this.$data.$err=true
+              this.$data.errMsg="请填写乘客姓名"
+            }else if(!reg.test(document.querySelector('#identy').value)){
+              this.$data.$err=true
+              this.$data.errMsg="请填写正确的身份证号"
+            }
+            setTimeout(()=>{
+              this.$data.$err=false
+            },1000);
+            if(this.$data.$err==false){
+              Vue.http.post('/contactInfo/add',JSON.stringify(addPerson))
+                .then((res)=>{
+                  if(res.data.code==1){
+                    addPerson.id=res.data.data;
+                    this.$data.massages.push(addPerson);
+                    document.querySelector("#mask").style.display="none";
+                    this.$data.$index="";
+                  }else {
+                    console.log(res.data.message);
+                  }
+                })
+                .catch((res)=>{
+                  console.log(res);
+                })
+            }
           }else{
+            if(document.querySelector('#name').value==""){
+              this.$data.$err=true
+              this.$data.errMsg="请填写乘客姓名"
+            }else if(!reg.test(document.querySelector('#identy').value)){
+              this.$data.$err=true
+              this.$data.errMsg="请填写正确的身份证号"
+            }
+            setTimeout(()=>{
+              this.$data.$err=false
+            },1000);
             addPerson.id=this.$data.massages[idx].id;
             addPerson.sex=addPerson.sex=="男"?0:1;
-            Vue.http.post('/contactInfo/update',JSON.stringify(addPerson))
-              .then((res)=>{
-                if(res.data.code==1){
-                  for(var i in addPerson){
-                    this.$set(this.$data.massages[idx],i,addPerson[i])
+            if(this.$data.$err==false){
+              Vue.http.post('/contactInfo/update',JSON.stringify(addPerson))
+                .then((res)=>{
+                  if(res.data.code==1){
+                    for(var i in addPerson){
+                      this.$set(this.$data.massages[idx],i,addPerson[i])
+                    }
+                    document.querySelector("#mask").style.display="none";
+                    this.$data.$index="";
                   }
-                  document.querySelector("#mask").style.display="none";
-                  this.$data.$index="";
-                }
-              })
+                })
+                .catch((err)=>{
+                  console.log(err);
+                })
+            }
           }
         }
       }
@@ -259,6 +300,21 @@
   top:0;
   left: 0;
   z-index: 99;
+}
+.err{
+  background: rgba(0,0,0,0.8);
+  height: 30px;
+  line-height: 30px;
+  padding: 0 5px;
+  position: fixed;
+  top: 35%;
+  left: 33%;
+  background: rgba(0,0,0,.5);
+  border-radius: 5px;
+  border: 2px solid #666;
+  color: #ebeeef;
+  -webkit-animation: fadeOut 1s ease 0.2s 1 both;
+  animation: fadeOut 1s ease 0.2s 1 both;
 }
 .header {
   width: 100%;
@@ -307,6 +363,7 @@
 }
 ul{
   overflow: auto;
+  width: 100%;
   padding: 111px 0 50px 0;
   li{
     background: #fff;
@@ -403,6 +460,7 @@ ul{
     }
     ul{
       padding-bottom: 22px;
+      width: 100%;
       li{
         width: 100%;
         height: 48px;
@@ -428,5 +486,24 @@ ul{
       }
     }
   }
+}
+@-webkit-keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
 }
 </style>
