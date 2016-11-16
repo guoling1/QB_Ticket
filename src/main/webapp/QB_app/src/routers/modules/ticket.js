@@ -16,9 +16,9 @@ const ticketTrain = r => require.ensure([], () => r(require('../../components/ti
 const ticketSubmitOrder = r => require.ensure([], () => r(require('../../components/ticket/SubmitOrder')), 'group-ticket');
 const ticketSureOrder = r => require.ensure([], () => r(require('../../components/ticket/SureOrder')), 'group-ticket');
 const ticketPayOrder = r => require.ensure([], () => r(require('../../components/ticket/PayOrder')), 'group-ticket');
-const ticketContacts = r => require.ensure([], () => r(require('../../components/ticket/Contacts')), 'group-ticket');
 const ticketLogin = r => require.ensure([], () => r(require('../../components/ticket/Login')), 'group-ticket');
 const ticketRefundDetail = r => require.ensure([], () => r(require('../../components/ticket/RefundDetail')), 'group-ticket');
+const ticketRefundSuccess = r => require.ensure([], () => r(require('../../components/ticket/RefundSuccess')), 'group-ticket');
 
 export default {
   path: '/ticket',
@@ -56,6 +56,11 @@ export default {
       path: 'refund-detail',
       name: 'ticketRefundDetail',
       component: ticketRefundDetail
+    },
+    {
+      path: 'refund-success',
+      name: 'ticketRefundSuccess',
+      component: ticketRefundSuccess
     },
     {
       path: 'train-menu',

@@ -21,7 +21,8 @@ const state = {
     'firstAdd': '确认订单',
     'ticketRefundDetail': '订单详情',
     'secondAdd': '确认订单',
-    'ticketAddChild': '常用联系人'
+    'ticketAddChild': '常用联系人',
+    'ticketRefundSuccess': '出票成功'
   }
 };
 

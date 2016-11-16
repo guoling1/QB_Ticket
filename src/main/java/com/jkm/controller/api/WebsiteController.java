@@ -58,8 +58,7 @@ public class WebsiteController extends BaseController {
                 responseEntityBase.setMessage("登录失败");
             }
         }catch(Exception e){
-            log.info("添加12306账号失败");
-            log.info(e.getMessage());
+            log.error("添加12306账号失败",e);
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("添加账号失败");
             }else{
@@ -84,8 +83,7 @@ public class WebsiteController extends BaseController {
             websiteService.importContacts(uid);
             responseEntityBase.setMessage("导入成功");
         } catch (Exception e) {
-            log.info("导入失败");
-            log.info(e.getMessage());
+            log.error("导入失败",e);
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("导入异常");
             }else{
