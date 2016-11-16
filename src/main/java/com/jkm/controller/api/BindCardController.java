@@ -44,8 +44,7 @@ public class BindCardController extends BaseController {
                 responseEntityBase.setMessage(jo.getString("message"));
             }
         }catch (Exception e){
-            log.info("绑定银行卡异常");
-            log.info(e.getMessage());
+            log.error("绑定银行卡异常",e);
             responseEntityBase.setCode(500);
             responseEntityBase.setMessage(e.getMessage());
         }
@@ -68,8 +67,7 @@ public class BindCardController extends BaseController {
             JSONObject list = bindCardService.selectByUid(uid);
             responseEntityBase.setData(list);
         }catch (Exception e){
-            log.info("银行卡列表异常");
-            log.info(e.getMessage());
+            log.error("银行卡列表异常",e);
             responseEntityBase.setCode(500);
             responseEntityBase.setMessage("fail");
         }
@@ -98,8 +96,7 @@ public class BindCardController extends BaseController {
                 responseEntityBase.setMessage("删除失败");
             }
         }catch (Exception e){
-            log.info("删除银行卡异常");
-            log.info(e.getMessage());
+            log.error("删除银行卡异常",e);
             responseEntityBase.setCode(500);
             responseEntityBase.setMessage("删除失败");
         }
