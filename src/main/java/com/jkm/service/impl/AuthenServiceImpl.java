@@ -202,7 +202,8 @@ public class AuthenServiceImpl implements AuthenService {
 				DateUtils.formate_string_yyyyMMdd));
 		detail.setCARD_NO(requestData.getCrdNo());
 		detail.setACCOUNT_NAME(requestData.getCapCrdNm());
-		detail.setAMOUNT(requestData.getAmount());
+//		detail.setAMOUNT(requestData.getAmount());
+		detail.setAMOUNT("0.01");
 		detail.setID_TYPE("00");//只支持身份证
 		detail.setID(requestData.getIdNo());//证件号
 		detail.setTEL(requestData.getPhoneNo());//手机号
