@@ -38,7 +38,7 @@ public class UserInfoController extends BaseController {
             if(u==null){
                 responseEntityBase.setData("");
             }else{
-                responseEntityBase.setMessage(u.getPhone());
+                responseEntityBase.setData(u.getPhone());
             }
         }catch (Exception e){
             log.error("查找用户手机号异常",e);

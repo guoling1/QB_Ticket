@@ -202,8 +202,7 @@ public class AuthenServiceImpl implements AuthenService {
 				DateUtils.formate_string_yyyyMMdd));
 		detail.setCARD_NO(requestData.getCrdNo());
 		detail.setACCOUNT_NAME(requestData.getCapCrdNm());
-//		detail.setAMOUNT(requestData.getAmount());
-		detail.setAMOUNT("0.01");
+		detail.setAMOUNT(requestData.getAmount());
 		detail.setID_TYPE("00");//只支持身份证
 		detail.setID(requestData.getIdNo());//证件号
 		detail.setTEL(requestData.getPhoneNo());//手机号
@@ -264,7 +263,7 @@ public class AuthenServiceImpl implements AuthenService {
 					RefundResultRecord refundResultRecord = new RefundResultRecord();
 					refundResultRecord.setStatus(0);
 					refundResultRecord.setAmount(request100003.getBody().getTransDetail().getREFUND_AMOUNT());
-					refundResultRecord.setRefundChannel("fastpay");
+					refundResultRecord.setRefundChannel("singlRefund");
 					refundResultRecord.setRefundParams(xml);
 					refundResultRecord.setRefundResult("1");
 					refundResultRecord.setReqSn(request100003.getInfo().getReqSn());
