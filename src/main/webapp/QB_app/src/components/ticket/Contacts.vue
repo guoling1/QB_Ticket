@@ -205,7 +205,8 @@
             identyType:1,
             identy:document.querySelector('#identy').value,
             tel:document.querySelector('#tel').value,
-            personType:1
+            personType:1,
+            piaoType:"成人"
           }
           if((typeof idx)!=='number'){
             addPerson.sex=addPerson.sex=="男"?0:1;

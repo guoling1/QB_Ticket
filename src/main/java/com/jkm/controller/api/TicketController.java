@@ -227,7 +227,6 @@ public class TicketController extends BaseController{
                 result.setMessage("订单取消失败");
                 return result;
             }
-
         }catch(final Throwable throwable){
             result.setCode(-1);
             result.setMessage("订单取消失败");

@@ -41,7 +41,7 @@
               <span class="to">{{massage.toStationName}}</span>
               <span class="price">￥{{massage.grabTotalPrice}}</span>
             </div>
-            <div class="group">
+            <div class="group" style="overflow:visible">
               <span class="name" v-for="passenger in massage.passengerInfo">{{passenger.name}}</span>
               <p class="static">{{robOrderStatus[massage.status]}}</p>
             </div>
