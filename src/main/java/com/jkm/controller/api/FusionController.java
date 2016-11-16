@@ -53,9 +53,7 @@ public class FusionController extends BaseController {
                 responseEntityBase.setCode(400);
             }
         }catch(Exception e){
-            e.printStackTrace();
-            logger.info("立即支付(首次)失败");
-            logger.info("错误信息"+e.getMessage().toString());
+            logger.error("立即支付(首次)失败:"+e);
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -86,8 +84,7 @@ public class FusionController extends BaseController {
                 responseEntityBase.setCode(400);
             }
         }catch(Exception e){
-            logger.info("立即支付(多次)失败");
-            logger.info("错误信息"+e.getStackTrace());
+            logger.error("立即支付(多次)失败:",e);
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -119,8 +116,7 @@ public class FusionController extends BaseController {
                 responseEntityBase.setCode(400);
             }
         }catch(Exception e){
-            logger.info("抢票单立即支付(首次)失败");
-            logger.info("错误信息"+e.getStackTrace());
+            logger.error("抢票单立即支付(首次)失败",e);
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -151,8 +147,7 @@ public class FusionController extends BaseController {
                 responseEntityBase.setCode(400);
             }
         }catch(Exception e){
-            logger.info("立即支付(多次)异常");
-            logger.info("错误信息"+e.getStackTrace());
+            logger.error("立即支付(多次)异常",e);
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -185,8 +180,7 @@ public class FusionController extends BaseController {
                 responseEntityBase.setCode(400);
             }
         }catch(Exception e){
-            logger.info("获取验证码异常");
-            logger.info("错误信息"+e.getStackTrace());
+            logger.error("获取验证码异常",e);
             responseEntityBase.setMessage("获取验证码异常");
             responseEntityBase.setCode(500);
         }
