@@ -216,8 +216,8 @@ public class HySdkServiceImpl implements HySdkService{
         this.postHandle(request.getOrderId(),
                         request.getMethod(),
                         response.getCode(),
+                        jsonObject.toString(),
                         json.toString(),
-                        response.toString(),
                         stopWatch.getTime());
         return response;
     }
