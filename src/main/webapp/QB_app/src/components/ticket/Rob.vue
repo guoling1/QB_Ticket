@@ -44,9 +44,11 @@
       </div>
       <div class="group no-border">
         <div class="prompt">抢票成功率约</div>
-        <div class="write red empty no-prompt">{{$rate}}</div>
+        <div class="write red empty no-prompt">{{$rate}}%</div>
+        <div class="promote" v-show="$rate<50&&!(submitInfo.grabTicketPackageId==5)" @click="promote">提升成功率</div>
       </div>
       <div class="submit" @click="submit">下一步</div>
+      <div class="history">抢票须预付票款，若抢票失败，全额退回</div>
       <div class="know">抢票须知<span></span></div>
     </div>
     <div class="trains-bg flex-box-column flexBox" v-show="trainsShow">
@@ -197,6 +199,9 @@
       select: function (event, station) {
         station.select = !station.select;
       },
+      promote: function () {
+        this.$data.submitInfo.grabTicketPackageId++;
+      },
       seatEnter: function () {
         //先判断用户是否选择了坐席,没选择则为全部坐席
         this.$data.submitInfo.seatTypes = '';
@@ -293,7 +298,7 @@
         let table = this.$data.table_length;
         let rateType = ['', '0', '28', '35', '46', '76'];
         rate = (rate / 1) + (rateType[packageId] / 1) + ((checi * 3) / 1) + (table / 1);
-        return rate + '%';
+        return rate;
       },
       $dataT: function () {
         return {
@@ -375,6 +380,7 @@
     .group {
       height: 56px;
       border-bottom: 1px solid #efefef;
+      position: relative;
       &.no-border {
         border: none;
       }
@@ -402,8 +408,17 @@
         background: url("../../assets/prompt-arrow.png") no-repeat right;
         background-size: 7px 12px;
       }
+      .promote {
+        position: absolute;
+        right: 15px;
+        top: 14px;
+        padding: 5px;
+        border: 1px solid #4ab9f1;
+        border-radius: 3px;
+        font-size: 12px;
+        color: #11aaee;
+      }
     }
-
   }
 
   .goto {
@@ -656,5 +671,13 @@
         background-color: #4ab9f1;
       }
     }
+  }
+
+  .history {
+    margin-top: 15px;
+    font-size: 12px;
+    color: #c1c1c1;
+    float: left;
+    line-height: 24px;
   }
 </style>

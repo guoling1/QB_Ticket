@@ -237,6 +237,15 @@ public class OrderForm extends BaseEntity {
     }
 
     /**
+     * 订单是否是  付款中
+     *
+     * @return
+     */
+    public boolean isCustomerPaying() {
+        return  this.getStatus() == EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId();
+    }
+
+    /**
      * 订单是否是  出票成功或者失败状态
      *
      * @return

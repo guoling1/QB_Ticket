@@ -2,7 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.dao.QueryHistoryDao">
     <select id="queryHistory" resultType="com.jkm.entity.QueryHistory" parameterType="java.lang.String">
-SELECT DISTINCT from_station,from_station_name,to_station,to_station_name FROM  tb_query_history WHERE uid = #{uid}
+          SELECT DISTINCT from_station,from_station_name,to_station,to_station_name
+          FROM  tb_query_history
+          WHERE uid = #{uid}
     </select>
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id" >

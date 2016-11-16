@@ -919,7 +919,7 @@ public class TicketServiceImpl implements TicketService {
     public void handleCustomerPayMsg(final long orderFormId, final String paymentSn, final boolean isPaySuccess) {
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectByIdWithLock(orderFormId);
         final OrderForm orderForm = orderFormOptional.get();
-        Preconditions.checkState(orderForm.isOccupySuccess() || orderForm.isCustomerPayFail(), "处理客户付款，订单[%s]的状态不是占座成功或者付款失败状态！！！", orderFormId);
+        Preconditions.checkState(orderForm.isCustomerPaying(), "处理客户付款，订单[%s]的状态不是在支付中！！！", orderFormId);
         final Optional<ChargeMoneyOrder> chargeMoneyOrderOptional = this.chargeMoneyOrderService.selectByOrderFormId(orderFormId);
         Preconditions.checkState(chargeMoneyOrderOptional.isPresent(), "订单[%s]对应的收款记录不存在", orderFormId);
         final ChargeMoneyOrder chargeMoneyOrder = this.chargeMoneyOrderService.selectByIdWithLock(chargeMoneyOrderOptional.get().getId()).get();
@@ -1023,9 +1023,10 @@ public class TicketServiceImpl implements TicketService {
      */
     @Override
     public void handleGrabCustomerPayMsg(long grabTicketFormId, String paymentSn, boolean isPaySuccess) throws Exception {
+        log.info("抢票单:" + grabTicketFormId + "支付结果回调, 支付结果:" + isPaySuccess);
         final Optional<GrabTicketForm> orderFormOptional = this.grabTicketFormService.selectByIdWithLock(grabTicketFormId);
         final GrabTicketForm orderForm = orderFormOptional.get();
-        Preconditions.checkState(orderForm.isPaySuccess(), "抢票单[%s]的状态不是支付成功状态！！！" , grabTicketFormId);
+        //Preconditions.checkState(orderForm.isPaySuccess(), "抢票单[%s]的状态不是支付成功状态！！！" , grabTicketFormId);
         final Optional<ChargeMoneyOrder> chargeMoneyOrderOptional = this.chargeMoneyOrderService.selectByGrabTicketFormId(grabTicketFormId);
         Preconditions.checkState(chargeMoneyOrderOptional.isPresent(), "订单[%s]对应的收款记录不存在", grabTicketFormId);
         final ChargeMoneyOrder chargeMoneyOrder = this.chargeMoneyOrderService.selectByIdWithLock(chargeMoneyOrderOptional.get().getId()).get();
@@ -1146,9 +1147,11 @@ public class TicketServiceImpl implements TicketService {
                 data.setRefundAmount(refundOrderFlow.getRefundAmount().toString());
                 data.setOrgAmount(refundOrderFlow.getOriginalAmount().toString());
                 data.setRefundReason(refundOrderFlow.getRefundReason());
+                log.info("抢票单:"+ grabTicketForm.getId()+ "请求hz退款接口退款");
                 final Map<String, Object> map = this.authenService.singlRefund(data);
                 //判断退款受理是否成功 ,
                 if ((boolean) map.get("retCode") == true){
+                    log.info("抢票单:"+ grabTicketForm.getId()+ "请求hz退还差价,请求受理成功");
                     //TODO 抢票差价退款
                     //受理成功 ,
                     //消息
@@ -1158,12 +1161,15 @@ public class TicketServiceImpl implements TicketService {
                     mqJo.put("refundAmount", data.getRefundAmount());
                     mqJo.put("sendCount", 0);
                     MqProducer.sendMessage(mqJo, MqConfig.GRAB_TICKET_REFUND_PART, 2000);
-                    //refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.REFUND_SUCCESS.getId());
-                    //this.refundOrderFlowService.update(refundOrderFlow);
+                    //this.grabTicketFormService.updateStatusById(EnumGrabTicketStatus.GRAB_FORM_REFUND_ING,grabTicketForm.getId());
                 }else{
                     //受理失败.修改流水单状态
+                    log.info("抢票单:"+ grabTicketForm.getId()+ "请求hz退还差价,受理失败, 退款失败"+ map.get("signMsg"));
                     refundOrderFlow.setStatus(EnumRefundOrderFlowStatus.REFUND_FAIL.getId());
                     this.refundOrderFlowService.update(refundOrderFlow);
+                    //grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_REFUND_FAIL.getId());
+                    //grabTicketForm.setRemark(map.get("signMsg").toString());
+                    //this.grabTicketFormService.update(grabTicketForm);
                 }
             }else{
                 //发送短信
@@ -1441,7 +1447,7 @@ public class TicketServiceImpl implements TicketService {
         }else{
             //抢票下单失败,更改抢票单状态, 记录失败原因 , 到期退款
             //放入消息队列 , 1到期退款
-            //TODO 抢票
+            //TODO 抢票GRAB_FORM_PAY_WAITGRAB_FORM_PAY_WAIT
             JSONObject mqJo = new JSONObject();
             mqJo.put("grabTicketFormId",grabTicketForm.getId());
             MqProducer.sendMessage(mqJo, MqConfig.GRAB_FORM_FAIL_WAIT_REFUND, endTime.getTime() - (new Date()).getTime());

@@ -85,7 +85,7 @@
         train_date: to.query.dateHttp //乘车日期（yyyy-MM-dd）
       }).then(function (res) {
         next(function (vm) {
-          vm.$data.only = to.query.only;
+          vm.$data.only = to.query.onlyGD;
           for (let i = 0; i < res.body.data.length; i++) {
             let runMin = res.body.data[i].run_time_minute;
             let runH = 0;

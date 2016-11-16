@@ -130,7 +130,8 @@
         </li>
         <li>
           <label for="sex">乘客性别</label>
-          <label style="margin-left:10px;color:#999"><input type="radio" name="sex" value="0" checked="checked">男</label>
+          <label style="margin-left:10px;color:#999"><input type="radio" name="sex" value="0"
+                                                            checked="checked">男</label>
           <label style="margin-left:20px;color:#999"><input type="radio" name="sex" value="1">女</label>
         </li>
         <li class="typeLi">
@@ -195,8 +196,8 @@
         detail: false,
         pack: false,
         skip: false,
-        show:false,
-        childs:[]
+        show: false,
+        childs: []
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -236,34 +237,33 @@
           query: {appid: this.$data.sureOrder.appId, uid: this.$data.sureOrder.uid}
         });
       },
-      addChild:function(){
-        if(this.$data.sureOrder.passengers.length==0){
+      addChild: function () {
+        if (this.$data.sureOrder.passengers.length == 0) {
           console.log("请先添加成人");
-        }else{
-          this.$data.show=!this.$data.show
+        } else {
+          this.$data.show = !this.$data.show
         }
       },
-      sev:function(){
-        var addPerson={
-          uid:1,
-          appid:1,
-          name:document.querySelector('#name').value,
-          sex:document.querySelector(':checked').value,
-          birthday:document.querySelector('#birthday').value,
-          personType:2
+      sev: function () {
+        var addPerson = {
+          uid:this.$data.sureOrder.uid,
+          appid: this.$data.sureOrder.appId,
+          name: document.querySelector('#name').value,
+          sex: document.querySelector(':checked').value,
+          birthday: document.querySelector('#birthday').value,
+          personType: 2
         }
-        Vue.http.post('/contactInfo/add',JSON.stringify(addPerson))
+        Vue.http.post('/contactInfo/add', JSON.stringify(addPerson))
           .then((res)=>{
-            if(res.data.code==1){
-              this.$data.show=!this.$data.show
-              addPerson.id=res.data.data;
-              if(addPerson.personType==2){
-                addPerson.personType="儿童"
-              }
-              this.$data.childs.push(addPerson);
+          if (res.data.code == 1) {
+            this.$data.show = !this.$data.show
+            addPerson.id = res.data.data;
+            if (addPerson.personType == 2) {
+              addPerson.personType = "儿童"
+            }
+            this.$data.childs.push(addPerson);
           }
-        })
-        .catch(function(err){
+        }).catch(function (err) {
           console.log(err);
         })
       },
@@ -316,7 +316,7 @@
     },
     computed: {
       $amountDetail: function () {
-        let number = this.$data.sureOrder.passengers.length;
+        let number = this.$data.sureOrder.passengers.length + this.$data.childs.length;
         let ticketPrice = this.$data.sureOrder.price;
         let packagePrice = ['', '0', '20', '30'];
         let packageId = this.$data.sureOrder.buyTicketPackageId;
@@ -764,39 +764,40 @@
       }
     }
   }
-  .content{
+
+  .content {
     width: 100%;
     height: 100%;
     background: #fff;
     position: absolute;;
     top: 64px;
     left: 0;
-    ul{
-      li{
+    ul {
+      li {
         width: 100%;
         height: 48px;
         line-height: 48px;
         font-size: 15px;
         text-align: left;
-        padding:0 15px;
+        padding: 0 15px;
         background: #fff;
         border-bottom: 1px solid #ebebeb;
 
-        &.typeLi{
+        &.typeLi {
           background: url("../../assets/prompt-arrow.png") no-repeat 96%;
           background-size: 8px 11px;
         }
 
-        input{
+        input {
           border: none;
-          color:#999;
-          &:focus{
+          color: #999;
+          &:focus {
             outline: none;
           }
         }
       }
     }
-    .sure{
+    .sure {
       position: fixed;
       bottom: 0;
       left: 0;
@@ -807,5 +808,5 @@
       background: #4ab9f1;
       color: #fff;
     }
-    }
+  }
 </style>
