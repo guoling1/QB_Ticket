@@ -94,6 +94,9 @@ public class TicketServiceImpl implements TicketService {
     @Autowired
     private TicketSendMessageService ticketSendMessageService;
 
+    @Autowired
+    private ConfirmOrderExceptionRecordService confirmOrderExceptionRecordService;
+
     /**
      * {@inheritDoc}
      *
@@ -285,9 +288,20 @@ public class TicketServiceImpl implements TicketService {
     public void confirmOrder(final OrderForm orderForm) {
         log.info("订单[" + orderForm.getId() + "]--确认订单请求中");
         Preconditions.checkState(orderForm.isCustomerPaySuccess(), "订单[" + orderForm.getId() + "]状态不正确");
-
-        final JSONObject jsonObject = this.hySdkService.confirmTrainTicket(orderForm.getOrderId(), orderForm.getOutOrderId());
-//        final String code = jsonObject.getString("code");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = this.hySdkService.confirmTrainTicket(orderForm.getOrderId(), orderForm.getOutOrderId());
+        } catch (Throwable e) {
+            log.error("确认订单[" + orderForm.getId() + "]发生异常,记录数据，等待人工介入！！");
+            final ConfirmOrderExceptionRecord confirmOrderExceptionRecord = new ConfirmOrderExceptionRecord();
+            confirmOrderExceptionRecord.setStatus(0);
+            confirmOrderExceptionRecord.setPaymentSn(orderForm.getPaymentSn());
+            confirmOrderExceptionRecord.setOrderFormId(orderForm.getId());
+            confirmOrderExceptionRecord.setAmount(orderForm.getTotalPrice());
+            confirmOrderExceptionRecord.setRemark("确认出票出现异常");
+            this.confirmOrderExceptionRecordService.add(confirmOrderExceptionRecord);
+            return;
+        }
         final boolean success = jsonObject.getBoolean("success");
         if (success) {
             log.info("订单[" + orderForm.getId() + "]--确认订单请求受理成功");
@@ -1781,6 +1795,7 @@ public class TicketServiceImpl implements TicketService {
         Preconditions.checkState(!refundOrderFlow.isRefundSuccess(), "订单[" + refundOrderFlow.getOrderFormId()  +
                 "]对应的退款单[" + refundOrderFlow.getId()+ "]已经退款");
         final SingleRefundData singleRefundData = new SingleRefundData();
+        singleRefundData.setReqSn(SnGenerator.generate());
         singleRefundData.setOrgSn(refundOrderFlow.getPaymentSn());
         singleRefundData.setOrgDate(refundOrderFlow.getOrderDate());
         singleRefundData.setRefundAmount(refundOrderFlow.getRefundAmount().toString());
@@ -1796,7 +1811,8 @@ public class TicketServiceImpl implements TicketService {
             //消息
             JSONObject mqJo = new JSONObject();
             mqJo.put("orderFormId", orderForm.getId());
-            mqJo.put("paymentSn", orderForm.getPaymentSn());
+            //退款流水号
+            mqJo.put("reqSn", singleRefundData.getReqSn());
             mqJo.put("refundAmount", singleRefundData.getRefundAmount());
             mqJo.put("sendCount", 0);
             MqProducer.sendMessage(mqJo, MqConfig.TICKET_HANDLE_REFUND_ORDER_RESULT, 2000);

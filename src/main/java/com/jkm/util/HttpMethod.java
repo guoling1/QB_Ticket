@@ -4,12 +4,16 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class HttpMethod {
+
+    private static Logger log = Logger.getLogger(HttpMethod.class);
+
     /**
      * 使用HttpClient实现发送http请求方法
      * @param jsonObject
@@ -31,10 +35,11 @@ public class HttpMethod {
             }
         }
         catch (IOException e) {
+            log.error("http exception: " + e.getMessage(), e);
             e.printStackTrace();
         }
         String ts = stringBuffer.toString();
-        System.out.println(ts);
+        log.info("返回参数[" + ts + "]");
         return JSONObject.fromObject(ts);
     }
 

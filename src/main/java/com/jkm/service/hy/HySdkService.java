@@ -50,7 +50,7 @@ public interface HySdkService {
      * @param transactionId
      * @return
      */
-    JSONObject QueryOrder(String orderId, String transactionId);
+    JSONObject queryOrder(String orderId, String transactionId);
 
     /**
      * 线上退票

@@ -81,6 +81,8 @@ public class DefaultHttpClientAbstractFactory implements HttpClientAbstractFacto
     @Setter
     private int socketTimeout = 20000;
 
+    private int maxRedirects = 3;
+
     /**
      * {@inheritDoc}
      */
@@ -136,6 +138,7 @@ public class DefaultHttpClientAbstractFactory implements HttpClientAbstractFacto
                 .setConnectTimeout(connectTimeout)
                 .setSocketTimeout(socketTimeout)
                 .setConnectionRequestTimeout(connectionRequestTimeout)
+                .setMaxRedirects(maxRedirects)
                 .build();
     }
 }
