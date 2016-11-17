@@ -126,7 +126,7 @@
       <ul>
         <li>
           <label for="name">乘客姓名</label>
-          <input type="text" name="name" id='name' value="">
+          <input type="text" name="name" id='name' placeholder="必填" value="">
         </li>
         <li>
           <label for="sex">乘客性别</label>

@@ -373,15 +373,18 @@ public class HySdkServiceImpl implements HySdkService{
                                final String method,
                                final StopWatch stopWatch) {
         stopWatch.start();
-        try {
-           final JSONObject json = HttpMethod.httpClient(jsonObject, requestUrl);
+        final JSONObject json = HttpMethod.httpClient(jsonObject, requestUrl);
+        stopWatch.stop();
+        return json;
+        /*try {
+            final JSONObject json = HttpMethod.httpClient(jsonObject, requestUrl);
             stopWatch.stop();
             return json;
         } catch (final Throwable e) {
             this.postHandle(orderId, method ,0,jsonObject.toString(),"error",stopWatch.getTime());
             stopWatch.stop();
             throw e;
-        }
+        }*/
     }
 
     private JSONArray requestImplToArray(final JSONObject jsonObject,
@@ -390,7 +393,10 @@ public class HySdkServiceImpl implements HySdkService{
                                    final String method,
                                    final StopWatch stopWatch) {
         stopWatch.start();
-        try {
+        final JSONArray json = HttpMethod.httpClientToArray(jsonObject, requestUrl);
+        stopWatch.stop();
+        return json;
+        /*try {
             final JSONArray json = HttpMethod.httpClientToArray(jsonObject, requestUrl);
             stopWatch.stop();
             return json;
@@ -398,7 +404,7 @@ public class HySdkServiceImpl implements HySdkService{
             this.postHandle(orderId, method ,0,jsonObject.toString(),"error",stopWatch.getTime());
             stopWatch.stop();
             throw e;
-        }
+        }*/
     }
 
     private String getSign(final String method, final String reqtime) {

@@ -341,7 +341,7 @@ public class TicketServiceImpl implements TicketService {
             try {
                 this.policyOrderService.batchBuyPolicy(orderForm.getId());
             } catch (final Throwable throwable) {
-                log.error("订单[" + orderForm.getId() + "] 买保险异常", throwable);
+                log.error("订单[" + orderForm.getId() + "] 买保险异常,请手动购买..........", throwable);
             }
             //短信通知
             final List<OrderFormDetail> orderFormDetails = this.orderFormDetailService.selectByOrderFormId(orderForm.getId());
@@ -478,7 +478,6 @@ public class TicketServiceImpl implements TicketService {
             obj.put("ticket_no",orderFormDetail.getTicketNo());
             JSONArray jsonArray = new JSONArray();
             jsonArray.add(obj);
-            try{
                 //发请求
                 log.info("订单号:"+ orderFormDetailId + "请求退票, 退票请求中......");
                 final HyReturnTicketResponse response = this.hySdkService.returnTicket(request, jsonArray);
@@ -521,10 +520,6 @@ public class TicketServiceImpl implements TicketService {
                     }
 
                 }
-            }catch (Throwable e){
-                log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求异常......");
-                return Pair.of(false, e.getMessage());
-            }
         }else{
             //是抢购票
             final Optional<GrabTicketForm> orderFormOptional = this.grabTicketFormService.selectById(orderFormDetail.getGrabTicketFormId());
@@ -571,7 +566,6 @@ public class TicketServiceImpl implements TicketService {
             obj.put("ticket_no",orderFormDetail.getTicketNo());
             JSONArray jsonArray = new JSONArray();
             jsonArray.add(obj);
-            try{
                 final HyReturnTicketResponse response = this.hySdkService.returnTicket(request, jsonArray);
                 if(response.getSuccess().equals("true")){
                     flow.setReqToken(response.getReqToken());
@@ -613,11 +607,6 @@ public class TicketServiceImpl implements TicketService {
                             return Pair.of(false, "退票失败");
                     }
                 }
-            }catch (Throwable e){
-                log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求异常......");
-                //this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
-                return Pair.of(false, e.getMessage());
-            }
         }
 
     }
@@ -1022,6 +1011,7 @@ public class TicketServiceImpl implements TicketService {
      * @param isPaySuccess
      */
     @Override
+    @Transactional
     public void handleGrabCustomerPayMsg(long grabTicketFormId, String paymentSn, boolean isPaySuccess) throws Exception {
         log.info("抢票单:" + grabTicketFormId + "支付结果回调, 支付结果:" + isPaySuccess);
         final Optional<GrabTicketForm> orderFormOptional = this.grabTicketFormService.selectByIdWithLock(grabTicketFormId);
@@ -1030,17 +1020,17 @@ public class TicketServiceImpl implements TicketService {
         final Optional<ChargeMoneyOrder> chargeMoneyOrderOptional = this.chargeMoneyOrderService.selectByGrabTicketFormId(grabTicketFormId);
         Preconditions.checkState(chargeMoneyOrderOptional.isPresent(), "订单[%s]对应的收款记录不存在", grabTicketFormId);
         final ChargeMoneyOrder chargeMoneyOrder = this.chargeMoneyOrderService.selectByIdWithLock(chargeMoneyOrderOptional.get().getId()).get();
-        Preconditions.checkState(chargeMoneyOrder.isPaySuccess(), "订单[%s]对应的收款记录已经付款成功！！！！！！！");
+        Preconditions.checkState(!chargeMoneyOrder.isPaySuccess(), "订单[%s]对应的收款记录已经付款成功！！！！！！！", orderForm.getId());
         if (isPaySuccess) {
-            log.info("订单[" + grabTicketFormId + "]支付成功");
+            log.info("抢票单[" + grabTicketFormId + "]支付成功");
             orderForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_PAY_SUCCESS.getId());
             orderForm.setRemark(EnumGrabTicketStatus.GRAB_FORM_PAY_SUCCESS.getValue());
             orderForm.setPaymentSn(paymentSn);
             this.grabTicketFormService.update(orderForm);
             chargeMoneyOrder.setStatus(EnumChargeMoneyOrderStatus.PAYMENT_TICKET_SUCCESS.getId());
-            log.info("订单[" + grabTicketFormId + "]支付成功--调用确认订单接口！！");
+            log.info("抢票单[" + grabTicketFormId + "]支付成功--调用抢票下单接口！！");
             //抢票支付成功, 请求抢票
-            this.requestGrabImpl(grabTicketFormId);
+                this.requestGrabImpl(grabTicketFormId);
         } else {
             // 抢票单支付失败, 记录流水号
             orderForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL.getId());
@@ -1048,6 +1038,7 @@ public class TicketServiceImpl implements TicketService {
             orderForm.setPaymentSn(paymentSn);
             this.grabTicketFormService.update(orderForm);
             chargeMoneyOrder.setStatus(EnumChargeMoneyOrderStatus.PAYMENT_TICKET_FAIL.getId());
+            log.info("抢票单[" + grabTicketFormId + "]支付失败--............！");
         }
         this.chargeMoneyOrderService.update(chargeMoneyOrder);
     }
@@ -1185,7 +1176,11 @@ public class TicketServiceImpl implements TicketService {
                 this.ticketSendMessageService.sendGrabTicketSuccessHaveNotResidueMessage(param);
             }
             //购买保险
-            this.policyOrderService.batchBuyGrabPolicy(grabTicketForm.getId());
+            try{
+                this.policyOrderService.batchBuyGrabPolicy(grabTicketForm.getId());
+            }catch (final Throwable throwable){
+                log.error("抢票单[" + grabTicketForm.getId() + "] 买保险异常,请手动购买..........", throwable);
+            }
 
         }else{
             log.info("hy抢票回调通知" + grabTicketForm.getId() + "抢票单抢票失败,全额退款");
@@ -1368,6 +1363,7 @@ public class TicketServiceImpl implements TicketService {
      * 支付成功后请求抢票
      * @param grabTicketFormId
      */
+    @Transactional
     public void requestGrabImpl(long grabTicketFormId) throws Exception {
         final Optional<GrabTicketForm> grabTicketFormOptional = this.grabTicketFormService.selectByIdWithLock(grabTicketFormId);
         final GrabTicketForm grabTicketForm = grabTicketFormOptional.get();
@@ -1438,23 +1434,34 @@ public class TicketServiceImpl implements TicketService {
         jsonObject.put("passengers",passengerJsonArray);
         jsonObject.put("agree_offline", false);
 
-        final JSONObject jsonResponse = this.hySdkService.grabTickets(jsonObject);
-        if(jsonResponse.getBoolean("success") == true && jsonResponse.getInt("code") == 100){
-            //抢票下单成功
-            grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_REQUEST_SUCCESS.getId());
-            grabTicketForm.setRemark(jsonResponse.getString("msg"));
-            this.grabTicketFormService.update(grabTicketForm);
-        }else{
-            //抢票下单失败,更改抢票单状态, 记录失败原因 , 到期退款
-            //放入消息队列 , 1到期退款
-            //TODO 抢票GRAB_FORM_PAY_WAITGRAB_FORM_PAY_WAIT
+        try{
+            final JSONObject jsonResponse = this.hySdkService.grabTickets(jsonObject);
+            if(jsonResponse.getBoolean("success") == true && jsonResponse.getInt("code") == 100){
+                //抢票下单成功
+                grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_REQUEST_SUCCESS.getId());
+                grabTicketForm.setRemark("抢票下单成功");
+                this.grabTicketFormService.update(grabTicketForm);
+            }else{
+                //抢票下单失败,更改抢票单状态, 记录失败原因 , 到期退款
+                //放入消息队列 , 1到期退款
+                //TODO 抢票GRAB_FORM_PAY_WAITGRAB_FORM_PAY_WAIT
+                JSONObject mqJo = new JSONObject();
+                mqJo.put("grabTicketFormId",grabTicketForm.getId());
+                MqProducer.sendMessage(mqJo, MqConfig.GRAB_FORM_FAIL_WAIT_REFUND, endTime.getTime() - (new Date()).getTime());
+                grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_REQUEST_FAIL.getId());
+                grabTicketForm.setRemark(jsonResponse.getString("msg"));
+                this.grabTicketFormService.update(grabTicketForm);
+            }
+        }catch (final Throwable throwable){
             JSONObject mqJo = new JSONObject();
             mqJo.put("grabTicketFormId",grabTicketForm.getId());
             MqProducer.sendMessage(mqJo, MqConfig.GRAB_FORM_FAIL_WAIT_REFUND, endTime.getTime() - (new Date()).getTime());
             grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_REQUEST_FAIL.getId());
-            grabTicketForm.setRemark(jsonResponse.getString("msg"));
+            grabTicketForm.setRemark("请求异常,抢票下单失败");
             this.grabTicketFormService.update(grabTicketForm);
+            log.error("抢票单号:"+grabTicketForm.getId()+"请求异常,抢票下单失败,放入消息队列,到期退款.....");
         }
+
     }
 
     private String getGrabTrainType(String trainCodes) {
