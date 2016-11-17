@@ -1,8 +1,18 @@
 <template lang="html">
   <div class="main">
-    <div class="state">
+    <div class="state"
+         v-if="orderInfo.status==3||orderInfo.status==5||orderInfo.status==6||orderInfo.status==7||orderInfo.status==11">
       <i></i>
       <span>正在奋力抢票中...</span>
+    </div>
+    <div class="state" v-if="orderInfo.status==8">
+      <span>抢票失败</span>
+    </div>
+    <div class="state" v-if="orderInfo.status==9">
+      <span>抢票成功</span>
+    </div>
+    <div class="state" v-if="orderInfo.status==10||orderInfo.status==14||orderInfo.status==15||orderInfo.status==16">
+      <span>订单已取消</span>
     </div>
     <div class="space">
       <div class="goto">
@@ -11,19 +21,19 @@
           <div class="right">到达城市</div>
         </div>
         <div class="side write">
-          <div class="left" @click="station">北京</div>
+          <div class="left">{{orderInfo.fromStationName}}</div>
           <img class="middle" src="../../assets/exchange-blue.png">
 
-          <div class="right" @click="station">上海</div>
+          <div class="right">{{orderInfo.toStationName}}</div>
         </div>
       </div>
-      <div class="group" @click="time('dateONE')">
+      <div class="group">
         <div class="prompt">已选车次</div>
-        <div class="write no-prompt right"> K51 T508 G203</div>
+        <div class="write no-prompt right">{{orderInfo.trainCodes}}</div>
       </div>
-      <div class="group no-border" @click="time('dateONE')">
+      <div class="group no-border">
         <div class="prompt">已选坐席</div>
-        <div class="write no-prompt right"> 硬座 二等座 硬卧</div>
+        <div class="write no-prompt right">{{orderInfo.seatTypes}}</div>
       </div>
     </div>
     <div class="space padding-word">
@@ -33,10 +43,9 @@
       </div>
       <div class="right">
         <div class="list">
-          <div>陈杰智<span></span></div>
-          <div>刘思思<span>(儿童)</span></div>
+          <div v-for="passenger in orderInfo.passengerInfo">{{passenger.name}}<span v-if="passenger.piaoType==2">(儿童)</span></div>
         </div>
-        <div class="small">￥<span>356.5</span></div>
+        <div class="small">￥<span>{{orderInfo.grabTotalPrice}}</span></div>
       </div>
     </div>
     <div class="space">
@@ -60,7 +69,7 @@
           appid: '',
           uid: ''
         },
-        cancelInfo: ''
+        orderInfo: ''
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -70,11 +79,13 @@
         grabTicketFormId: to.query.orderid
       }).then(function (res) {
         console.log(res);
+        let info = res.data.data;
+        info.passengerInfo = JSON.parse(info.passengerInfo);
         if (res.data.code == 1) {
           next(function (vm) {
             vm.$data.common.appid = to.query.appid;
             vm.$data.common.uid = to.query.uid;
-            vm.$data.cancelInfo = res.data.data;
+            vm.$data.orderInfo = info;
           });
         }
       }, function (err) {
@@ -85,7 +96,7 @@
     methods: {
       cancel: function () {
         this.$http.post('', this.$data.cancelInfo).then(function (res) {
-          if (res.data.code==1) {
+          if (res.data.code == 1) {
             console.log(res);
           }
         }, function (err) {

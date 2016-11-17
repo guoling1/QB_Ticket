@@ -34,17 +34,20 @@
     </div>
     <datetime></datetime>
     <stationName></stationName>
+    <!--<message></message>-->
   </div>
 </template>
 
 <script lang="babel">
   import Datetime from './Datetime.vue';
   import StationName from './StationName.vue';
+  import Message from './Message.vue';
   export default {
     name: 'menu',
     components: {
       Datetime,
-      StationName
+      StationName,
+      Message
     },
     data: function () {
       return {
