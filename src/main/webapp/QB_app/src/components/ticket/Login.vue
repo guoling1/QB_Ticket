@@ -29,12 +29,18 @@
         <i></i>登录12306
       </div>
     </div>
+    <message></message>
   </div>
 </template>
 
 <script lang="babel">
+  import Message from '../Message.vue'
+
   export default {
     name: 'menu',
+    components: {
+      Message
+    },
     data: function () {
       return {
         loginData: {
@@ -59,10 +65,14 @@
           if (res.data.code == 1) {
             this.$router.go(-1);
           } else {
-            console.log(res.data.message);
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: res.body.message
+            });
           }
         }, function (err) {
-          console.log(err);
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: err
+          });
         })
       }
     }

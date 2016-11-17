@@ -11,7 +11,7 @@
         </div>
         <div class="side write">
           <div class="left" @click="station('stationONE')">{{$$data.form_name}}</div>
-          <img class="middle" @click="test" src="../../assets/exchange.png">
+          <img class="middle" src="../../assets/exchange.png">
 
           <div class="right" @click="station('stationTWO')">{{$$data.to_name}}</div>
         </div>
@@ -71,9 +71,9 @@
 </template>
 
 <script lang="babel">
-  import Datetime from './Datetime.vue';
-  import StationName from './StationName.vue';
-  import Message from './Message.vue';
+  import Datetime from './Datetime.vue'
+  import StationName from './StationName.vue'
+  import Message from '../Message.vue'
   export default {
     name: 'menu',
     components: {
@@ -102,11 +102,6 @@
       });
     },
     methods: {
-      test: function () {
-        this.$store.commit('MESSAGE_DELAY_SHOW', {
-          text: '谁让你出来的'
-        });
-      },
       //点击查询按钮,跳转页面,带上查询必须的参数
       query: function () {
         this.$router.push({

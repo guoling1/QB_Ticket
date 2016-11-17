@@ -21,12 +21,18 @@ const mutations = {
       state.delay = false;
     }, 3000);
   },
-  MESSAGE_DELAY_HIDE (state, obj) {
+  MESSAGE_DELAY_HIDE (state) {
     state.message = false;
     state.delay = false;
   },
-  MESSAGE_ACCORD (state, obj) {
-    state.accord = obj.ctrl;
+  MESSAGE_ACCORD_SHOW (state, obj) {
+    state.message = true;
+    state.accord = true;
+    state.text = obj.text;
+  },
+  MESSAGE_ACCORD_HIDE (state) {
+    state.message = false;
+    state.accord = false;
   }
 };
 

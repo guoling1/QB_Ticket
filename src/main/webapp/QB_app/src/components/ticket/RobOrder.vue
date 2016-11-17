@@ -138,17 +138,20 @@
           {{errMsg}}
       </div>
     </div>
+    <message></message>
   </div>
 </template>
 
 <script lang="babel">
-  import Contacts from './Contacts.vue'
   import Vue from 'vue'
+  import Contacts from './Contacts.vue'
+  import Message from '../Message.vue'
 
   export default {
     name: 'menu',
     components: {
-      Contacts
+      Contacts,
+      Message
     },
     data: function () {
       return {
@@ -199,10 +202,14 @@
         if(res.data.code==1){
           this.$data.submitInfo.phone = res.data.data;
         }else{
-          console.lg(res.data.message);
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: res.data.message
+          });
         }
       },function(err){
-        console.log(err)
+        this.$store.commit('MESSAGE_DELAY_SHOW', {
+          text: err
+        });
       })
     },
     methods: {
@@ -214,7 +221,9 @@
       },
       addChild: function () {
         if (this.$data.submitInfo.grabPassengers.length == 0) {
-          console.log("请先添加成人")
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '请先添加成人'
+          });
         } else {
           this.$data.show = !this.$data.show
         }
@@ -249,9 +258,15 @@
               newPerson.name = document.querySelector('#name').value;
               newPerson.piaoType = 2;
               this.$data.childs.push(newPerson);
+            }else{
+              this.$store.commit('MESSAGE_DELAY_SHOW', {
+                text: res.body.message
+              });
             }
           }).catch(function (err) {
-            console.log(err);
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: err
+            });
           })
         }
       },
@@ -290,10 +305,14 @@
             }
             polling = setInterval(pollFun, 1000);
           } else {
-            console.log(res.data.message);
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: res.data.message
+            });
           }
         }, function (err) {
-          console.log(err);
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: err
+          });
         })
       },
       pay: function () {
@@ -325,10 +344,14 @@
               }
             });
           } else {
-            console.log(res);
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: res.body.message
+            });
           }
         }, function (err) {
-          console.log(err);
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: err
+          });
         })
       },
       newCard: function () {
@@ -405,16 +428,24 @@
                   });
                 }
               } else {
-                console.log(res.data.message);
+                this.$store.commit('MESSAGE_DELAY_SHOW', {
+                  text: res.data.message
+                });
               }
             }, function (err) {
-              console.log(err);
+              this.$store.commit('MESSAGE_DELAY_SHOW', {
+                text: err
+              });
             });
           } else {
-            console.log(res.data.message);
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: res.data.message
+            });
           }
         }, function (err) {
-          console.log(err);
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: err
+          });
         })
       }
     },

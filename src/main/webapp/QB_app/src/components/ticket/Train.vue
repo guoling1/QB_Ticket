@@ -53,13 +53,18 @@
         </div>
       </li>
     </ul>
+    <message></message>
   </div>
 </template>
 
 <script lang="babel">
   import Vue from 'vue'
+  import Message from '../Message.vue'
   export default {
     name: 'menu',
+    components: {
+      Message
+    },
     data () {
       return {
         common: {
@@ -84,26 +89,34 @@
         to_station_name: to.query.toName,
         train_date: to.query.dateHttp //乘车日期（yyyy-MM-dd）
       }).then(function (res) {
-        next(function (vm) {
-          vm.$data.only = to.query.onlyGD;
-          for (let i = 0; i < res.body.data.length; i++) {
-            let runMin = res.body.data[i].run_time_minute;
-            let runH = 0;
-            let runM = 0;
-            if (runMin >= 60) {
-              runH = parseInt(runMin / 60);
-              runM = runMin % 60;
+        if (res.body.code == 1) {
+          next(function (vm) {
+            vm.$data.only = to.query.onlyGD;
+            for (let i = 0; i < res.body.data.length; i++) {
+              let runMin = res.body.data[i].run_time_minute;
+              let runH = 0;
+              let runM = 0;
+              if (runMin >= 60) {
+                runH = parseInt(runMin / 60);
+                runM = runMin % 60;
+              }
+              res.body.data[i]['runTimeShow'] = runH + '小时' + runM + '分钟';
             }
-            res.body.data[i]['runTimeShow'] = runH + '小时' + runM + '分钟';
-          }
-          vm.$data.initStations = res.body.data;
-          vm.$data.dateHttp = to.query.dateHttp;
-          vm.$data.dateWeek = to.query.dateWeek;
-          vm.$data.common.appid = to.query.appid;
-          vm.$data.common.uid = to.query.uid;
-        });
+            vm.$data.initStations = res.body.data;
+            vm.$data.dateHttp = to.query.dateHttp;
+            vm.$data.dateWeek = to.query.dateWeek;
+            vm.$data.common.appid = to.query.appid;
+            vm.$data.common.uid = to.query.uid;
+          });
+        } else {
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: res.body.message
+          });
+        }
       }, function (err) {
-        console.log(err);
+        this.$store.commit('MESSAGE_DELAY_SHOW', {
+          text: err
+        });
         next(false);
       })
     },
@@ -199,7 +212,7 @@
           function fromTime(arr) {
             let ary = [];
             for (var i = 0; i < arr.length; i++) {
-              var t = parseInt(arr[i].start_time)
+              var t = parseInt(arr[i].start_time);
               if (0 <= t && t < 6) {
                 t = 1
               } else if (6 <= t && t < 12) {
@@ -209,7 +222,6 @@
               } else if (18 <= t && t < 24) {
                 t = 4
               }
-              ;
               if ((t == config.startTime) || (0 == config.startTime)) {
                 ary.push(arr[i]);
               }
@@ -221,7 +233,7 @@
           function toTime(arr) {
             let ary = [];
             for (var i = 0; i < arr.length; i++) {
-              var t = parseInt(arr[i].arrive_time)
+              var t = parseInt(arr[i].arrive_time);
               if (0 < t && t <= 6) {
                 t = 1
               } else if (6 < t && t <= 12) {
@@ -231,7 +243,6 @@
               } else if (18 < t && t <= 24) {
                 t = 4
               }
-              ;
               if (t == config.endTime || 0 == config.endTime) {
                 ary.push(arr[i]);
               }
@@ -256,7 +267,7 @@
             for (let i = 0; i < arr.length; i++) {
               var reg = /_num/g;
               for (var j in arr[i]) {
-                if (reg.test(j) == true && arr[i][j] != "0" && arr[i][j] != "--"&& arr[i][j] != "*") {
+                if (reg.test(j) == true && arr[i][j] != "0" && arr[i][j] != "--" && arr[i][j] != "*") {
                   ary.push(arr[i]);
                   break
                 }

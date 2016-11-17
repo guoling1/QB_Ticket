@@ -35,12 +35,17 @@
         确认付款 ￥{{price}}
       </div>
     </div>
+    <message></message>
   </div>
 </template>
 
 <script lang="babel">
+  import Message from '../Message.vue'
   export default {
     name: 'menu',
+    components: {
+      Message
+    },
     data () {
       return {
         payAddress: ['/authen/toPay', '/authen/toPayGrab'],
@@ -89,10 +94,14 @@
           if (res.data.code == 1) {
             this.$data.submitInfo.bankCode = res.data.data.shorthand;
           } else {
-            console.log(res.data.message);
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: res.data.message
+            });
           }
         }, function (err) {
-          console.log(err);
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: err
+          });
         })
       },
       send: function () {
@@ -117,10 +126,14 @@
             }
             polling = setInterval(pollFun, 1000);
           } else {
-            console.log(res.data.message);
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: res.data.message
+            });
           }
         }, function (err) {
-          console.log(err);
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: err
+          });
         })
       },
       submit: function () {
@@ -144,10 +157,14 @@
               }
             })
           } else {
-            console.log(res.data.message);
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: res.data.message
+            });
           }
         }, function (err) {
-          console.log(err);
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: err
+          });
         });
       }
     }
