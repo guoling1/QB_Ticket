@@ -136,8 +136,8 @@
           if (res.data.code == 1) {
             this.$router.push({
               path: this.$data.goAddress[this.$data.payType], query: {
-                appid: this.$data.common.appid,
-                uid: this.$data.common.uid,
+                appid: this.$data.submitInfo.appid,
+                uid: this.$data.submitInfo.uid,
                 orderid: massage.grabTicketFormId
               }
             })
