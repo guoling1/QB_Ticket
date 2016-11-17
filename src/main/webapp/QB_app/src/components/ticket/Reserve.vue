@@ -30,7 +30,39 @@
         <div>查询历史</div>
         <div>清空</div>
       </div>
-      <div class="know">订票须知<span></span></div>
+      <div class="know" @click="show">订票须知<span></span></div>
+    </div>
+    <div class="notice" v-if="this.$data.$show">
+      <div class="content">
+        <h4>预订说明</h4>
+        <ol>
+          <li> 我们通过铁路官网或授权代销点为客户提供火车票代购服务。</li>
+          <li> 您可以自由选择出票套餐和抢票套餐，也可以只选择火车票代购服务。</li>
+          <li> 因受全国各铁路局的不同规定与要求，<span class="red">无法承诺百分之百代购成功</span>，我司预先收取您的票款，如果代购失败，退款会退至您支付时使用的银行卡。</li>
+          <li> 我们提供的是火车票代购服务，您接受本协议，意味着您同意我们使用您填写的乘客信息进行代购，包括但不限于授权我们使用您的乘客信息进行注册，代购，退票等操作，同时您必须遵守12306的购票规定的服务条款。</li>
+        </ol>
+        <h4>取票说明</h4>
+        <p>发车前凭订票时登记的证件和电子订单号，可在全国任意火车站或代售点取票。</p>
+        <p>部分高铁动车组列车可持二代居民身份证直接检票进站</p>
+        <h4>退票说明</h4>
+        <ol>
+          <li> 在线退票时间：6:00-22:55（其他时间须前往火车站窗口办理。）</li>
+          <li> 发车前35分钟且未打印纸质车票，可在“我的订单”中申请退票</li>
+          <li> 已经打印车票，需要携带车票前往火车站窗口办理。</li>
+        </ol>
+        <h4>退票手续费</h4>
+        <p>每张票按梯次收取退票手续费：</p>
+        <p>发车前15天（不含）以上，不收取退票费；</p>
+        <p>发车前49小时以上，手续费5%；</p>
+        <p>发车前25-49小时，手续费10%；</p>
+        <p>发车前25小时内，手续费20%；</p>
+        <p class="red">最终退款以铁路局实退金额为准。</p>
+        <p>如果您购买了出票套餐，我们在退保险成功后和票款一同退还至支付银行卡。</p>
+        <h4>改签说明</h4>
+        <p>本系统暂不支持在线改签，您可以在线发起退票后重新购买车票，或者前往火车站窗口办理。</p>
+        <p>如果在车站改签的车票低于原车票金额，我司将会退还差价至您支付时使用的银行卡。</p>
+      </div>
+      <div class="x" @click="show">×</div>
     </div>
     <datetime></datetime>
     <stationName></stationName>
@@ -59,7 +91,8 @@
         to_code: this.$store.state.station.scope.stationTWO.code,
         date_http: this.$store.state.date.scope.dateONE.code,
         date_week: this.$store.state.date.scope.dateONE.time,
-        only_GD: false
+        only_GD: false,
+        $show:false
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -99,6 +132,9 @@
       },
       onlyU: function () {
         this.$data.only_GD = !this.$data.only_GD;
+      },
+      show:function(){
+        this.$data.$show=!this.$data.$show
       }
     },
     computed: {
@@ -259,6 +295,50 @@
       margin-left: 5px;
       background: url('../../assets/know.png') no-repeat;
       background-size: 13px 13px;
+    }
+  }
+  .notice{
+    position: fixed;
+    top: 64px;
+    left: 0;
+    z-index: 99;
+    padding:0 15px;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,.9);
+    .content{
+      height: 80%;
+      overflow: auto;
+      text-align: left;
+      font-size: 12px;
+      line-height: 21px;
+    }
+    h4{
+      font-size: 14px;
+      font-weight: bold;
+      line-height: 21px;
+      padding-top: 17px;
+    }
+    p{
+      line-height: 21px;
+    }
+    ol{
+      padding-left: 15px;
+      list-style: decimal;
+      li{
+        line-height: 21px;
+      }
+    }
+    .red{
+      color: #ff6565;
+    }
+    .x{
+      height: 20%;
+      width: 100%;
+      font-size: 30px;
+      padding:20px 0 40px;
+      color: #999;
+      text-align: center;
     }
   }
 </style>

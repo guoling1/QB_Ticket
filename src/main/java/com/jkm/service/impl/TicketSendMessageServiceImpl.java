@@ -209,7 +209,7 @@ public class TicketSendMessageServiceImpl implements TicketSendMessageService {
                 + sendReturnTicketOnlineParam.getEndStation() + sendReturnTicketOnlineParam.getTrainNo() + "次";
 
         data.put("userName", sendReturnTicketOnlineParam.getUserName());
-        data.put("dateAndTrainStation", dateAndTrainStation);
+        data.put("dateAndTrainStationAndTrainNo", dateAndTrainStation);
         final SendMessageParams sendMessageParams = SendMessageParams.builder()
                 .uid(sendReturnTicketOnlineParam.getUid())
                 .userType(EnumUserType.FOREGROUND_USER)
@@ -234,7 +234,7 @@ public class TicketSendMessageServiceImpl implements TicketSendMessageService {
                 + sendReturnTicketDownParam.getEndStation() + sendReturnTicketDownParam.getTrainNo() + "次";
 
         data.put("userName", sendReturnTicketDownParam.getUserName());
-        data.put("dateAndTrainStation", dateAndTrainStation);
+        data.put("dateAndTrainStationAndTrainNo", dateAndTrainStation);
         data.put("amount", sendReturnTicketDownParam.getAmount());
         final SendMessageParams sendMessageParams = SendMessageParams.builder()
                 .uid(sendReturnTicketDownParam.getUid())
