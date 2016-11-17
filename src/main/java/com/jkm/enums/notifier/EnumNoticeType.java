@@ -33,7 +33,13 @@ public enum EnumNoticeType {
 
     GRAB_TICKET_SUCCESS_HAVE_RESIDUE_NO(304, "抢票成功(无余款)"),
 
-    GRAB_TICKET_FAIL(305, "抢票失败");
+    GRAB_TICKET_FAIL(305, "抢票失败"),
+
+    GRAB_CANCEL(306, "用户主动取消抢票"),
+
+    RETURN_TICKET_ONLINE(307, "用户在线申请退票"),
+
+    RETURN_TICKET_DOWN(308, "用户线下退款或改签");
 
 
     private static final Map<Integer, EnumNoticeType> ENUM_MAP = new HashMap<>();

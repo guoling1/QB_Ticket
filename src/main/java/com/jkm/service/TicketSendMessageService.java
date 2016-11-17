@@ -50,4 +50,25 @@ public interface TicketSendMessageService {
      * @param sendGrabTicketFailParam
      */
     void sendGrabTicketFailMessage(SendGrabTicketFailParam sendGrabTicketFailParam);
+
+    /**
+     * 抢票（用户主动取消）
+     *
+     * @param sendCancelGrabTicketParam
+     */
+    void sendCancelGrabTicketMessage(SendCancelGrabTicketParam sendCancelGrabTicketParam);
+
+    /**
+     * 用户在线申请退票成功：
+     *
+     * @param sendReturnTicketOnlineParam
+     */
+    void sendReturnTicketOnlineMessage(SendReturnTicketOnlineParam sendReturnTicketOnlineParam);
+
+    /**
+     * 收到供应商退票成功通知
+     *
+     * @param sendReturnTicketDownParam
+     */
+    void sendReturnTicketDownMessage(SendReturnTicketDownParam sendReturnTicketDownParam);
 }

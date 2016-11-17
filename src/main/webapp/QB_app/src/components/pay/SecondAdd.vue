@@ -40,6 +40,8 @@
     data () {
       return {
         payAddress: ['/authen/toPay', '/authen/toPayGrab'],
+        goAddress: ['/ticket/refund-success', '/ticket/rob-detail'],
+        payCode: ['4', '6'],
         payType: '',
         submitInfo: {
           appid: '',
@@ -95,6 +97,7 @@
         this.$http.post('/authen/getCode', {
           phone: this.$data.submitInfo.phoneNo,//手机号
           amount: this.$data.price, //支付金额
+          verificationCodeType: this.$data.payCode[this.$data.payType],
           uid: this.$data.submitInfo.uid, //三方商户用户id
           appid: this.$data.submitInfo.appid //三方商户唯一标示appid
         }).then(function (res) {
@@ -131,7 +134,13 @@
         this.$data.submitInfo.nonceStr = year + month + day + hour + min + ss + random;
         this.$http.post(this.$data.payAddress[this.$data.payType], this.$data.submitInfo).then(function (res) {
           if (res.data.code == 1) {
-            console.log('跳转出票页');
+            this.$router.push({
+              path: this.$data.goAddress[this.$data.payType], query: {
+                appid: this.$data.common.appid,
+                uid: this.$data.common.uid,
+                orderid: massage.grabTicketFormId
+              }
+            })
           } else {
             console.log(res.data.message);
           }

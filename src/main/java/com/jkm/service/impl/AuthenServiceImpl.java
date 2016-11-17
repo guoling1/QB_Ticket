@@ -202,8 +202,7 @@ public class AuthenServiceImpl implements AuthenService {
 				DateUtils.formate_string_yyyyMMdd));
 		detail.setCARD_NO(requestData.getCrdNo());
 		detail.setACCOUNT_NAME(requestData.getCapCrdNm());
-//		detail.setAMOUNT(requestData.getAmount());
-		detail.setAMOUNT("0.01");
+		detail.setAMOUNT(requestData.getAmount());
 		detail.setID_TYPE("00");//只支持身份证
 		detail.setID(requestData.getIdNo());//证件号
 		detail.setTEL(requestData.getPhoneNo());//手机号
@@ -258,20 +257,20 @@ public class AuthenServiceImpl implements AuthenService {
 				if ("0000".equals(response100003.getInfo().getRetCode())) {
 					JSONObject jo = new JSONObject();
 					jo.put("reqSn",request100003.getInfo().getReqSn());
-					ret.put("retCode", true);
+					ret.put("retCode", response100003.getInfo().getRetCode());
 					ret.put("retMsg", response100003.getInfo().getErrMsg());
 					ret.put("retData", jo);
 					RefundResultRecord refundResultRecord = new RefundResultRecord();
 					refundResultRecord.setStatus(0);
 					refundResultRecord.setAmount(request100003.getBody().getTransDetail().getREFUND_AMOUNT());
-					refundResultRecord.setRefundChannel("fastpay");
+					refundResultRecord.setRefundChannel("singlRefund");
 					refundResultRecord.setRefundParams(xml);
 					refundResultRecord.setRefundResult("1");
 					refundResultRecord.setReqSn(request100003.getInfo().getReqSn());
 					refundResultRecord.setResultParams(response100003.toString());
 					refundResultRecordService.insertSelective(refundResultRecord);
 				} else {
-					ret.put("retCode", false);
+					ret.put("retCode", response100003.getInfo().getRetCode());
 					ret.put("retMsg", response100003.getInfo().getErrMsg());
 					RefundResultRecord refundResultRecord = new RefundResultRecord();
 					refundResultRecord.setStatus(0);
@@ -284,7 +283,7 @@ public class AuthenServiceImpl implements AuthenService {
 					refundResultRecordService.insertSelective(refundResultRecord);
 				}
 			} else {
-				ret.put("retCode", false);
+				ret.put("retCode", "5000");
 				ret.put("retMsg", "单笔退款接口连接失败");
 			}
 			logger.debug("****************" + response2
@@ -292,7 +291,7 @@ public class AuthenServiceImpl implements AuthenService {
 
 		} catch (Exception e) {
 			logger.error("退款错误信息:"+e);
-			ret.put("retCode", false);
+			ret.put("retCode", "4000");
 			ret.put("retMsg", "退款异常");
 		}
 		return ret;
@@ -323,100 +322,6 @@ public class AuthenServiceImpl implements AuthenService {
 		singleRefund.setBody(body);
 		singleRefund.setInfo(head);
 		return singleRefund;
-	}
-
-	/**
-	 * 银行卡鉴权
-	 * @param requestData
-	 * @return
-	 */
-	@Override
-	public Map<String, Object> cardAuth(CardAuthData requestData) {
-		Map<String, Object> ret = new HashMap<String, Object>();
-		try {
-			Request100004 request100004 = createCardAuth(requestData);
-			String xml = XmlUtil.toXML(request100004);
-			logger.debug("****************xml生成authen*********************-"
-					+ xml);
-
-			// 加签
-			logger.debug("****************xml加签*********************");
-			xml = signatureService.addSignatrue(xml);
-			// 加压加密
-			logger.debug("****************xml加压加密*********************");
-			String Base64 = GZipUtil.gzipString(xml);
-			// 通讯使用HTTPS进行通讯
-			logger.debug("****************xml通讯使用HTTPS进行通讯*********************");
-			String response1 = HttpUtils.sendPostMessage(Base64, HzSdkConstans.CARD_AUTH,
-					Constants.transfer_charset);
-			// 解压解密返回信息
-			String response2 = null;
-			if (StringUtils.isNotEmpty(response1)) {
-				logger.debug("****************xml通讯返回*********************");
-				response2 = GZipUtil.ungzipString(response1);
-				boolean isSuc = signatureService.isSignature(response2);
-				if (isSuc) {
-					ret.put("signMsg", "验签成功！！");
-					logger.error("验签成功！！");
-				} else {
-					ret.put("signMsg", "验签失败！！");
-					logger.error("验签失败！！");
-				}
-				// 将解压解密后的结果转化为Response100000对象
-				Response100004 response100004 = XmlUtil.fromXML(response2,
-						Response100004.class);
-
-				if ("0000".equals(response100004.getInfo().getRetCode())) {
-					ret.put("reqSn", request100004.getInfo().getReqSn());
-					ret.put("retCode", true);
-					ret.put("retMsg", response100004.getInfo().getErrMsg());
-					ret.put("retXml", response2);
-				} else {
-					ret.put("retCode", false);
-					ret.put("retMsg", response100004.getInfo().getErrMsg());
-					ret.put("retXml", response2);
-				}
-			} else {
-				ret.put("retCode", false);
-				ret.put("retMsg", "银行卡鉴权接口连接失败");
-			}
-			logger.debug("****************" + response2
-					+ "*********************");
-
-		} catch (Exception e) {
-			logger.error("银行卡鉴权错误信息:"+e);
-		}
-		return ret;
-	}
-
-
-	private Request100004 createCardAuth(CardAuthData requestData) {
-		Request100004 cardAuth = new Request100004();
-		RequestHead head = new RequestHead();
-		head.setTrxCode("100004");
-		head.setVersion("01");
-		head.setDataType(Constants.DATA_TYPE_XML);
-		head.setLevel(Constants.LEVEL_0);
-		head.setReqSn(DateUtils.getDateString(new Date(),
-				DateUtils.formate_string_yyyyMMddhhmmss));
-		head.setSignedMsg("signedMsg");
-
-		RequestBody100004 body = new RequestBody100004();
-		RequestDetail100004 detail = new RequestDetail100004();
-		detail.setMERCHANT_ID(HzSdkConstans.MERC_ID);
-		detail.setSEND_TIME(DateUtils.getDateString(new Date(),
-				DateUtils.formate_string_yyyyMMddhhmmss));
-		detail.setSEND_DT(DateUtils.getDateString(new Date(),
-				DateUtils.formate_string_yyyyMMdd));
-		detail.setCARD_NO(requestData.getCrdNo());
-		detail.setACCOUNT_NAME(requestData.getAccountName());
-		detail.setID_TYPE(requestData.getIdType());
-		detail.setID(requestData.getIdNo());
-		detail.setTEL(requestData.getPhoneNo());
-		body.setTransDetail(detail);
-		cardAuth.setBody(body);
-		cardAuth.setInfo(head);
-		return cardAuth;
 	}
 
 	/**
@@ -902,7 +807,7 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("message",userInfo.getString("message"));
 			return jo;
 		}
-		BigDecimal amount = grabTicketFormOptional.get().getTotalPrice();
+		BigDecimal amount = grabTicketFormOptional.get().getGrabTotalPrice();
 		grabTicketFormService.updateStatusById(EnumGrabTicketStatus.GRAB_FORM_PAY_ING,requestData.getLong("orderId"));
 
 		AuthenData authenData = new AuthenData();
@@ -1024,7 +929,7 @@ public class AuthenServiceImpl implements AuthenService {
 			return jo;
 		}
 
-		BigDecimal amount = grabTicketFormOptional.get().getTotalPrice();
+		BigDecimal amount = grabTicketFormOptional.get().getGrabTotalPrice();
 		grabTicketFormService.updateStatusById(EnumGrabTicketStatus.GRAB_FORM_PAY_ING,requestData.getLong("orderId"));
 
 
@@ -1078,6 +983,7 @@ public class AuthenServiceImpl implements AuthenService {
 		JSONObject jo = new JSONObject();
 		Preconditions.checkNotNull(requestData.get("phone"),"手机号不能为空");
 		Preconditions.checkNotNull(requestData.get("amount"),"支付金额不能为空");
+		Preconditions.checkNotNull(requestData.get("verificationCodeType"),"短信类型不能为空");
 		if(!ValidationUtil.isMobile(requestData.getString("phone"))){
 			jo.put("result",false);
 			jo.put("message","手机号格式不正确");
@@ -1085,21 +991,69 @@ public class AuthenServiceImpl implements AuthenService {
 		}
 		SendPaymentParam sendPaymentParam = new SendPaymentParam();
 		sendPaymentParam.setAmount(requestData.getString("amount"));
+		if("4".equals(requestData.getString("verificationCodeType"))){
+			Pair<Integer, String> codeStatus = smsAuthService.getVerifyCode(requestData.getString("phone"),EnumVerificationCodeType.PAYMENT);
+			int resultType = codeStatus.getKey();
+			if(resultType!=1){
+				jo.put("result",false);
+				jo.put("message",codeStatus.getValue());
+			}else{
+				sendPaymentParam.setCode(codeStatus.getValue());
+				sendPaymentParam.setMobile(requestData.getString("phone"));
+				sendPaymentParam.setUid(requestData.getString("uid"));
+				long sn = ticketSendMessageService.sendPaymentMessage(sendPaymentParam);
+				jo.put("result",true);
+				jo.put("data",sn);
+				jo.put("message","发送验证码成功");
+			}
 
-		Pair<Integer, String> codeStatus = smsAuthService.getVerifyCode(requestData.getString("phone"),EnumVerificationCodeType.PAYMENT);
-		int resultType = codeStatus.getKey();
-		if(resultType!=1){
-			jo.put("result",false);
-			jo.put("message",codeStatus.getValue());
-			return jo;
+		}else if("5".equals(requestData.getString("verificationCodeType"))){
+			Pair<Integer, String> codeStatus = smsAuthService.getVerifyCode(requestData.getString("phone"),EnumVerificationCodeType.PAYMENT_CID);
+			int resultType = codeStatus.getKey();
+			if(resultType!=1){
+				jo.put("result",false);
+				jo.put("message",codeStatus.getValue());
+			}else{
+				sendPaymentParam.setCode(codeStatus.getValue());
+				sendPaymentParam.setMobile(requestData.getString("phone"));
+				sendPaymentParam.setUid(requestData.getString("uid"));
+				long sn = ticketSendMessageService.sendPaymentMessage(sendPaymentParam);
+				jo.put("result",true);
+				jo.put("data",sn);
+				jo.put("message","发送验证码成功");
+			}
+
+		}else if("6".equals(requestData.getString("verificationCodeType"))){
+			Pair<Integer, String> codeStatus = smsAuthService.getVerifyCode(requestData.getString("phone"),EnumVerificationCodeType.PAYMENT_GRAP);
+			int resultType = codeStatus.getKey();
+			if(resultType!=1){
+				jo.put("result",false);
+				jo.put("message",codeStatus.getValue());
+			}else{
+				sendPaymentParam.setCode(codeStatus.getValue());
+				sendPaymentParam.setMobile(requestData.getString("phone"));
+				sendPaymentParam.setUid(requestData.getString("uid"));
+				long sn = ticketSendMessageService.sendPaymentMessage(sendPaymentParam);
+				jo.put("result",true);
+				jo.put("data",sn);
+				jo.put("message","发送验证码成功");
+			}
+		}else if("7".equals(requestData.getString("verificationCodeType"))){
+			Pair<Integer, String> codeStatus = smsAuthService.getVerifyCode(requestData.getString("phone"),EnumVerificationCodeType.PAYMENT_GRAPCID);
+			int resultType = codeStatus.getKey();
+			if(resultType!=1){
+				jo.put("result",false);
+				jo.put("message",codeStatus.getValue());
+			}else{
+				sendPaymentParam.setCode(codeStatus.getValue());
+				sendPaymentParam.setMobile(requestData.getString("phone"));
+				sendPaymentParam.setUid(requestData.getString("uid"));
+				long sn = ticketSendMessageService.sendPaymentMessage(sendPaymentParam);
+				jo.put("result",true);
+				jo.put("data",sn);
+				jo.put("message","发送验证码成功");
+			}
 		}
-		sendPaymentParam.setCode(codeStatus.getValue());
-		sendPaymentParam.setMobile(requestData.getString("phone"));
-		sendPaymentParam.setUid(requestData.getString("uid"));
-		long sn = ticketSendMessageService.sendPaymentMessage(sendPaymentParam);
-		jo.put("result",true);
-		jo.put("data",sn);
-		jo.put("message","发送验证码成功");
 		return jo;
 	}
 }

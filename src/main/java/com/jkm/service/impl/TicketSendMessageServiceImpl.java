@@ -170,4 +170,79 @@ public class TicketSendMessageServiceImpl implements TicketSendMessageService {
                 .build();
         this.sendMessageService.sendMessage(sendMessageParams);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param sendCancelGrabTicketParam
+     */
+    @Override
+    public void sendCancelGrabTicketMessage(SendCancelGrabTicketParam sendCancelGrabTicketParam) {
+        final HashMap<String, String> data = new HashMap<>();
+        final String startDate = sendCancelGrabTicketParam.getStartDate();
+        final String[] dateSplit = startDate.split("-");
+        final String dateAndTrainStation = dateSplit[1] + "月" + dateSplit[2] + "日" +  sendCancelGrabTicketParam.getStartStation() + "-"
+                + sendCancelGrabTicketParam.getEndStation();
+
+        data.put("dateAndTrainStation", dateAndTrainStation);
+        final SendMessageParams sendMessageParams = SendMessageParams.builder()
+                .uid(sendCancelGrabTicketParam.getUid())
+                .userType(EnumUserType.FOREGROUND_USER)
+                .noticeType(EnumNoticeType.GRAB_CANCEL)
+                .mobile(sendCancelGrabTicketParam.getMobile())
+                .data(data)
+                .build();
+        this.sendMessageService.sendMessage(sendMessageParams);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param sendReturnTicketOnlineParam
+     */
+    @Override
+    public void sendReturnTicketOnlineMessage(SendReturnTicketOnlineParam sendReturnTicketOnlineParam) {
+        final HashMap<String, String> data = new HashMap<>();
+        final String startDate = sendReturnTicketOnlineParam.getStartDate();
+        final String[] dateSplit = startDate.split("-");
+        final String dateAndTrainStation = dateSplit[1] + "月" + dateSplit[2] + "日" +  sendReturnTicketOnlineParam.getStartStation() + "-"
+                + sendReturnTicketOnlineParam.getEndStation() + sendReturnTicketOnlineParam.getTrainNo() + "次";
+
+        data.put("userName", sendReturnTicketOnlineParam.getUserName());
+        data.put("dateAndTrainStation", dateAndTrainStation);
+        final SendMessageParams sendMessageParams = SendMessageParams.builder()
+                .uid(sendReturnTicketOnlineParam.getUid())
+                .userType(EnumUserType.FOREGROUND_USER)
+                .noticeType(EnumNoticeType.RETURN_TICKET_ONLINE)
+                .mobile(sendReturnTicketOnlineParam.getMobile())
+                .data(data)
+                .build();
+        this.sendMessageService.sendMessage(sendMessageParams);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param sendReturnTicketDownParam
+     */
+    @Override
+    public void sendReturnTicketDownMessage(SendReturnTicketDownParam sendReturnTicketDownParam) {
+        final HashMap<String, String> data = new HashMap<>();
+        final String startDate = sendReturnTicketDownParam.getStartDate();
+        final String[] dateSplit = startDate.split("-");
+        final String dateAndTrainStation = dateSplit[1] + "月" + dateSplit[2] + "日" +  sendReturnTicketDownParam.getStartStation() + "-"
+                + sendReturnTicketDownParam.getEndStation() + sendReturnTicketDownParam.getTrainNo() + "次";
+
+        data.put("userName", sendReturnTicketDownParam.getUserName());
+        data.put("dateAndTrainStation", dateAndTrainStation);
+        data.put("amount", sendReturnTicketDownParam.getAmount());
+        final SendMessageParams sendMessageParams = SendMessageParams.builder()
+                .uid(sendReturnTicketDownParam.getUid())
+                .userType(EnumUserType.FOREGROUND_USER)
+                .noticeType(EnumNoticeType.RETURN_TICKET_DOWN)
+                .mobile(sendReturnTicketDownParam.getMobile())
+                .data(data)
+                .build();
+        this.sendMessageService.sendMessage(sendMessageParams);
+    }
 }

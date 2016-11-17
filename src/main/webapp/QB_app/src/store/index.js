@@ -11,6 +11,7 @@ import date from './modules/date'
 import station from './modules/station'
 import screen from './modules/screen'
 import contact from './modules/contact'
+import message from './modules/message'
 
 Vue.use(Vuex);
 
@@ -22,6 +23,7 @@ export default new Vuex.Store({
     date,
     station,
     screen,
-    contact
+    contact,
+    message
   }
 })
