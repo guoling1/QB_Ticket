@@ -1,7 +1,6 @@
 <template lang="html">
   <div class="menu flex-box-column flexBox">
     <router-view></router-view>
-
     <div class="bottom">
       <router-link :to="{path:'/ticket/main-menu/reserve',query: common}" class="btn"
                    :class="pathName=='ticketReserve'?'active':''">

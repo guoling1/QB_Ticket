@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.dao.ConfirmOrderExceptionRecordDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+      INSERT INTO tb_confirm_order_exception_record
+      (order_form_id, payment_sn, amount, remark, status)
+      VALUES
+      (#{orderFormId}, #{paymentSn}, #{amount}, #{remark}, #{status})
+    </insert>
+    <update id="markProcessedById">
+        UPDATE tb_confirm_order_exception_record SET status = 1 WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultType="com.jkm.entity.ConfirmOrderExceptionRecord">
+      SELECT * FROM tb_confirm_order_exception_record WHERE id = #{id}
+    </select>
+
+    <select id="selectByOrderFormId" resultType="com.jkm.entity.ConfirmOrderExceptionRecord">
+      SELECT * FROM tb_confirm_order_exception_record WHERE order_form_id = #{orderFormId}
+    </select>
+</mapper>

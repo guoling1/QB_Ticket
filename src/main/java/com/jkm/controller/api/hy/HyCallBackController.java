@@ -79,6 +79,7 @@ public class HyCallBackController extends BaseController {
                   jsonParams.getString("apiorderid") + jsonParams.getString("trainorderid") + jsonParams.getString("token") +
                   jsonParams.getString("returnmoney") + jsonParams.getString("returnstate") + MD5Util.MD5(HySdkConstans.ORDER_SIGN_KEY));
             flag = sign.equals(jsonParams.getString("sign"));
+            System.out.println(sign);
             log.info("收到hy线上退票的异步通知:" + jsonParams.toString() + "签名结果:" + flag);
         }else{
             this.postHandle("", "收到hy线下退票结果推送", 0, jsonParams.toString(), "", 0);

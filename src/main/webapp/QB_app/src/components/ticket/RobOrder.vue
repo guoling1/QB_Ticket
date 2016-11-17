@@ -125,7 +125,8 @@
         </li>
         <li>
           <label for="sex">乘客性别</label>
-          <label style="margin-left:10px;color:#999"><input type="radio" name="sex" value="0" checked="checked">男</label>
+          <label style="margin-left:10px;color:#999"><input type="radio" name="sex" value="0"
+                                                            checked="checked">男</label>
           <label style="margin-left:20px;color:#999"><input type="radio" name="sex" value="1">女</label>
         </li>
         <li class="typeLi">
@@ -134,9 +135,9 @@
         </li>
       </ul>
       <div class="sure" @click="sev">保存</div>
-      <div class="err" v-if="this.$data.$err">
-          {{errMsg}}
-      </div>
+    </div>
+    <div class="err" v-if="this.$data.$err">
+      {{errMsg}}
     </div>
     <message></message>
   </div>
@@ -189,24 +190,24 @@
         },
         show: false,
         childs: [],
-        errMsg:'',
-        $err:false
+        errMsg: '',
+        $err: false
       }
     },
     created: function () {
       this.$data.submitInfo = JSON.parse(sessionStorage.getItem('robOrder'));
-      this.$http.post('/userInfo/findPhone',{
+      this.$http.post('/userInfo/findPhone', {
         appid: this.$data.submitInfo.appId,
         uid: this.$data.submitInfo.uid
-      }).then(function(res){
-        if(res.data.code==1){
+      }).then(function (res) {
+        if (res.data.code == 1) {
           this.$data.submitInfo.phone = res.data.data;
-        }else{
+        } else {
           this.$store.commit('MESSAGE_DELAY_SHOW', {
             text: res.data.message
           });
         }
-      },function(err){
+      }, function (err) {
         this.$store.commit('MESSAGE_DELAY_SHOW', {
           text: err
         });
@@ -221,15 +222,17 @@
       },
       addChild: function () {
         if (this.$data.submitInfo.grabPassengers.length == 0) {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: '请先添加成人'
-          });
+          this.$data.$err = true;
+          this.$data.errMsg = "请先添加成人";
+          setTimeout(()=>{
+            this.$data.$err = false
+          },1000);
         } else {
           this.$data.show = !this.$data.show
         }
       },
       sev: function () {
-        this.$data.$err=false
+        this.$data.$err = false
         var addPerson = {
           uid: this.$data.submitInfo.uid,
           appid: this.$data.submitInfo.appId,
@@ -238,17 +241,17 @@
           birthday: document.querySelector('#birthday').value,
           personType: 2
         };
-        if(document.querySelector('#name').value==""){
-          this.$data.$err=true
-          this.$data.errMsg="请填写乘客姓名"
-        }else if(document.querySelector('#birthday').value==""){
-          this.$data.$err=true
-          this.$data.errMsg="请填写正确的出生日期"
+        if (document.querySelector('#name').value == "") {
+          this.$data.$err = true
+          this.$data.errMsg = "请填写乘客姓名"
+        } else if (document.querySelector('#birthday').value == "") {
+          this.$data.$err = true
+          this.$data.errMsg = "请填写正确的出生日期"
         }
         setTimeout(()=>{
-          this.$data.$err=false
+          this.$data.$err = false
         },1000);
-        if(this.$data.$err==false){
+        if (this.$data.$err == false) {
           Vue.http.post('/contactInfo/add', JSON.stringify(addPerson))
             .then((res)=>{
             if (res.data.code == 1) {
@@ -258,12 +261,14 @@
               newPerson.name = document.querySelector('#name').value;
               newPerson.piaoType = 2;
               this.$data.childs.push(newPerson);
-            }else{
+            } else {
               this.$store.commit('MESSAGE_DELAY_SHOW', {
                 text: res.body.message
               });
             }
-          }).catch(function (err) {
+          }
+        ).
+          catch(function (err) {
             this.$store.commit('MESSAGE_DELAY_SHOW', {
               text: err
             });
@@ -385,7 +390,7 @@
         });
       },
       submit: function () {
-        this.$data.submitInfo.grabPassengers=this.$data.submitInfo.grabPassengers.concat(this.$data.childs);
+        this.$data.submitInfo.grabPassengers = this.$data.submitInfo.grabPassengers.concat(this.$data.childs);
         let data = this.$data.submitInfo;
         if (data.seatTypes == '0,1,2,3,4,6,O,M,P,9') {
           data.seatTypes = '全部坐席';
@@ -401,62 +406,73 @@
           data.seatTypes = data.seatTypes.replace('特等座', 'P');
           data.seatTypes = data.seatTypes.replace('商务座', '9');
         }
-        this.$http.post('/ticket/grab', data).then(function (res) {
-          if (res.data.code == 1) {
-            this.$data.payInfo.price = res.data.data.price;
-            this.$data.payInfo.orderId = res.data.data.grabTicketFormId;
-            this.$http.post('/card/list', {
-              appid: this.$data.submitInfo.appId,
-              uid: this.$data.submitInfo.uid
-            }).then(function (rs) {
-              if (rs.data.code == 1) {
-                if (rs.data.data.cardList) {
-                  this.$data.payInfo.cardList = rs.data.data.cardList;
-                  this.$data.payInfo.checkout = rs.data.data.cardList[0];
-                  this.$data.payInfo.peopleInfo = rs.data.data.userCardInfo;
-                  this.$data.payInfo.bank = true;
+        this.$data.$err = false;
+        if (this.$data.submitInfo.grabPassengers == "") {
+          this.$data.$err = true;
+          this.$data.errMsg = "请添加乘客";
+          setTimeout(()=>{
+            this.$data.$err = false
+          },1000);
+        } else {
+          this.$http.post('/ticket/grab', data).then(function (res) {
+            if (res.data.code == 1) {
+              this.$data.payInfo.price = res.data.data.price;
+              this.$data.payInfo.orderId = res.data.data.grabTicketFormId;
+              this.$http.post('/card/list', {
+                appid: this.$data.submitInfo.appId,
+                uid: this.$data.submitInfo.uid
+              }).then(function (rs) {
+                if (rs.data.code == 1) {
+                  if (rs.data.data.cardList) {
+                    this.$data.payInfo.cardList = rs.data.data.cardList;
+                    this.$data.payInfo.checkout = rs.data.data.cardList[0];
+                    this.$data.payInfo.peopleInfo = rs.data.data.userCardInfo;
+                    this.$data.payInfo.bank = true;
+                  } else {
+                    this.$router.push({
+                      path: '/pay/first-add',
+                      query: {
+                        appid: this.$data.submitInfo.appId,
+                        uid: this.$data.submitInfo.uid,
+                        id: this.$data.payInfo.orderId,
+                        price: this.$data.payInfo.price,
+                        payType: 1
+                      }
+                    });
+                  }
                 } else {
-                  this.$router.push({
-                    path: '/pay/first-add',
-                    query: {
-                      appid: this.$data.submitInfo.appId,
-                      uid: this.$data.submitInfo.uid,
-                      id: this.$data.payInfo.orderId,
-                      price: this.$data.payInfo.price,
-                      payType: 1
-                    }
+                  this.$store.commit('MESSAGE_DELAY_SHOW', {
+                    text: res.data.message
                   });
                 }
-              } else {
+              }, function (err) {
                 this.$store.commit('MESSAGE_DELAY_SHOW', {
-                  text: res.data.message
+                  text: err
                 });
-              }
-            }, function (err) {
-              this.$store.commit('MESSAGE_DELAY_SHOW', {
-                text: err
               });
-            });
-          } else {
+            } else {
+              this.$store.commit('MESSAGE_DELAY_SHOW', {
+                text: res.data.message
+              });
+            }
+          }, function (err) {
             this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.data.message
+              text: err
             });
-          }
-        }, function (err) {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
-          });
-        })
+          })
+        }
       }
     },
     computed: {
       $payInfo: function () {
         return this.$data.payInfo;
-      },
+      }
+      ,
       $$childs: function () {
         this.$data.childs.piaoType = '儿童';
         return this.$data.childs;
-      },
+      }
+      ,
       passengers: function () {
         let storeDate = this.$store.state.contact.info;
         let data = [];
@@ -472,7 +488,8 @@
           }
         }
         return data;
-      },
+      }
+      ,
       $submitInfo: function () {
         let data = this.$data.submitInfo;
         if (data.seatTypes == '0,1,2,3,4,6,O,M,P,9') {
@@ -492,7 +509,7 @@
         return data;
       }
     }
-  }
+    }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -850,38 +867,40 @@
       color: #fff;
     }
   }
-  .err{
-    background: rgba(0,0,0,0.8);
+
+  .err {
+    background: rgba(0, 0, 0, 0.8);
     height: 30px;
     line-height: 30px;
     padding: 0 5px;
     position: fixed;
     top: 35%;
     left: 33%;
-    background: rgba(0,0,0,.5);
+    background: rgba(0, 0, 0, .5);
     border-radius: 5px;
     border: 2px solid #666;
     color: #ebeeef;
     -webkit-animation: fadeOut 1s ease 0.2s 1 both;
     animation: fadeOut 1s ease 0.2s 1 both;
   }
-  @-webkit-keyframes fadeOut {
-      from {
-          opacity: 1;
-      }
 
-      to {
-          opacity: 0;
-      }
+  @-webkit-keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 0;
+    }
   }
 
   @keyframes fadeOut {
-      from {
-          opacity: 1;
-      }
+    from {
+      opacity: 1;
+    }
 
-      to {
-          opacity: 0;
-      }
+    to {
+      opacity: 0;
+    }
   }
 </style>

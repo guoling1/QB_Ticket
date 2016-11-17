@@ -95,16 +95,12 @@ public class HySdkServiceImpl implements HySdkService{
     public JSONObject confirmTrainTicket(final String orderId, final String transactionId) {
         JSONObject jsonObject = new JSONObject();
         String reqTime = this.getCurrentDateString();
-        try {
-            jsonObject.put("sign", this.getSign(EnumHTHYMethodCode.CONFIRM_ORDER_FORM.getCode(), reqTime));
-            jsonObject.put("partnerid", HySdkConstans.ORDER_PARTNER_ID);
-            jsonObject.put("method", EnumHTHYMethodCode.CONFIRM_ORDER_FORM.getCode());
-            jsonObject.put("orderid", orderId);
-            jsonObject.put("reqtime", reqTime);
-            jsonObject.put("transactionid", transactionId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        jsonObject.put("sign", this.getSign(EnumHTHYMethodCode.CONFIRM_ORDER_FORM.getCode(), reqTime));
+        jsonObject.put("partnerid", HySdkConstans.ORDER_PARTNER_ID);
+        jsonObject.put("method", EnumHTHYMethodCode.CONFIRM_ORDER_FORM.getCode());
+        jsonObject.put("orderid", orderId);
+        jsonObject.put("reqtime", reqTime);
+        jsonObject.put("transactionid", transactionId);
         final StopWatch stopWatch = new StopWatch();
         final JSONObject resultJsonObject = HttpMethod.httpClient(jsonObject, HySdkConstans.SERVICE_GATEWAY_URL);
         this.postHandle(orderId,
@@ -155,7 +151,7 @@ public class HySdkServiceImpl implements HySdkService{
      * @return
      */
     @Override
-    public JSONObject QueryOrder(final String orderId, final String transactionId) {
+    public JSONObject queryOrder(final String orderId, final String transactionId) {
         JSONObject jsonObject = new JSONObject();
         String reqTime = this.getCurrentDateString();
         try {

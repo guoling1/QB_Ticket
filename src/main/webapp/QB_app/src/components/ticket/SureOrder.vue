@@ -263,9 +263,11 @@
       },
       addChild: function () {
         if (this.$data.sureOrder.passengers.length == 0) {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: '请先添加成人'
-          });
+          this.$data.$err=true;
+          this.$data.errMsg="请先添加成人";
+          setTimeout(()=>{
+            this.$data.$err=false
+          },1000);
         } else {
           this.$data.show = !this.$data.show
         }
@@ -280,12 +282,16 @@
           birthday: document.querySelector('#birthday').value,
           personType: 2
         };
-        if (document.querySelector('#name').value == "") {
-          this.$data.$err = true;
-          this.$data.errMsg = "请填写乘客姓名"
-        } else if (document.querySelector('#birthday').value == "") {
-          this.$data.$err = true;
-          this.$data.errMsg = "请填写正确的出生日期"
+        var reg=/^[1-9][0-9]{3}(0[1-9]|1[0-2])([0-2][1-9]|3[0-1])$/;
+        if(document.querySelector('#name').value==""){
+          this.$data.$err=true
+          this.$data.errMsg="请填写乘客姓名"
+        }else if(document.querySelector('#birthday').value==""){
+          this.$data.$err=true
+          this.$data.errMsg="请填写出生日期"
+        }else if (!reg.test(document.querySelector('#birthday').value)) {
+          this.$data.$err=true
+          this.$data.errMsg="请填写正确的出生日期"
         }
         setTimeout(()=>{
           this.$data.$err = false
@@ -332,22 +338,33 @@
           return false;
         }
         this.$data.skip = false;
-        this.$http.post('/ticket/submitOrder', this.$data.sureOrder).then(function (res) {
-          if (res.data.code == 1) {
-            this.$router.push({
-              path: '/ticket/pay-order',
-              query: {appid: this.$data.sureOrder.appId, uid: this.$data.sureOrder.uid, id: res.data.data.orderFormId}
-            });
-          } else {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.data.message
-            });
-          }
-        }, function (err) {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
+        var reg=/^1(3|4|5|7|8)\d{9}$/;
+        if(this.$data.sureOrder.passengers==""){
+          this.$data.$err=true
+          this.$data.errMsg="请添加乘客"
+          setTimeout(()=>{
+            this.$data.$err=false
+          },1000);
+        }else if(!reg.test(this.$data.sureOrder.mobile)){
+          this.$data.$err=true
+          this.$data.errMsg="请填写正确的手机号"
+          setTimeout(()=>{
+            this.$data.$err=false
+          },1000);
+        }else {
+          this.$http.post('/ticket/submitOrder', this.$data.sureOrder).then(function (res) {
+            if (res.data.code == 1) {
+              this.$router.push({
+                path: '/ticket/pay-order',
+                query: {appid: this.$data.sureOrder.appId, uid: this.$data.sureOrder.uid, id: res.data.data.orderFormId}
+              });
+            } else {
+              console.log(res.data.message);
+            }
+          }, function (err) {
+            console.log(err);
           });
-        });
+        }
       },
       contact: function () {
         var ary = [];
