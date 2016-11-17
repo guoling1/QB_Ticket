@@ -52,16 +52,20 @@
       <div class="cancel" @click="cancel">取消抢票</div>
     </div>
     <router-link class="submit" to="/ticket/train-menu/train">返回</router-link>
+    <message></message>
   </div>
 </template>
 
 <script lang="babel">
   import Vue from 'vue'
-  import Datetime from './Datetime.vue';
+  import Datetime from './Datetime.vue'
+  import Message from '../Message.vue'
+
   export default {
     name: 'menu',
     components: {
-      Datetime
+      Datetime,
+      Message
     },
     data: function () {
       return {
@@ -86,9 +90,15 @@
             vm.$data.common.uid = to.query.uid;
             vm.$data.orderInfo = info;
           });
+        }else{
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: res.body.message
+          });
         }
       }, function (err) {
-        console.log(err);
+        this.$store.commit('MESSAGE_DELAY_SHOW', {
+          text: err
+        });
         next(false);
       });
     },
@@ -97,13 +107,15 @@
         this.$http.post('/ticket/cancel/grab', {
           grabTicketFormId: this.$data.orderInfo.grabTicketFormId
         }).then(function (res) {
-          if (res.data.code == 1) {
-            console.log(res);
-          } else {
-            console.log(res.data.message);
+          if (res.data.code != 1) {
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: res.body.message
+            });
           }
         }, function (err) {
-          console.log(err);
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: err
+          });
         })
       }
     },

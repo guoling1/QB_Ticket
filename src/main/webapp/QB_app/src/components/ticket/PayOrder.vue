@@ -102,17 +102,20 @@
         <div class="btn" @click="pay">确认付款 ￥{{$payInfo.price}}</div>
       </div>
     </div>
+    <message></message>
   </div>
 </template>
 
 <script lang="babel">
   import Vue from 'vue'
-  import Datetime from './Datetime.vue';
+  import Datetime from './Datetime.vue'
+  import Message from '../Message.vue'
 
   export default {
     name: 'menu',
     components: {
-      Datetime
+      Datetime,
+      Message
     },
     data: function () {
       return {
@@ -146,17 +149,19 @@
         this.$http.post('/order/queryById', {orderFormId: this.$data.orderInfo.orderFormId}).then(function (res) {
           if (res.data.code == 1 && res.data.data.status == 3) {
             clearInterval(polling);
-            console.log('改变信息');
             this.$data.orderInfo = res.data.data;
             this.$data.payInfo.price = res.data.data.totalPrice;
             // 调用定时器
             this.timer(this.$data.orderInfo.expireTime);
           } else if (res.data.code == 1 && res.data.data.status == 4) {
             clearInterval(polling);
-            console.log("占座失败");
+            this.$data.orderInfo = res.data.data;
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '占座失败'
+            });
           } else if (res.data.code == 1 && res.data.data.status == 13) {
+            this.$data.orderInfo = res.data.data;
             clearInterval(polling);
-            console.log("订单已取消");
           }
         })
       }
@@ -175,10 +180,14 @@
             vm.$data.payInfo.price = res.data.data.totalPrice;
           });
         } else {
-          console.log(res.data.message);
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: res.data.message
+          });
         }
       }, function (err) {
-        console.log(err);
+        this.$store.commit('MESSAGE_DELAY_SHOW', {
+          text: err
+        });
         next(false);
       });
     },
@@ -246,19 +255,29 @@
             }
             polling = setInterval(pollFun, 1000);
           } else {
-            console.log(res.data.message);
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: res.data.message
+            });
           }
         }, function (err) {
-          console.log(err);
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: err
+          });
         })
       },
       cancel: function () {
         this.$http.post('/ticket/cancelOrder', {
           orderFormId: this.$data.orderInfo.orderFormId
         }).then(function (res) {
-          console.log(res);
+          if(res.body.code!=1){
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: res.body.message
+            });
+          }
         }, function (err) {
-          console.log(err)
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: err
+          });
         })
       },
       pay: function () {
@@ -287,10 +306,14 @@
               orderid: this.$data.payInfo.orderId
             }})
           } else {
-            console.log(res);
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: res.body.message
+            });
           }
         }, function (err) {
-          console.log(err);
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: err
+          });
         })
       },
       submit: function () {
@@ -300,7 +323,6 @@
             appid: this.$data.common.appid,
             uid: this.$data.common.uid
           }).then(function (res) {
-            console.log(res);
             if (res.data.code == 1) {
               if (res.data.data.cardList) {
                 this.$data.payInfo.cardList = res.data.data.cardList;
@@ -320,10 +342,14 @@
                 });
               }
             } else {
-              console.log(res.data.message);
+              this.$store.commit('MESSAGE_DELAY_SHOW', {
+                text: res.data.message
+              });
             }
           }, function (err) {
-            console.log(err);
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: err
+            });
           });
         }
       }

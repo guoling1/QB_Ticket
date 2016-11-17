@@ -50,13 +50,19 @@
         </li>
       </ul>
     </div>
+    <message></message>
   </div>
 </template>
 
 <script lang="babel">
-  import Vue from 'vue';
+  import Vue from 'vue'
+  import Message from '../Message.vue'
+
   export default {
     name: 'menu',
+    components: {
+      Message
+    },
     data () {
       return {
         common: {

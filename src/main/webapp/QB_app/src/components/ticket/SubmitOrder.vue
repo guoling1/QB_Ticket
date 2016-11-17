@@ -30,7 +30,8 @@
         <router-link class="right blue" v-if="orderInfo.edz_num>0"
                      :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'二等座',price:orderInfo.edz_price}}">预定
         </router-link>
-        <router-link class="right red" v-if="orderInfo.edz_num<=0" to="/ticket/main-menu/rob">抢票</router-link>
+        <router-link class="right red" v-if="orderInfo.edz_num<=0"
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
       </div>
       <div class="group" v-if="orderInfo.ydz_num!='--'">
         <div class="left">一等座</div>
@@ -39,7 +40,8 @@
         <router-link class="right blue" v-if="orderInfo.ydz_num>0"
                      :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'一等座',price:orderInfo.ydz_price}}">预定
         </router-link>
-        <router-link class="right red" v-if="orderInfo.ydz_num<=0" to="/ticket/main-menu/rob">抢票</router-link>
+        <router-link class="right red" v-if="orderInfo.ydz_num<=0"
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
       </div>
       <div class="group" v-if="orderInfo.swz_num!='--'">
         <div class="left">商务座</div>
@@ -48,7 +50,8 @@
         <router-link class="right blue" v-if="orderInfo.swz_num>0"
                      :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'商务座',price:orderInfo.swz_price}}">预定
         </router-link>
-        <router-link class="right red" v-if="orderInfo.swz_num<=0" to="/ticket/main-menu/rob">抢票</router-link>
+        <router-link class="right red" v-if="orderInfo.swz_num<=0"
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
       </div>
       <div class="group" v-if="orderInfo.yz_num!='--'">
         <div class="left">硬座</div>
@@ -57,7 +60,8 @@
         <router-link class="right blue" v-if="orderInfo.yz_num>0"
                      :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'硬座',price:orderInfo.yz_price}}">预定
         </router-link>
-        <router-link class="right red" v-if="orderInfo.yz_num<=0" to="/ticket/main-menu/rob">抢票</router-link>
+        <router-link class="right red" v-if="orderInfo.yz_num<=0"
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
       </div>
       <div class="group" v-if="orderInfo.rz_num!='--'">
         <div class="left">软座</div>
@@ -66,7 +70,8 @@
         <router-link class="right blue" v-if="orderInfo.rz_num>0"
                      :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'软座',price:orderInfo.rz_price}}">预定
         </router-link>
-        <router-link class="right red" v-if="orderInfo.rz_num<=0" to="/ticket/main-menu/rob">抢票</router-link>
+        <router-link class="right red" v-if="orderInfo.rz_num<=0"
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
       </div>
       <div class="group" v-if="orderInfo.yw_num!='--'">
         <div class="left">硬卧</div>
@@ -75,7 +80,8 @@
         <router-link class="right blue" v-if="orderInfo.yw_num>0"
                      :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'硬卧',price:orderInfo.yw_price}}">预定
         </router-link>
-        <router-link class="right red" v-if="orderInfo.yw_num<=0" to="/ticket/main-menu/rob">抢票</router-link>
+        <router-link class="right red" v-if="orderInfo.yw_num<=0"
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
       </div>
       <div class="group" v-if="orderInfo.rw_num!='--'">
         <div class="left">软卧</div>
@@ -84,7 +90,8 @@
         <router-link class="right blue" v-if="orderInfo.rw_num>0"
                      :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'软卧',price:orderInfo.rw_price}}">预定
         </router-link>
-        <router-link class="right red" v-if="orderInfo.rw_num<=0" to="/ticket/main-menu/rob">抢票</router-link>
+        <router-link class="right red" v-if="orderInfo.rw_num<=0"
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
       </div>
       <div class="group" v-if="orderInfo.wz_num!='--'">
         <div class="left">无座</div>
@@ -93,15 +100,22 @@
         <router-link class="right blue" v-if="orderInfo.wz_num>0"
                      :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'无座',price:orderInfo.wz_price}}">预定
         </router-link>
-        <router-link class="right red" v-if="orderInfo.wz_num<=0" to="/ticket/main-menu/rob">抢票</router-link>
+        <router-link class="right red" v-if="orderInfo.wz_num<=0"
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
       </div>
     </div>
+    <message></message>
   </div>
 </template>
 
 <script lang="babel">
+  import Message from '../Message.vue'
+
   export default {
     name: 'menu',
+    components: {
+      Message
+    },
     data () {
       // 获取 sessionStorage 的数据 注意转回json
       return {
