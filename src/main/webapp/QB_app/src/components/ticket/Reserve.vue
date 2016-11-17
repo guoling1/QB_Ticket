@@ -12,7 +12,6 @@
         <div class="side write">
           <div class="left" @click="station('stationONE')">{{$$data.form_name}}</div>
           <img class="middle" src="../../assets/exchange.png">
-
           <div class="right" @click="station('stationTWO')">{{$$data.to_name}}</div>
         </div>
       </div>

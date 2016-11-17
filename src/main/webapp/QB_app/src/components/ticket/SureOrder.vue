@@ -139,9 +139,9 @@
         </li>
       </ul>
       <div class="sure" @click="sev">保存</div>
-      <div class="err" v-if="this.$data.$err">
-          {{errMsg}}
-      </div>
+    </div>
+    <div class="err" v-if="this.$data.$err">
+        {{errMsg}}
     </div>
   </div>
 </template>
@@ -251,7 +251,11 @@
       },
       addChild: function () {
         if (this.$data.sureOrder.passengers.length == 0) {
-          console.log("请先添加成人");
+          this.$data.$err=true
+          this.$data.errMsg="请先添加成人"
+          setTimeout(()=>{
+            this.$data.$err=false
+          },1000);
         } else {
           this.$data.show = !this.$data.show
         }
@@ -266,10 +270,14 @@
           birthday: document.querySelector('#birthday').value,
           personType: 2
         }
+        var reg=/^[1-9][0-9]{3}(0[1-9]|1[0-2])([0-2][1-9]|3[0-1])$/;
         if(document.querySelector('#name').value==""){
           this.$data.$err=true
           this.$data.errMsg="请填写乘客姓名"
         }else if(document.querySelector('#birthday').value==""){
+          this.$data.$err=true
+          this.$data.errMsg="请填写出生日期"
+        }else if (!reg.test(document.querySelector('#birthday').value)) {
           this.$data.$err=true
           this.$data.errMsg="请填写正确的出生日期"
         }
@@ -311,19 +319,28 @@
           this.$data.skip = true;
           return false;
         }
+
         this.$data.skip = false;
-        this.$http.post('/ticket/submitOrder', this.$data.sureOrder).then(function (res) {
-          if (res.data.code == 1) {
-            this.$router.push({
-              path: '/ticket/pay-order',
-              query: {appid: this.$data.sureOrder.appId, uid: this.$data.sureOrder.uid, id: res.data.data.orderFormId}
-            });
-          } else {
-            console.log(res.data.message);
-          }
-        }, function (err) {
-          console.log(err);
-        });
+        if(this.$data.sureOrder.passengers==""){
+          this.$data.$err=true
+          this.$data.errMsg="请添加乘客"
+          setTimeout(()=>{
+            this.$data.$err=false
+          },1000);
+        }else{
+          this.$http.post('/ticket/submitOrder', this.$data.sureOrder).then(function (res) {
+            if (res.data.code == 1) {
+              this.$router.push({
+                path: '/ticket/pay-order',
+                query: {appid: this.$data.sureOrder.appId, uid: this.$data.sureOrder.uid, id: res.data.data.orderFormId}
+              });
+            } else {
+              console.log(res.data.message);
+            }
+          }, function (err) {
+            console.log(err);
+          });
+        }
       },
       contact: function () {
         var ary=[];

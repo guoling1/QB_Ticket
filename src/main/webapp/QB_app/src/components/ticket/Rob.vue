@@ -9,7 +9,6 @@
         <div class="side write">
           <div class="left" @click="station('stationTHREE')">{{$dataT.from}}</div>
           <img class="middle" src="../../assets/exchange-blue.png">
-
           <div class="right" v-bind:class="{empty:$from.to==0}" @click="station('stationFOUR')">{{$dataT.to}}</div>
         </div>
       </div>
@@ -133,6 +132,7 @@
         <div class="btn" @click="seatEnter">确定</div>
       </div>
     </div>
+    <!-- 抢票须知 -->
     <div class="notice" v-if="this.$data.$show">
       <div class="content">
         <h4>抢票须知</h4>
@@ -172,6 +172,9 @@
         <p>如果在车站改签的车票低于原车票金额，我司将会退还差价至您支付时使用的银行卡。</p>
       </div>
       <div class="x" @click="show">×</div>
+    </div>
+    <div class="err" v-if="this.$data.$err">
+        {{errMsg}}
     </div>
     <datetime></datetime>
     <stationName></stationName>
@@ -227,7 +230,9 @@
         pack: false,
         timer: false,
         seat: false,
-        $show:false
+        $show:false,
+        errMsg:'',
+        $err:false
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -307,10 +312,25 @@
       },
       submit: function () {
         sessionStorage.setItem('robOrder', JSON.stringify(this.$data.submitInfo));
-        this.$router.push({
-          path: '/ticket/rob-order',
-          query: {appid: this.$data.submitInfo.appId, uid: this.$data.submitInfo.uid}
-        })
+        if(this.$data.checi_length==0){
+          this.$data.$err=true
+          this.$data.errMsg="请指定车次"
+        }
+        if(this.$data.submitInfo.toStationName=="选择城市"){
+          this.$data.$err=true
+          this.$data.errMsg="请选择到达城市"
+        }
+
+        setTimeout(()=>{
+          this.$data.$err=false
+        },1000);
+        if(this.$data.$err==false){
+          this.$router.push({
+            path: '/ticket/rob-order',
+            query: {appid: this.$data.submitInfo.appId, uid: this.$data.submitInfo.uid}
+          })
+        }
+
       },
       show:function(){
         this.$data.$show=!this.$data.$show
@@ -771,5 +791,39 @@
       color: #999;
       text-align: center;
     }
+  }
+  .err{
+    background: rgba(0,0,0,0.8);
+    height: 30px;
+    line-height: 30px;
+    padding: 0 5px;
+    position: fixed;
+    top: 35%;
+    left: 33%;
+    background: rgba(0,0,0,.5);
+    border-radius: 5px;
+    border: 2px solid #666;
+    color: #ebeeef;
+    -webkit-animation: fadeOut 1s ease 0.2s 1 both;
+    animation: fadeOut 1s ease 0.2s 1 both;
+  }
+  @-webkit-keyframes fadeOut {
+      from {
+          opacity: 1;
+      }
+
+      to {
+          opacity: 0;
+      }
+  }
+
+  @keyframes fadeOut {
+      from {
+          opacity: 1;
+      }
+
+      to {
+          opacity: 0;
+      }
   }
 </style>
