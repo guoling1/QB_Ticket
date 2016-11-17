@@ -1724,11 +1724,9 @@ public class TicketServiceImpl implements TicketService {
         orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_REFUND_ING.getValue());
         this.orderFormService.update(orderForm);
         final Map<String, Object> resultMap = this.authenService.singlRefund(singleRefundData);
-        if ((boolean) resultMap.get("retCode")) {
-            log.info("订单[" + orderForm.getId() + "]--退款单[" + refundOrderFlow.getId() + "]" + "退款申请成功！！添加消息回调");
-            orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_REFUND_ING.getId());
-            orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_REFUND_ING.getValue());
-            this.orderFormService.update(orderForm);
+        final String retCode = (String) resultMap.get("retCode");
+        if ("0000".equals(retCode) || "5000".equals(retCode)) {
+            log.info("订单[" + orderForm.getId() + "]--退款单[" + refundOrderFlow.getId() + "]" + "退款申请受理成功！！添加消息回调");
             //消息
             JSONObject mqJo = new JSONObject();
             mqJo.put("orderFormId", orderForm.getId());
