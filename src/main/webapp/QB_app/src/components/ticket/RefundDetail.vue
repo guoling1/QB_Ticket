@@ -1,23 +1,20 @@
 <template lang="html">
   <div class="main">
-    <div class="top">
+    <div class="train-info">
       <div class="left">
-        <p class="time">{{massages.startTime}}</p>
-        <p class="static">{{massages.fromStationName}}</p>
-        <p class="date">{{massages.startDate}}</p>
+        <div class="time">{{massages.startTime}}</div>
+        <div class="place">{{massages.fromStationName}}</div>
+        <div class="date">{{otherInfo.startDate}}</div>
       </div>
       <div class="middle">
-        <p class="checi time">{{massages.checi}}</p>
-        <p class="line">
-          <b></b>
-          <img src="../../assets/jiantou.png" alt="" />
-        </p>
-        <p class="suration date">{{massages.runTime}}</p>
+        <div class="trains">{{massages.checi}}</div>
+        <div class="ch"></div>
+        <div class="date">耗时{{otherInfo.runTime}}</div>
       </div>
       <div class="right">
-        <p class="time">{{massages.endTime}}</p>
-        <p class="static">{{massages.toStationName}}</p>
-        <p class="date">{{massages.endDate}}</p>
+        <div class="time">{{massages.endTime}}</div>
+        <div class="place">{{massages.toStationName}}</div>
+        <div class="date">{{otherInfo.arriveDate}}</div>
       </div>
     </div>
     <ul class="bottom">
@@ -45,24 +42,21 @@
       <div class="floor" v-if="$$open">
         <p class="x" @click="show">×</p>
         <div class="table">
-          <div class="top">
+          <div class="train-info">
             <div class="left">
-              <p class="time">{{massages.startTime}}</p>
-              <p class="static">{{massages.fromStationName}}</p>
-              <p class="date">{{massages.startDate}}</p>
+              <div class="time">{{massages.startTime}}</div>
+              <div class="place">{{massages.fromStationName}}</div>
+              <div class="date">{{otherInfo.startDate}}</div>
             </div>
             <div class="middle">
-              <p class="checi time">{{massages.checi}}</p>
-              <p class="line">
-                <b></b>
-                <img src="../../assets/jiantou.png" alt="" />
-              </p>
-              <p class="suration date">{{massages.runTime}}</p>
+              <div class="trains">{{massages.checi}}</div>
+              <div class="ch"></div>
+              <div class="date">耗时{{otherInfo.runTime}}</div>
             </div>
             <div class="right">
-              <p class="time">{{massages.endTime}}</p>
-              <p class="static">{{massages.toStationName}}</p>
-              <p class="date">{{massages.endDate}}</p>
+              <div class="time">{{massages.endTime}}</div>
+              <div class="place">{{massages.toStationName}}</div>
+              <div class="date">{{otherInfo.arriveDate}}</div>
             </div>
           </div>
           <ul class="bottom">
@@ -123,18 +117,13 @@
       }
     },
     beforeRouteEnter (to, from, next) {
-      let orderFormId = to.query.orderFormId;
-      Vue.http.post('/order/queryById',{"orderFormId":orderFormId})
+      Vue.http.post('/order/queryById',{orderFormId: to.query.orderid})
       .then(function (res) {
         next(vm=> {
           if(res.data.code==1){
-            vm.$data.massages=res.data.data[0];
-            var m=vm.$data.massages.runTime;
-            var h=Math.floor(m/60);
-            m%=60;
-            vm.$data.massages.runTime="耗时"+h+"小时"+m+"分";
+            vm.$data.massages=res.data.data;
           }
-        });
+        })
       }, function (err) {
         console.log(err);
         next(false);
@@ -177,6 +166,38 @@
       },
       $$open:function(){
         return this.$data.$open;
+      },
+      otherInfo: function () {
+        let a = 0;
+        let b = 0;
+        // 乘车人数 车票价格
+        for (let i in this.$data.massages.passengers) {
+          a++;
+          b = this.$data.massages.passengers[i]['price'];
+        }
+        // 套餐价格
+        let c = (this.$data.massages.totalPrice - this.$data.massages.ticketTotalPrice) / a;
+        // 运行时间
+        let runMin = this.$data.massages.runTime;
+        let runH = 0;
+        let runM = 0;
+        if (runMin >= 60) {
+          runH = parseInt(runMin / 60);
+          runM = runMin % 60;
+        }
+        // 出发日期 到达日期
+        let weekWord = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+        let start = new Date(this.$data.massages.startDate);
+        let arrive = new Date(this.$data.massages.endDate);
+        return {
+          passengersNum: a,
+          ticket: b,
+          insurance: c,
+          runTime: runH + '小时' + runM + '分钟',
+          startDate: (start.getMonth() + 1) + '-' + start.getDate() + ' ' + weekWord[start.getDay()],
+          arriveDate: (arrive.getMonth() + 1) + '-' + arrive.getDate() + ' ' + weekWord[arrive.getDay()],
+          expire: false
+        }
       }
     }
 }
@@ -199,58 +220,55 @@
     background:#f5f5f5;
     .flexItem(1, 100 %);
   }
-  .top{
-    background: #fff;
+  .train-info {
+    padding: 20px 15px;
+    background-color: #FFF;
+    margin-bottom: 5px;
     overflow: hidden;
-    border-bottom: 1px dashed #c9c9c9;
-    div{
-      display: inline-block;
+    position: relative;
+    border-bottom: 1px dotted #f5f5f5;
+    &.no-padding {
+      padding: 0;
     }
-    padding:30px 0;
-    .left{
+    .left {
       float: left;
-      padding-left: 15px;
     }
-    .time{
+    .middle {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      margin-top: 24px;
+      .ch {
+        width: 105px;
+        height: 4px;
+        margin: 5px auto 10px;
+        background: url("../../assets/ch.png") no-repeat center;
+        background-size: 105px 4px;
+      }
+    }
+    .right {
+      float: right;
+    }
+    .time {
       font-size: 18px;
-    }
-    .static{
-      font-size: 20px;
+      color: #111;
       font-weight: bold;
-      height: 37px;
-      line-height: 37px;
     }
-    .date{
+    .place {
+      font-size: 20px;
+      color: #111;
+      font-weight: bold;
+    }
+    .date {
       font-size: 12px;
       color: #999;
     }
-    .middle{
-      .line{
-        height: 34px;
-        line-height: 34px;
-      }
-      .checi{
-        color: #1ca0e2;
-        font-weight: bold;
-      }
-      b{
-        display: inline-block;
-        position: relative;
-        left: 24px;
-        width: 105px;
-        height: 0;
-        vertical-align: middle;
-        border-top: 2px solid #000;
-      }
-      img{
-        position: relative;
-        left: -24px;
-        top: -3px;
-      }
-    }
-    .right{
-      float: right;
-      padding-right: 15px;
+    .trains {
+      font-size: 18px;
+      color: #1ca0e2;
+      font-weight: bold;
     }
   }
   .bottom{

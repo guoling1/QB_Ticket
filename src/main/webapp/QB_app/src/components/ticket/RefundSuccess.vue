@@ -83,7 +83,7 @@
     },
     beforeRouteEnter (to, from, next) {
       Vue.http.post('/order/queryById', {
-        "orderFormId": to.query.orderid
+        orderFormId: to.query.orderid
       }).then(function (res) {
         if (res.data.code == 1) {
           next(function (vm) {

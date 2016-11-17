@@ -6,7 +6,7 @@
     </div>
     <div class="window">
       <ul v-show="preShow">
-        <li v-for="massage in preMassages">
+        <li v-for="massage in preMassages" @click="preGo($event,massage)">
           <div class="top">
             <span class="date">{{massage.startDate}} {{massage.startTime}}出发</span><span
             class="checi">{{massage.checi}}</span>
@@ -26,7 +26,7 @@
         </li>
       </ul>
       <ul v-show="robShow">
-        <li v-for="massage in robMassages">
+        <li v-for="massage in robMassages" @click="robGo($event,massage)">
           <div class="top" v-show="massage.isGrab==1">
             <span class="date">{{massage.startDate}} {{massage.startTime}} 出发</span>
             <span class="checi">{{massage.checi}}</span>
@@ -43,6 +43,7 @@
             </div>
             <div class="group" style="overflow:visible">
               <span class="name" v-for="passenger in massage.passengerInfo">{{passenger.name}}</span>
+
               <p class="static">{{robOrderStatus[massage.status]}}</p>
             </div>
           </div>
@@ -72,6 +73,24 @@
       }
     },
     methods: {
+      preGo: function (event, massage) {
+        this.$router.push({
+          path: '/ticket/refund-detail', query: {
+            appid: this.$data.common.appid,
+            uid: this.$data.common.uid,
+            orderid: massage.orderFormId
+          }
+        })
+      },
+      robGo: function (event, massage) {
+        this.$router.push({
+          path: '/ticket/rob-detail', query: {
+            appid: this.$data.common.appid,
+            uid: this.$data.common.uid,
+            orderid: massage.grabTicketFormId
+          }
+        })
+      },
       teb: function (code) {
         if (code == 1) {
           this.$data.preShow = true;

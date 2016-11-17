@@ -40,6 +40,7 @@
     data () {
       return {
         payAddress: ['/authen/toPay', '/authen/toPayGrab'],
+        goAddress: ['/ticket/refund-success', '/ticket/rob-detail'],
         payCode: ['4', '6'],
         payType: '',
         submitInfo: {
@@ -133,7 +134,13 @@
         this.$data.submitInfo.nonceStr = year + month + day + hour + min + ss + random;
         this.$http.post(this.$data.payAddress[this.$data.payType], this.$data.submitInfo).then(function (res) {
           if (res.data.code == 1) {
-            console.log('跳转出票页');
+            this.$router.push({
+              path: this.$data.goAddress[this.$data.payType], query: {
+                appid: this.$data.common.appid,
+                uid: this.$data.common.uid,
+                orderid: massage.grabTicketFormId
+              }
+            })
           } else {
             console.log(res.data.message);
           }

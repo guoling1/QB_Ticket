@@ -1,26 +1,29 @@
 <template lang="html">
   <div class="main">
-
+    <div class="delay">
+      这是全局message,延时自动消失{{$$delay}}
+    </div>
+    <div class="accord">
+      这是全局message,需要点击消失
+    </div>
   </div>
 </template>
 <script lang="babel">
   import Vue from 'vue';
   export default {
-    name: 'menu',
+    name: 'message',
     data () {
       return {
-        name: '',
-        massages: [],
-        selected: {},
-        people: '',
-        $index: '',
-        keepID: [],
-        uid: '',
-        appid: ''
+        delay: false,
+        accord: false
       }
     },
-    computed: {},
-    methods: {}
+    methods: {},
+    computed: {
+      $$delay:function(){
+        return this.$store.state.message.delay
+      }
+    }
   }
 </script>
 
@@ -40,10 +43,13 @@
     height: 100%;
     overflow: auto;
     .flexItem(1, 100%);
-    background-color: #f5f5f5;
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 99;
+    z-index: 9999;
+  }
+
+  .delay {
+
   }
 </style>
