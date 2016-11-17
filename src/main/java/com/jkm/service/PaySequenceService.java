@@ -1,7 +1,7 @@
-package com.jkm.dao;
+package com.jkm.service;
 
 import com.jkm.entity.PaySequence;
-import org.apache.ibatis.annotations.Param;
+
 
 /**
  * 
@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Param;
  * 
  **/
 
-public interface PaySequenceDao {
+public interface PaySequenceService {
 
 
 	/**
@@ -17,7 +17,7 @@ public interface PaySequenceDao {
 	 * 查询（根据主键ID查询）
 	 * 
 	 **/
-	PaySequence  selectByPrimaryKey(@Param("id") Long id);
+	PaySequence  selectByPrimaryKey(Long id);
 
 
 	/**

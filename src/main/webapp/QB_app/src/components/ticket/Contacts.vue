@@ -20,7 +20,7 @@
       </li>
     </ul>
     <div class="bottom" @click="close">确定</div>
-    <div class="mask" id="mask">
+    <div class="mask" id="mask" @click.self="shut">
       <div class="err" v-if="this.$data.$err">
           {{errMsg}}
       </div>
@@ -119,6 +119,10 @@
       }
     },
     methods:{
+      shut:function(){
+        console.log();
+        document.querySelector("#mask").style.display="none";
+      },
       importCon:function(){
         Vue.http.post('/website/importContacts',{uid:this.$route.query.uid,appid:this.$route.query.appid})
           .then((res)=>{

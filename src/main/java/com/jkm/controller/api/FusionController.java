@@ -44,6 +44,8 @@ public class FusionController extends BaseController {
         ResponseEntityBase<JSONObject> responseEntityBase = new ResponseEntityBase<JSONObject>();
         try{
             JSONObject jo = super.getRequestJsonParams();
+            String uid = super.getUid(jo.getString("appid"),jo.getString("uid"));
+            jo.put("uid",uid);
             JSONObject responseJo = authenService.toPay(jo);
             if(responseJo.getBoolean("result")==true){
                 responseEntityBase.setMessage(responseJo.getString("message"));
@@ -75,6 +77,8 @@ public class FusionController extends BaseController {
         ResponseEntityBase<JSONObject> responseEntityBase = new ResponseEntityBase<JSONObject>();
         try{
             JSONObject jo = super.getRequestJsonParams();
+            String uid = super.getUid(jo.getString("appid"),jo.getString("uid"));
+            jo.put("uid",uid);
             JSONObject responseJo = authenService.toPayByCid(jo);
             if(responseJo.getBoolean("result")==true){
                 responseEntityBase.setMessage(responseJo.getString("message"));
@@ -107,6 +111,8 @@ public class FusionController extends BaseController {
         ResponseEntityBase<JSONObject> responseEntityBase = new ResponseEntityBase<JSONObject>();
         try{
             JSONObject jo = super.getRequestJsonParams();
+            String uid = super.getUid(jo.getString("appid"),jo.getString("uid"));
+            jo.put("uid",uid);
             JSONObject responseJo = authenService.toPayGrab(jo);
             if(responseJo.getBoolean("result")==true){
                 responseEntityBase.setMessage(responseJo.getString("message"));
@@ -138,6 +144,8 @@ public class FusionController extends BaseController {
         ResponseEntityBase<JSONObject> responseEntityBase = new ResponseEntityBase<JSONObject>();
         try{
             JSONObject jo = super.getRequestJsonParams();
+            String uid = super.getUid(jo.getString("appid"),jo.getString("uid"));
+            jo.put("uid",uid);
             JSONObject responseJo = authenService.toPayGrabByCid(jo);
             if(responseJo.getBoolean("result")==true){
                 responseEntityBase.setMessage(responseJo.getString("message"));
