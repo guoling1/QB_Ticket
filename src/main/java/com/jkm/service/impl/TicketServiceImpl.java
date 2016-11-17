@@ -726,7 +726,13 @@ public class TicketServiceImpl implements TicketService {
                     request.setMethod(EnumHTHYMethodCode.CANCEL_POLICY_ORDER.getCode());
                     request.setReqtime(DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss));
                     request.setPolicyNo(policyOrder.getPolicyNo());
-                    final JSONObject object = this.hySdkService.cancelPolicyOrder(request);
+                    final JSONObject object = null;
+                    try{
+                        log.info("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,请求中......");
+                        this.hySdkService.cancelPolicyOrder(request);
+                    }catch (final Throwable throwable){
+                        log.error("小订单[" + orderFormDetail.getId() +"]保险退保异常,异常信息:" + throwable.getMessage());
+                    }
                     if (object.getInt("resultId") == 0) {
                         //退保成功 , 计算退款金额, 退款金额 = 该乘客票款实退金额 + 出票套餐
                         //更新保险单状态
@@ -734,12 +740,14 @@ public class TicketServiceImpl implements TicketService {
                         returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()).
                                     add(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice())));
                         returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice()));
+                        log.info("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,退保成功......");
                     } else {
                         //退保失败
                         //更新保险单状态
                         this.policyOrderService.updateStatusById(policyOrder.getId(), EnumPolicyOrderStatus.POLICY_RETURN_FAIL);
                         returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()));
                         returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice()));
+                        log.error("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,退保失败......");
                     }
                 }else{
                     returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()));
@@ -760,6 +768,7 @@ public class TicketServiceImpl implements TicketService {
                     data.setRefundAmount(returnMoneyOrder.getReturnTotalMoney().toString());
                     data.setOrgAmount(returnMoneyOrder.getOrgMoney().toString());
                     data.setRefundReason(returnMoneyOrder.getRemark());
+                    log.info("小订单[" + orderFormDetail.getId() + "请求hz进行退款....请求中");
                     final Map<String, Object> map = this.authenService.singlRefund(data);
                 //判断退款是否受理成功 ,
                     if (map.get("retCode").equals("0000") || map.get("retCode").equals("5000")){
@@ -773,9 +782,11 @@ public class TicketServiceImpl implements TicketService {
                         MqProducer.sendMessage(mqJo, MqConfig.RETURN_TICKET_REFUND_ING, 2000);
                         flow.setStatus(EnumRefundTicketFlowStatus.TICKET_REFUND_ING.getId());
                         this.refundTicketFlowService.update(flow);
+                        log.info("小订单[" + orderFormDetail.getId() + "请求hz进行退款....受理成功");
                         //退款成功, 修改退票流水 , 退款单状态
                         //this.returnMoneyOrderService.updateStatusById(returnMoneyOrder.getId(), EnumReturnMoneyOrderStatus.RETURN_MONEY_SUCCESS);
                     }else{
+                        log.info("小订单[" + orderFormDetail.getId() + "请求hz进行退款....失败");
                         //受理失败 , 修改退票流水单状态, 退款失败
                         flow.setStatus(EnumRefundTicketFlowStatus.TICKET_REFUND_FAIL.getId());
                         this.refundTicketFlowService.update(flow);
@@ -785,7 +796,7 @@ public class TicketServiceImpl implements TicketService {
                         //退票失败
                         JSONObject obj = (JSONObject) jsonArray.get(0);
                         final RefundTicketFlow flow = this.refundTicketFlowService.getByTicketNo(obj.getString("ticket_no"));
-                log.info("线上退票结果推送" + flow.getOrderFormDetailId() + "订单退票失败");
+                         log.info("线上退票结果推送" + flow.getOrderFormDetailId() + "订单退票失败");
                         flow.setStatus(EnumRefundTicketFlowStatus.REFUND_TICKET_FAIL.getId());
                         flow.setRemark("线上退票失败" + obj.getString("returnfailmsg"));
                         this.refundTicketFlowService.update(flow);
@@ -897,7 +908,13 @@ public class TicketServiceImpl implements TicketService {
                         request.setMethod(EnumHTHYMethodCode.CANCEL_POLICY_ORDER.getCode());
                         request.setReqtime(DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss));
                         request.setPolicyNo(policyOrder.getPolicyNo());
-                        final JSONObject object = this.hySdkService.cancelPolicyOrder(request);
+                        final JSONObject object = null;
+                        try{
+                            log.info("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,请求中......");
+                            this.hySdkService.cancelPolicyOrder(request);
+                        }catch (final Throwable throwable){
+                            log.error("小订单[" + orderFormDetail.getId() +"]保险退保异常,异常信息:" + throwable.getMessage());
+                        }
                         if (object.getInt("resultId") == 0) {
                             //退保成功 , 计算退款金额, 退款金额 = 该乘客票款实退金额 + 出票套餐
                             //更新保险单状态
@@ -906,6 +923,7 @@ public class TicketServiceImpl implements TicketService {
                                 returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()).
                                         add(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice())));
                                 returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice()));
+                            log.info("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,退保成功......");
                         } else {
                             //退保失败
                             //更新保险单状态
@@ -913,6 +931,7 @@ public class TicketServiceImpl implements TicketService {
                             //有出票套餐
                                 returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()));
                                 returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(0));
+                            log.error("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,退保失败......");
                         }
                     }else{
                         //无出票套餐
@@ -945,6 +964,7 @@ public class TicketServiceImpl implements TicketService {
                     data.setRefundAmount(returnMoneyOrder.getReturnTotalMoney().toString());
                     data.setOrgAmount(returnMoneyOrder.getOrgMoney().toString());
                     data.setRefundReason(returnMoneyOrder.getRemark());
+                    log.info("小订单[" + orderFormDetail.getId() + "请求hz进行退款....请求中");
                     final Map<String, Object> map = this.authenService.singlRefund(data);
                     //判断退款受理是否成功 ,
                     if (map.get("retCode").equals("0000") || map.get("retCode").equals("5000")){
@@ -957,6 +977,7 @@ public class TicketServiceImpl implements TicketService {
                         MqProducer.sendMessage(mqJo, MqConfig.RETURN_TICKET_REFUND_ING, 2000);
                         flow.setStatus(EnumRefundTicketFlowStatus.TICKET_REFUND_ING.getId());
                         this.refundTicketFlowService.update(flow);
+                        log.info("小订单[" + orderFormDetail.getId() + "请求hz进行退款....受理成功");
                         //退款成功, 修改退票流水 , 退款单状态
                         //this.returnMoneyOrderService.updateStatusById(returnMoneyOrder.getId(), EnumReturnMoneyOrderStatus.RETURN_MONEY_SUCCESS);
                     }else{
@@ -964,6 +985,8 @@ public class TicketServiceImpl implements TicketService {
                         flow.setStatus(EnumRefundTicketFlowStatus.TICKET_REFUND_FAIL.getId());
                         this.refundTicketFlowService.update(flow);
                         this.returnMoneyOrderService.updateStatusById(returnMoneyOrder.getId(), EnumReturnMoneyOrderStatus.RETURN_MONEY_FAIL);
+                        log.info("小订单[" + orderFormDetail.getId() + "请求hz进行退款....失败");
+
                     }
             }
         }
