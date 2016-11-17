@@ -10,6 +10,9 @@ Vue.use(VueResource);
 // 添加 全局 directive
 import './directives'
 
+// 添加 全局 filter
+import './filters'
+
 // 添加路由变化监听
 router.beforeEach((to, from, next) => {
   next();

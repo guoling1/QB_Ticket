@@ -153,7 +153,7 @@
               path: this.$data.goAddress[this.$data.payType], query: {
                 appid: this.$data.submitInfo.appid,
                 uid: this.$data.submitInfo.uid,
-                orderid: massage.grabTicketFormId
+                orderid: this.$data.submitInfo.orderId
               }
             })
           } else {

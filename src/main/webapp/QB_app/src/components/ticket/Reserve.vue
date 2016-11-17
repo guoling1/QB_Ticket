@@ -82,6 +82,7 @@
     },
     data: function () {
       return {
+        tt: 1,
         appid: '',
         uid: '',
         form_name: this.$store.state.station.scope.stationONE.station,
