@@ -319,15 +319,21 @@
           this.$data.skip = true;
           return false;
         }
-
         this.$data.skip = false;
+        var reg=/^1(3|4|5|7|8)\d{9}$/;
         if(this.$data.sureOrder.passengers==""){
           this.$data.$err=true
           this.$data.errMsg="请添加乘客"
           setTimeout(()=>{
             this.$data.$err=false
           },1000);
-        }else{
+        }else if(!reg.test(this.$data.sureOrder.mobile)){
+          this.$data.$err=true
+          this.$data.errMsg="请填写正确的手机号"
+          setTimeout(()=>{
+            this.$data.$err=false
+          },1000);
+        }else {
           this.$http.post('/ticket/submitOrder', this.$data.sureOrder).then(function (res) {
             if (res.data.code == 1) {
               this.$router.push({
