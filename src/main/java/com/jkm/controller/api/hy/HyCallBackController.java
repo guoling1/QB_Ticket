@@ -1,11 +1,8 @@
 package com.jkm.controller.api.hy;
 
 import com.jkm.entity.HyChannelRequestRecord;
-import com.jkm.helper.InsurancePolicyUtil;
 import com.jkm.service.TicketService;
 import com.jkm.service.hy.HySdkRequestRecordService;
-import com.jkm.service.hy.HySdkService;
-import com.jkm.service.hy.entity.HyRefundCallbackResponse;
 import com.jkm.util.ResponseWriter;
 import com.jkm.controller.common.BaseController;
 import com.jkm.service.hy.helper.HySdkConstans;
@@ -20,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by yuxiang on 2016-11-01.
@@ -94,8 +89,8 @@ public class HyCallBackController extends BaseController {
                     + jsonParams.getString("returnstate") + MD5Util.MD5(HySdkConstans.ORDER_SIGN_KEY)).equals(jsonParams.getString("sign"));
             log.info("收到hy线下退票或线下改签的异步通知:" + jsonParams.toString() + "签名结果:" + flag);
         }
+        this.ticketService.handleRefundCallbackMsg(jsonParams);
         if (flag) {
-            this.ticketService.handleRefundCallbackMsg(jsonParams);
             ResponseWriter.writeTxtResponse(httpServletResponse, "SUCCESS");
         } else {
             log.error("######收到一个hy退票结果推送 sign check error,request[" + jsonParams.toString() + "]");

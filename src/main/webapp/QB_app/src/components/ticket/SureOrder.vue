@@ -130,8 +130,7 @@
         </li>
         <li>
           <label for="sex">乘客性别</label>
-          <label style="margin-left:10px;color:#999"><input type="radio" name="sex" value="0"
-                                                            checked="checked">男</label>
+          <label style="margin-left:10px;color:#999"><input type="radio" name="sex" value="0" checked="checked">男</label>
           <label style="margin-left:20px;color:#999"><input type="radio" name="sex" value="1">女</label>
         </li>
         <li class="typeLi">
@@ -140,6 +139,9 @@
         </li>
       </ul>
       <div class="sure" @click="sev">保存</div>
+      <div class="err" v-if="this.$data.$err">
+          {{errMsg}}
+      </div>
     </div>
   </div>
 </template>
@@ -197,7 +199,9 @@
         pack: false,
         skip: false,
         show: false,
-        childs: []
+        childs: [],
+        errMsg:'',
+        $err:false
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -253,6 +257,7 @@
         }
       },
       sev: function () {
+        this.$data.$err=false
         var addPerson = {
           uid:this.$data.sureOrder.uid,
           appid: this.$data.sureOrder.appId,
@@ -261,19 +266,31 @@
           birthday: document.querySelector('#birthday').value,
           personType: 2
         }
-        Vue.http.post('/contactInfo/add', JSON.stringify(addPerson))
-          .then((res)=>{
-          if (res.data.code == 1) {
-            this.$data.show = !this.$data.show
-            addPerson.id = res.data.data;
-            if (addPerson.personType == 2) {
-              addPerson.personType = "儿童"
+        if(document.querySelector('#name').value==""){
+          this.$data.$err=true
+          this.$data.errMsg="请填写乘客姓名"
+        }else if(document.querySelector('#birthday').value==""){
+          this.$data.$err=true
+          this.$data.errMsg="请填写正确的出生日期"
+        }
+        setTimeout(()=>{
+          this.$data.$err=false
+        },1000);
+        if(this.$data.$err==false){
+          Vue.http.post('/contactInfo/add', JSON.stringify(addPerson))
+            .then((res)=>{
+            if (res.data.code == 1) {
+              this.$data.show = !this.$data.show
+              addPerson.id = res.data.data;
+              if (addPerson.personType == 2) {
+                addPerson.personType = "儿童"
+              }
+              this.$data.childs.push(addPerson);
             }
-            this.$data.childs.push(addPerson);
-          }
-        }).catch(function (err) {
-          console.log(err);
-        })
+          }).catch(function (err) {
+            console.log(err);
+          })
+        }
       },
       detailShow: function () {
         this.$data.detail = !this.$data.detail;
@@ -816,5 +833,39 @@
       background: #4ab9f1;
       color: #fff;
     }
+  }
+  .err{
+    background: rgba(0,0,0,0.8);
+    height: 30px;
+    line-height: 30px;
+    padding: 0 5px;
+    position: fixed;
+    top: 35%;
+    left: 33%;
+    background: rgba(0,0,0,.5);
+    border-radius: 5px;
+    border: 2px solid #666;
+    color: #ebeeef;
+    -webkit-animation: fadeOut 1s ease 0.2s 1 both;
+    animation: fadeOut 1s ease 0.2s 1 both;
+  }
+  @-webkit-keyframes fadeOut {
+      from {
+          opacity: 1;
+      }
+
+      to {
+          opacity: 0;
+      }
+  }
+
+  @keyframes fadeOut {
+      from {
+          opacity: 1;
+      }
+
+      to {
+          opacity: 0;
+      }
   }
 </style>
