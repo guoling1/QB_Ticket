@@ -67,5 +67,5 @@ public interface BindCardDao {
      * 验证是否添加过银行卡
      *
      **/
-    int isAdd (@Param("cardNo") String cardNo );
+    int isAdd (@Param("cardNo") String cardNo,@Param("uid") String uid );
 }

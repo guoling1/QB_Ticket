@@ -49,13 +49,19 @@
       <div class="left" @click="check">查看订单</div>
       <div class="left" @click="tobuy">继续购票</div>
     </div>
+    <message></message>
   </div>
 </template>
 
 <script lang="babel">
-  import Vue from 'vue';
+  import Vue from 'vue'
+  import Message from '../Message.vue'
+
   export default {
     name: 'menu',
+    components: {
+      Message
+    },
     data () {
       return {
         common: {
@@ -75,7 +81,9 @@
             this.$data.orderInfo = res.data.data;
           } else if (res.data.code == 1 && res.data.data.status == 8) {
             clearInterval(polling);
-            console.log("出票失败");
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '出票失败'
+            });
           }
         })
       }
@@ -92,10 +100,14 @@
             vm.$data.common.uid = to.query.uid;
           });
         } else {
-          console.log(res.data.message);
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: res.body.message
+          });
         }
       }, function (err) {
-        console.log(err);
+        this.$store.commit('MESSAGE_DELAY_SHOW', {
+          text: err
+        });
         next(false);
       });
     },

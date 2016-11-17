@@ -1,11 +1,14 @@
 <template lang="html">
   <transition name="fade">
     <div class="main" v-if="$$message">
-      <div class="delay" v-show="$$delay">
-        {{$$text}}
+      <div class="group" v-show="$$delay">
+        <div class="prompt">提示</div>
+        <div class="text">{{$$text}}</div>
       </div>
-      <div class="accord" v-show="$$accord">
-        {{$$text}}
+      <div class="group accord" v-show="$$accord">
+        <div class="prompt">提示</div>
+        <div class="text">{{$$text}}</div>
+        <div class="btn" @click="know">我知道了</div>
       </div>
     </div>
   </transition>
@@ -20,7 +23,11 @@
         accord: false
       }
     },
-    methods: {},
+    methods: {
+      know: function () {
+        this.$store.commit('MESSAGE_ACCORD_HIDE');
+      }
+    },
     computed: {
       $$message: function () {
         return this.$store.state.message.message
@@ -69,19 +76,43 @@
     background: rgba(0, 0, 0, 0.5);
   }
 
-  .delay {
+  .group {
     width: 90%;
     height: auto;
-    min-height: 100px;
     background-color: #FFF;
     border-radius: 5px;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate3d(-50%, -50%, 0);
-    font-size: 18px;
-    color: #111;
-    line-height: 30px;
-    padding: 35px 0;
+    padding: 20px 15px 25px;
+    .prompt {
+      font-size: 20px;
+      color: #111;
+      font-weight: bold;
+      line-height: 30px;
+      text-align: center;
+    }
+    .text {
+      font-size: 18px;
+      color: #111;
+      line-height: 30px;
+      text-align: center;
+      max-height: 300px;
+      overflow: auto;
+    }
+    &.accord {
+      padding-bottom: 50px;
+      .btn {
+        width: 100%;
+        height: 44px;
+        border-top: 1px solid #f5f5f5;
+        text-align: center;
+        line-height: 44px;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+      }
+    }
   }
 </style>

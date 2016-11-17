@@ -130,7 +130,8 @@
         </li>
         <li>
           <label for="sex">乘客性别</label>
-          <label style="margin-left:10px;color:#999"><input type="radio" name="sex" value="0" checked="checked">男</label>
+          <label style="margin-left:10px;color:#999"><input type="radio" name="sex" value="0"
+                                                            checked="checked">男</label>
           <label style="margin-left:20px;color:#999"><input type="radio" name="sex" value="1">女</label>
         </li>
         <li class="typeLi">
@@ -139,16 +140,18 @@
         </li>
       </ul>
       <div class="sure" @click="sev">保存</div>
-    </div>
-    <div class="err" v-if="this.$data.$err">
+      <div class="err" v-if="this.$data.$err">
         {{errMsg}}
+      </div>
     </div>
+    <message></message>
   </div>
 </template>
 
 <script lang="babel">
   import Vue from 'vue'
   import Contacts from './Contacts.vue'
+  import Message from '../Message.vue'
 
   const zwCode = {
     '商务座': '9',
@@ -159,13 +162,15 @@
     '软卧': '4',
     '硬卧': '3',
     '软座': '2',
-    '硬座': '1'
+    '硬座': '1',
+    '无座': '0'
   };
 
   export default {
     name: 'menu',
     components: {
-      Contacts
+      Contacts,
+      Message
     },
     data: function () {
       return {
@@ -200,48 +205,55 @@
         skip: false,
         show: false,
         childs: [],
-        errMsg:'',
-        $err:false
+        errMsg: '',
+        $err: false
       }
     },
-    beforeRouteEnter (to, from, next) {
+    created: function () {
       let sessionPreOrder = JSON.parse(sessionStorage.getItem('preOrder'));
       let sessionPreDate = JSON.parse(sessionStorage.getItem('preDate'));
-      Vue.http.post('/userInfo/findPhone',{
-        appid: to.query.appid,
-        uid: to.query.uid
-      }).then(function(res){
-        next(function (vm) {
-          vm.$data.sureOrder.mobile = res.data.data;
-          vm.$data.sureOrder.appId = to.query.appid;
-          vm.$data.sureOrder.uid = to.query.uid;
-          vm.$data.sureOrder.price = to.query.price;
-          vm.$data.otherData.table = to.query.table;
-          vm.$data.sureOrder.fromStationName = sessionPreOrder.from_station_name;
-          vm.$data.sureOrder.fromStationCode = sessionPreOrder.from_station_code;
-          vm.$data.sureOrder.toStationName = sessionPreOrder.to_station_name;
-          vm.$data.sureOrder.toStationCode = sessionPreOrder.to_station_code;
-          vm.$data.sureOrder.zwCode = zwCode[to.query.table];
-          vm.$data.sureOrder.startTime = sessionPreOrder.start_time;
-          vm.$data.sureOrder.endTime = sessionPreOrder.arrive_time;
-          vm.$data.sureOrder.runTime = sessionPreOrder.run_time_minute;
-          vm.$data.sureOrder.checi = sessionPreOrder.train_code;
-          vm.$data.sureOrder.startDate = sessionPreDate.startTime.post;
-          vm.$data.sureOrder.endDate = sessionPreDate.arriveTime.post;
-          vm.$data.otherData.startShow = sessionPreDate.startTime.show;
-          vm.$data.otherData.arriveShow = sessionPreDate.arriveTime.show;
-          vm.$data.otherData.runShow = sessionPreDate.runTime;
+      let query = this.$route.query;
+      this.$data.sureOrder.fromStationName = sessionPreOrder.from_station_name;
+      this.$data.sureOrder.fromStationCode = sessionPreOrder.from_station_code;
+      this.$data.sureOrder.toStationName = sessionPreOrder.to_station_name;
+      this.$data.sureOrder.toStationCode = sessionPreOrder.to_station_code;
+      this.$data.sureOrder.zwCode = zwCode[query.table];
+      this.$data.sureOrder.startTime = sessionPreOrder.start_time;
+      this.$data.sureOrder.endTime = sessionPreOrder.arrive_time;
+      this.$data.sureOrder.runTime = sessionPreOrder.run_time_minute;
+      this.$data.sureOrder.checi = sessionPreOrder.train_code;
+      this.$data.sureOrder.startDate = sessionPreDate.startTime.post;
+      this.$data.sureOrder.endDate = sessionPreDate.arriveTime.post;
+      this.$data.otherData.startShow = sessionPreDate.startTime.show;
+      this.$data.otherData.arriveShow = sessionPreDate.arriveTime.show;
+      this.$data.otherData.runShow = sessionPreDate.runTime;
+      this.$data.sureOrder.appId = query.appid;
+      this.$data.sureOrder.uid = query.uid;
+      this.$data.sureOrder.price = query.price;
+      this.$data.otherData.table = query.table;
+      this.$http.post('/userInfo/findPhone', {
+        appid: query.appid,
+        uid: query.uid
+      }).then(function (res) {
+        if (res.body.code == 1) {
+          this.$data.sureOrder.mobile = res.data.data;
+        } else {
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: res.body.message
+          });
+        }
+      }, function (err) {
+        this.$store.commit('MESSAGE_DELAY_SHOW', {
+          text: err
         });
-      },function(err){
-        console.log(err)
       });
     },
     methods: {
-      minusChild:function(event,index){
-        this.$data.childs.splice(index,1);
+      minusChild: function (event, index) {
+        this.$data.childs.splice(index, 1);
       },
-      minus:function(event,index){
-        this.$store.state.contact.info.splice(index,1);
+      minus: function (event, index) {
+        this.$store.state.contact.info.splice(index, 1);
       },
       login: function () {
         this.$router.push({
@@ -251,8 +263,8 @@
       },
       addChild: function () {
         if (this.$data.sureOrder.passengers.length == 0) {
-          this.$data.$err=true
-          this.$data.errMsg="请先添加成人"
+          this.$data.$err=true;
+          this.$data.errMsg="请先添加成人";
           setTimeout(()=>{
             this.$data.$err=false
           },1000);
@@ -261,15 +273,15 @@
         }
       },
       sev: function () {
-        this.$data.$err=false
+        this.$data.$err = false;
         var addPerson = {
-          uid:this.$data.sureOrder.uid,
+          uid: this.$data.sureOrder.uid,
           appid: this.$data.sureOrder.appId,
           name: document.querySelector('#name').value,
           sex: document.querySelector(':checked').value,
           birthday: document.querySelector('#birthday').value,
           personType: 2
-        }
+        };
         var reg=/^[1-9][0-9]{3}(0[1-9]|1[0-2])([0-2][1-9]|3[0-1])$/;
         if(document.querySelector('#name').value==""){
           this.$data.$err=true
@@ -282,21 +294,27 @@
           this.$data.errMsg="请填写正确的出生日期"
         }
         setTimeout(()=>{
-          this.$data.$err=false
+          this.$data.$err = false
         },1000);
-        if(this.$data.$err==false){
+        if (this.$data.$err == false) {
           Vue.http.post('/contactInfo/add', JSON.stringify(addPerson))
             .then((res)=>{
             if (res.data.code == 1) {
-              this.$data.show = !this.$data.show
+              this.$data.show = !this.$data.show;
               addPerson.id = res.data.data;
               if (addPerson.personType == 2) {
                 addPerson.personType = "儿童"
               }
               this.$data.childs.push(addPerson);
+            }else{
+              this.$store.commit('MESSAGE_DELAY_SHOW', {
+                text: res.body.message
+              });
             }
           }).catch(function (err) {
-            console.log(err);
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: err
+            });
           })
         }
       },
@@ -349,13 +367,13 @@
         }
       },
       contact: function () {
-        var ary=[];
-        for(var i=0;i<this.$data.sureOrder.passengers.length;i++){
+        var ary = [];
+        for (var i = 0; i < this.$data.sureOrder.passengers.length; i++) {
           ary.push(this.$data.sureOrder.passengers[i].id)
         }
         this.$store.commit("CONTACT_OPEN", {
           ctrl: true,
-          keepID:ary
+          keepID: ary
         });
       },
       station: function () {
@@ -857,38 +875,40 @@
       color: #fff;
     }
   }
-  .err{
-    background: rgba(0,0,0,0.8);
+
+  .err {
+    background: rgba(0, 0, 0, 0.8);
     height: 30px;
     line-height: 30px;
     padding: 0 5px;
     position: fixed;
     top: 35%;
     left: 33%;
-    background: rgba(0,0,0,.5);
+    background: rgba(0, 0, 0, .5);
     border-radius: 5px;
     border: 2px solid #666;
     color: #ebeeef;
     -webkit-animation: fadeOut 1s ease 0.2s 1 both;
     animation: fadeOut 1s ease 0.2s 1 both;
   }
-  @-webkit-keyframes fadeOut {
-      from {
-          opacity: 1;
-      }
 
-      to {
-          opacity: 0;
-      }
+  @-webkit-keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 0;
+    }
   }
 
   @keyframes fadeOut {
-      from {
-          opacity: 1;
-      }
+    from {
+      opacity: 1;
+    }
 
-      to {
-          opacity: 0;
-      }
+    to {
+      opacity: 0;
+    }
   }
 </style>

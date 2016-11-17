@@ -1,7 +1,6 @@
-package com.jkm.dao;
+package com.jkm.service;
 
 import com.jkm.entity.RefundSequence;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * 
@@ -9,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
  * 
  **/
 
-public interface RefundSequenceDao {
+public interface RefundSequenceService {
 
 
 	/**
@@ -17,7 +16,7 @@ public interface RefundSequenceDao {
 	 * 查询（根据主键ID查询）
 	 * 
 	 **/
-	RefundSequence  selectByPrimaryKey(@Param("id") Long id);
+	RefundSequence  selectByPrimaryKey(Long id);
 
 	/**
 	 * 

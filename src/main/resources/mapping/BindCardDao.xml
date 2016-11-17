@@ -165,6 +165,6 @@
 		SELECT
 		count(1)
 		FROM tb_bind_card
-		WHERE card_no = #{cardNo} and status=0
+		WHERE card_no = #{cardNo} and uid=#{uid} and status=0
 	</select>
 </mapper>

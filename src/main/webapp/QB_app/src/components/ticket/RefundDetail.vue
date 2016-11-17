@@ -101,13 +101,19 @@
         <div class="sure" @click.self="success()">确定</div>
       </div>
     </div>
+    <message></message>
   </div>
 </template>
 
 <script lang="babel">
-  import Vue from 'vue';
+  import Vue from 'vue'
+  import Message from '../Message.vue'
+
   export default {
     name: 'menu',
+    components: {
+      Message
+    },
     data () {
       return {
         open:false,
@@ -119,13 +125,19 @@
     beforeRouteEnter (to, from, next) {
       Vue.http.post('/order/queryById',{orderFormId: to.query.orderid})
       .then(function (res) {
-        next(vm=> {
-          if(res.data.code==1){
+        if(res.data.code==1){
+          next(vm=> {
             vm.$data.massages=res.data.data;
-          }
-        })
+          })
+        }else{
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: res.body.message
+          });
+        }
       }, function (err) {
-        console.log(err);
+        this.$store.commit('MESSAGE_DELAY_SHOW', {
+          text: err
+        });
         next(false);
       })
     },
@@ -142,15 +154,19 @@
         this.$router.go(-1);
       },
       confirm:function(){
-        Vue.http.post('/ticket/refund',{"orderFormDetailId":this.$data.massages.orderFormId})
+        this.$http.post('/ticket/refund',{"orderFormDetailId":this.$data.massages.orderFormId})
          .then(function (res) {
-           next(vm=> {
-             if(res.data.code==1){
-               this.$data.$open=!this.$data.$open;
-            }
-          });
+           if(res.data.code==1){
+             this.$data.$open=!this.$data.$open;
+           }else{
+             this.$store.commit('MESSAGE_DELAY_SHOW', {
+               text: res.body.message
+             });
+           }
         }, function (err) {
-          console.log(err);
+           this.$store.commit('MESSAGE_DELAY_SHOW', {
+             text: err
+           });
           next(false);
         })
       },
