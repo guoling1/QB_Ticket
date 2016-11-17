@@ -83,12 +83,12 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
     @Override
     @Transactional
     public void batchBuyPolicy(long orderFormId) {
-        log.info("订单orderFromId:" + orderFormId + "申请购买保险!!!");
         final OrderForm orderForm = this.orderFormService.selectById(orderFormId).get();
         //没买套餐,不买保险
         if(orderForm.getBuyTicketPackageId() == EnumBuyTicketPackageType.TICKET_PACKAGE_FIRST.getId()){
             return;
         }
+        log.info("订单orderFromId:" + orderFormId + "申请购买保险!!!");
         final List<OrderFormDetail> orderFormDetails = this.orderFormDetailService.selectByOrderFormId(orderFormId);
         //创建保险单
         List<PolicyOrder> policyOrders = Lists.transform(orderFormDetails, new Function<OrderFormDetail, PolicyOrder>() {
@@ -207,12 +207,12 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
     @Transactional
     @Override
     public void batchBuyGrabPolicy(long grabTicketFormId) {
-        log.info("抢票单grabTicketFormId:" + grabTicketFormId + "申请购买保险!!!");
         final GrabTicketForm orderForm = this.grabTicketFormService.selectById(grabTicketFormId).get();
         //没买套餐,不买保险
         if(orderForm.getBuyTicketPackage() == EnumBuyTicketPackageType.TICKET_PACKAGE_FIRST.getId()){
             return;
         }
+        log.info("抢票单grabTicketFormId:" + grabTicketFormId + "申请购买保险!!!");
         final List<OrderFormDetail> orderFormDetails = this.orderFormDetailService.selectByGrabTicketFormId(grabTicketFormId);
         //创建保险单
         List<PolicyOrder> policyOrders = Lists.transform(orderFormDetails, new Function<OrderFormDetail, PolicyOrder>() {
