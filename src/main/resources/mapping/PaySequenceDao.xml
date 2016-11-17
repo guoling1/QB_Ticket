@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jkm.dao.PaySequenceDao">
+
+	<!-- 通用查询结果列-->
+	<sql id="Base_Column_List">
+		 id,pay_channel,req_sn,	amount,pay_params,result_params,pay_result,status,create_time,update_time
+	</sql>
+
+	<!-- 查询（根据主键ID查询） -->
+	<select id="selectByPrimaryKey" resultType="com.jkm.entity.PaySequence" parameterType="java.lang.Long">
+		 SELECT
+		 <include refid="Base_Column_List" />
+		 FROM qb_pay_sequence
+		 WHERE id = #{id} and status=0
+	</select>
+
+	<!-- 添加 （匹配有值的字段）-->
+	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.entity.PaySequence">
+		 INSERT INTO qb_pay_sequence
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="payChannel != null">
+				 pay_channel,
+			</if>
+			<if test="reqSn != null">
+				 req_sn,
+			</if>
+			<if test="amount != null">
+				 amount,
+			</if>
+			<if test="payParams != null">
+				 pay_params,
+			</if>
+			<if test="resultParams != null">
+				 result_params,
+			</if>
+			<if test="payResult != null">
+				 pay_result,
+			</if>
+			<if test="status != null">
+				 status,
+			</if>
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="payChannel!=null">
+				 #{payChannel},
+			</if>
+			<if test="reqSn!=null">
+				 #{reqSn},
+			</if>
+			<if test="amount!=null">
+				 #{amount},
+			</if>
+			<if test="payParams!=null">
+				 #{payParams},
+			</if>
+			<if test="resultParams!=null">
+				 #{resultParams},
+			</if>
+			<if test="payResult!=null">
+				 #{payResult},
+			</if>
+			<if test="status!=null">
+				 #{status},
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 修 改-->
+	<update id="updateByPrimaryKeySelective" parameterType="com.jkm.entity.PaySequence">
+		 UPDATE qb_pay_sequence
+ 		 <set> 
+			<if test="payChannel != null">
+				 pay_channel = #{payChannel},
+			</if>
+			<if test="reqSn != null">
+				 req_sn = #{reqSn},
+			</if>
+			<if test="amount != null">
+				 amount = #{amount},
+			</if>
+			<if test="payParams != null">
+				 pay_params = #{payParams},
+			</if>
+			<if test="resultParams != null">
+				 result_params = #{resultParams},
+			</if>
+			<if test="payResult != null">
+				 pay_result = #{payResult},
+			</if>
+			<if test="status != null">
+				 status = #{status},
+			</if>
+ 		 </set>
+		 WHERE id = #{id}
+	</update>
+</mapper>
