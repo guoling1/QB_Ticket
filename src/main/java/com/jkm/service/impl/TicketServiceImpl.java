@@ -1439,7 +1439,7 @@ public class TicketServiceImpl implements TicketService {
             if(jsonResponse.getBoolean("success") == true && jsonResponse.getInt("code") == 100){
                 //抢票下单成功
                 grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_REQUEST_SUCCESS.getId());
-                grabTicketForm.setRemark(jsonResponse.getString("msg"));
+                grabTicketForm.setRemark("抢票下单成功");
                 this.grabTicketFormService.update(grabTicketForm);
             }else{
                 //抢票下单失败,更改抢票单状态, 记录失败原因 , 到期退款
