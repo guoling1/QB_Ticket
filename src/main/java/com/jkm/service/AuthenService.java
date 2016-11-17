@@ -22,13 +22,6 @@ public interface AuthenService {
 	 */
 	public Map<String, Object> singlRefund(SingleRefundData requestData);
 
-	/**
-	 * 银行卡鉴权
-	 * @param requestData
-	 * @return
-	 */
-	public Map<String, Object> cardAuth(CardAuthData requestData);
-
 
 	/**
 	 * 支付订单查询

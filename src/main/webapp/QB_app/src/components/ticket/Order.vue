@@ -78,7 +78,7 @@
           path: '/ticket/refund-detail', query: {
             appid: this.$data.common.appid,
             uid: this.$data.common.uid,
-            orderFormId: massage.orderFormId
+            orderid: massage.orderFormId
           }
         })
       },

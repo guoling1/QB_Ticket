@@ -117,16 +117,11 @@
       }
     },
     beforeRouteEnter (to, from, next) {
-      let orderFormId = to.query.orderFormId;
-      Vue.http.post('/order/queryById',{"orderFormId":orderFormId})
+      Vue.http.post('/order/queryById',{orderFormId: to.query.orderid})
       .then(function (res) {
         next(vm=> {
           if(res.data.code==1){
             vm.$data.massages=res.data.data;
-//            var m=vm.$data.massages.runTime;
-//            var h=Math.floor(m/60);
-//            m%=60;
-//            vm.$data.massages.runTime="耗时"+h+"小时"+m+"分";
           }
         })
       }, function (err) {
