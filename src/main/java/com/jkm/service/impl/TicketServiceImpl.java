@@ -754,6 +754,7 @@ public class TicketServiceImpl implements TicketService {
                     this.returnMoneyOrderService.init(returnMoneyOrder);
                     //请求退款接口 , 退款
                     final SingleRefundData data = new SingleRefundData();
+                    data.setReqSn(SnGenerator.generate());
                     data.setOrgSn(returnMoneyOrder.getOrderFormSn());
                     data.setOrgDate(DateFormatUtil.format(returnMoneyOrder.getOrgDate(), DateFormatUtil.yyyyMMdd));
                     data.setRefundAmount(returnMoneyOrder.getReturnTotalMoney().toString());
@@ -761,13 +762,13 @@ public class TicketServiceImpl implements TicketService {
                     data.setRefundReason(returnMoneyOrder.getRemark());
                     final Map<String, Object> map = this.authenService.singlRefund(data);
                 //判断退款是否受理成功 ,
-                    if ((boolean) map.get("retCode") == true){
+                    if (map.get("retCode").equals("0000") || map.get("retCode").equals("5000")){
                         //受理成功 , 修改退票流水单状态, 退款中
                         //TODO 退票退款
                         JSONObject mqJo = new JSONObject();
                         mqJo.put("orderFormDetailId", orderFormDetail.getId());
                         mqJo.put("reqToken", flow.getReqToken());
-                        mqJo.put("reqSn", paymentSn);
+                        mqJo.put("reqSn", data.getReqSn());
                         mqJo.put("sendCount", 0);
                         MqProducer.sendMessage(mqJo, MqConfig.RETURN_TICKET_REFUND_ING, 2000);
                         flow.setStatus(EnumRefundTicketFlowStatus.TICKET_REFUND_ING.getId());
@@ -938,6 +939,7 @@ public class TicketServiceImpl implements TicketService {
                     this.ticketSendMessageService.sendReturnTicketDownMessage(param);
                     //请求退款接口 , 退款
                     final SingleRefundData data = new SingleRefundData();
+                    data.setReqSn(SnGenerator.generate());
                     data.setOrgSn(returnMoneyOrder.getOrderFormSn());
                     data.setOrgDate(DateFormatUtil.format(returnMoneyOrder.getOrgDate(), DateFormatUtil.yyyyMMdd));
                     data.setRefundAmount(returnMoneyOrder.getReturnTotalMoney().toString());
@@ -945,12 +947,13 @@ public class TicketServiceImpl implements TicketService {
                     data.setRefundReason(returnMoneyOrder.getRemark());
                     final Map<String, Object> map = this.authenService.singlRefund(data);
                     //判断退款受理是否成功 ,
-                    if ((boolean) map.get("retCode") == true){
+                    if (map.get("retCode").equals("0000") || map.get("retCode").equals("5000")){
                         //TODO 退票退款
                         JSONObject mqJo = new JSONObject();
                         mqJo.put("orderFormDetailId", orderFormDetail.getId());
-                        mqJo.put("reqSn", paymentSn);
+                        mqJo.put("reqSn", data.getReqSn());
                         mqJo.put("sendCount", 0);
+                        mqJo.put("reqToken", flow.getReqToken());
                         MqProducer.sendMessage(mqJo, MqConfig.RETURN_TICKET_REFUND_ING, 2000);
                         flow.setStatus(EnumRefundTicketFlowStatus.TICKET_REFUND_ING.getId());
                         this.refundTicketFlowService.update(flow);
@@ -1203,6 +1206,7 @@ public class TicketServiceImpl implements TicketService {
 
                 //请求退款接口 , 退款
                 final SingleRefundData data = new SingleRefundData();
+                data.setReqSn(SnGenerator.generate());
                 data.setOrgSn(refundOrderFlow.getPaymentSn());
                 data.setOrgDate(refundOrderFlow.getOrderDate());
                 data.setRefundAmount(refundOrderFlow.getRefundAmount().toString());
@@ -1211,14 +1215,14 @@ public class TicketServiceImpl implements TicketService {
                 log.info("抢票单:"+ grabTicketForm.getId()+ "请求hz退款接口退款");
                 final Map<String, Object> map = this.authenService.singlRefund(data);
                 //判断退款受理是否成功 ,
-                if ((boolean) map.get("retCode") == true){
+                if (map.get("retCode").equals("0000") || map.get("retCode").equals("5000")){
                     log.info("抢票单:"+ grabTicketForm.getId()+ "请求hz退还差价,请求受理成功");
                     //TODO 抢票差价退款
                     //受理成功 ,
                     //消息
                     JSONObject mqJo = new JSONObject();
                     mqJo.put("grabTicketFormId", grabTicketForm.getId());
-                    mqJo.put("reqSn", grabTicketForm.getPaymentSn());
+                    mqJo.put("reqSn", data.getReqSn());
                     mqJo.put("refundAmount", data.getRefundAmount());
                     mqJo.put("sendCount", 0);
                     MqProducer.sendMessage(mqJo, MqConfig.GRAB_TICKET_REFUND_PART, 2000);
@@ -1301,6 +1305,7 @@ public class TicketServiceImpl implements TicketService {
         this.ticketSendMessageService.sendGrabTicketFailMessage(param);
         //请求退款接口 , 退款
         final SingleRefundData data = new SingleRefundData();
+        data.setReqSn(SnGenerator.generate());
         data.setOrgSn(refundOrderFlow.getPaymentSn());
         data.setOrgDate(refundOrderFlow.getOrderDate());
         data.setRefundAmount(refundOrderFlow.getRefundAmount().toString());
@@ -1309,12 +1314,12 @@ public class TicketServiceImpl implements TicketService {
         final Map<String, Object> map = this.authenService.singlRefund(data);
         //判断退款是否受理成功 ,
         //TODO 抢票全额退款
-        if ((boolean) map.get("retCode") == true){
+        if (map.get("retCode").equals("0000") || map.get("retCode").equals("5000")){
             //成功 ,
             //消息
             JSONObject mqJo = new JSONObject();
             mqJo.put("grabTicketFormId", grabTicketForm.getId());
-            mqJo.put("reqSn", grabTicketForm.getPaymentSn());
+            mqJo.put("reqSn", data.getReqSn());
             mqJo.put("refundAmount", data.getRefundAmount());
             mqJo.put("sendCount", 0);
             MqProducer.sendMessage(mqJo, MqConfig.GRAB_TICKET_REFUND_ALL, 2000);
@@ -1385,6 +1390,7 @@ public class TicketServiceImpl implements TicketService {
            }
             //请求退款接口 , 退款
             final SingleRefundData data = new SingleRefundData();
+            data.setReqSn(SnGenerator.generate());
             data.setOrgSn(refundOrderFlow.getPaymentSn());
             data.setOrgDate(refundOrderFlow.getOrderDate());
             data.setRefundAmount(refundOrderFlow.getRefundAmount().toString());
@@ -1393,13 +1399,13 @@ public class TicketServiceImpl implements TicketService {
             log.info(grabTicketFormId + "抢票单请求全额退款");
             final Map<String, Object> map = this.authenService.singlRefund(data);
             //判断退款受理是否成功 ,
-            if ((boolean) map.get("retCode") == true){
+            if (map.get("retCode").equals("0000") || map.get("retCode").equals("5000")){
                 //成功 ,
                 //TODO 取消抢票单退款
                 //消息
                 JSONObject mqJo = new JSONObject();
                 mqJo.put("grabTicketFormId", grabTicketForm.getId());
-                mqJo.put("reqSn", grabTicketForm.getPaymentSn());
+                mqJo.put("reqSn", data.getReqSn());
                 mqJo.put("refundAmount", data.getRefundAmount());
                 mqJo.put("sendCount", 0);
                 MqProducer.sendMessage(mqJo, MqConfig.CANCEL_GRAB_TICKET_REFUND_ALL, 2000);

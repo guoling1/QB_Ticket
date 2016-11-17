@@ -134,9 +134,9 @@
         </li>
       </ul>
       <div class="sure" @click="sev">保存</div>
-      <div class="err" v-if="this.$data.$err">
-          {{errMsg}}
-      </div>
+    </div>
+    <div class="err" v-if="this.$data.$err">
+        {{errMsg}}
     </div>
   </div>
 </template>
@@ -199,7 +199,7 @@
         if(res.data.code==1){
           this.$data.submitInfo.phone = res.data.data;
         }else{
-          console.lg(res.data.message);
+          console.log(res.data.message);
         }
       },function(err){
         console.log(err)
@@ -214,7 +214,11 @@
       },
       addChild: function () {
         if (this.$data.submitInfo.grabPassengers.length == 0) {
-          console.log("请先添加成人")
+          this.$data.$err=true
+          this.$data.errMsg="请先添加成人"
+          setTimeout(()=>{
+            this.$data.$err=false
+          },1000);
         } else {
           this.$data.show = !this.$data.show
         }
@@ -378,44 +382,53 @@
           data.seatTypes = data.seatTypes.replace('特等座', 'P');
           data.seatTypes = data.seatTypes.replace('商务座', '9');
         }
-        this.$http.post('/ticket/grab', data).then(function (res) {
-          if (res.data.code == 1) {
-            this.$data.payInfo.price = res.data.data.price;
-            this.$data.payInfo.orderId = res.data.data.grabTicketFormId;
-            this.$http.post('/card/list', {
-              appid: this.$data.submitInfo.appId,
-              uid: this.$data.submitInfo.uid
-            }).then(function (rs) {
-              if (rs.data.code == 1) {
-                if (rs.data.data.cardList) {
-                  this.$data.payInfo.cardList = rs.data.data.cardList;
-                  this.$data.payInfo.checkout = rs.data.data.cardList[0];
-                  this.$data.payInfo.peopleInfo = rs.data.data.userCardInfo;
-                  this.$data.payInfo.bank = true;
+        this.$data.$err=false
+        if(this.$data.submitInfo.grabPassengers==""){
+          this.$data.$err=true
+          this.$data.errMsg="请添加乘客"
+          setTimeout(()=>{
+            this.$data.$err=false
+          },1000);
+        }else{
+          this.$http.post('/ticket/grab', data).then(function (res) {
+            if (res.data.code == 1) {
+              this.$data.payInfo.price = res.data.data.price;
+              this.$data.payInfo.orderId = res.data.data.grabTicketFormId;
+              this.$http.post('/card/list', {
+                appid: this.$data.submitInfo.appId,
+                uid: this.$data.submitInfo.uid
+              }).then(function (rs) {
+                if (rs.data.code == 1) {
+                  if (rs.data.data.cardList) {
+                    this.$data.payInfo.cardList = rs.data.data.cardList;
+                    this.$data.payInfo.checkout = rs.data.data.cardList[0];
+                    this.$data.payInfo.peopleInfo = rs.data.data.userCardInfo;
+                    this.$data.payInfo.bank = true;
+                  } else {
+                    this.$router.push({
+                      path: '/pay/first-add',
+                      query: {
+                        appid: this.$data.submitInfo.appId,
+                        uid: this.$data.submitInfo.uid,
+                        id: this.$data.payInfo.orderId,
+                        price: this.$data.payInfo.price,
+                        payType: 1
+                      }
+                    });
+                  }
                 } else {
-                  this.$router.push({
-                    path: '/pay/first-add',
-                    query: {
-                      appid: this.$data.submitInfo.appId,
-                      uid: this.$data.submitInfo.uid,
-                      id: this.$data.payInfo.orderId,
-                      price: this.$data.payInfo.price,
-                      payType: 1
-                    }
-                  });
+                  console.log(res.data.message);
                 }
-              } else {
-                console.log(res.data.message);
-              }
-            }, function (err) {
-              console.log(err);
-            });
-          } else {
-            console.log(res.data.message);
-          }
-        }, function (err) {
-          console.log(err);
-        })
+              }, function (err) {
+                console.log(err);
+              });
+            } else {
+              console.log(res.data.message);
+            }
+          }, function (err) {
+            console.log(err);
+          })
+        }
       }
     },
     computed: {

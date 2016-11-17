@@ -8,7 +8,7 @@
       <ul v-show="preShow">
         <li v-for="massage in preMassages" @click="preGo($event,massage)">
           <div class="top">
-            <span class="date">{{massage.startDate}} {{massage.startTime}}出发</span><span
+            <span class="date">{{massage.startDate}} {{massage.startTime}} 出发</span><span
             class="checi">{{massage.checi}}</span>
           </div>
           <div class="bottom">

@@ -78,19 +78,20 @@ public class AuthenServiceImpl implements AuthenService {
 	@Override
 	public Map<String, Object> fastPay(AuthenData requestData) {
 		Map<String, Object> ret = new HashMap<String, Object>();
+		GetParamRecord gr = new GetParamRecord();
+		gr.setStatus(0);
+		gr.setAppId(requestData.getAppId());
+		gr.setNonceStr(requestData.getNonceStr());
+		int count = getParamRecordService.selectByCondition(gr);
+		if(count>0){
+			ret.put("retCode", "3000");
+			ret.put("retMsg", "请不要重复提交订单");
+			return ret;
+		}else{
+			getParamRecordService.insertSelective(gr);
+		}
+
 		try {
-			GetParamRecord gr = new GetParamRecord();
-			gr.setStatus(0);
-			gr.setAppId(requestData.getAppId());
-			gr.setNonceStr(requestData.getNonceStr());
-			int count = getParamRecordService.selectByCondition(gr);
-			if(count>0){
-				ret.put("retCode", "3000");
-				ret.put("retMsg", "请不要重复提交订单");
-				return ret;
-			}else{
-				getParamRecordService.insertSelective(gr);
-			}
 			Request100005 request100005 = createFastPay(requestData);
 			String xml = XmlUtil.toXML(request100005);
 			logger.debug("****************xml生成authen*********************-"
@@ -180,6 +181,8 @@ public class AuthenServiceImpl implements AuthenService {
 			logger.debug("支付错误信息:", e);
 			ret.put("retCode", "4000");
 			ret.put("retMsg", "支付异常");
+		}finally {
+
 		}
 		return ret;
 	}
@@ -217,6 +220,7 @@ public class AuthenServiceImpl implements AuthenService {
 	 * 单笔退款
 	 * @param requestData
 	 * @return
+	 *
 	 */
 	@Override
 	public Map<String, Object> singlRefund(SingleRefundData requestData) {
@@ -253,7 +257,7 @@ public class AuthenServiceImpl implements AuthenService {
 				// 将解压解密后的结果转化为Response100003对象
 				Response100003 response100003 = XmlUtil.fromXML(response2,
 						Response100003.class);
-
+				logger.info("返回结果："+response100003.toString());
 				if ("0000".equals(response100003.getInfo().getRetCode())) {
 					JSONObject jo = new JSONObject();
 					jo.put("reqSn",request100003.getInfo().getReqSn());
@@ -577,6 +581,14 @@ public class AuthenServiceImpl implements AuthenService {
 		authenData.setReqSn(SnGenerator.generate());
 		authenData.setAppId(requestData.getString("appid"));
 		authenData.setNonceStr(requestData.getString("nonceStr"));
+
+
+		if(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId()!=orderFormOptional.get().getStatus()&&
+				EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId()!=orderFormOptional.get().getStatus()){
+			jo.put("result",false);
+			jo.put("message","状态有误");
+			return jo;
+		}
 		orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId());
 		orderFormService.updateStatus(orderFormOptional.get());
 		Map<String, Object> ret = this.fastPay(authenData);
