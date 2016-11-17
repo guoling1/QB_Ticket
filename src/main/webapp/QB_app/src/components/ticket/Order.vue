@@ -1,14 +1,14 @@
 <template lang="html">
   <div class="main flex-box-column flexBox">
     <div class="teb-title">
-      <div class="reserve" v-bind:class="{show:preShow}" @click="teb(1)">预订单</div>
+      <div class="reserve" v-bind:class="{show:preShow}" @click="teb(1)">预订订单</div>
       <div class="rob" v-bind:class="{show:robShow}" @click="teb(2)">抢票单</div>
     </div>
     <div class="window">
       <ul v-show="preShow">
         <li v-for="massage in preMassages" @click="preGo($event,massage)">
           <div class="top">
-            <span class="date">{{massage.startDate}} {{massage.startTime}} 出发</span><span
+            <span class="date">{{massage.startDate}} {{massage.startTime}}出发</span><span
             class="checi">{{massage.checi}}</span>
           </div>
           <div class="bottom">
@@ -220,6 +220,7 @@
         padding: 17px 17px 10px;
         position: relative;
         overflow: hidden;
+        height: 77px;
         div {
           width: 183px;
           margin-bottom: 15px;
