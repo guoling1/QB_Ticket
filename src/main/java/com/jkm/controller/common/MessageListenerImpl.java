@@ -149,8 +149,8 @@ public class MessageListenerImpl implements MessageListener {
                 log.info("消费[订单[" + jo.getLong("orderFormId") + "]退款在请求中的消息]");
                 final QueryRefundData queryRefundData = new QueryRefundData();
                 queryRefundData.setReqSn(SnGenerator.generate());
-                queryRefundData.setQuerySn(jo.getString("paymentSn"));
-                queryRefundData.setQueryDate(jo.getString("paymentSn").substring(0, 8));
+                queryRefundData.setQuerySn(jo.getString("reqSn"));
+                queryRefundData.setQueryDate(jo.getString("reqSn").substring(0, 8));
                 final Map<String, Object> resultMap =  authenService.queryRefund(queryRefundData);
                 if("0000".equals(resultMap.get("retCode").toString())){
                     if("S".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//成功
@@ -168,7 +168,7 @@ public class MessageListenerImpl implements MessageListener {
                 final QueryRefundData queryRefundData = new QueryRefundData();
                 queryRefundData.setReqSn(SnGenerator.generate());
                 queryRefundData.setQuerySn(jo.getString("reqSn"));
-                queryRefundData.setQueryDate(jo.getString("paymentSn").substring(0, 8));
+                queryRefundData.setQueryDate(jo.getString("reqSn").substring(0, 8));
                 final Map<String, Object> resultMap =  authenService.queryRefund(queryRefundData);
                 if("0000".equals(resultMap.get("retCode").toString())){
                     if("S".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//成功
@@ -187,7 +187,7 @@ public class MessageListenerImpl implements MessageListener {
                 final QueryRefundData queryRefundData = new QueryRefundData();
                 queryRefundData.setReqSn(SnGenerator.generate());
                 queryRefundData.setQuerySn(jo.getString("reqSn"));
-                queryRefundData.setQueryDate(jo.getString("paymentSn").substring(0, 8));
+                queryRefundData.setQueryDate(jo.getString("reqSn").substring(0, 8));
                 final Map<String, Object> resultMap =  authenService.queryRefund(queryRefundData);
                 if("0000".equals(resultMap.get("retCode").toString())){
                     if("S".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//成功
@@ -206,7 +206,7 @@ public class MessageListenerImpl implements MessageListener {
                 final QueryRefundData queryRefundData = new QueryRefundData();
                 queryRefundData.setReqSn(SnGenerator.generate());
                 queryRefundData.setQuerySn(jo.getString("reqSn"));
-                queryRefundData.setQueryDate(jo.getString("paymentSn").substring(0, 8));
+                queryRefundData.setQueryDate(jo.getString("reqSn").substring(0, 8));
                 final Map<String, Object> resultMap =  authenService.queryRefund(queryRefundData);
                 if("0000".equals(resultMap.get("retCode").toString())){
                     if("S".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//成功
@@ -225,7 +225,7 @@ public class MessageListenerImpl implements MessageListener {
                 final QueryRefundData queryRefundData = new QueryRefundData();
                 queryRefundData.setReqSn(SnGenerator.generate());
                 queryRefundData.setQuerySn(jo.getString("reqSn"));
-                queryRefundData.setQueryDate(jo.getString("paymentSn").substring(0, 8));
+                queryRefundData.setQueryDate(jo.getString("reqSn").substring(0, 8));
                 final Map<String, Object> resultMap =  authenService.queryRefund(queryRefundData);
                 if("0000".equals(resultMap.get("retCode").toString())){
                     if("S".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//成功
@@ -274,7 +274,7 @@ public class MessageListenerImpl implements MessageListener {
         final OrderFormRefundExceptionRecord record = new OrderFormRefundExceptionRecord();
         record.setOrderFormId(jo.getLong("orderFormId"));
         record.setGrabOrderFormId(0);
-        record.setPaymentSn(jo.getString("paymentSn"));
+        record.setPaymentSn(jo.getString("reqSn"));
         record.setRefundAmount(new BigDecimal(jo.getString("refundAmount")));
         record.setStatus(0);
         record.setRemark("代购订单退款异常");

@@ -274,11 +274,18 @@ public class FusionController extends BaseController {
         JSONObject responseJo = new JSONObject();
         try{
             JSONObject mqJo = new JSONObject();
-            mqJo.put("reqSn","20161111132457210572");
-            mqJo.put("dt", "20161111");
-            mqJo.put("sendCount",0);
-            mqJo.put("orderId",165);
-            MqProducer.sendMessage(mqJo, MqConfig.FAST_PAY_QUERY,2000);
+//            mqJo.put("reqSn","20161111132457210572");
+//            mqJo.put("dt", "20161111");
+//            mqJo.put("sendCount",0);
+//            mqJo.put("orderId",165);
+//            MqProducer.sendMessage(mqJo, MqConfig.FAST_PAY_QUERY,2000);
+
+            mqJo.put("orderFormDetailId", 200);
+            mqJo.put("reqSn", "20161117155508149191");
+            mqJo.put("sendCount", 0);
+            mqJo.put("reqToken", "20161117151617515507");
+
+            MqProducer.sendMessage(mqJo, MqConfig.RETURN_TICKET_REFUND_ING, 2000);
         }catch(Exception e){
             logger.info("错误信息"+e.getStackTrace());
             responseJo.put("result",false);
