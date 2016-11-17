@@ -1022,13 +1022,13 @@ public class TicketServiceImpl implements TicketService {
         final ChargeMoneyOrder chargeMoneyOrder = this.chargeMoneyOrderService.selectByIdWithLock(chargeMoneyOrderOptional.get().getId()).get();
         Preconditions.checkState(!chargeMoneyOrder.isPaySuccess(), "订单[%s]对应的收款记录已经付款成功！！！！！！！", orderForm.getId());
         if (isPaySuccess) {
-            log.info("订单[" + grabTicketFormId + "]支付成功");
+            log.info("抢票单[" + grabTicketFormId + "]支付成功");
             orderForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_PAY_SUCCESS.getId());
             orderForm.setRemark(EnumGrabTicketStatus.GRAB_FORM_PAY_SUCCESS.getValue());
             orderForm.setPaymentSn(paymentSn);
             this.grabTicketFormService.update(orderForm);
             chargeMoneyOrder.setStatus(EnumChargeMoneyOrderStatus.PAYMENT_TICKET_SUCCESS.getId());
-            log.info("订单[" + grabTicketFormId + "]支付成功--调用确认订单接口！！");
+            log.info("抢票单[" + grabTicketFormId + "]支付成功--调用抢票下单接口！！");
             //抢票支付成功, 请求抢票
                 this.requestGrabImpl(grabTicketFormId);
         } else {
@@ -1038,6 +1038,7 @@ public class TicketServiceImpl implements TicketService {
             orderForm.setPaymentSn(paymentSn);
             this.grabTicketFormService.update(orderForm);
             chargeMoneyOrder.setStatus(EnumChargeMoneyOrderStatus.PAYMENT_TICKET_FAIL.getId());
+            log.info("抢票单[" + grabTicketFormId + "]支付失败--............！");
         }
         this.chargeMoneyOrderService.update(chargeMoneyOrder);
     }
