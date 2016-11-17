@@ -257,7 +257,7 @@ public class AuthenServiceImpl implements AuthenService {
 				if ("0000".equals(response100003.getInfo().getRetCode())) {
 					JSONObject jo = new JSONObject();
 					jo.put("reqSn",request100003.getInfo().getReqSn());
-					ret.put("retCode", true);
+					ret.put("retCode", response100003.getInfo().getRetCode());
 					ret.put("retMsg", response100003.getInfo().getErrMsg());
 					ret.put("retData", jo);
 					RefundResultRecord refundResultRecord = new RefundResultRecord();
@@ -270,7 +270,7 @@ public class AuthenServiceImpl implements AuthenService {
 					refundResultRecord.setResultParams(response100003.toString());
 					refundResultRecordService.insertSelective(refundResultRecord);
 				} else {
-					ret.put("retCode", false);
+					ret.put("retCode", response100003.getInfo().getRetCode());
 					ret.put("retMsg", response100003.getInfo().getErrMsg());
 					RefundResultRecord refundResultRecord = new RefundResultRecord();
 					refundResultRecord.setStatus(0);
@@ -283,7 +283,7 @@ public class AuthenServiceImpl implements AuthenService {
 					refundResultRecordService.insertSelective(refundResultRecord);
 				}
 			} else {
-				ret.put("retCode", false);
+				ret.put("retCode", "5000");
 				ret.put("retMsg", "单笔退款接口连接失败");
 			}
 			logger.debug("****************" + response2
@@ -291,7 +291,7 @@ public class AuthenServiceImpl implements AuthenService {
 
 		} catch (Exception e) {
 			logger.error("退款错误信息:"+e);
-			ret.put("retCode", false);
+			ret.put("retCode", "4000");
 			ret.put("retMsg", "退款异常");
 		}
 		return ret;
