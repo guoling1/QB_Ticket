@@ -34,7 +34,7 @@
     </div>
     <datetime></datetime>
     <stationName></stationName>
-    <!--<message></message>-->
+    <message></message>
   </div>
 </template>
 

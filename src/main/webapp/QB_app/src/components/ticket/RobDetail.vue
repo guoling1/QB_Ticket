@@ -1,17 +1,16 @@
 <template lang="html">
   <div class="main">
-    <div class="state"
-         v-if="orderInfo.status==3||orderInfo.status==5||orderInfo.status==6||orderInfo.status==7||orderInfo.status==11">
+    <div class="state" v-if="$$orderInfo.status==(3||5||6||7||11)">
       <i></i>
       <span>正在奋力抢票中...</span>
     </div>
-    <div class="state" v-if="orderInfo.status==8">
+    <div class="state" v-if="$$orderInfo.status==8">
       <span>抢票失败</span>
     </div>
-    <div class="state" v-if="orderInfo.status==9">
+    <div class="state" v-if="$$orderInfo.status==9">
       <span>抢票成功</span>
     </div>
-    <div class="state" v-if="orderInfo.status==10||orderInfo.status==14||orderInfo.status==15||orderInfo.status==16">
+    <div class="state" v-if="$$orderInfo.status==(10||14||15||16)">
       <span>订单已取消</span>
     </div>
     <div class="space">
@@ -21,19 +20,19 @@
           <div class="right">到达城市</div>
         </div>
         <div class="side write">
-          <div class="left">{{orderInfo.fromStationName}}</div>
+          <div class="left">{{$$orderInfo.fromStationName}}</div>
           <img class="middle" src="../../assets/exchange-blue.png">
 
-          <div class="right">{{orderInfo.toStationName}}</div>
+          <div class="right">{{$$orderInfo.toStationName}}</div>
         </div>
       </div>
       <div class="group">
         <div class="prompt">已选车次</div>
-        <div class="write no-prompt right">{{orderInfo.trainCodes}}</div>
+        <div class="write no-prompt right">{{$$orderInfo.trainCodes}}</div>
       </div>
       <div class="group no-border">
         <div class="prompt">已选坐席</div>
-        <div class="write no-prompt right">{{orderInfo.seatTypes}}</div>
+        <div class="write no-prompt right">{{$$orderInfo.seatTypes}}</div>
       </div>
     </div>
     <div class="space padding-word">
@@ -43,9 +42,10 @@
       </div>
       <div class="right">
         <div class="list">
-          <div v-for="passenger in orderInfo.passengerInfo">{{passenger.name}}<span v-if="passenger.piaoType==2">(儿童)</span></div>
+          <div v-for="passenger in $$orderInfo.passengerInfo">{{passenger.name}}<span
+            v-if="passenger.piaoType==2">(儿童)</span></div>
         </div>
-        <div class="small">￥<span>{{orderInfo.grabTotalPrice}}</span></div>
+        <div class="small">￥<span>{{$$orderInfo.grabTotalPrice}}</span></div>
       </div>
     </div>
     <div class="space">
@@ -78,7 +78,6 @@
         uid: to.query.uid,
         grabTicketFormId: to.query.orderid
       }).then(function (res) {
-        console.log(res);
         let info = res.data.data;
         info.passengerInfo = JSON.parse(info.passengerInfo);
         if (res.data.code == 1) {
@@ -95,13 +94,35 @@
     },
     methods: {
       cancel: function () {
-        this.$http.post('', this.$data.cancelInfo).then(function (res) {
+        this.$http.post('/ticket/cancel/grab', {
+          grabTicketFormId: this.$data.orderInfo.grabTicketFormId
+        }).then(function (res) {
           if (res.data.code == 1) {
             console.log(res);
+          } else {
+            console.log(res.data.message);
           }
         }, function (err) {
           console.log(err);
         })
+      }
+    },
+    computed: {
+      $$orderInfo: function () {
+        let orderInfo = this.$data.orderInfo;
+        if (typeof (orderInfo.seatTypes) == 'string') {
+          orderInfo.seatTypes = orderInfo.seatTypes.replace('0', '无座');
+          orderInfo.seatTypes = orderInfo.seatTypes.replace('1', '硬座');
+          orderInfo.seatTypes = orderInfo.seatTypes.replace('2', '软座');
+          orderInfo.seatTypes = orderInfo.seatTypes.replace('3', '硬卧');
+          orderInfo.seatTypes = orderInfo.seatTypes.replace('4', '软卧');
+          orderInfo.seatTypes = orderInfo.seatTypes.replace('6', '高级软卧');
+          orderInfo.seatTypes = orderInfo.seatTypes.replace('O', '二等座');
+          orderInfo.seatTypes = orderInfo.seatTypes.replace('M', '一等座');
+          orderInfo.seatTypes = orderInfo.seatTypes.replace('P', '特等座');
+          orderInfo.seatTypes = orderInfo.seatTypes.replace('9', '商务座');
+        }
+        return orderInfo;
       }
     }
   }

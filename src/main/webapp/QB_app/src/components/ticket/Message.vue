@@ -1,9 +1,9 @@
 <template lang="html">
-  <div class="main">
-    <div class="delay">
+  <div class="main" v-if="$$message">
+    <div class="delay" v-show="$$delay">
       这是全局message,延时自动消失{{$$delay}}
     </div>
-    <div class="accord">
+    <div class="accord" v-show="$$accord">
       这是全局message,需要点击消失
     </div>
   </div>
@@ -20,7 +20,13 @@
     },
     methods: {},
     computed: {
+      $$message:function(){
+        return this.$store.state.message.message
+      },
       $$delay:function(){
+        return this.$store.state.message.delay
+      },
+      $$accord:function(){
         return this.$store.state.message.delay
       }
     }

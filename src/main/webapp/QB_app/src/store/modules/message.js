@@ -4,14 +4,18 @@
 
 // initial state
 const state = {
+  message: false,
   delay: false,
   accord: false
 };
 
 // mutations
 const mutations = {
-  TITLE_CHANGE (state, obj) {
-
+  MESSAGE_DELAY (state, obj) {
+    state.delay = obj.ctrl;
+  },
+  MESSAGE_ACCORD (state, obj) {
+    state.accord = obj.ctrl;
   }
 };
 
