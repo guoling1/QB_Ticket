@@ -32,7 +32,7 @@ public class OrderFormRefundExceptionRecord extends BaseEntity {
     private long orderFormDetailId =0;
 
     /**
-     * 支付流水号
+     * 退款流水号
      */
     private String paymentSn;
 

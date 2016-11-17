@@ -939,6 +939,7 @@ public class TicketServiceImpl implements TicketService {
                         mqJo.put("orderFormDetailId", orderFormDetail.getId());
                         mqJo.put("reqSn", data.getReqSn());
                         mqJo.put("sendCount", 0);
+                        mqJo.put("reqToken", flow.getReqToken());
                         MqProducer.sendMessage(mqJo, MqConfig.RETURN_TICKET_REFUND_ING, 2000);
                         flow.setStatus(EnumRefundTicketFlowStatus.TICKET_REFUND_ING.getId());
                         this.refundTicketFlowService.update(flow);
