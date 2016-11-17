@@ -17,7 +17,7 @@ public class PayResultRecord extends BaseEntity {
 	/**支付金额**/
 	private String amount;
 
-	/**支付结果（1成功2失败3.处理中）**/
+	/**支付结果（1成功2失败）**/
 	private String payResult;
 
 	/**支付参数**/
