@@ -65,8 +65,6 @@ public class AuthenServiceImpl implements AuthenService {
 	@Autowired
 	private GrabTicketFormService grabTicketFormService;
 	@Autowired
-	private SendMessageCountRecordDao sendMessageCountRecordDao;
-	@Autowired
 	private BankCardBinService bankCardBinService;
 	@Autowired
 	private UserInfoService userInfoService;
@@ -561,7 +559,7 @@ public class AuthenServiceImpl implements AuthenService {
 		//实名绑卡
 		UserInfo u = new UserInfo();
 		u.setAppId(requestData.getString("appid"));
-		u.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+		u.setUid(requestData.getString("uid"));
 		u.setCardId(requestData.getString("idNo"));
 		u.setCardNo(requestData.getString("crdNo"));
 		u.setRealName(requestData.getString("capCrdNm"));
@@ -594,7 +592,7 @@ public class AuthenServiceImpl implements AuthenService {
 		Map<String, Object> ret = this.fastPay(authenData);
 		if("0000".equals(ret.get("retCode").toString())){//支付成功
 			BindCard bindCard = new BindCard();
-			bindCard.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+			bindCard.setUid(requestData.getString("uid"));
 			bindCard.setCardNo(UserBankCardSupporter.encryptCardNo(requestData.getString("crdNo")));
 			bindCard.setAccountName(requestData.getString("capCrdNm"));
 			bindCard.setCardType("00");
@@ -609,7 +607,7 @@ public class AuthenServiceImpl implements AuthenService {
 			ticketService.handleCustomerPayMsg(orderFormOptional.get().getId(),authenData.getReqSn(),true);
 		}else if("6666".equals(ret.get("retCode").toString())){
 			BindCard bindCard = new BindCard();
-			bindCard.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+			bindCard.setUid(requestData.getString("uid"));
 			bindCard.setCardNo(UserBankCardSupporter.encryptCardNo(requestData.getString("crdNo")));
 			bindCard.setAccountName(requestData.getString("capCrdNm"));
 			bindCard.setCardType("00");
@@ -686,7 +684,7 @@ public class AuthenServiceImpl implements AuthenService {
 		//实名绑卡
 		UserInfo u = new UserInfo();
 		u.setAppId(requestData.getString("appid"));
-		u.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+		u.setUid(requestData.getString("uid"));
 		u.setCardId(bindCard.getCardId());
 		u.setCardNo(bindCard.getCardNo());
 		u.setRealName(bindCard.getAccountName());
@@ -809,7 +807,7 @@ public class AuthenServiceImpl implements AuthenService {
 		//实名绑卡
 		UserInfo u = new UserInfo();
 		u.setAppId(requestData.getString("appid"));
-		u.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+		u.setUid(requestData.getString("uid"));
 		u.setCardId(requestData.getString("idNo"));
 		u.setCardNo(requestData.getString("crdNo"));
 		u.setRealName(requestData.getString("capCrdNm"));
@@ -835,7 +833,7 @@ public class AuthenServiceImpl implements AuthenService {
 		Map<String, Object> ret = this.fastPay(authenData);
 		if("0000".equals(ret.get("retCode").toString())){//支付成功
 			BindCard bindCard = new BindCard();
-			bindCard.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+			bindCard.setUid(requestData.getString("uid"));
 			bindCard.setCardNo(UserBankCardSupporter.encryptCardNo(requestData.getString("crdNo")));
 			bindCard.setAccountName(requestData.getString("capCrdNm"));
 			bindCard.setCardType("00");
@@ -850,7 +848,7 @@ public class AuthenServiceImpl implements AuthenService {
 			ticketService.handleGrabCustomerPayMsg(requestData.getLong("orderId"),authenData.getReqSn(),true);
 		}else if("6666".equals(ret.get("retCode").toString())){
 			BindCard bindCard = new BindCard();
-			bindCard.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+			bindCard.setUid(requestData.getString("uid"));
 			bindCard.setCardNo(UserBankCardSupporter.encryptCardNo(requestData.getString("crdNo")));
 			bindCard.setAccountName(requestData.getString("capCrdNm"));
 			bindCard.setCardType("00");
@@ -930,7 +928,7 @@ public class AuthenServiceImpl implements AuthenService {
 		//实名绑卡
 		UserInfo u = new UserInfo();
 		u.setAppId(requestData.getString("appid"));
-		u.setUid(requestData.getString("appid")+"_"+requestData.getString("uid"));
+		u.setUid(requestData.getString("uid"));
 		u.setCardId(bindCard.getCardId());
 		u.setCardNo(bindCard.getCardNo());
 		u.setRealName(bindCard.getAccountName());

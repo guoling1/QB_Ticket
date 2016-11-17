@@ -95,7 +95,7 @@ public class BindCardServiceImpl implements BindCardService{
         bindCard.setPhone(requestJson.getString("phone"));
         bindCard.setBankCode(requestJson.getString("bankCode"));
         bindCard.setStatus(0);
-        int returnNum = bindCardDao.isAdd(bindCard.getCardNo());
+        int returnNum = bindCardDao.isAdd(bindCard.getCardNo(),bindCard.getUid());
         if(returnNum>0){
             jo.put("result",false);
             jo.put("message","该银行卡已绑定");
@@ -116,7 +116,7 @@ public class BindCardServiceImpl implements BindCardService{
     @Override
     public JSONObject insertBindCard(BindCard record) {
         JSONObject jo = new JSONObject();
-        int returnNum = bindCardDao.isAdd(record.getCardNo());
+        int returnNum = bindCardDao.isAdd(record.getCardNo(),record.getUid());
         if(returnNum>0){
             jo.put("result",false);
             jo.put("message","该银行卡已绑定");
