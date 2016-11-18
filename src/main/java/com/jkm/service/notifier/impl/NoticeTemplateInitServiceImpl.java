@@ -5,8 +5,11 @@ import com.jkm.enums.notifier.EnumNoticeType;
 import com.jkm.helper.notifier.NotifierConstants;
 import com.jkm.service.notifier.MessageTemplateService;
 import com.jkm.service.notifier.NoticeTemplateInitService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by konglingxin on 15/11/24.
@@ -18,6 +21,11 @@ public class NoticeTemplateInitServiceImpl implements NoticeTemplateInitService 
 
     @Override
     public void initTemplate() {
+        final List<SmsTemplate> messageTemplate = this.messageTemplateService.getMessageTemplate();
+        if (!CollectionUtils.isEmpty(messageTemplate)) {
+            return;
+        }
+
         final String platformName = NotifierConstants.getNotifierConfig().platformName();
 
         addSmsTemplate(EnumNoticeType.PAYMENT_CODE,
