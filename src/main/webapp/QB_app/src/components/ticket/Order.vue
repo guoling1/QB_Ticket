@@ -27,11 +27,11 @@
       <!-- 抢票 -->
       <ul v-show="robShow">
         <li v-for="massage in robMassages" @click="robGo($event,massage)">
-          <div class="top" v-show="massage.isGrab==1">
+          <div class="top" v-if="massage.isGrab==1">
             <span class="date">{{massage.startDate}} {{massage.startTime}} 出发</span>
             <span class="checi">{{massage.checi}}</span>
           </div>
-          <div class="top" v-show="massage.isGrab==0">
+          <div class="top" v-if="massage.isGrab==0">
             <span class="date">{{massage.grabStartTime}} 出发</span>
           </div>
           <div class="bottom">
@@ -39,7 +39,8 @@
               <span class="form">{{massage.fromStationName}}</span>
               <img src="../../assets/jiantou.png" alt=""/>
               <span class="to">{{massage.toStationName}}</span>
-              <span class="price">￥{{massage.grabTotalPrice}}</span>
+              <span class="price" v-if="massage.isGrab==0">￥{{massage.grabTotalPrice}}</span>
+              <span class="price" v-if="massage.isGrab==1">￥{{massage.totalPrice}}</span>
             </div>
             <div class="group" style="overflow:visible">
               <span class="name" v-for="passenger in massage.passengerInfo">{{passenger.name}}</span>
