@@ -25,7 +25,6 @@
         <skipTests>true</skipTests>
 
         <jackson.version>2.6.3</jackson.version>
-        <package.environment>local</package.environment>
     </properties>
 
     <dependencies>
@@ -375,29 +374,6 @@
             <version>1.2.5</version>
         </dependency>
     </dependencies>
-    <!--<profiles>-->
-        <!--<profile>-->
-            <!--<id>local</id>-->
-            <!--<properties>-->
-                <!--<package.environment>local</package.environment>-->
-            <!--</properties>-->
-            <!--<activation>-->
-                <!--<activeByDefault>true</activeByDefault>-->
-            <!--</activation>-->
-        <!--</profile>-->
-        <!--<profile>-->
-            <!--<id>product</id>-->
-            <!--<properties>-->
-                <!--<package.environment>product</package.environment>-->
-            <!--</properties>-->
-        <!--</profile>-->
-        <!--<profile>-->
-            <!--<id>test</id>-->
-            <!--<properties>-->
-                <!--<package.environment>test</package.environment>-->
-            <!--</properties>-->
-        <!--</profile>-->
-    <!--</profiles>-->
 
     <profiles>
         <profile>
@@ -414,6 +390,8 @@
                         <directory>src/main/resources</directory>
                         <includes>
                             <include>*</include>
+                            <include>mapping/*</include>
+                            <include>mybatis/*</include>
                         </includes>
                     </resource>
                 </resources>
@@ -431,6 +409,8 @@
                         <directory>src/main/resources</directory>
                         <includes>
                             <include>*</include>
+                            <include>mapping/*</include>
+                            <include>mybatis/*</include>
                         </includes>
                     </resource>
                 </resources>
@@ -442,12 +422,14 @@
             <build>
                 <resources>
                     <resource>
-                        <directory>src/main/resources/product</directory>
+                        <directory>src/main/resources/production</directory>
                     </resource>
                     <resource>
                         <directory>src/main/resources</directory>
                         <includes>
                             <include>*</include>
+                            <include>mapping/*</include>
+                            <include>mybatis/*</include>
                         </includes>
                     </resource>
                 </resources>
@@ -456,17 +438,6 @@
     </profiles>
     <build>
         <finalName>QB_Ticket</finalName>
-        <!--<resources>-->
-            <!--<resource>-->
-                <!--<directory>src/main/resources</directory>-->
-                <!--<filtering>true</filtering>-->
-                <!--<excludes>-->
-                    <!--<exclude>local/*</exclude>-->
-                    <!--<exclude>product/*</exclude>-->
-                    <!--<exclude>test/*</exclude>-->
-                <!--</excludes>-->
-            <!--</resource>-->
-        <!--</resources>-->
         <plugins>
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
@@ -516,25 +487,6 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
-
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-war-plugin</artifactId>-->
-                <!--<version>2.1.1</version>-->
-                <!--<configuration>-->
-                    <!--<archive>-->
-                        <!--<addMavenDescriptor>false</addMavenDescriptor>-->
-                    <!--</archive>-->
-                    <!--<warName>book</warName>-->
-                    <!--<webResources>-->
-                        <!--<resource>-->
-                            <!--<directory>src/main/resources/${package.environment}</directory>-->
-                            <!--<targetPath>WEB-INF/classes</targetPath>-->
-                            <!--<filtering>true</filtering>-->
-                        <!--</resource>-->
-                    <!--</webResources>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
         </plugins>
     </build>
 </project>
