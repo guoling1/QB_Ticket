@@ -154,7 +154,7 @@
         this.$router.go(-1);
       },
       confirm:function(){
-        this.$http.post('/ticket/refund',{"orderFormDetailId":this.$data.massages.orderFormId})
+        this.$http.post('/ticket/refund',{"orderFormDetailId":this.$data.massages.passengers[this.data.$index].status})
          .then(function (res) {
            if(res.data.code==1){
              this.$data.$open=!this.$data.$open;
