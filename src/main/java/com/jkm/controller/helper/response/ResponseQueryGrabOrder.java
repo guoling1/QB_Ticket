@@ -153,6 +153,10 @@ public class ResponseQueryGrabOrder {
     @Data
     public class passenger{
         /**
+         * 小订单id
+         */
+        private long orderFormDetailId;
+        /**
          *  乘车人姓名
          */
         private String name;
