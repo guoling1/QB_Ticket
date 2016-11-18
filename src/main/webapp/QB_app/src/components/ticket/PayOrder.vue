@@ -66,7 +66,7 @@
             <div class="amount">实付款<span class="red">￥</span><span class="red big">{{orderInfo.totalPrice}}</span></div>
             <div class="i" v-bind:class="{active:detail}"></div>
           </div>
-          <div class="right" v-bind:class="{dis:orderInfo.status!=3}" @click="submit">立即支付</div>
+          <div class="right" v-bind:class="{dis:orderInfo.status!=3||!countdown}" @click="submit">立即支付</div>
         </div>
       </div>
     </div>
@@ -207,7 +207,7 @@
       },
       submit: function () {
         // 首先判断订单状态,决定是否能支付
-        if (this.$data.orderInfo.status == 3 /*&& this.$data.countdown*/) {
+        if (this.$data.orderInfo.status == 3 && this.$data.countdown) {
           this.$store.commit('PAY_CALL', {
             appid: this.$data.common.appid,
             uid: this.$data.common.uid,
