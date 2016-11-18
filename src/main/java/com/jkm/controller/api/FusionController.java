@@ -66,7 +66,7 @@ public class FusionController extends BaseController {
                 responseEntityBase.setCode(400);
             }
         }catch(Exception e){
-            logger.error("立即支付(首次)失败:"+e);
+            logger.info("立即支付(首次)失败:", e);
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -106,7 +106,7 @@ public class FusionController extends BaseController {
                 responseEntityBase.setCode(400);
             }
         }catch(Exception e){
-            logger.error("立即支付(多次)失败:",e);
+            logger.info("立即支付(多次)失败:",e);
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -147,7 +147,7 @@ public class FusionController extends BaseController {
                 responseEntityBase.setCode(400);
             }
         }catch(Exception e){
-            logger.error("抢票单立即支付(首次)失败",e);
+            logger.info("抢票单立即支付(首次)失败",e);
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -183,7 +183,7 @@ public class FusionController extends BaseController {
                 responseEntityBase.setCode(400);
             }
         }catch(Exception e){
-            logger.error("立即支付(多次)异常",e);
+            logger.info("立即支付(多次)异常",e);
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
