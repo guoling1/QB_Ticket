@@ -26,7 +26,10 @@
       <!-- 卡列表 选择支付卡 -->
       <div class="space" v-if="$$show.cardListSpace">
         <div class="bankList">
-          <div class="xx"></div>
+          <div class="space_t">
+            <div class="xx"></div>
+            <div class="word">选择银行卡</div>
+          </div>
           <ul>
             <li v-for="(card,index) in card_list" v-bind:class="{active:default_card.index==index}"
                 @click="select($event,card,index)">
@@ -43,8 +46,11 @@
       <!-- 首次绑卡 首次支付 -->
       <div class="space" v-if="$$show.firstBindSpace">
         <div class="first">
+          <div class="space_t">
+            <div class="xx"></div>
+            <div class="word">使用银行卡支付</div>
+          </div>
           <div class="prompt">
-            <div class="cancel">取消</div>
             <div class="word">*请务必添加本人名下银行卡</div>
           </div>
           <div class="form">
@@ -81,8 +87,11 @@
       <!-- 二次绑卡 实名信息已确定 -->
       <div class="space" v-if="$$show.secondBindSpace">
         <div class="second">
+          <div class="space_t">
+            <div class="xx"></div>
+            <div class="word">使用银行卡支付</div>
+          </div>
           <div class="prompt">
-            <div class="cancel">取消</div>
             <div class="word">*请务必添加本人名下银行卡</div>
           </div>
           <div class="form">
@@ -450,7 +459,13 @@
         background-color: #FFF;
       }
       .list {
-
+        float: right;
+        margin-top: 15px;
+        margin-right: 15px;
+        width: 7px;
+        height: 12px;
+        background: url("../../assets/prompt-arrow.png") no-repeat center;
+        background-size: 7px 12px;
       }
     }
     ul {
@@ -508,15 +523,8 @@
     .prompt {
       padding: 0 15px;
       overflow: hidden;
-      .cancel {
-        float: left;
-        text-align: left;
-        font-size: 15px;
-        line-height: 45px;
-        color: #4ab9f1;
-      }
       .word {
-        float: right;
+        float: left;
         text-align: right;
         font-size: 12px;
         line-height: 45px;
