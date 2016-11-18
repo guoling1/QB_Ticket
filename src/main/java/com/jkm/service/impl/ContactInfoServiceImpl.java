@@ -95,20 +95,25 @@ public class ContactInfoServiceImpl implements ContactInfoService {
         tbContactInfo.setCountry("CN");
         tbContactInfo.setCheckStatus(0);
         tbContactInfo.setIsUserSelf(1);
-        if((EnumTrainTicketType.ADULT.getId()).equals(tbContactInfo.getPersonType())){
+        if((EnumTrainTicketType.ADULT.getId()).equals(tbContactInfo.getPersonType()+"")){
             IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(UserBankCardSupporter.decryptCardId(tbContactInfo.getIdenty()));
             tbContactInfo.setBirthday(idcardInfo.getYear()+"-"+idcardInfo.getMonth()+"-"+idcardInfo.getDay());
         }
         TbContactInfo tt = contactInfoDao.selectOneListByUid(tbContactInfo.getUid());
-        if(tt!=null&& (EnumTrainTicketType.CHILDREN.getId()).equals(tbContactInfo.getPersonType())){
+        if(tt!=null&& (EnumTrainTicketType.CHILDREN.getId()).equals(tbContactInfo.getPersonType()+"")){
             tbContactInfo.setIdenty(tt.getIdenty());
+            tbContactInfo.setIdentyType("1");
         }
-        if(tt==null&&(EnumTrainTicketType.CHILDREN.getId()).equals(tbContactInfo.getPersonType())){
+        if(tt==null&&(EnumTrainTicketType.CHILDREN.getId()).equals(tbContactInfo.getPersonType()+"")){
             jo.put("result",false);
             jo.put("message","请先添加成人");
             return jo;
         }
-        int count = contactInfoDao.selectCountByIdenty(tbContactInfo.getIdenty(),tbContactInfo.getUid());
+        //如果是小孩
+        int count = 0;
+        if(!(EnumTrainTicketType.CHILDREN.getId()).equals(tbContactInfo.getPersonType()+"")){
+            count = contactInfoDao.selectCountByIdenty(tbContactInfo.getIdenty(),tbContactInfo.getUid());
+        }
         if(count>0){
             jo.put("result",false);
             jo.put("message","已有此乘客信息，不能重复添加");
