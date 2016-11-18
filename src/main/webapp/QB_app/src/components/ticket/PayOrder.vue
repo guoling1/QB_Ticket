@@ -151,15 +151,18 @@
             vm.$data.payInfo.price = res.data.data.totalPrice;
           });
         } else {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: res.data.message
-          });
+          next(function (vm){
+            vm.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: res.body.message
+            })
+          })
         }
       }, function (err) {
-        this.$store.commit('MESSAGE_DELAY_SHOW', {
-          text: err
-        });
-        next(false);
+        next(function (vm){
+          vm.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: err
+          })
+        })
       });
     },
     methods: {

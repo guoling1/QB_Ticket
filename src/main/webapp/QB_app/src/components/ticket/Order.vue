@@ -155,8 +155,11 @@
           }
         })
       }).catch(function (err) {
-        console.log(err);
-        next(false)
+        next(function (vm){
+          vm.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: err
+          })
+        })
       })
     }
   }

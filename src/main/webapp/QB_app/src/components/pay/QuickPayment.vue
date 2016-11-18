@@ -6,7 +6,7 @@
         <div class="checkout">
           <div class="xx"></div>
           <div class="ul" @click="goList">
-            <div class="logo">logo</div>
+            <!--<div class="logo">logo</div>-->
             <div class="word">这是银行</div>
             <div class="word">{{default_card.info.cardNo}}</div>
             <div class="small">储蓄卡</div>
@@ -26,7 +26,7 @@
           <ul>
             <li v-for="(card,index) in card_list" v-bind:class="{active:default_card.index==index}"
                 @click="select($event,card,index)">
-              <div class="logo">logo</div>
+              <!--<div class="logo">logo</div>-->
               <div class="word">这是银行</div>
               <div class="word">{{card.cardNo}}</div>
               <div class="small">储蓄卡</div>
