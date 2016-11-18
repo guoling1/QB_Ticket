@@ -144,17 +144,25 @@ public class TicketServiceImpl implements TicketService {
         orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_INITIALIZATION.getValue());
         this.orderFormService.add(orderForm);
         final JSONArray passengerJsonArray = new JSONArray();
-        for (RequestSubmitOrder.Passenger passenger : passengerList) {
-            final Optional<TbContactInfo> contactInfoOptional1 = this.contactInfoService.selectById(passenger.getId());
-            Preconditions.checkState(contactInfoOptional1.isPresent(), "乘客不存在");
-            final TbContactInfo contactInfo = contactInfoOptional1.get();
+        final RequestSubmitOrder.Passenger firstPassenger = passengerList.get(0);
+        Preconditions.checkState(EnumTrainTicketType.ADULT.getId().equals(firstPassenger.getPiaoType()), "第一个乘客必须是成人");
+        for (int i = 0; i < passengerList.size(); i++) {
+            TbContactInfo contactInfo;
+            RequestSubmitOrder.Passenger passenger = passengerList.get(i);
+            if (EnumTrainTicketType.ADULT.getId().equals(passenger.getPiaoType())) {
+                final Optional<TbContactInfo> contactInfoOptional1 = this.contactInfoService.selectById(passenger.getId());
+                Preconditions.checkState(contactInfoOptional1.isPresent(), "乘客不存在");
+                contactInfo = contactInfoOptional1.get();
+            } else {
+                contactInfo = this.contactInfoService.selectById(passengerList.get(0).getId()).get();
+            }
             final OrderFormDetail orderFormDetail = new OrderFormDetail();
             final JSONObject passengerJsonObject = new JSONObject();
             orderFormDetail.setOrderFormId(orderForm.getId());
             orderFormDetail.setGrabTicketFormId(0);
             orderFormDetail.setIsGrab(0);
             orderFormDetail.setMobile(contactInfo.getTel());
-            orderFormDetail.setPassengerId(contactInfo.getId());
+            orderFormDetail.setPassengerId(passenger.getId());
             orderFormDetail.setPassengerName(contactInfo.getName());
             orderFormDetail.setPassportSeNo(contactInfo.getIdenty());
             orderFormDetail.setPassportTypeSeId(contactInfo.getIdentyType());
@@ -169,7 +177,7 @@ public class TicketServiceImpl implements TicketService {
             passengerJsonObject.put("passportseno", orderFormDetail.getPassportSeNoPlain());
             passengerJsonObject.put("passporttypeseid", contactInfo.getIdentyType());
             passengerJsonObject.put("passporttypeseidname", EnumCertificatesType.of(contactInfo.getIdentyType()).getValue());
-            passengerJsonObject.put("passengerid", contactInfo.getId());
+            passengerJsonObject.put("passengerid", passenger.getId());
             passengerJsonObject.put("price", orderForm.getPrice());
             passengerJsonObject.put("zwcode", orderForm.getZwCode());
             passengerJsonObject.put("zwname", orderForm.getZwName());
