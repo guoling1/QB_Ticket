@@ -401,17 +401,17 @@
 
     <build>
         <finalName>QB_Ticket</finalName>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <excludes>
-                    <exclude>local/*</exclude>
-                    <exclude>product/*</exclude>
-                    <exclude>test/*</exclude>
-                </excludes>
-            </resource>
-        </resources>
+        <!--<resources>-->
+            <!--<resource>-->
+                <!--<directory>src/main/resources</directory>-->
+                <!--<filtering>true</filtering>-->
+                <!--<excludes>-->
+                    <!--<exclude>local/*</exclude>-->
+                    <!--<exclude>product/*</exclude>-->
+                    <!--<exclude>test/*</exclude>-->
+                <!--</excludes>-->
+            <!--</resource>-->
+        <!--</resources>-->
         <plugins>
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
