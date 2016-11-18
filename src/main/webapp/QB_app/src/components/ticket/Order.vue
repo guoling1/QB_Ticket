@@ -98,14 +98,14 @@
           })
         }
       },
-      robGo: function (event, massage) {
-        this.$router.push({
-          path: '/ticket/rob-detail', query: {
-            appid: this.$data.common.appid,
-            uid: this.$data.common.uid,
-            orderid: massage.grabTicketFormId
-          }
-        })
+      robGo: function (event, massage){
+          this.$router.push({
+            path: '/ticket/rob-detail', query: {
+              appid: this.$data.common.appid,
+              uid: this.$data.common.uid,
+              orderid: massage.grabTicketFormId
+            }
+          })
       },
       teb: function (code) {
         if (code == 1) {
