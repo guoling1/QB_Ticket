@@ -1034,7 +1034,6 @@ public class AuthenServiceImpl implements AuthenService {
 		JSONObject jo = new JSONObject();
 		Preconditions.checkNotNull(requestData.get("phone"),"手机号不能为空");
 		Preconditions.checkNotNull(requestData.get("amount"),"支付金额不能为空");
-		Preconditions.checkNotNull(requestData.get("verificationCodeType"),"短信类型不能为空");
 		if(!ValidationUtil.isMobile(requestData.getString("phone"))){
 			jo.put("result",false);
 			jo.put("message","手机号格式不正确");
