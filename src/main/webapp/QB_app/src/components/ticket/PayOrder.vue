@@ -4,7 +4,7 @@
       <div class="state" v-show="orderInfo.status==2">
         <i></i>正在为您占座中...
       </div>
-      <div class="state" v-show="orderInfo.status==3">
+      <div class="state" v-show="orderInfo.status==3||orderInfo.status==7">
         <span v-if="countdown">您的座位还会为您保留{{countdown}}分钟，请尽快完成支付</span>
         <span v-if="!countdown">您的订单已失效</span>
       </div>
@@ -118,7 +118,7 @@
       let polling = '';
       const pollFun = ()=>{
         this.$http.post('/order/queryById', {orderFormId: this.$data.orderInfo.orderFormId}).then(function (res) {
-          if (res.data.code == 1 && res.data.data.status == (3||7)) {
+          if (res.data.code == 1 && (res.data.data.status == 3 || 7)) {
             clearInterval(polling);
             this.$data.orderInfo = res.data.data;
             this.$data.payInfo.price = res.data.data.totalPrice;

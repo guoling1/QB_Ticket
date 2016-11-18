@@ -13,6 +13,7 @@
             <div class="word">这是银行</div>
             <div class="word">{{default_card.info.cardNo}}</div>
             <div class="small">储蓄卡</div>
+            <div class="list"></div>
           </div>
           <div class="ul">
             <input type="text" placeholder="请输入验证码" v-model="valid_code.vCode">
@@ -397,8 +398,8 @@
       background-size: 14px 14px;
       padding: 15px;
       position: absolute;
-      top: 0;
-      left: 0;
+      top: 9px;
+      left: 10px;
     }
     .word {
       font-size: 15px;
@@ -447,6 +448,9 @@
         font-size: 12px;
         color: #37abe5;
         background-color: #FFF;
+      }
+      .list {
+
       }
     }
     ul {
