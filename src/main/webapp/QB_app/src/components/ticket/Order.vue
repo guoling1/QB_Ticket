@@ -98,7 +98,17 @@
           })
         }
       },
+      /*抢票*/
       robGo: function (event, massage){
+        if(massage.status==9){
+          this.$router.push({
+            path: '/ticket/refund-detail', query: {
+              appid: this.$data.common.appid,
+              uid: this.$data.common.uid,
+              grabTicketFormId: massage.grabTicketFormId
+            }
+          })
+        }else {
           this.$router.push({
             path: '/ticket/rob-detail', query: {
               appid: this.$data.common.appid,
@@ -106,6 +116,7 @@
               orderid: massage.grabTicketFormId
             }
           })
+        }
       },
       teb: function (code) {
         if (code == 1) {
