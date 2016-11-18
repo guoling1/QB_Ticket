@@ -149,6 +149,9 @@
             vm.$data.common.uid = to.query.uid;
             vm.$data.payInfo.orderId = to.query.id;
             vm.$data.payInfo.price = res.data.data.totalPrice;
+            if(res.data.data.status == 3){
+              vm.timer(vm.$data.orderInfo.expireTime);
+            }
           });
         } else {
           next(function (vm){

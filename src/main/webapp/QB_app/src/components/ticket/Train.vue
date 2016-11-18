@@ -9,7 +9,7 @@
       </div>
       <!--<span class="next show">后一天</span>-->
     </div>
-    <div v-if="stations.empty">没有符合查询条件的车次</div>
+    <div class="empty" v-if="stations.empty">没有符合查询条件的车次</div>
     <ul v-if="!stations.empty">
       <li v-for="station in stations.data" @click="router($event,station)">
         <div class="top">
@@ -92,15 +92,21 @@
         if (res.body.code == 1) {
           next(function (vm) {
             vm.$data.only = to.query.onlyGD;
-            for (let i = 0; i < res.body.data.length; i++) {
-              let runMin = res.body.data[i].run_time_minute;
-              let runH = 0;
-              let runM = 0;
-              if (runMin >= 60) {
-                runH = parseInt(runMin / 60);
-                runM = runMin % 60;
+            if(res.body.data){
+              for (let i = 0; i < res.body.data.length; i++) {
+                let runMin = res.body.data[i].run_time_minute;
+                let runH = 0;
+                let runM = 0;
+                if (runMin >= 60) {
+                  runH = parseInt(runMin / 60);
+                  runM = runMin % 60;
+                }
+                res.body.data[i]['runTimeShow'] = runH + '小时' + runM + '分钟';
               }
-              res.body.data[i]['runTimeShow'] = runH + '小时' + runM + '分钟';
+            }else{
+              vm.$store.commit('MESSAGE_DELAY_SHOW', {
+                text: '暂无查询的车次信息'
+              })
             }
             vm.$data.initStations = res.body.data;
             vm.$data.dateHttp = to.query.dateHttp;
@@ -320,6 +326,10 @@
     -ms-flex: @val;
     flex: @val;
     width: @width;
+  }
+
+  .empty{
+    margin-top: 20px;
   }
 
   .main {
