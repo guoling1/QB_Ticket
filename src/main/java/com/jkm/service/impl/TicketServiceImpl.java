@@ -1509,21 +1509,45 @@ public class TicketServiceImpl implements TicketService {
         final JSONObject jsonObject = new JSONObject();
         final JSONArray passengerJsonArray = new JSONArray();
         final JSONArray jsonArray = JSONArray.fromObject(grabTicketForm.getPassengerInfo());
-        for (Object obj : jsonArray){
-            final JSONObject object = JSONObject.fromObject(obj);
-            final JSONObject passengerJsonObject = new JSONObject();
-            final Optional<TbContactInfo> contactInfoOptional1 = contactInfoService.selectById(object.getLong("id"));
-            Preconditions.checkState(contactInfoOptional1.isPresent(), "乘客不存在");
-            final TbContactInfo contactInfo = contactInfoOptional1.get();
-            passengerJsonObject.put("passengerid", object.getString("id"));
-            passengerJsonObject.put("passengersename", contactInfo.getName());
-            passengerJsonObject.put("passportseno", contactInfo.identyOrg(contactInfo.getIdenty()));
-            passengerJsonObject.put("passporttypeseid", contactInfo.getIdentyType());
-            passengerJsonObject.put("passporttypeidname", EnumCertificatesType.of(contactInfo.getIdentyType()).getValue());
-            passengerJsonObject.put("piaotype", String.valueOf(contactInfo.getPersonType()));
-            passengerJsonObject.put("piaotypename", EnumTrainTicketType.of(String.valueOf(contactInfo.getPersonType())).getValue());
-            passengerJsonArray.add(passengerJsonObject);
+        //判断第一个是不是成人,若不是则直接下单失败,等待到期退款
+        final JSONObject first = JSONObject.fromObject(jsonArray.get(0));
+        final Optional<TbContactInfo> firstOptional = contactInfoService.selectById(first.getLong("id"));
+        Preconditions.checkState(firstOptional.isPresent(), "乘客不存在");
+        final TbContactInfo firstContactInfo = firstOptional.get();
+        if (first.getString("piaoType").equals(EnumTrainTicketType.ADULT.getId())){
+            for (Object obj : jsonArray){
+                final JSONObject object = JSONObject.fromObject(obj);
+                final JSONObject passengerJsonObject = new JSONObject();
+                final Optional<TbContactInfo> contactInfoOptional1 = contactInfoService.selectById(object.getLong("id"));
+                Preconditions.checkState(contactInfoOptional1.isPresent(), "乘客不存在");
+                final TbContactInfo contactInfo = contactInfoOptional1.get();
+                if (object.getString("piaoType").equals(EnumTrainTicketType.ADULT.getId())){
+                    passengerJsonObject.put("passengersename", firstContactInfo.getName());
+                    passengerJsonObject.put("passportseno", firstContactInfo.identyOrg(contactInfo.getIdenty()));
+                }else{
+                    passengerJsonObject.put("passengersename", contactInfo.getName());
+                    passengerJsonObject.put("passportseno", contactInfo.identyOrg(contactInfo.getIdenty()));
+                }
+                passengerJsonObject.put("passengerid", object.getString("id"));
+                passengerJsonObject.put("passporttypeseid", contactInfo.getIdentyType());
+                passengerJsonObject.put("passporttypeidname", EnumCertificatesType.of(contactInfo.getIdentyType()).getValue());
+                passengerJsonObject.put("piaotype", String.valueOf(contactInfo.getPersonType()));
+                passengerJsonObject.put("piaotypename", EnumTrainTicketType.of(String.valueOf(contactInfo.getPersonType())).getValue());
+                passengerJsonArray.add(passengerJsonObject);
+            }
+        }else{
+            //乘客信息不对,第一个不是成人
+            log.info("抢票单["+grabTicketForm.getId()+"]未购买套餐,放入消息队列,到期退款.........");
+            grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_REQUEST_FAIL.getId());
+            this.grabTicketFormService.update(grabTicketForm);
+            //放入消息队列 ,
+            //TODO 抢票
+            JSONObject mqJo = new JSONObject();
+            mqJo.put("grabTicketFormId",grabTicketForm.getId());
+            MqProducer.sendMessage(mqJo, MqConfig.GRAB_FORM_FAIL_WAIT_REFUND, endTime.getTime() - (new Date()).getTime());
+            return;
         }
+
         jsonObject.put("partnerid",HySdkConstans.GRAB_PARTNER_ID);
         jsonObject.put("method", EnumHTHYMethodCode.QIANG_PIAO_ORDER.getCode());
         jsonObject.put("reqtime", DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss));
@@ -1574,7 +1598,7 @@ public class TicketServiceImpl implements TicketService {
                 grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_REQUEST_FAIL.getId());
                 grabTicketForm.setRemark(jsonResponse.getString("msg"));
                 this.grabTicketFormService.update(grabTicketForm);
-                log.info("抢票单[" + grabTicketForm.getId() + "]请求hy抢票下单,下单失败.........");
+                log.info("抢票单[" + grabTicketForm.getId() + "]请求hy抢票下单,下单失败,放入消息队列,到期全额退款.........");
             }
         }catch (final Throwable throwable){
             JSONObject mqJo = new JSONObject();

@@ -150,7 +150,7 @@ public class GrabTicketForm extends BaseEntity {
     private String orderNumber;
 
     /**
-     *乘客信息 (id, 姓名, 身份证号, 乘客类型(成人, 儿童) )
+     *乘客信息 (id, 姓名, 乘客类型(成人, 儿童) )
      */
     private String passengerInfo;
 
