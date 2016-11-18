@@ -5,7 +5,7 @@
 
 	<!-- 通用查询结果列-->
 	<sql id="Base_Column_List">
-		 id,pay_channel,req_sn,	amount,pay_params,result_params,pay_result,status,create_time,update_time
+		 id,pay_channel,order_id,req_sn,	amount,pay_params,result_params,pay_result,status,create_time,update_time
 	</sql>
 
 	<!-- 查询（根据主键ID查询） -->
@@ -23,6 +23,9 @@
 			<if test="payChannel != null">
 				 pay_channel,
 			</if>
+			 <if test="orderId != null">
+				 order_id,
+			 </if>
 			<if test="reqSn != null">
 				 req_sn,
 			</if>
@@ -46,6 +49,9 @@
 			<if test="payChannel!=null">
 				 #{payChannel},
 			</if>
+			 <if test="orderId != null">
+				 #{orderId},
+			 </if>
 			<if test="reqSn!=null">
 				 #{reqSn},
 			</if>
@@ -74,6 +80,9 @@
 			<if test="payChannel != null">
 				 pay_channel = #{payChannel},
 			</if>
+			 <if test="orderId != null">
+				 order_id = #{orderId},
+			 </if>
 			<if test="reqSn != null">
 				 req_sn = #{reqSn},
 			</if>

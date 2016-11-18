@@ -92,6 +92,7 @@ public class HyCallBackController extends BaseController {
         }
         this.ticketService.handleRefundCallbackMsg(jsonParams);
         if (flag) {
+            log.info(jsonParams.toString() + "给hy返回success成功");
             ResponseWriter.writeTxtResponse(httpServletResponse, "SUCCESS");
         } else {
             log.error("######收到一个hy退票结果推送 sign check error,request[" + jsonParams.toString() + "]");

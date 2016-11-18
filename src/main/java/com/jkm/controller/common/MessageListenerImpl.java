@@ -44,7 +44,7 @@ import java.util.Map;
  * MQ消息处理类
  */
 public class MessageListenerImpl implements MessageListener {
-    private static Logger log = Logger.getLogger(MessageListenerOfExpiredOrderImpl.class);
+    private static Logger log = Logger.getLogger(MessageListenerImpl.class);
     @Autowired
     private AuthenService authenService;
     @Autowired
@@ -137,13 +137,13 @@ public class MessageListenerImpl implements MessageListener {
                 log.info("消费[过了支付时间的订单[" + jo.getLong("orderFormId") + "]]");
                 this.orderFormService.handleExpiredOrderForm(jo.getLong("orderFormId"));
             }else if(MqConfig.TICKET_CANCEL_EXPIRED_GRAB_ORDER.equals(message.getTag())){
-                log.info("取消到期未付款抢票订单");
+                log.info("消费[过了支付时间的抢票订单的消息[" + jo.getLong("grabTicketFormId") + "]]");
                 this.grabTicketFormService.handleExpiredOGrabForm(jo.getLong("grabTicketFormId"));
             }else if(MqConfig.NO_PACKAGE_WAIT_REFUND.equals(message.getTag())){
-                log.info("抢票订单没买套餐自动退款");
+                log.info("消费[抢票订单没买套餐自动退款的消息[" + jo.getLong("grabTicketFormId") + "]]");
                 this.grabTicketFormService.handleNoPackageWaitRefund(jo.getLong("grabTicketFormId"));
             }else if (MqConfig.GRAB_FORM_FAIL_WAIT_REFUND.equals(message.getTag())) {
-                log.info("抢票下单失败");
+                log.info("消费[抢票下单失败的消息[" + jo.getLong("grabTicketFormId") + "]]");
                 this.grabTicketFormService.handleNoPackageWaitRefund(jo.getLong("grabTicketFormId"));
             } else if (MqConfig.TICKET_HANDLE_REFUND_ORDER_RESULT.equals(message.getTag())) {
                 log.info("消费[订单[" + jo.getLong("orderFormId") + "]退款在请求中的消息]");
@@ -164,7 +164,7 @@ public class MessageListenerImpl implements MessageListener {
                     this.handleRetrySendMq(jo);
                 }
             }else if(MqConfig.RETURN_TICKET_REFUND_ING.equals(message.getTag())){
-                log.info("消费[出票订单[" + jo.getLong("orderFormDetailId") + "]退款在请求中的消息]");
+                log.info("消费[小订单[" + jo.getLong("orderFormDetailId") + "]退款在请求中的消息]");
                 final QueryRefundData queryRefundData = new QueryRefundData();
                 queryRefundData.setReqSn(SnGenerator.generate());
                 queryRefundData.setQuerySn(jo.getString("reqSn"));
@@ -220,7 +220,7 @@ public class MessageListenerImpl implements MessageListener {
                     this.handleRetrySendRepeatMq(jo);
                 }
             }else if(MqConfig.CANCEL_GRAB_TICKET_REFUND_ALL.equals(message.getTag())){
-                log.info("消费[抢票单差价[" + jo.getLong("grabTicketFormId") + "]退款在请求中的消息]");
+                log.info("消费[取消抢票单全额退款[" + jo.getLong("grabTicketFormId") + "]退款在请求中的消息]");
 
                 final QueryRefundData queryRefundData = new QueryRefundData();
                 queryRefundData.setReqSn(SnGenerator.generate());

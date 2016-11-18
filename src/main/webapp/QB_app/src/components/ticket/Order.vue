@@ -5,6 +5,7 @@
       <div class="rob" v-bind:class="{show:robShow}" @click="teb(2)">抢票单</div>
     </div>
     <div class="window">
+      <!-- 预定 -->
       <ul v-show="preShow">
         <li v-for="massage in preMassages" @click="preGo($event,massage)">
           <div class="top">
@@ -19,12 +20,11 @@
             </div>
             <span class="name" v-for="passenger in massage.passengers">{{passenger.name}}</span>
             <span class="price" v-for="passenger in massage.passengers">￥{{passenger.price}}</span>
-            <router-link :to="{path:'/ticket/refund-detail',query:{orderFormId:massage.orderFormId}}">
-              <p class="static" v-for="passenger in massage.passengers">{{passengerStatus[passenger.status-1]}}</p>
-            </router-link>
+            <p class="static" v-for="passenger in massage.passengers">{{orderStatus[massage.status+1]}}</p>
           </div>
         </li>
       </ul>
+      <!-- 抢票 -->
       <ul v-show="robShow">
         <li v-for="massage in robMassages" @click="robGo($event,massage)">
           <div class="top" v-show="massage.isGrab==1">
@@ -80,13 +80,23 @@
     },
     methods: {
       preGo: function (event, massage) {
-        this.$router.push({
-          path: '/ticket/refund-detail', query: {
-            appid: this.$data.common.appid,
-            uid: this.$data.common.uid,
-            orderid: massage.orderFormId
-          }
-        })
+        if(massage.status==3||massage.status==5||massage.status==7){
+          this.$router.push({
+            path: '/ticket/pay-order', query: {
+              appid: this.$data.common.appid,
+              uid: this.$data.common.uid,
+              id: massage.orderFormId
+            }
+          })
+        }else {
+          this.$router.push({
+            path: '/ticket/refund-detail', query: {
+              appid: this.$data.common.appid,
+              uid: this.$data.common.uid,
+              orderid: massage.orderFormId
+            }
+          })
+        }
       },
       robGo: function (event, massage) {
         this.$router.push({
@@ -226,6 +236,7 @@
           margin-bottom: 15px;
           overflow: hidden;
           font-weight: bold;
+          height: 20px;
           .form {
             float: left;
           }

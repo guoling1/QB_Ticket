@@ -11,7 +11,7 @@
         </div>
         <div class="side write">
           <div class="left" @click="station('stationONE')">{{$$data.form_name}}</div>
-          <img class="middle" src="../../assets/exchange.png">
+          <img class="middle" @click="testPay" src="../../assets/exchange.png">
           <div class="right" @click="station('stationTWO')">{{$$data.to_name}}</div>
         </div>
       </div>
@@ -66,6 +66,7 @@
     <datetime></datetime>
     <stationName></stationName>
     <message></message>
+    <pay></pay>
   </div>
 </template>
 
@@ -73,12 +74,15 @@
   import Datetime from './Datetime.vue'
   import StationName from './StationName.vue'
   import Message from '../Message.vue'
+  import Pay from '../pay/Main.vue'
+
   export default {
     name: 'menu',
     components: {
       Datetime,
       StationName,
-      Message
+      Message,
+      Pay
     },
     data: function () {
       return {
@@ -101,6 +105,9 @@
       });
     },
     methods: {
+      testPay: function () {
+
+      },
       //点击查询按钮,跳转页面,带上查询必须的参数
       query: function () {
         this.$router.push({
