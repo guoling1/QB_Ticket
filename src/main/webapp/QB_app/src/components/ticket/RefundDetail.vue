@@ -25,7 +25,7 @@
           <p class="number">
             {{passenger.passportSeNo}}
           </p>
-          <p class="state">{{passengerStatus[passenger.status-1]}}
+          <p class="state" id="esc">{{passengerStatus[passenger.status-1]}}
             <span @click="show(index)" v-if="passenger.status==2">退票</span>
           </p>
         </div>
@@ -119,7 +119,7 @@
         open:false,
         $open:true,
         massages:[],
-        passengerStatus:["票初始化","出票成功","出票失败","退票中","退票请求成功","退票成功","退票失败","订单取消"]
+        passengerStatus:["票初始化","出票成功","出票失败","退票中","退票请求成功","退票成功","退票失败","订单取消","退票受理中"]
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -198,7 +198,7 @@
       success:function(){
         this.$data.open=false;
         this.$data.$open=true;
-        this.$data.massages.passengers[this.$data.$index].status=6
+        this.$data.massages.passengers[this.$data.$index].status=9;
       }
     },
     computed:{
