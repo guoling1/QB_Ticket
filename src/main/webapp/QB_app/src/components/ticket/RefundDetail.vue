@@ -1,5 +1,8 @@
 <template lang="html">
   <div class="main">
+    <div class="err" v-if="this.$data.$err">
+      {{errMsg}}
+    </div>
     <div class="train-info">
       <div class="left">
         <div class="time">{{massages.startTime}}</div>
@@ -119,30 +122,49 @@
         open:false,
         $open:true,
         massages:[],
-        passengerStatus:["票初始化","出票成功","出票失败","退票中","退票请求成功","退票成功","退票失败","订单取消"]
+        passengerStatus:["票初始化","出票成功","出票失败","退票中","退票请求成功","退票成功","退票失败","订单取消"],
+        errMsg:'',
+        $err:false
       }
     },
     beforeRouteEnter (to, from, next) {
-      Vue.http.post('/order/queryById',{orderFormId: to.query.orderid})
-      .then(function (res) {
-        if(res.data.code==1){
-          next(vm=> {
-            vm.$data.massages=res.data.data;
+      if(to.query.grabTicketFormId=="undefined"){
+        Vue.http.post('/order/queryById',{orderFormId: to.query.orderid})
+          .then(function (res) {
+            if(res.data.code==1){
+              next(vm=> {
+                vm.$data.massages=res.data.data;
+              })
+            }else{
+              this.$store.commit('MESSAGE_DELAY_SHOW', {
+                text: res.body.message
+              });
+            }
+          }, function (err) {
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: err
+            });
+            next(false);
           })
-        }else{
-          next(function (vm){
-            vm.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.body.message
-            })
+      }else {
+        Vue.http.post('/order/grab/queryById',{appid:to.query.appid,uid:to.query.uid,grabTicketFormId: to.query.grabTicketFormId})
+          .then(function (res) {
+            if(res.data.code==1){
+              next(vm=> {
+                vm.$data.massages=res.data.data;
+              })
+            }else{
+              this.$store.commit('MESSAGE_DELAY_SHOW', {
+                text: res.body.message
+              });
+            }
+          }, function (err) {
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: err
+            });
+            next(false);
           })
-        }
-      }, function (err) {
-        next(function (vm){
-          vm.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
-          })
-        })
-      })
+      }
     },
     methods: {
       show:function(index){
@@ -157,6 +179,7 @@
         this.$router.go(-1);
       },
       confirm:function(){
+        console.log(this.$data.massages)
         this.$http.post('/ticket/refund',{"orderFormDetailId":this.$data.massages.passengers[this.$data.$index].orderFormDetailId})
          .then(function (res) {
            if(res.data.code==1){
@@ -447,5 +470,39 @@
     bottom: 0;
     left: 0;
     background: #FFF;
+  }
+  .err{
+    background: rgba(0,0,0,0.8);
+    height: 30px;
+    line-height: 30px;
+    padding: 0 5px;
+    position: fixed;
+    top: 35%;
+    left: 33%;
+    background: rgba(0,0,0,.5);
+    border-radius: 5px;
+    border: 2px solid #666;
+    color: #ebeeef;
+    -webkit-animation: fadeOut 1s ease 0.2s 1 both;
+    animation: fadeOut 1s ease 0.2s 1 both;
+  }
+  @-webkit-keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 0;
+    }
   }
 </style>
