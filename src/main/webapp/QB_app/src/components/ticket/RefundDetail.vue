@@ -128,7 +128,7 @@
       }
     },
     beforeRouteEnter (to, from, next) {
-      if(to.query.grabTicketFormId=="undefined"){
+      if(to.query.grabTicketFormId==undefined){ //预定
         Vue.http.post('/order/queryById',{orderFormId: to.query.orderid})
           .then(function (res) {
             if(res.data.code==1){
@@ -180,6 +180,8 @@
       },
       confirm:function(){
         console.log(this.$data.massages)
+        console.log(this.$data.$index)
+        console.log(this.$data.massages.passengers[0].orderFormDetailId)
         this.$http.post('/ticket/refund',{"orderFormDetailId":this.$data.massages.passengers[this.$data.$index].orderFormDetailId})
          .then(function (res) {
            if(res.data.code==1){
