@@ -178,18 +178,18 @@ public class TicketServiceImpl implements TicketService {
             passengerJsonObject.put("cxin", "");
             passengerJsonArray.add(passengerJsonObject);
         }
-        log.info("发送订单提交请求！！");
+        log.info("用户[" + orderForm.getUid() + "]发送订单提交请求！！");
         final JSONObject jsonObject = this.hySdkService.submitOrderImpl(orderForm, passengerJsonArray);
 //        final String code = jsonObject.getString("code");
         final boolean success = jsonObject.getBoolean("success");
         if (success) {// && ("802".equals(code) || "905".equals(code))
-            log.info("订单提交受理成功(占座请求成功)--等待回调！！！");
+            log.info("用户[" + orderForm.getUid() + "]的订单[" + orderForm.getId() + "]提交受理成功(占座请求成功)--等待回调！！！");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_REQUESTING.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_REQUESTING.getValue());
             this.orderFormService.update(orderForm);
             return Triple.of(true, jsonObject.getString("msg"), orderForm.getId());
         } else {
-            log.info("占座请求失败!request:[" + jsonObject.toString() + "]");
+            log.info("用户[" + orderForm.getUid() + "]的订单[" + orderForm.getId() + "]占座请求失败!request:[" + jsonObject.toString() + "]");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_FAIL.getId());
             orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_FAIL.getValue());
             this.orderFormService.update(orderForm);
@@ -225,7 +225,7 @@ public class TicketServiceImpl implements TicketService {
         if (success && orderSuccess) {
             final JSONArray passengers = jsonObject.getJSONArray("passengers");
             Preconditions.checkState(!passengers.isEmpty(), "乘客列表为空了");
-            log.info("订单回调处理成功---占座成功");
+            log.info("订单[" + orderForm.getId() + "]回调处理成功---占座成功");
             orderForm.setTicketTotalPrice(new BigDecimal(jsonObject.getString("orderamount")));
             orderForm.setTicketTotalPrice(new BigDecimal(jsonObject.getString("orderamount")));
             orderForm.setTotalPrice(orderForm.getTicketTotalPrice().add(orderForm.getBuyTicketPackagePrice()).add(orderForm.getGrabTicketPackagePrice()));
@@ -268,7 +268,7 @@ public class TicketServiceImpl implements TicketService {
             mqJo.put("orderFormId",orderForm.getId());
             MqProducer.sendMessage(mqJo, MqConfig.TICKET_CANCEL_EXPIRED_ORDER, PAYMENT_MINUTE * 60 * 1000);
         } else {
-            log.info("订单回调处理成功---占座失败");
+            log.info("订单[" + orderForm.getId() + "]回调处理成功---占座失败");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_FAIL.getId());
             orderForm.setRemark(jsonObject.getString("msg"));
             this.orderFormService.update(orderForm);
