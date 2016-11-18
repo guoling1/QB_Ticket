@@ -36,7 +36,7 @@
           <div class="write no-prompt">
             <span class="name">{{passenger.name}}</span>
             {{passenger.identy}}
-            <span class="info">{{passenger.personType}}票</span>
+            <span class="info">{{perType[passenger.personType]}}票</span>
           </div>
         </div>
         <div class="group no-border" v-for="(child,index) in childs">
@@ -206,7 +206,8 @@
         show: false,
         childs: [],
         errMsg: '',
-        $err: false
+        $err: false,
+        perType:["","成人","儿童"]
       }
     },
     created: function () {
