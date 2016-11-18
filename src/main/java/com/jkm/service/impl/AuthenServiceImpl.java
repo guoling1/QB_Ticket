@@ -99,7 +99,7 @@ public class AuthenServiceImpl implements AuthenService {
 		paySequence.setPayChannel("fastpay");
 		paySequence.setOrderId(requestData.getOrderId()+"");
 		paySequence.setReqSn(requestData.getReqSn());
-		paySequence.setAmount(Long.parseLong(requestData.getAmount())*100);
+		paySequence.setAmount((new BigDecimal(requestData.getAmount()).multiply(new BigDecimal("100")).longValue()));
 		paySequence.setPayParams(JSONObject.fromObject(requestData).toString());
 		paySequence.setPayResult(EnumPayResult.HANDLE.getId());
 		paySequence.setStatus(0);
@@ -247,7 +247,7 @@ public class AuthenServiceImpl implements AuthenService {
 		refundSequence.setOrderId(requestData.getOrderId()+"");
 		refundSequence.setRefundSn(requestData.getReqSn());
 		refundSequence.setReqSn(requestData.getOrgSn());
-		refundSequence.setAmount(Long.parseLong(requestData.getRefundAmount())*100);
+		refundSequence.setAmount((new BigDecimal(requestData.getOrgAmount()).multiply(new BigDecimal("100")).longValue()));
 		refundSequence.setRefundParams(JSONObject.fromObject(requestData).toString());
 		refundSequence.setStatus(0);
 		try {
