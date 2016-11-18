@@ -2,10 +2,15 @@ package com.jkm.controller.api;
 
 import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
+import com.jkm.entity.OrderForm;
 import com.jkm.entity.fusion.QueryQuickPayData;
 import com.jkm.entity.fusion.QueryRefundData;
 import com.jkm.entity.fusion.SingleRefundData;
+import com.jkm.enums.EnumGrabTicketStatus;
 import com.jkm.service.AuthenService;
+import com.jkm.service.GrabTicketFormService;
+import com.jkm.service.OrderFormService;
+import com.jkm.service.TicketService;
 import com.jkm.util.SnGenerator;
 import com.jkm.util.mq.MqConfig;
 import com.jkm.util.mq.MqProducer;
@@ -30,7 +35,11 @@ public class FusionController extends BaseController {
     @Autowired
     private AuthenService authenService;
 
+    @Autowired
+    private OrderFormService orderFormService;
 
+    @Autowired
+    private GrabTicketFormService grabTicketFormService;
 
     /**
      * 大订单立即支付(首次)
@@ -42,10 +51,12 @@ public class FusionController extends BaseController {
     @RequestMapping(value = "/toPay", method = RequestMethod.POST)
     public ResponseEntityBase<JSONObject> toPay() {
         ResponseEntityBase<JSONObject> responseEntityBase = new ResponseEntityBase<JSONObject>();
+        long orderId = 0;
         try{
             JSONObject jo = super.getRequestJsonParams();
             String uid = super.getUid(jo.getString("appid"),jo.getString("uid"));
             jo.put("uid",uid);
+            orderId = jo.getLong("orderId");
             JSONObject responseJo = authenService.toPay(jo);
             if(responseJo.getBoolean("result")==true){
                 responseEntityBase.setMessage(responseJo.getString("message"));
@@ -62,6 +73,11 @@ public class FusionController extends BaseController {
                 responseEntityBase.setMessage(e.getMessage().toString());
             }
             responseEntityBase.setCode(500);
+            OrderForm orderForm = new OrderForm();
+            orderForm.setId(orderId);
+            orderForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL.getId());
+            orderForm.setRemark(EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL.getValue());
+            orderFormService.updateStatus(orderForm);
         }
         return responseEntityBase;
     }
@@ -75,10 +91,12 @@ public class FusionController extends BaseController {
     @RequestMapping(value = "/toPayByCid", method = RequestMethod.POST)
     public ResponseEntityBase<JSONObject> toPayByCid() {
         ResponseEntityBase<JSONObject> responseEntityBase = new ResponseEntityBase<JSONObject>();
+        long orderId = 0;
         try{
             JSONObject jo = super.getRequestJsonParams();
             String uid = super.getUid(jo.getString("appid"),jo.getString("uid"));
             jo.put("uid",uid);
+            orderId = jo.getLong("orderId");
             JSONObject responseJo = authenService.toPayByCid(jo);
             if(responseJo.getBoolean("result")==true){
                 responseEntityBase.setMessage(responseJo.getString("message"));
@@ -95,6 +113,11 @@ public class FusionController extends BaseController {
                 responseEntityBase.setMessage(e.getMessage().toString());
             }
             responseEntityBase.setCode(500);
+            OrderForm orderForm = new OrderForm();
+            orderForm.setId(orderId);
+            orderForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL.getId());
+            orderForm.setRemark(EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL.getValue());
+            orderFormService.updateStatus(orderForm);
         }
         return responseEntityBase;
     }
@@ -109,10 +132,12 @@ public class FusionController extends BaseController {
     @RequestMapping(value = "/toPayGrab", method = RequestMethod.POST)
     public ResponseEntityBase<JSONObject> toPayGrab() {
         ResponseEntityBase<JSONObject> responseEntityBase = new ResponseEntityBase<JSONObject>();
+        long orderId = 0;
         try{
             JSONObject jo = super.getRequestJsonParams();
             String uid = super.getUid(jo.getString("appid"),jo.getString("uid"));
             jo.put("uid",uid);
+            orderId = jo.getLong("orderId");
             JSONObject responseJo = authenService.toPayGrab(jo);
             if(responseJo.getBoolean("result")==true){
                 responseEntityBase.setMessage(responseJo.getString("message"));
@@ -129,6 +154,7 @@ public class FusionController extends BaseController {
                 responseEntityBase.setMessage(e.getMessage().toString());
             }
             responseEntityBase.setCode(500);
+            grabTicketFormService.updateStatusById(EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL,orderId);
         }
         return responseEntityBase;
     }
@@ -142,10 +168,12 @@ public class FusionController extends BaseController {
     @RequestMapping(value = "/toPayGrabByCid", method = RequestMethod.POST)
     public ResponseEntityBase<JSONObject> toPayGrabByCid() {
         ResponseEntityBase<JSONObject> responseEntityBase = new ResponseEntityBase<JSONObject>();
+        long orderId = 0;
         try{
             JSONObject jo = super.getRequestJsonParams();
             String uid = super.getUid(jo.getString("appid"),jo.getString("uid"));
             jo.put("uid",uid);
+            orderId = jo.getLong("orderId");
             JSONObject responseJo = authenService.toPayGrabByCid(jo);
             if(responseJo.getBoolean("result")==true){
                 responseEntityBase.setMessage(responseJo.getString("message"));
@@ -162,6 +190,7 @@ public class FusionController extends BaseController {
                 responseEntityBase.setMessage(e.getMessage().toString());
             }
             responseEntityBase.setCode(500);
+            grabTicketFormService.updateStatusById(EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL,orderId);
         }
         return responseEntityBase;
     }
