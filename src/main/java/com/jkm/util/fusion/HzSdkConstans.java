@@ -66,41 +66,41 @@ public class HzSdkConstans {
          * 商户号
          */
         @Key("merc_id")
-        @DefaultValue("")
+        @DefaultValue("800010000050050")
         String mercId();
 
         /**
          * 快捷支付地址
          */
         @Key("fastPay_url")
-        @DefaultValue("")
+        @DefaultValue("https://www.ulpay.com/gateway/quick/fastPay")
         String fastPayUrl();
 
         /**
          * 快捷支付查询地址
          */
         @Key("fastPay_query_url")
-        @DefaultValue("")
+        @DefaultValue("https://www.ulpay.com/gateway/query/queryQuickPay")
         String fastPayQueryUrl();
 
         /**
          * 单笔退款地址
          */
         @Key("single_refund_url")
-        @DefaultValue("")
+        @DefaultValue("https://www.ulpay.com/gateway/refund/singleRefund")
         String singleRefundUrl();
         /**
          * 单笔退款地址
          */
         @Key("refund_query_url")
-        @DefaultValue("")
+        @DefaultValue("https://www.ulpay.com/gateway/auth/cardAuth")
         String refundQueryUrl();
 
         /**
          * 银行卡鉴权
          */
         @Key("card_auth")
-        @DefaultValue("")
+        @DefaultValue("https://www.ulpay.com/gateway/refund/singleRefundQuery")
         String cardAuth();
     }
 }

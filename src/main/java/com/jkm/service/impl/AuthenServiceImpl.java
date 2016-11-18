@@ -555,13 +555,13 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("nonceStr")), "随机参数有误");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("sn")+""), "短信序列码不能为空");
 
-		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(requestData.getString("phoneNo"),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
-		int resultType = codeStatus.getKey();
-		if(resultType!=1){
-			jo.put("result",false);
-			jo.put("message",codeStatus.getValue());
-			return jo;
-		}
+//		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(requestData.getString("phoneNo"),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
+//		int resultType = codeStatus.getKey();
+//		if(resultType!=1){
+//			jo.put("result",false);
+//			jo.put("message",codeStatus.getValue());
+//			return jo;
+//		}
 		Optional<BankCardBin> bb = bankCardBinService.analyseCardNo(requestData.getString("crdNo"));
 		if(!bb.isPresent()){
 			jo.put("result",false);
