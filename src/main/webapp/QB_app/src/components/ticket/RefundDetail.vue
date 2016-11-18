@@ -128,7 +128,7 @@
       }
     },
     beforeRouteEnter (to, from, next) {
-      if(!to.query.grabTicketFormId){
+      if(to.query.grabTicketFormId==undefined){
         Vue.http.post('/order/queryById',{orderFormId: to.query.orderid})
           .then(function (res) {
             if(res.data.code==1){
