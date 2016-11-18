@@ -120,7 +120,6 @@
     },
     methods:{
       shut:function(){
-        console.log();
         document.querySelector("#mask").style.display="none";
       },
       importCon:function(){
@@ -238,6 +237,7 @@
                 .then((res)=>{
                   if(res.data.code==1){
                     addPerson.id=res.data.data;
+                    addPerson.selected=false;
                     this.$data.massages.push(addPerson);
                     document.querySelector("#mask").style.display="none";
                     this.$data.$index="";
@@ -266,6 +266,7 @@
               Vue.http.post('/contactInfo/update',JSON.stringify(addPerson))
                 .then((res)=>{
                   if(res.data.code==1){
+                    addPerson.selected=false;
                     for(var i in addPerson){
                       this.$set(this.$data.massages[idx],i,addPerson[i])
                     }
