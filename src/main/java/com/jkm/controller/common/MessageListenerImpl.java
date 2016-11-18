@@ -44,7 +44,7 @@ import java.util.Map;
  * MQ消息处理类
  */
 public class MessageListenerImpl implements MessageListener {
-    private static Logger log = Logger.getLogger(MessageListenerOfExpiredOrderImpl.class);
+    private static Logger log = Logger.getLogger(MessageListenerImpl.class);
     @Autowired
     private AuthenService authenService;
     @Autowired
