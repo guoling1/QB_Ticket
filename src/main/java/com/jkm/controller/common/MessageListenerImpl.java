@@ -197,7 +197,7 @@ public class MessageListenerImpl implements MessageListener {
                     this.handleRetrySendDetailMq(jo,EnumRefundResult.EXCEPTION.getId());
                 }
             }else if(MqConfig.GRAB_TICKET_REFUND_PART.equals(message.getTag())){
-                log.info("消费[抢票单差价[" + jo.getLong("grabTicketFormId") + "]退款在请求中的消息]");
+                log.info("消费[抢票单差价退款[" + jo.getLong("grabTicketFormId") + "]退款在请求中的消息]");
 
                 final QueryRefundData queryRefundData = new QueryRefundData();
                 queryRefundData.setReqSn(SnGenerator.generate());
@@ -209,16 +209,16 @@ public class MessageListenerImpl implements MessageListener {
                         refundSequenceService.updateRefundResultByReqSn(EnumRefundResult.SUCCESS.getId(),jo.getString("reqSn"));
                         this.ticketService.handleGrabPartRefundResult(jo.getLong("grabTicketFormId"),true, "退款成功");
                     } else if ("U".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))||"S1".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//处理中 再次发送请求
-                        this.handleRetrySendGrabMq(jo,EnumRefundResult.HANDLE.getId());
+                        this.handleRetrySendGrabPartMq(jo,EnumRefundResult.HANDLE.getId());
                     } else if ("F".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//失败
                         refundSequenceService.updateRefundResultByReqSn(EnumRefundResult.FAIL.getId(),jo.getString("reqSn"));
                         this.ticketService.handleGrabPartRefundResult(jo.getLong("grabTicketFormId"),false, "退款失败");
                     }
                 } else if ("-1000".equals(resultMap.get("retCode").toString())) {
-                    this.handleRetrySendGrabMq(jo,EnumRefundResult.EXCEPTION.getId());
+                    this.handleRetrySendGrabPartMq(jo,EnumRefundResult.EXCEPTION.getId());
                 }
             }else if(MqConfig.GRAB_TICKET_REFUND_ALL.equals(message.getTag())){
-                log.info("消费[抢票单[" + jo.getLong("grabTicketFormId") + "]退款在请求中的消息]");
+                log.info("消费[抢票失败全额退款[" + jo.getLong("grabTicketFormId") + "]退款在请求中的消息]");
 
                 final QueryRefundData queryRefundData = new QueryRefundData();
                 queryRefundData.setReqSn(SnGenerator.generate());
@@ -249,15 +249,15 @@ public class MessageListenerImpl implements MessageListener {
                 if("0000".equals(resultMap.get("retCode").toString())){
                     if("S".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//成功
                         refundSequenceService.updateRefundResultByReqSn(EnumRefundResult.SUCCESS.getId(),jo.getString("reqSn"));
-                        this.ticketService.handleGrabPartRefundResult(jo.getLong("grabTicketFormId"),true, "退款成功");
+                        this.ticketService.handleCancelGrabRefundResult(jo.getLong("grabTicketFormId"),true, "退款成功");
                     } else if ("U".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))||"S1".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//处理中 再次发送请求
-                        this.handleRetrySendPartMq(jo,EnumRefundResult.HANDLE.getId());
+                        this.handleRetrySendCancelMq(jo,EnumRefundResult.HANDLE.getId());
                     } else if ("F".equals(((JSONObject)resultMap.get("retData")).getString("orderStatus"))){//失败
                         refundSequenceService.updateRefundResultByReqSn(EnumRefundResult.FAIL.getId(),jo.getString("reqSn"));
-                        this.ticketService.handleGrabPartRefundResult(jo.getLong("grabTicketFormId"),false, "退款失败");
+                        this.ticketService.handleCancelGrabRefundResult(jo.getLong("grabTicketFormId"),false, "退款失败");
                     }
                 } else if ("-1000".equals(resultMap.get("retCode").toString())) {
-                    this.handleRetrySendPartMq(jo,EnumRefundResult.EXCEPTION.getId());
+                    this.handleRetrySendCancelMq(jo,EnumRefundResult.EXCEPTION.getId());
                 }
             }
         } catch (UnsupportedEncodingException e) {
@@ -336,17 +336,20 @@ public class MessageListenerImpl implements MessageListener {
         this.orderFormRefundExceptionRecordService.insert(record);
     }
 
-    private void handleRetrySendGrabMq(final JSONObject jo,String refundResult) {
-        log.info("抢票单[" + jo.getLong("grabTicketFormId") + "]重发退款消费消息");
+    /**
+     * 差价退款
+     */
+    private void handleRetrySendGrabPartMq(final JSONObject jo,String refundResult) {
+        log.info("消费抢票单差价退款[" + jo.getLong("grabTicketFormId") + "]重发退款消费消息");
         if (jo.getInt("sendCount") < 5) {
             jo.put("sendCount", jo.getInt("sendCount") + 1);
-            MqProducer.sendMessage(jo, MqConfig.RETURN_TICKET_REFUND_ING, 2000);//再次发请求
+            MqProducer.sendMessage(jo, MqConfig.GRAB_TICKET_REFUND_PART, 2000);//再次发请求
         } else if (jo.getInt("sendCount") >= 5 && jo.getInt("sendCount") < 10) {
             jo.put("sendCount",jo.getInt("sendCount") + 1);
-            MqProducer.sendMessage(jo, MqConfig.RETURN_TICKET_REFUND_ING, 60 * 1000);//再次发请求
+            MqProducer.sendMessage(jo, MqConfig.GRAB_TICKET_REFUND_PART, 60 * 1000);//再次发请求
         }  else if (jo.getInt("sendCount") >= 10 && jo.getInt("sendCount") < 15) {
             jo.put("sendCount",jo.getInt("sendCount") + 1);
-            MqProducer.sendMessage(jo, MqConfig.RETURN_TICKET_REFUND_ING, 5 * 60 * 1000);//再次发请求
+            MqProducer.sendMessage(jo, MqConfig.GRAB_TICKET_REFUND_PART, 5 * 60 * 1000);//再次发请求
         } else {
             refundSequenceService.updateRefundResultByReqSn(refundResult,jo.getString("reqSn"));
             this.recordExceptionOrderFormGrabRefund(jo);
@@ -369,17 +372,22 @@ public class MessageListenerImpl implements MessageListener {
         this.orderFormRefundExceptionRecordService.insert(record);
     }
 
+    /**
+     * 抢票失败全额退款
+     * @param jo
+     * @param refundResult
+     */
     private void handleRetrySendRepeatMq(final JSONObject jo,String refundResult) {
-        log.info("抢票单[" + jo.getLong("grabTicketFormId") + "]重发退款消费消息");
+        log.info("抢票单抢票失败全额退款[" + jo.getLong("grabTicketFormId") + "]重发退款消费消息");
         if (jo.getInt("sendCount") < 5) {
             jo.put("sendCount", jo.getInt("sendCount") + 1);
-            MqProducer.sendMessage(jo, MqConfig.RETURN_TICKET_REFUND_ING, 2000);//再次发请求
+            MqProducer.sendMessage(jo, MqConfig.GRAB_TICKET_REFUND_ALL, 2000);//再次发请求
         } else if (jo.getInt("sendCount") >= 5 && jo.getInt("sendCount") < 10) {
             jo.put("sendCount",jo.getInt("sendCount") + 1);
-            MqProducer.sendMessage(jo, MqConfig.RETURN_TICKET_REFUND_ING, 60 * 1000);//再次发请求
+            MqProducer.sendMessage(jo, MqConfig.GRAB_TICKET_REFUND_ALL, 60 * 1000);//再次发请求
         }  else if (jo.getInt("sendCount") >= 10 && jo.getInt("sendCount") < 15) {
             jo.put("sendCount",jo.getInt("sendCount") + 1);
-            MqProducer.sendMessage(jo, MqConfig.RETURN_TICKET_REFUND_ING, 5 * 60 * 1000);//再次发请求
+            MqProducer.sendMessage(jo, MqConfig.GRAB_TICKET_REFUND_ALL, 5 * 60 * 1000);//再次发请求
         } else {
             refundSequenceService.updateRefundResultByReqSn(refundResult,jo.getString("reqSn"));
             this.recordExceptionOrderFormRepeatRefund(jo);
@@ -402,8 +410,13 @@ public class MessageListenerImpl implements MessageListener {
         this.orderFormRefundExceptionRecordService.insert(record);
     }
 
-    private void handleRetrySendPartMq(final JSONObject jo,String refundResult) {
-        log.info("抢票单[" + jo.getLong("grabTicketFormId") + "]重发退款消费消息");
+    /**
+     * 取消抢票单全额退款
+     * @param jo
+     * @param refundResult
+     */
+    private void handleRetrySendCancelMq(final JSONObject jo,String refundResult) {
+        log.info("取消抢票单全额退款[" + jo.getLong("grabTicketFormId") + "]重发退款消费消息");
         if (jo.getInt("sendCount") < 5) {
             jo.put("sendCount", jo.getInt("sendCount") + 1);
             MqProducer.sendMessage(jo, MqConfig.CANCEL_GRAB_TICKET_REFUND_ALL, 2000);//再次发请求
@@ -416,7 +429,7 @@ public class MessageListenerImpl implements MessageListener {
         } else {
             refundSequenceService.updateRefundResultByReqSn(refundResult,jo.getString("reqSn"));
             this.recordExceptionOrderFormPartRefund(jo);
-            this.ticketService.handleGrabPartRefundResult(jo.getLong("grabTicketFormId"), false, "退款失败");
+            this.ticketService.handleCancelGrabRefundResult(jo.getLong("grabTicketFormId"), false, "退款失败");
         }
     }
 

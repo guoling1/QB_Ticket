@@ -62,7 +62,7 @@ public class MqConfig {
     public static final String GRAB_TICKET_REFUND_PART = "grabTicketRefundPart";
 
     /**
-     * 抢票全额退款的消息
+     * 抢票失败全额退款的消息
      */
     public static final String GRAB_TICKET_REFUND_ALL = "grabTicketRefundAll";
 
