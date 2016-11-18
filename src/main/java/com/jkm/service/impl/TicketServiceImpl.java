@@ -1487,9 +1487,10 @@ public class TicketServiceImpl implements TicketService {
         final Date endTime = new Date(parse.getTime() - EnumGrabTimeType.of(grabTicketForm.getGrabTimeType()).getHour()*60*60*1000);
         if (flag){
             //未购买套餐
+            log.info("抢票单["+grabTicketForm.getId()+"]未购买套餐,放入消息队列,到期退款.........");
             grabTicketForm.setStatus(EnumGrabTicketStatus.WAIT_FOR_REFUND.getId());
             this.grabTicketFormService.update(grabTicketForm);
-            //放入消息队列 , 15分钟支付时间
+            //放入消息队列 ,
             //TODO 抢票
             JSONObject mqJo = new JSONObject();
             mqJo.put("grabTicketFormId",grabTicketForm.getId());
