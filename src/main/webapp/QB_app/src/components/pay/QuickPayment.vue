@@ -4,12 +4,16 @@
       <!-- 支付模块 获取验证码 -->
       <div class="space" v-if="$$show.submitSpace">
         <div class="checkout">
-          <div class="xx"></div>
+          <div class="space_t">
+            <div class="xx"></div>
+            <div class="word">使用银行卡支付</div>
+          </div>
           <div class="ul" @click="goList">
             <!--<div class="logo">logo</div>-->
             <div class="word">这是银行</div>
             <div class="word">{{default_card.info.cardNo}}</div>
             <div class="small">储蓄卡</div>
+            <div class="list"></div>
           </div>
           <div class="ul">
             <input type="text" placeholder="请输入验证码" v-model="valid_code.vCode">
@@ -381,6 +385,32 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
+  .space_t {
+    width: 100%;
+    height: 49px;
+    line-height: 49px;
+    border-bottom: 1px solid #f5f5f5;
+    position: relative;
+    .xx {
+      width: 14px;
+      height: 14px;
+      background: url("../../assets/xx.png") no-repeat center;
+      background-size: 14px 14px;
+      padding: 15px;
+      position: absolute;
+      top: 9px;
+      left: 10px;
+    }
+    .word {
+      font-size: 15px;
+      color: #111;
+      width: 100%;
+      height: 49px;
+      line-height: 49px;
+      text-align: center;
+    }
+  }
+
   .bankList, .checkout {
     position: absolute;
     width: 100%;
@@ -388,13 +418,6 @@
     background-color: #FFF;
     left: 0;
     bottom: 0;
-    .xx {
-      width: 14px;
-      height: 14px;
-      background: url("../../assets/xx.png") no-repeat center;
-      background-size: 14px 14px;
-      padding: 15px;
-    }
     .logo {
       float: left;
       margin-right: 15px;
@@ -425,6 +448,9 @@
         font-size: 12px;
         color: #37abe5;
         background-color: #FFF;
+      }
+      .list {
+
       }
     }
     ul {

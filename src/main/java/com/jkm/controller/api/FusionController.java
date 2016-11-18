@@ -7,6 +7,7 @@ import com.jkm.entity.fusion.QueryQuickPayData;
 import com.jkm.entity.fusion.QueryRefundData;
 import com.jkm.entity.fusion.SingleRefundData;
 import com.jkm.enums.EnumGrabTicketStatus;
+import com.jkm.enums.EnumOrderFormStatus;
 import com.jkm.service.AuthenService;
 import com.jkm.service.GrabTicketFormService;
 import com.jkm.service.OrderFormService;
@@ -66,7 +67,7 @@ public class FusionController extends BaseController {
                 responseEntityBase.setCode(400);
             }
         }catch(Exception e){
-            logger.error("立即支付(首次)失败:"+e);
+            logger.info("立即支付(首次)失败:", e);
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -75,8 +76,8 @@ public class FusionController extends BaseController {
             responseEntityBase.setCode(500);
             OrderForm orderForm = new OrderForm();
             orderForm.setId(orderId);
-            orderForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL.getId());
-            orderForm.setRemark(EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL.getValue());
+            orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId());
+            orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getValue());
             orderFormService.updateStatus(orderForm);
         }
         return responseEntityBase;
@@ -106,7 +107,7 @@ public class FusionController extends BaseController {
                 responseEntityBase.setCode(400);
             }
         }catch(Exception e){
-            logger.error("立即支付(多次)失败:",e);
+            logger.info("立即支付(多次)失败:",e);
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -115,8 +116,8 @@ public class FusionController extends BaseController {
             responseEntityBase.setCode(500);
             OrderForm orderForm = new OrderForm();
             orderForm.setId(orderId);
-            orderForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL.getId());
-            orderForm.setRemark(EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL.getValue());
+            orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId());
+            orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getValue());
             orderFormService.updateStatus(orderForm);
         }
         return responseEntityBase;
@@ -147,7 +148,7 @@ public class FusionController extends BaseController {
                 responseEntityBase.setCode(400);
             }
         }catch(Exception e){
-            logger.error("抢票单立即支付(首次)失败",e);
+            logger.info("抢票单立即支付(首次)失败",e);
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -183,7 +184,7 @@ public class FusionController extends BaseController {
                 responseEntityBase.setCode(400);
             }
         }catch(Exception e){
-            logger.error("立即支付(多次)异常",e);
+            logger.info("立即支付(多次)异常",e);
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{

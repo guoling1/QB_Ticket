@@ -4,7 +4,7 @@
       <div class="state" v-show="orderInfo.status==2">
         <i></i>正在为您占座中...
       </div>
-      <div class="state" v-show="orderInfo.status==3">
+      <div class="state" v-show="orderInfo.status==3||orderInfo.status==7">
         <span v-if="countdown">您的座位还会为您保留{{countdown}}分钟，请尽快完成支付</span>
         <span v-if="!countdown">您的订单已失效</span>
       </div>
@@ -66,7 +66,7 @@
             <div class="amount">实付款<span class="red">￥</span><span class="red big">{{orderInfo.totalPrice}}</span></div>
             <div class="i" v-bind:class="{active:detail}"></div>
           </div>
-          <div class="right" v-bind:class="{dis:orderInfo.status!=3}" @click="submit">立即支付</div>
+          <div class="right" v-bind:class="{dis:orderInfo.status!=3||!countdown}" @click="submit">立即支付</div>
         </div>
       </div>
     </div>
@@ -118,13 +118,13 @@
       let polling = '';
       const pollFun = ()=>{
         this.$http.post('/order/queryById', {orderFormId: this.$data.orderInfo.orderFormId}).then(function (res) {
-          if (res.data.code == 1 && res.data.data.status == 3) {
+          if (res.data.code == 1 && (res.data.data.status == 3 || 7)) {
             clearInterval(polling);
             this.$data.orderInfo = res.data.data;
             this.$data.payInfo.price = res.data.data.totalPrice;
             // 调用定时器
             this.timer(this.$data.orderInfo.expireTime);
-          } else if (res.data.code == 1 && res.data.data.status == 4) {
+          } else if (res.data.code == 1 && (res.data.data.status == 4 || 6)) {
             clearInterval(polling);
             this.$data.orderInfo = res.data.data;
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
@@ -207,7 +207,7 @@
       },
       submit: function () {
         // 首先判断订单状态,决定是否能支付
-        if (this.$data.orderInfo.status == 3 /*&& this.$data.countdown*/) {
+        if (this.$data.orderInfo.status == 3 && this.$data.countdown) {
           this.$store.commit('PAY_CALL', {
             appid: this.$data.common.appid,
             uid: this.$data.common.uid,
