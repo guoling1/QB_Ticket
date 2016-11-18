@@ -32,5 +32,10 @@ public interface RefundSequenceService {
 	 **/
 	int updateByPrimaryKeySelective(RefundSequence record);
 
-
+	/**
+	 * 根据流水号更改订单状态
+	 * @param refundResult
+	 * @param refundSn
+	 */
+	void updateRefundResultByReqSn(String refundResult,String refundSn);
 }

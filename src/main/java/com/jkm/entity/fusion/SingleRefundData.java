@@ -3,6 +3,7 @@ package com.jkm.entity.fusion;
 
 public class SingleRefundData {
     private String reqSn;//交易流水号
+    private long orderId;//商户订单号
     private String signedMsg;//签名信息
     private String orgSn;//原订单流水号
     private String orgDate;//原商户订单日期
@@ -100,5 +101,13 @@ public class SingleRefundData {
 
     public void setTransType(String transType) {
         this.transType = transType;
+    }
+
+    public long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(long orderId) {
+        this.orderId = orderId;
     }
 }

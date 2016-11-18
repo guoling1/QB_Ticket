@@ -113,4 +113,9 @@
  		 </set>
 		 WHERE id = #{id}
 	</update>
+
+	<!-- 根据流水号更改退款单状态-->
+	<update id="updateRefundResultByReqSn" parameterType="java.lang.String">
+		UPDATE qb_refund_sequence set refund_result = #{refundResult} where refund_sn= #{refundSn} and status=0
+	</update>
 </mapper>

@@ -27,4 +27,9 @@ public class PaySequenceServiceImpl implements PaySequenceService{
     public int updateByPrimaryKeySelective(PaySequence record) {
         return paySequenceDao.updateByPrimaryKeySelective(record);
     }
+
+    @Override
+    public void updatePayResultByReqSn(String payResult, String reqSn) {
+        paySequenceDao.updatePayResultByReqSn(payResult,reqSn);
+    }
 }

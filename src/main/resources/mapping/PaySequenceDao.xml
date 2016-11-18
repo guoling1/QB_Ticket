@@ -104,4 +104,8 @@
  		 </set>
 		 WHERE id = #{id}
 	</update>
+	<!-- 根据流水号更改订单状态-->
+	<update id="updatePayResultByReqSn" parameterType="java.lang.String">
+		UPDATE qb_pay_sequence set pay_result = #{payResult} where req_sn= #{reqSn} and status=0
+	</update>
 </mapper>

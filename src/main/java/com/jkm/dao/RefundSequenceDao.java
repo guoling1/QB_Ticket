@@ -33,5 +33,10 @@ public interface RefundSequenceDao {
 	 **/
 	int updateByPrimaryKeySelective(RefundSequence record);
 
-
+	/**
+	 * 根据流水号更改订单状态
+	 * @param refundResult
+	 * @param refundSn
+	 */
+	void updateRefundResultByReqSn(@Param("refundResult")String refundResult,@Param("refundSn")String refundSn);
 }

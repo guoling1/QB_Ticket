@@ -100,9 +100,7 @@ public class EntityUtil {
         ResultSet results = pstate.executeQuery();
         while ( results.next() ) {
             String tableName = results.getString(1);
-            //          if ( tableName.toLowerCase().startsWith("yy_") ) {
             tables.add(tableName);
-            //          }
         }
         return tables;
     }
@@ -118,7 +116,7 @@ public class EntityUtil {
             sb.append(temp.substring(0, 1).toUpperCase()).append(temp.substring(1));
         }
         beanName = sb.toString();
-        mapperName = beanName + "Mapper";
+        mapperName = beanName + "Dao";
     }
  
  
@@ -148,7 +146,6 @@ public class EntityUtil {
  
     private String processField( String field ) {
         StringBuffer sb = new StringBuffer(field.length());
-        //field = field.toLowerCase();
         String[] fields = field.split("_");
         String temp = null;
         sb.append(fields[0]);
@@ -167,7 +164,8 @@ public class EntityUtil {
      * @return 
      */
     private String processResultMapId( String beanName ) {
-        return beanName.substring(0, 1).toLowerCase() + beanName.substring(1);
+//        return beanName.substring(0, 1).toLowerCase() + beanName.substring(1);
+        return bean_package+beanName;
     }
  
  
@@ -237,23 +235,26 @@ public class EntityUtil {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(beanFile)));
         bw.write("package " + bean_package + ";");
         bw.newLine();
-        bw.write("import java.io.Serializable;");
+        bw.write("import lombok.Data;");
         bw.newLine();
-        //bw.write("import lombok.Data;");
-        //      bw.write("import javax.persistence.Entity;");
+        bw.write("import lombok.EqualsAndHashCode;");
+        bw.newLine();
         bw = buildClassComment(bw, tableComment);
         bw.newLine();
-        bw.write("@SuppressWarnings(\"serial\")");
+        bw.write("@EqualsAndHashCode(callSuper = true)");
         bw.newLine();
-        //      bw.write("@Entity");
-        //bw.write("@Data");
-        //bw.newLine();
-        bw.write("public class " + beanName + " implements Serializable {");
+        bw.write("@Data");
+        bw.newLine();
+        bw.write("public class " + beanName + " extends BaseEntity{");
         bw.newLine();
         bw.newLine();
         int size = columns.size();
         for ( int i = 0 ; i < size ; i++ ) {
-            bw.write("\t/**" + comments.get(i) + "**/");
+            bw.write("\t/**");
+            bw.newLine();
+            bw.write("\t*" + comments.get(i));
+            bw.newLine();
+            bw.write("\t*/");
             bw.newLine();
             bw.write("\tprivate " + processType(types.get(i)) + " " + processField(columns.get(i)) + ";");
             bw.newLine();
@@ -315,7 +316,6 @@ public class EntityUtil {
         bw = buildClassComment(bw, mapperName + "数据库操作接口类");
         bw.newLine();
         bw.newLine();
-        //      bw.write("public interface " + mapperName + " extends " + mapper_extends + "<" + beanName + "> {");
         bw.write("public interface " + mapperName + "{");
         bw.newLine();
         bw.newLine();
@@ -323,14 +323,6 @@ public class EntityUtil {
         bw = buildMethodComment(bw, "查询（根据主键ID查询）");
         bw.newLine();
         bw.write("\t" + beanName + "  selectByPrimaryKey ( @Param(\"id\") Long id );");
-        bw.newLine();
-        bw = buildMethodComment(bw, "删除（根据主键ID删除）");
-        bw.newLine();
-        bw.write("\t" + "int deleteByPrimaryKey ( @Param(\"id\") Long id );");
-        bw.newLine();
-        bw = buildMethodComment(bw, "添加");
-        bw.newLine();
-        bw.write("\t" + "int insert( " + beanName + " record );");
         bw.newLine();
         bw = buildMethodComment(bw, "添加 （匹配有值的字段）");
         bw.newLine();
@@ -340,11 +332,6 @@ public class EntityUtil {
         bw.newLine();
         bw.write("\t" + "int updateByPrimaryKeySelective( " + beanName + " record );");
         bw.newLine();
-        bw = buildMethodComment(bw, "修改（根据主键ID修改）");
-        bw.newLine();
-        bw.write("\t" + "int updateByPrimaryKey ( " + beanName + " record );");
-        bw.newLine();
- 
         // ----------定义Mapper中的方法End----------
         bw.newLine();
         bw.write("}");
@@ -378,31 +365,7 @@ public class EntityUtil {
         bw.write("<mapper namespace=\"" + mapper_package + "." + mapperName + "\">");
         bw.newLine();
         bw.newLine();
- 
-        /*bw.write("\t<!--实体映射-->");
-        bw.newLine();
-        bw.write("\t<resultMap id=\"" + this.processResultMapId(beanName) + "ResultMap\" type=\"" + beanName + "\">");
-        bw.newLine();
-        bw.write("\t\t<!--" + comments.get(0) + "-->");
-        bw.newLine();
-        bw.write("\t\t<id property=\"" + this.processField(columns.get(0)) + "\" column=\"" + columns.get(0) + "\" />");
-        bw.newLine();
-        int size = columns.size();
-        for ( int i = 1 ; i < size ; i++ ) {
-            bw.write("\t\t<!--" + comments.get(i) + "-->");
-            bw.newLine();
-            bw.write("\t\t<result property=\""
-                    + this.processField(columns.get(i)) + "\" column=\"" + columns.get(i) + "\" />");
-            bw.newLine();
-        }
-        bw.write("\t</resultMap>");
- 
-        bw.newLine();
-        bw.newLine();
-        bw.newLine();*/
- 
-        // 下面开始写SqlMapper中的方法
-        // this.outputSqlMapperMethod(bw, columns, types);
+
         buildSQL(bw, columns, types);
  
         bw.write("</mapper>");
@@ -445,66 +408,17 @@ public class EntityUtil {
         bw.newLine();
         bw.write("\t\t FROM " + tableName);
         bw.newLine();
-        bw.write("\t\t WHERE " + columns.get(0) + " = #{" + processField(columns.get(0)) + "}");
+        bw.write("\t\t WHERE " + columns.get(0) + " = #{" + processField(columns.get(0)) + "} and status=0");
         bw.newLine();
         bw.write("\t</select>");
         bw.newLine();
         bw.newLine();
         // 查询完
  
- 
-        // 删除（根据主键ID删除）
-        bw.write("\t<!--删除：根据主键ID删除-->");
-        bw.newLine();
-        bw.write("\t<delete id=\"deleteByPrimaryKey\" parameterType=\"java.lang." + processType(types.get(0)) + "\">");
-        bw.newLine();
-        bw.write("\t\t DELETE FROM " + tableName);
-        bw.newLine();
-        bw.write("\t\t WHERE " + columns.get(0) + " = #{" + processField(columns.get(0)) + "}");
-        bw.newLine();
-        bw.write("\t</delete>");
-        bw.newLine();
-        bw.newLine();
-        // 删除完
- 
- 
-        // 添加insert方法
-        bw.write("\t<!-- 添加 -->");
-        bw.newLine();
-        bw.write("\t<insert id=\"insert\" parameterType=\"" + processResultMapId(beanName) + "\">");
-        bw.newLine();
-        bw.write("\t\t INSERT INTO " + tableName);
-        bw.newLine();
-        bw.write(" \t\t(");
-        for ( int i = 0 ; i < size ; i++ ) {
-            bw.write(columns.get(i));
-            if ( i != size - 1 ) {
-                bw.write(",");
-            }
-        }
-        bw.write(") ");
-        bw.newLine();
-        bw.write("\t\t VALUES ");
-        bw.newLine();
-        bw.write(" \t\t(");
-        for ( int i = 0 ; i < size ; i++ ) {
-            bw.write("#{" + processField(columns.get(i)) + "}");
-            if ( i != size - 1 ) {
-                bw.write(",");
-            }
-        }
-        bw.write(") ");
-        bw.newLine();
-        bw.write("\t</insert>");
-        bw.newLine();
-        bw.newLine();
-        // 添加insert完
- 
- 
         //---------------  insert方法（匹配有值的字段）
         bw.write("\t<!-- 添加 （匹配有值的字段）-->");
         bw.newLine();
-        bw.write("\t<insert id=\"insertSelective\" parameterType=\"" + processResultMapId(beanName) + "\">");
+        bw.write("\t<insert id=\"insertSelective\" useGeneratedKeys=\"true\" keyProperty=\"id\" parameterType=\"" + processResultMapId(beanName) + "\">");
         bw.newLine();
         bw.write("\t\t INSERT INTO " + tableName);
         bw.newLine();
@@ -548,7 +462,7 @@ public class EntityUtil {
         //---------------  完毕
  
  
-        // 修改update方法
+        // 修改（匹配有值的字段）
         bw.write("\t<!-- 修 改-->");
         bw.newLine();
         bw.write("\t<update id=\"updateByPrimaryKeySelective\" parameterType=\"" + processResultMapId(beanName) + "\">");
@@ -578,32 +492,6 @@ public class EntityUtil {
         bw.newLine();
         bw.newLine();
         // update方法完毕
- 
-        // ----- 修改（匹配有值的字段）
-        bw.write("\t<!-- 修 改-->");
-        bw.newLine();
-        bw.write("\t<update id=\"updateByPrimaryKey\" parameterType=\"" + processResultMapId(beanName) + "\">");
-        bw.newLine();
-        bw.write("\t\t UPDATE " + tableName);
-        bw.newLine();
-        bw.write("\t\t SET ");
- 
-        bw.newLine();
-        tempField = null;
-        for ( int i = 1 ; i < size ; i++ ) {
-            tempField = processField(columns.get(i));
-            bw.write("\t\t\t " + columns.get(i) + " = #{" + tempField + "}");
-            if ( i != size - 1 ) {
-                bw.write(",");
-            }
-            bw.newLine();
-        }
- 
-        bw.write("\t\t WHERE " + columns.get(0) + " = #{" + processField(columns.get(0)) + "}");
-        bw.newLine();
-        bw.write("\t</update>");
-        bw.newLine();
-        bw.newLine();
     }
  
  
@@ -648,7 +536,6 @@ public class EntityUtil {
             }
             tableName = table;
             processTable(table);
-            //          this.outputBaseBean();
             String tableComment = tableComments.get(tableName);
             buildEntityBean(columns, types, comments, tableComment);
             buildMapper();
