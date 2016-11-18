@@ -85,7 +85,7 @@
             path: '/ticket/pay-order', query: {
               appid: this.$data.common.appid,
               uid: this.$data.common.uid,
-              orderFormId: massage.orderFormId
+              id: massage.orderFormId
             }
           })
         }else {
