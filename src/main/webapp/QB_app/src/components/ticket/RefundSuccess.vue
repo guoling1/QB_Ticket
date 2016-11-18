@@ -79,7 +79,7 @@
           if (res.data.code == 1 && res.data.data.status == 10) {
             clearInterval(polling);
             this.$data.orderInfo = res.data.data;
-          } else if (res.data.code == 1 && (res.data.data.status == 8 || 11)) {
+          } else if (res.data.code == 1 && (res.data.data.status == 8 ||res.data.data.status == 11)) {
             clearInterval(polling);
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '出票失败'

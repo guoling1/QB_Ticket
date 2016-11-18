@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="main">
-    <div class="state" v-if="$$orderInfo.status==(3||5||6||7||11)">
+    <div class="state" v-if="$$orderInfo.status==3||$$orderInfo.status==5||$$orderInfo.status==6||$$orderInfo.status==7||$$orderInfo.status==11">
       <i></i>
       <span>正在奋力抢票中...</span>
     </div>
@@ -10,7 +10,7 @@
     <div class="state" v-if="$$orderInfo.status==9">
       <span>抢票成功</span>
     </div>
-    <div class="state" v-if="$$orderInfo.status==(10||14||15||16)">
+    <div class="state" v-if="$$orderInfo.status==10||$$orderInfo.status==14||$$orderInfo.status==15||$$orderInfo.status==16">
       <span>订单已取消</span>
     </div>
     <div class="space">
