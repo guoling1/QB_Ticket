@@ -26,6 +26,7 @@ import com.jkm.util.mq.MqConfig;
 import com.jkm.util.mq.MqProducer;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.bcel.generic.IF_ACMPEQ;
 import org.apache.commons.collections.CollectionUtils;
 import com.jkm.util.DateFormatUtil;
 import com.jkm.util.SnGenerator;
@@ -446,9 +447,13 @@ public class TicketServiceImpl implements TicketService {
         final Optional<OrderFormDetail> orderFormDetailOptional = this.orderFormDetailService.selectById(orderFormDetailId);
         Preconditions.checkArgument(orderFormDetailOptional.isPresent() , "订单不存在");
         final OrderFormDetail orderFormDetail = orderFormDetailOptional.get();
-        //判断订单的状态是否可退
+        //判断订单的状态是否可退, 若该订单下有儿童票不能退,先退儿童票
         if(orderFormDetail.getStatus() != EnumOrderFormDetailStatus.TICKET_BUY_SUCCESS.getId()){
             return Pair.of(false, "此订单不能退票");
+        }
+        final boolean flag = this.isCanReturnTicket(orderFormDetailId);
+        if (!flag){
+            return Pair.of(false, "请先退儿童票");
         }
         //判断是否是 代购票还是抢购票
         if (orderFormDetail.getIsGrab() == 0){
@@ -628,6 +633,40 @@ public class TicketServiceImpl implements TicketService {
                 }
         }
 
+    }
+
+    private boolean isCanReturnTicket(long orderFormDetailId) {
+
+        final Optional<OrderFormDetail> orderFormDetailOptional = this.orderFormDetailService.selectByIdWithLock(orderFormDetailId);
+        Preconditions.checkNotNull(orderFormDetailOptional.isPresent(), "出票订单不存在");
+        final OrderFormDetail orderFormDetail = orderFormDetailOptional.get();
+        if (orderFormDetail.getPiaoType().equals(EnumTrainTicketType.CHILDREN.getId())){
+            return true;
+        }
+        if (orderFormDetail.getIsGrab() == 0){
+            //代购单
+            final List<OrderFormDetail> orderFormDetails = this.orderFormDetailService.selectByOrderFormId(orderFormDetail.getOrderFormId());
+            for (OrderFormDetail formDetail : orderFormDetails){
+                if (formDetail.getPassportSeNo().equals(orderFormDetail.getPassportSeNo())
+                        && formDetail.getPiaoType().equals(EnumTrainTicketType.CHILDREN.getId())
+                        && (formDetail.getStatus() == EnumOrderFormDetailStatus.TICKET_BUY_SUCCESS.getId())
+                        || formDetail.getStatus() == EnumOrderFormDetailStatus.TICKET_RETURN_FAIL.getId()){
+                    return false;
+                }
+            }
+        }else {
+            //抢票单
+            final List<OrderFormDetail> orderFormDetails = this.orderFormDetailService.selectByGrabTicketFormId(orderFormDetail.getGrabTicketFormId());
+            for (OrderFormDetail formDetail : orderFormDetails){
+                if (formDetail.getPassportSeNo().equals(orderFormDetail.getPassportSeNo())
+                        && formDetail.getPiaoType().equals(EnumTrainTicketType.CHILDREN.getId())
+                        && (formDetail.getStatus() == EnumOrderFormDetailStatus.TICKET_BUY_SUCCESS.getId())
+                        || formDetail.getStatus() == EnumOrderFormDetailStatus.TICKET_RETURN_FAIL.getId()){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
