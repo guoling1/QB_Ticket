@@ -10,8 +10,10 @@ import com.jkm.service.GrabTicketFormService;
 import com.jkm.service.RefundOrderFlowService;
 import com.jkm.service.ReturnMoneyOrderService;
 import com.jkm.service.TicketService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +22,7 @@ import java.util.List;
  */
 @Service
 public class GrabTicketFormServiceImpl implements GrabTicketFormService {
+    final Logger log = Logger.getLogger(GrabTicketFormServiceImpl.class);
 
     @Autowired
     private GrabTicketFromDao grabTicketFromDao;
@@ -103,6 +106,7 @@ public class GrabTicketFormServiceImpl implements GrabTicketFormService {
         final GrabTicketForm grabTicketForm = this.grabTicketFromDao.selectByIdWithLock(grabTicketFormId);
         //判断是否可以取消
         if (grabTicketForm.isCanCancel()){
+            log.info("抢票单[" + grabTicketFormId + "]由于超时未支付,已取消");
             grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_PAY_OVERTIME.getId());
             this.grabTicketFromDao.update(grabTicketForm);
         }
@@ -114,6 +118,7 @@ public class GrabTicketFormServiceImpl implements GrabTicketFormService {
      * @param grabTicketFormId
      */
     @Override
+    @Transactional
     public void handleNoPackageWaitRefund(long grabTicketFormId) {
 
         final GrabTicketForm grabTicketForm = this.grabTicketFromDao.selectByIdWithLock(grabTicketFormId);
@@ -124,6 +129,7 @@ public class GrabTicketFormServiceImpl implements GrabTicketFormService {
         //判断该订单状态是否可以全额退款, 没购买套餐, 或者购买套餐抢票下单失败
         if(grabTicketForm.getStatus() == EnumGrabTicketStatus.WAIT_FOR_REFUND.getId() ||
                 grabTicketForm.getStatus() == EnumGrabTicketStatus.GRAB_FORM_REQUEST_FAIL.getId()){
+            log.info("抢票订单["+ grabTicketFormId +"]抢票失败到期请求自动退款............");
             this.ticketService.returnToGrabFail(grabTicketFormId);
         }
     }
