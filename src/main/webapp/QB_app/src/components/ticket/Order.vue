@@ -80,7 +80,7 @@
     },
     methods: {
       preGo: function (event, massage) {
-        if(massage.status=="3"){
+        if(massage.status==3||massage.status==5||massage.status==7){
           this.$router.push({
             path: '/ticket/pay-order', query: {
               appid: this.$data.common.appid,
@@ -99,13 +99,23 @@
         }
       },
       robGo: function (event, massage) {
-        this.$router.push({
-          path: '/ticket/rob-detail', query: {
-            appid: this.$data.common.appid,
-            uid: this.$data.common.uid,
-            orderid: massage.grabTicketFormId
-          }
-        })
+        if(massage.status==2||massage.status==18||massage.status==19||massage.status==4){
+          this.$router.push({
+            path: '/ticket/pay-order', query: {
+              appid: this.$data.common.appid,
+              uid: this.$data.common.uid,
+              id: massage.grabTicketFormId
+            }
+          })
+        }else {
+          this.$router.push({
+            path: '/ticket/rob-detail', query: {
+              appid: this.$data.common.appid,
+              uid: this.$data.common.uid,
+              orderid: massage.grabTicketFormId
+            }
+          })
+        }
       },
       teb: function (code) {
         if (code == 1) {
