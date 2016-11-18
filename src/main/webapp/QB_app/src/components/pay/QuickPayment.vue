@@ -10,7 +10,7 @@
           </div>
           <div class="ul" @click="goList">
             <!--<div class="logo">logo</div>-->
-            <div class="word">这是银行</div>
+            <div class="word">{{default_card.info.bankCode}}</div>
             <div class="word">{{default_card.info.cardNo}}</div>
             <div class="small">储蓄卡</div>
             <div class="list"></div>
@@ -34,7 +34,7 @@
             <li v-for="(card,index) in card_list" v-bind:class="{active:default_card.index==index}"
                 @click="select($event,card,index)">
               <!--<div class="logo">logo</div>-->
-              <div class="word">这是银行</div>
+              <div class="word">{{card.bankCode}}</div>
               <div class="word">{{card.cardNo}}</div>
               <div class="small">储蓄卡</div>
             </li>
@@ -362,7 +362,7 @@
         const val = this.$data.fill_from.crdNo;
         this.$http.post('/bankCardBin/cardNoInfo', {cardNo: val}).then(function (res) {
           if (res.data.code == 1) {
-            this.$data.fill_from.bankCode = res.data.data.shorthand;
+            this.$data.fill_from.bankCode = res.data.data.bankName;
           } else {
             this.$store.commit('MESSAGE_DELAY_SHOW', {
               text: res.data.message
