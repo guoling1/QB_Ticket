@@ -97,10 +97,8 @@
                 let runMin = res.body.data[i].run_time_minute;
                 let runH = 0;
                 let runM = 0;
-                if (runMin >= 60) {
-                  runH = parseInt(runMin / 60);
-                  runM = runMin % 60;
-                }
+                runH = parseInt(runMin / 60);
+                runM = runMin % 60;
                 res.body.data[i]['runTimeShow'] = runH + '小时' + runM + '分钟';
               }
             }else{
