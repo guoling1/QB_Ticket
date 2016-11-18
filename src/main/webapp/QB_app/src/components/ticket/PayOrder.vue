@@ -118,13 +118,13 @@
       let polling = '';
       const pollFun = ()=>{
         this.$http.post('/order/queryById', {orderFormId: this.$data.orderInfo.orderFormId}).then(function (res) {
-          if (res.data.code == 1 && res.data.data.status == 3) {
+          if (res.data.code == 1 && res.data.data.status == (3||7)) {
             clearInterval(polling);
             this.$data.orderInfo = res.data.data;
             this.$data.payInfo.price = res.data.data.totalPrice;
             // 调用定时器
             this.timer(this.$data.orderInfo.expireTime);
-          } else if (res.data.code == 1 && res.data.data.status == 4) {
+          } else if (res.data.code == 1 && res.data.data.status == (4||6)) {
             clearInterval(polling);
             this.$data.orderInfo = res.data.data;
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
