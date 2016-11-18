@@ -18,20 +18,16 @@
     components: {
       QuickPayment
     },
-    data () {
+    data: function () {
       return {
         msg: 'Welcome to Your Vue.js App'
       }
     },
-    created: function () {
-      // 跳过支付选择 直接唤起快捷支付
-      this.$store.commit('QUICK_PAYMENT_CALL');
-    },
     computed: {
       $$show: function () {
         return {
-          pay: this.$store.state.pay.show,
-          methodPayment: this.$store.state.pay.methodPayment
+          pay: this.$store.state.payment.pay.show,
+          methodPayment: this.$store.state.payment.pay.methodPayment
         }
       }
     }

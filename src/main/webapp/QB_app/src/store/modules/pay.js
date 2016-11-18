@@ -17,9 +17,13 @@ const state = {
 // mutations
 const mutations = {
   PAY_CALL (state, data) {
-    state.pay.show = true;
-    //state.pay.methodPayment = true;
+    // 存储支付数据
     state.pay.pay_form = data;
+    // 唤起支付
+    state.pay.show = true;
+    // 跳过支付方式选择,直接唤起快捷支付
+    //state.pay.methodPayment = true;
+    state.quickPayment.show = true;
   },
   QUICK_PAYMENT_CALL (state) {
     state.quickPayment.show = true;
