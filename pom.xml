@@ -391,6 +391,12 @@
                 <package.environment>product</package.environment>
             </properties>
         </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <package.environment>test</package.environment>
+            </properties>
+        </profile>
     </profiles>
 
     <build>
@@ -402,6 +408,7 @@
                 <excludes>
                     <exclude>local/*</exclude>
                     <exclude>product/*</exclude>
+                    <exclude>test/*</exclude>
                 </excludes>
             </resource>
         </resources>
