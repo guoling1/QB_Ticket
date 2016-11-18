@@ -42,7 +42,7 @@
           <div class="list" @click="minusChild($event,index)"></div>
           <div class="write no-prompt">
             <span class="name">{{child.name}}</span>
-            <span class="info">{{child.piaoType}}票</span>
+            <span class="info">儿童票</span>
           </div>
         </div>
       </div>

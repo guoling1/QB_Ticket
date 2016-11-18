@@ -144,17 +144,25 @@ public class TicketServiceImpl implements TicketService {
         orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_INITIALIZATION.getValue());
         this.orderFormService.add(orderForm);
         final JSONArray passengerJsonArray = new JSONArray();
-        for (RequestSubmitOrder.Passenger passenger : passengerList) {
-            final Optional<TbContactInfo> contactInfoOptional1 = this.contactInfoService.selectById(passenger.getId());
-            Preconditions.checkState(contactInfoOptional1.isPresent(), "乘客不存在");
-            final TbContactInfo contactInfo = contactInfoOptional1.get();
+        final RequestSubmitOrder.Passenger firstPassenger = passengerList.get(0);
+        Preconditions.checkState(EnumTrainTicketType.ADULT.getId().equals(firstPassenger.getPiaoType()), "第一个乘客必须是成人");
+        for (int i = 0; i < passengerList.size(); i++) {
+            TbContactInfo contactInfo;
+            RequestSubmitOrder.Passenger passenger = passengerList.get(i);
+            if (EnumTrainTicketType.ADULT.getId().equals(passenger.getPiaoType())) {
+                final Optional<TbContactInfo> contactInfoOptional1 = this.contactInfoService.selectById(passenger.getId());
+                Preconditions.checkState(contactInfoOptional1.isPresent(), "乘客不存在");
+                contactInfo = contactInfoOptional1.get();
+            } else {
+                contactInfo = this.contactInfoService.selectById(passengerList.get(0).getId()).get();
+            }
             final OrderFormDetail orderFormDetail = new OrderFormDetail();
             final JSONObject passengerJsonObject = new JSONObject();
             orderFormDetail.setOrderFormId(orderForm.getId());
             orderFormDetail.setGrabTicketFormId(0);
             orderFormDetail.setIsGrab(0);
             orderFormDetail.setMobile(contactInfo.getTel());
-            orderFormDetail.setPassengerId(contactInfo.getId());
+            orderFormDetail.setPassengerId(passenger.getId());
             orderFormDetail.setPassengerName(contactInfo.getName());
             orderFormDetail.setPassportSeNo(contactInfo.getIdenty());
             orderFormDetail.setPassportTypeSeId(contactInfo.getIdentyType());
@@ -169,7 +177,7 @@ public class TicketServiceImpl implements TicketService {
             passengerJsonObject.put("passportseno", orderFormDetail.getPassportSeNoPlain());
             passengerJsonObject.put("passporttypeseid", contactInfo.getIdentyType());
             passengerJsonObject.put("passporttypeseidname", EnumCertificatesType.of(contactInfo.getIdentyType()).getValue());
-            passengerJsonObject.put("passengerid", contactInfo.getId());
+            passengerJsonObject.put("passengerid", passenger.getId());
             passengerJsonObject.put("price", orderForm.getPrice());
             passengerJsonObject.put("zwcode", orderForm.getZwCode());
             passengerJsonObject.put("zwname", orderForm.getZwName());
@@ -726,29 +734,33 @@ public class TicketServiceImpl implements TicketService {
                     request.setMethod(EnumHTHYMethodCode.CANCEL_POLICY_ORDER.getCode());
                     request.setReqtime(DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss));
                     request.setPolicyNo(policyOrder.getPolicyNo());
-                    final JSONObject object = null;
+                    JSONObject object = null;
                     try{
                         log.info("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,请求中......");
-                        this.hySdkService.cancelPolicyOrder(request);
+                        object = this.hySdkService.cancelPolicyOrder(request);
+                        if (object.getInt("resultId") == 0) {
+                            //退保成功 , 计算退款金额, 退款金额 = 该乘客票款实退金额 + 出票套餐
+                            //更新保险单状态
+                            log.info("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,退保成功......");
+                            this.policyOrderService.updateStatusById(policyOrder.getId(), EnumPolicyOrderStatus.POLICY_RETURN_SUCCESS);
+                            returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()).
+                                    add(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice())));
+                            returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice()));
+                        } else {
+                            //退保失败
+                            //更新保险单状态
+                            log.info("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,退保失败......");
+                            this.policyOrderService.updateStatusById(policyOrder.getId(), EnumPolicyOrderStatus.POLICY_RETURN_FAIL);
+                            returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()));
+                            returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice()));
+                        }
                     }catch (final Throwable throwable){
                         log.error("小订单[" + orderFormDetail.getId() +"]保险退保异常,异常信息:" + throwable.getMessage());
-                    }
-                    if (object.getInt("resultId") == 0) {
-                        //退保成功 , 计算退款金额, 退款金额 = 该乘客票款实退金额 + 出票套餐
-                        //更新保险单状态
-                        this.policyOrderService.updateStatusById(policyOrder.getId(), EnumPolicyOrderStatus.POLICY_RETURN_SUCCESS);
-                        returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()).
-                                    add(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice())));
-                        returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice()));
-                        log.info("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,退保成功......");
-                    } else {
-                        //退保失败
-                        //更新保险单状态
                         this.policyOrderService.updateStatusById(policyOrder.getId(), EnumPolicyOrderStatus.POLICY_RETURN_FAIL);
                         returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()));
                         returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice()));
-                        log.error("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,退保失败......");
                     }
+
                 }else{
                     returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()));
                     returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(0));
@@ -1487,9 +1499,10 @@ public class TicketServiceImpl implements TicketService {
         final Date endTime = new Date(parse.getTime() - EnumGrabTimeType.of(grabTicketForm.getGrabTimeType()).getHour()*60*60*1000);
         if (flag){
             //未购买套餐
+            log.info("抢票单["+grabTicketForm.getId()+"]未购买套餐,放入消息队列,到期退款.........");
             grabTicketForm.setStatus(EnumGrabTicketStatus.WAIT_FOR_REFUND.getId());
             this.grabTicketFormService.update(grabTicketForm);
-            //放入消息队列 , 15分钟支付时间
+            //放入消息队列 ,
             //TODO 抢票
             JSONObject mqJo = new JSONObject();
             mqJo.put("grabTicketFormId",grabTicketForm.getId());
@@ -1500,21 +1513,45 @@ public class TicketServiceImpl implements TicketService {
         final JSONObject jsonObject = new JSONObject();
         final JSONArray passengerJsonArray = new JSONArray();
         final JSONArray jsonArray = JSONArray.fromObject(grabTicketForm.getPassengerInfo());
-        for (Object obj : jsonArray){
-            final JSONObject object = JSONObject.fromObject(obj);
-            final JSONObject passengerJsonObject = new JSONObject();
-            final Optional<TbContactInfo> contactInfoOptional1 = contactInfoService.selectById(object.getLong("id"));
-            Preconditions.checkState(contactInfoOptional1.isPresent(), "乘客不存在");
-            final TbContactInfo contactInfo = contactInfoOptional1.get();
-            passengerJsonObject.put("passengerid", object.getString("id"));
-            passengerJsonObject.put("passengersename", contactInfo.getName());
-            passengerJsonObject.put("passportseno", contactInfo.identyOrg(contactInfo.getIdenty()));
-            passengerJsonObject.put("passporttypeseid", contactInfo.getIdentyType());
-            passengerJsonObject.put("passporttypeidname", EnumCertificatesType.of(contactInfo.getIdentyType()).getValue());
-            passengerJsonObject.put("piaotype", String.valueOf(contactInfo.getPersonType()));
-            passengerJsonObject.put("piaotypename", EnumTrainTicketType.of(String.valueOf(contactInfo.getPersonType())).getValue());
-            passengerJsonArray.add(passengerJsonObject);
+        //判断第一个是不是成人,若不是则直接下单失败,等待到期退款
+        final JSONObject first = JSONObject.fromObject(jsonArray.get(0));
+        final Optional<TbContactInfo> firstOptional = contactInfoService.selectById(first.getLong("id"));
+        Preconditions.checkState(firstOptional.isPresent(), "乘客不存在");
+        final TbContactInfo firstContactInfo = firstOptional.get();
+        if (first.getString("piaoType").equals(EnumTrainTicketType.ADULT.getId())){
+            for (Object obj : jsonArray){
+                final JSONObject object = JSONObject.fromObject(obj);
+                final JSONObject passengerJsonObject = new JSONObject();
+                final Optional<TbContactInfo> contactInfoOptional1 = contactInfoService.selectById(object.getLong("id"));
+                Preconditions.checkState(contactInfoOptional1.isPresent(), "乘客不存在");
+                final TbContactInfo contactInfo = contactInfoOptional1.get();
+                if (object.getString("piaoType").equals(EnumTrainTicketType.ADULT.getId())){
+                    passengerJsonObject.put("passengersename", firstContactInfo.getName());
+                    passengerJsonObject.put("passportseno", firstContactInfo.identyOrg(contactInfo.getIdenty()));
+                }else{
+                    passengerJsonObject.put("passengersename", contactInfo.getName());
+                    passengerJsonObject.put("passportseno", contactInfo.identyOrg(contactInfo.getIdenty()));
+                }
+                passengerJsonObject.put("passengerid", object.getString("id"));
+                passengerJsonObject.put("passporttypeseid", contactInfo.getIdentyType());
+                passengerJsonObject.put("passporttypeidname", EnumCertificatesType.of(contactInfo.getIdentyType()).getValue());
+                passengerJsonObject.put("piaotype", String.valueOf(contactInfo.getPersonType()));
+                passengerJsonObject.put("piaotypename", EnumTrainTicketType.of(String.valueOf(contactInfo.getPersonType())).getValue());
+                passengerJsonArray.add(passengerJsonObject);
+            }
+        }else{
+            //乘客信息不对,第一个不是成人
+            log.info("抢票单["+grabTicketForm.getId()+"]未购买套餐,放入消息队列,到期退款.........");
+            grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_REQUEST_FAIL.getId());
+            this.grabTicketFormService.update(grabTicketForm);
+            //放入消息队列 ,
+            //TODO 抢票
+            JSONObject mqJo = new JSONObject();
+            mqJo.put("grabTicketFormId",grabTicketForm.getId());
+            MqProducer.sendMessage(mqJo, MqConfig.GRAB_FORM_FAIL_WAIT_REFUND, endTime.getTime() - (new Date()).getTime());
+            return;
         }
+
         jsonObject.put("partnerid",HySdkConstans.GRAB_PARTNER_ID);
         jsonObject.put("method", EnumHTHYMethodCode.QIANG_PIAO_ORDER.getCode());
         jsonObject.put("reqtime", DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss));
@@ -1565,7 +1602,7 @@ public class TicketServiceImpl implements TicketService {
                 grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_REQUEST_FAIL.getId());
                 grabTicketForm.setRemark(jsonResponse.getString("msg"));
                 this.grabTicketFormService.update(grabTicketForm);
-                log.info("抢票单[" + grabTicketForm.getId() + "]请求hy抢票下单,下单失败.........");
+                log.info("抢票单[" + grabTicketForm.getId() + "]请求hy抢票下单,下单失败,放入消息队列,到期全额退款.........");
             }
         }catch (final Throwable throwable){
             JSONObject mqJo = new JSONObject();

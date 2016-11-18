@@ -156,10 +156,10 @@ public class TicketController extends BaseController{
     @RequestMapping(value = "/grab", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntityBase<ResponseGrabTicket> grabTicket(@RequestBody final RequestGrabTicket requset) throws Exception {
-        requset.setUid(super.getUid(requset.getAppId(), requset.getUid()));
-        Preconditions.checkState(ValidateUtils.isMobile(requset.getPhone()));
         final ResponseEntityBase<ResponseGrabTicket> result = new ResponseEntityBase<>();
         try{
+            requset.setUid(super.getUid(requset.getAppId(), requset.getUid()));
+            Preconditions.checkState(ValidateUtils.isMobile(requset.getPhone()), "联系手机输入错误");
             logger.info("用户uid=" + requset.getUid() + "下了一个抢票单");
             ResponseGrabTicket responseGrabTicket = this.ticketService.grabTicket(requset);
                 result.setCode(1);

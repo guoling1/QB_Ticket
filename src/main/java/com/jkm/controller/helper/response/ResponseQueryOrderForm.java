@@ -124,6 +124,12 @@ public class ResponseQueryOrderForm {
 
     @Data
     public class passenger{
+
+        /**
+         * 票记录id
+         */
+        private long orderFormDetailId;
+
         /**
          *  乘车人姓名
          */
