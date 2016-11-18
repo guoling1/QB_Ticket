@@ -4,6 +4,7 @@ import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
 import com.jkm.service.QueryTicketPriceService;
 import com.jkm.service.hy.helper.HySdkConstans;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by zhangbin on 2016/11/1.
@@ -26,11 +29,10 @@ public class QueryTicketPriceController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/query", method = RequestMethod.POST)
-    public ResponseEntityBase<Object> query() throws IOException {
+    public ResponseEntityBase<JSONArray> query() throws IOException {
 
         JSONObject responseJson = new JSONObject();
-        JSONObject requestJson = null;
-        requestJson = super.getRequestJsonParams();
+        JSONObject requestJson = super.getRequestJsonParams();
         String uid = super.getUid(requestJson.getString("appid"),requestJson.getString("uid"));
         String partnerid = HySdkConstans.QUERY_PARTNER_ID;
         String method = "train_query";
@@ -42,9 +44,42 @@ public class QueryTicketPriceController extends BaseController {
         String purpose_codes = "ADULT";
         responseJson = this.queryTicketPriceService.queryTicket(uid,partnerid, method, from_station, to_station, from_station_name, to_station_name, train_date, purpose_codes);
 
-        final ResponseEntityBase<Object> results = new ResponseEntityBase<>();
-        results.setData(responseJson.get("data"));
+        JSONArray arrayResult = new JSONArray();
+        JSONArray ja = responseJson.getJSONArray("data");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
+        Date date = new Date();
+        String  now = sdf.format(date.getTime()+30*60*1000);
+        String now1 = now.substring(8,12);
+        String times = now.substring(0,8);
+        long times1 = Long.parseLong(times);
+        long now2 = Long.parseLong(now1);
+//        String trainStartDate = ja.getJSONObject(ja.size()).getString("train_start_date");
+        if(ja.size()>0){
+            for(int i=0;i<ja.size();i++){
+                String starTime = ja.getJSONObject(i).getString("start_time");
+                String trainStartDate = ja.getJSONObject(i).getString("train_start_date");
+//                String trainDate = requestJson.getString("train_date");
+                //// TODO: 2016/11/17 将字符串转为long
+                starTime=starTime.replace(":","");
+                trainStartDate=trainStartDate.replace("-","");
+                long trainStartDates = Long.parseLong(trainStartDate);
+//                long reqtimes = Long.parseLong(reqtime);
+                long startLongTime = Long.parseLong(starTime);
+                if (trainStartDates == times1){
+                    if(startLongTime>now2){
+                        arrayResult.add(ja.getJSONObject(i));
+                    }
 
+                }else {
+                    arrayResult.add(ja.getJSONObject(i));
+                }
+
+//                continue;
+
+            }
+        }
+        final ResponseEntityBase<JSONArray> results = new ResponseEntityBase<JSONArray>();
+        results.setData(arrayResult);
         return results;
     }
 

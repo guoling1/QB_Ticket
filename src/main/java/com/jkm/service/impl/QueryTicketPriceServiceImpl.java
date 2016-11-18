@@ -23,13 +23,12 @@ public class QueryTicketPriceServiceImpl implements QueryTicketPriceService {
     public JSONObject queryTicket(String uid, String partnerid, String method, String from_station, String to_station,
                                   String from_station_name, String to_station_name, String train_date, String purpose_codes) {
 
-        JSONObject jsonObject = null;
-        SimpleDateFormat date = new SimpleDateFormat("yyyyMMddHHmmss");
-        String reqtime = date.format(new Date());
-        jsonObject = new JSONObject();
-        String sign = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        Date now = new Date();
+        String reqtime = sdf.format(now);
+        JSONObject jsonObject = new JSONObject();
         try {
-            sign = MD5Util.MD5(partnerid + method + reqtime + MD5Util.MD5(HySdkConstans.QUERY_SIGN_KEY));
+            String sign = MD5Util.MD5(partnerid + method + reqtime + MD5Util.MD5(HySdkConstans.QUERY_SIGN_KEY));
             jsonObject.put("partnerid", partnerid);
             jsonObject.put("method", method);
             jsonObject.put("reqtime", reqtime);
@@ -45,6 +44,7 @@ public class QueryTicketPriceServiceImpl implements QueryTicketPriceService {
 
         JSONObject responseJson = new JSONObject();
         responseJson = HttpMethod.httpClient(jsonObject, "http://searchtrain.hangtian123.net/trainSearch");
+
         queryHistoryService.save(uid,from_station,to_station,from_station_name,to_station_name);
         return responseJson;
     }
