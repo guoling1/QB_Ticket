@@ -168,6 +168,7 @@
       polling = setInterval(pollFun, 1500);
     },
     beforeRouteEnter (to, from, next) {
+      console.log(Vue);
       Vue.http.post('/order/queryById', {
         "orderFormId": to.query.id
       }).then(function (res) {
@@ -180,11 +181,13 @@
             vm.$data.payInfo.price = res.data.data.totalPrice;
           });
         } else {
+          console.log(Vue.stote);
           this.$store.commit('MESSAGE_DELAY_SHOW', {
             text: res.data.message
           });
         }
-      }, function (err) {
+      }, function(err){
+        console.log(Vue.store);
         this.$store.commit('MESSAGE_DELAY_SHOW', {
           text: err
         });

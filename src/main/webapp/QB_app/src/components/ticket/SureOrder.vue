@@ -332,6 +332,14 @@
         this.$data.skip = false;
       },
       submit: function (event, skip) {
+        var ary=[];
+        for(var i=0;i<this.$data.childs.length;i++){
+          ary.push({
+            id:this.$data.childs[i].id,
+            piaoType:2
+          })
+        }
+        this.$data.sureOrder.passengers=this.$data.sureOrder.passengers.concat(ary);
         // 判断是否选择了套餐
         if (this.$data.sureOrder.buyTicketPackageId == 1 && !!skip) {
           this.$data.skip = true;
@@ -352,7 +360,7 @@
             this.$data.$err=false
           },1000);
         }else {
-          this.$http.post('/ticket/submitOrder', this.$data.sureOrder).then(function (res) {
+          this.$http.post('/ticket/submitOrder', JSON.stringify(this.$data.sureOrder)).then(function (res) {
             if (res.data.code == 1) {
               this.$router.push({
                 path: '/ticket/pay-order',
