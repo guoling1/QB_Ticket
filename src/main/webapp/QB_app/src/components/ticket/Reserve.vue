@@ -97,11 +97,6 @@
       Pay
     },
     data: function () {
-      this.$http.post('/test/query').then(function(res){
-        console.log(res);
-      },function(err){
-        console.log(err);
-      });
       return {
         appid: '',
         uid: '',
