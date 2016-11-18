@@ -1,6 +1,7 @@
 package com.jkm.service;
 
 import com.jkm.entity.PaySequence;
+import org.apache.ibatis.annotations.Param;
 
 
 /**
@@ -34,5 +35,8 @@ public interface PaySequenceService {
 	 **/
 	int updateByPrimaryKeySelective(PaySequence record);
 
-
+	/**
+	 * 根据流水号更改订单状态
+	 */
+	void updatePayResultByReqSn(String payResult,String reqSn);
 }

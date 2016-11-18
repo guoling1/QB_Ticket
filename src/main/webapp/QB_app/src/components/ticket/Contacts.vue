@@ -123,25 +123,39 @@
         document.querySelector("#mask").style.display="none";
       },
       importCon:function(){
-        Vue.http.post('/website/importContacts',{uid:this.$route.query.uid,appid:this.$route.query.appid})
+        this.$http.post('/website/importContacts',{uid:this.$route.query.uid,appid:this.$route.query.appid})
           .then((res)=>{
             if(res.data.code==1){
-              Vue.$http.post('/contactInfo/list',{uid:this.$route.query.uid,appid:this.$route.query.appid})
+              this.$http.post('/contactInfo/list',{uid:this.$route.query.uid,appid:this.$route.query.appid})
                 .then((response)=>{
-                    let massages = response.data.data;
-                    for (var i = 0; i < massages.length; i++) {
-                      //性别
-                      massages[i].sex=massages[i].sex==0?"男":"女";
+                  let massages = response.data.data;
+                  let type = {
+                    1:'成人',2: '儿童',3: '学生',4: '伤残军人'
+                  };
+                  for (var i = 0; i < massages.length; i++) {
+                    massages[i].piaoType=type[massages[i].personType];
+                    massages[i].sex=massages[i].sex==0?"男":"女";
+                    massages[i].selected = false;
+                    if(this.$store.state.contact.keepID.length!=0){
+                      for(var j=0;j<this.$store.state.contact.keepID.length;j++){
+                        if(massages[i].id==this.$store.state.contact.keepID[j]){
+                          massages[i].selected = true;
+                        }
+                      }
                     }
+                    continue
+                  }
                   this.$data.massages = massages;
-                })
-                .catch((err)=> {
+                }).catch((err)=> {
                   console.log(err);
                 })
+            }else{
+              this.$router.push({path:'/ticket/login',query:{uid:this.$route.query.uid,appid:this.$route.query.appid}})
             }
           })
           .catch((err)=> {
-            this.$router.push({path:'/ticket/login',query:{appid:this.$route.query.uid,appid:this.$route.query.appid}})
+            console.log(err);
+            this.$router.push({path:'/ticket/login',query:{uid:this.$route.query.uid,appid:this.$route.query.appid}})
           })
       },
       close: function(){

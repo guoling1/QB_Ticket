@@ -2,6 +2,10 @@ package com.jkm.entity.fusion;
 
 public class AuthenData {
 	/**
+	 * 订单号
+	 */
+	private long orderId;
+	/**
 	 * 商户号
 	 */
 	private String mercId;
@@ -182,4 +186,11 @@ public class AuthenData {
 		this.appId = appId;
 	}
 
+	public long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(long orderId) {
+		this.orderId = orderId;
+	}
 }

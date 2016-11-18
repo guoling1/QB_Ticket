@@ -165,7 +165,6 @@
             next(false);
           })
       }
-
     },
     methods: {
       show:function(index){

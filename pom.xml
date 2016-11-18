@@ -374,68 +374,6 @@
             <version>1.2.5</version>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>local</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources/local</directory>
-                    </resource>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                        <includes>
-                            <include>*</include>
-                            <include>mapping/*</include>
-                            <include>mybatis/*</include>
-                        </includes>
-                    </resource>
-                </resources>
-            </build>
-        </profile>
-
-        <profile>
-            <id>test</id>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources/test</directory>
-                    </resource>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                        <includes>
-                            <include>*</include>
-                            <include>mapping/*</include>
-                            <include>mybatis/*</include>
-                        </includes>
-                    </resource>
-                </resources>
-            </build>
-        </profile>
-
-        <profile>
-            <id>production</id>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources/production</directory>
-                    </resource>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                        <includes>
-                            <include>*</include>
-                            <include>mapping/*</include>
-                            <include>mybatis/*</include>
-                        </includes>
-                    </resource>
-                </resources>
-            </build>
-        </profile>
-    </profiles>
     <build>
         <finalName>QB_Ticket</finalName>
         <plugins>

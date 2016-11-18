@@ -33,4 +33,9 @@ public class RefundSequenceServiceImpl implements RefundSequenceService {
 	public int updateByPrimaryKeySelective(RefundSequence record) {
 		return refundSequenceDao.updateByPrimaryKeySelective(record);
 	}
+
+	@Override
+	public void updateRefundResultByReqSn(String refundResult, String refundSn) {
+		refundSequenceDao.updateRefundResultByReqSn(refundResult,refundSn);
+	}
 }

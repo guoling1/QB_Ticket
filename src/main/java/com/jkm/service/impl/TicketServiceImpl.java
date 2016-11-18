@@ -734,29 +734,33 @@ public class TicketServiceImpl implements TicketService {
                     request.setMethod(EnumHTHYMethodCode.CANCEL_POLICY_ORDER.getCode());
                     request.setReqtime(DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss));
                     request.setPolicyNo(policyOrder.getPolicyNo());
-                    final JSONObject object = null;
+                    JSONObject object = null;
                     try{
                         log.info("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,请求中......");
-                        this.hySdkService.cancelPolicyOrder(request);
+                        object = this.hySdkService.cancelPolicyOrder(request);
+                        if (object.getInt("resultId") == 0) {
+                            //退保成功 , 计算退款金额, 退款金额 = 该乘客票款实退金额 + 出票套餐
+                            //更新保险单状态
+                            log.info("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,退保成功......");
+                            this.policyOrderService.updateStatusById(policyOrder.getId(), EnumPolicyOrderStatus.POLICY_RETURN_SUCCESS);
+                            returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()).
+                                    add(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice())));
+                            returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice()));
+                        } else {
+                            //退保失败
+                            //更新保险单状态
+                            log.info("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,退保失败......");
+                            this.policyOrderService.updateStatusById(policyOrder.getId(), EnumPolicyOrderStatus.POLICY_RETURN_FAIL);
+                            returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()));
+                            returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice()));
+                        }
                     }catch (final Throwable throwable){
                         log.error("小订单[" + orderFormDetail.getId() +"]保险退保异常,异常信息:" + throwable.getMessage());
-                    }
-                    if (object.getInt("resultId") == 0) {
-                        //退保成功 , 计算退款金额, 退款金额 = 该乘客票款实退金额 + 出票套餐
-                        //更新保险单状态
-                        this.policyOrderService.updateStatusById(policyOrder.getId(), EnumPolicyOrderStatus.POLICY_RETURN_SUCCESS);
-                        returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()).
-                                    add(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice())));
-                        returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice()));
-                        log.info("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,退保成功......");
-                    } else {
-                        //退保失败
-                        //更新保险单状态
                         this.policyOrderService.updateStatusById(policyOrder.getId(), EnumPolicyOrderStatus.POLICY_RETURN_FAIL);
                         returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()));
                         returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice()));
-                        log.error("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,退保失败......");
                     }
+
                 }else{
                     returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()));
                     returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(0));
@@ -916,31 +920,35 @@ public class TicketServiceImpl implements TicketService {
                         request.setMethod(EnumHTHYMethodCode.CANCEL_POLICY_ORDER.getCode());
                         request.setReqtime(DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss));
                         request.setPolicyNo(policyOrder.getPolicyNo());
-                        final JSONObject object = null;
+                        final JSONObject object;
                         try{
                             log.info("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,请求中......");
-                            this.hySdkService.cancelPolicyOrder(request);
-                        }catch (final Throwable throwable){
-                            log.error("小订单[" + orderFormDetail.getId() +"]保险退保异常,异常信息:" + throwable.getMessage());
-                        }
-                        if (object.getInt("resultId") == 0) {
-                            //退保成功 , 计算退款金额, 退款金额 = 该乘客票款实退金额 + 出票套餐
-                            //更新保险单状态
-                            this.policyOrderService.updateStatusById(policyOrder.getId(), EnumPolicyOrderStatus.POLICY_RETURN_SUCCESS);
-                            //有出票套餐
+                            object = this.hySdkService.cancelPolicyOrder(request);
+                            if (object.getInt("resultId") == 0) {
+                                //退保成功 , 计算退款金额, 退款金额 = 该乘客票款实退金额 + 出票套餐
+                                //更新保险单状态
+                                this.policyOrderService.updateStatusById(policyOrder.getId(), EnumPolicyOrderStatus.POLICY_RETURN_SUCCESS);
+                                //有出票套餐
                                 returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()).
                                         add(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice())));
                                 returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(EnumBuyTicketPackageType.of(buyTicketPackageId).getPrice()));
-                            log.info("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,退保成功......");
-                        } else {
-                            //退保失败
-                            //更新保险单状态
-                            this.policyOrderService.updateStatusById(policyOrder.getId(), EnumPolicyOrderStatus.POLICY_RETURN_FAIL);
-                            //有出票套餐
+                                log.info("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,退保成功......");
+                            } else {
+                                //退保失败
+                                //更新保险单状态
+                                this.policyOrderService.updateStatusById(policyOrder.getId(), EnumPolicyOrderStatus.POLICY_RETURN_FAIL);
+                                //有出票套餐
                                 returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()));
                                 returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(0));
-                            log.error("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,退保失败......");
+                                log.error("小订单[" + orderFormDetail.getId() +"]请求hy进行退保,退保失败......");
+                            }
+                        }catch (final Throwable throwable){
+                            this.policyOrderService.updateStatusById(policyOrder.getId(), EnumPolicyOrderStatus.POLICY_RETURN_FAIL);
+                            returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()));
+                            returnMoneyOrder.setReturnBuyTicketPackage(new BigDecimal(0));
+                            log.error("小订单[" + orderFormDetail.getId() +"]保险退保异常,异常信息:" + throwable.getMessage());
                         }
+
                     }else{
                         //无出票套餐
                         returnMoneyOrder.setReturnTotalMoney(new BigDecimal(flow.getReturnmoney()));

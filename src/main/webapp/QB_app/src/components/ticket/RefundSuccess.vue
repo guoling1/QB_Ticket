@@ -100,15 +100,18 @@
             vm.$data.common.uid = to.query.uid;
           });
         } else {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: res.body.message
-          });
+          next(function (vm){
+            vm.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: res.body.message
+            })
+          })
         }
       }, function (err) {
-        this.$store.commit('MESSAGE_DELAY_SHOW', {
-          text: err
-        });
-        next(false);
+        next(function (vm){
+          vm.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: err
+          })
+        })
       });
     },
     methods: {

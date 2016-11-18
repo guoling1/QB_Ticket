@@ -70,39 +70,8 @@
         </div>
       </div>
     </div>
-    <div class="bank" v-show="payInfo.bank">
-      <div class="bankList" v-show="payInfo.list">
-        <div class="xx"></div>
-        <ul>
-          <li v-for="(card,index) in payInfo.cardList" v-bind:class="{active:payInfo.index==index}"
-              @click="select($event,card,index)">
-            <div class="logo">logo</div>
-            <div class="word">这是银行</div>
-            <div class="word">{{card.cardNo}}</div>
-            <div class="small">储蓄卡</div>
-          </li>
-        </ul>
-        <div class="new" @click="newCard">使用新卡支付</div>
-        <div class="btn" @click="choose">确认付款 ￥{{$payInfo.price}}</div>
-      </div>
-      <div class="checkout" v-show="!payInfo.list">
-        <div class="xx"></div>
-        <div class="ul">
-          <div class="logo">logo</div>
-          <div class="word">这是银行</div>
-          <div class="word">{{payInfo.checkout.cardNo}}</div>
-          <div class="small">储蓄卡</div>
-        </div>
-        <div class="ul">
-          <input type="text" placeholder="请输入验证码" v-model="payInfo.checkCode">
-          <button v-show="payInfo.sendCtrl" @click="send">获取验证码</button>
-          <button v-show="!payInfo.sendCtrl">{{payInfo.timer}}</button>
-        </div>
-
-        <div class="btn" @click="pay">确认付款 ￥{{$payInfo.price}}</div>
-      </div>
-    </div>
     <message></message>
+    <pay></pay>
   </div>
 </template>
 
@@ -110,12 +79,14 @@
   import Vue from 'vue'
   import Datetime from './Datetime.vue'
   import Message from '../Message.vue'
+  import Pay from '../pay/Main.vue'
 
   export default {
     name: 'menu',
     components: {
       Datetime,
-      Message
+      Message,
+      Pay
     },
     data: function () {
       return {
@@ -180,15 +151,18 @@
             vm.$data.payInfo.price = res.data.data.totalPrice;
           });
         } else {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: res.data.message
-          });
+          next(function (vm){
+            vm.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: res.body.message
+            })
+          })
         }
-      }, function(err){
-        this.$store.commit('MESSAGE_DELAY_SHOW', {
-          text: err
-        });
-        next(false);
+      }, function (err) {
+        next(function (vm){
+          vm.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: err
+          })
+        })
       });
     },
     methods: {
@@ -204,8 +178,8 @@
             clearInterval(polling2);
           } else {
             let min = parseInt(time / (1000 * 60));
-            let ss = parseInt((time - min*(1000*60)) / 1000);
-            if(ss<10){
+            let ss = parseInt((time - min * (1000 * 60)) / 1000);
+            if (ss < 10) {
               ss = '0' + ss;
             }
             this.$data.countdown = min + ':' + ss;
@@ -213,99 +187,11 @@
         }
         polling2 = setInterval(pollFun2, 1000);
       },
-      newCard: function () {
-        this.$router.push({
-          path: '/pay/second-add', query: {
-            appid: this.$data.common.appid,
-            uid: this.$data.common.uid,
-            orderid: this.$data.payInfo.orderId,
-            price: this.$data.payInfo.price,
-            name: this.$data.payInfo.peopleInfo.accountName,
-            card: this.$data.payInfo.peopleInfo.cardId,
-            payType: 0
-          }
-        });
-      },
-      select: function (event, card, index) {
-        this.$data.payInfo.checkout = card;
-        this.$data.payInfo.index = index;
-      },
-      choose: function () {
-        this.$data.payInfo.list = false;
-      },
-      send: function () {
-        this.$http.post('/authen/getCode', {
-          phone: this.$data.payInfo.checkout.phone,//手机号
-          amount: this.$data.payInfo.price, //支付金额
-          verificationCodeType: '5',
-          uid: this.$data.common.uid, //三方商户用户id
-          appid: this.$data.common.appid //三方商户唯一标示appid
-        }).then(function (res) {
-          if (res.data.code == 1) {
-            this.$data.payInfo.sendCtrl = false;
-            this.$data.payInfo.sn = res.data.data;
-            let polling = '';
-            const pollFun = ()=>{
-              this.$data.payInfo.timer--;
-              if (this.$data.payInfo.timer < 0) {
-                this.$data.payInfo.timer = 60;
-                this.$data.payInfo.sendCtrl = true;
-                clearInterval(polling);
-              }
-            }
-            polling = setInterval(pollFun, 1000);
-          } else {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.data.message
-            });
-          }
-        }, function (err) {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
-          });
-        })
-      },
       cancel: function () {
         this.$http.post('/ticket/cancelOrder', {
           orderFormId: this.$data.orderInfo.orderFormId
         }).then(function (res) {
-          if(res.body.code!=1){
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.body.message
-            });
-          }
-        }, function (err) {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
-          });
-        })
-      },
-      pay: function () {
-        let data = new Date(),
-          year = data.getFullYear() + '',
-          month = data.getMonth() + 1 + '',
-          day = data.getDate() + '',
-          hour = data.getHours() + '',
-          min = data.getMinutes() + '',
-          ss = data.getSeconds() + '';
-        let random = parseInt(Math.random() * 89999 + 10000) + '';
-        let nonceStr = year + month + day + hour + min + ss + random;
-        this.$http.post('/authen/toPayByCid', {
-          uid: this.$data.common.uid,
-          appid: this.$data.common.appid,
-          orderId: this.$data.payInfo.orderId, //订单编号，不是订单号，是金开门系统唯一id
-          nonceStr: nonceStr, //随机字符串，每次请求都不一样，生成规则（yyyyMMddHHmmssSSS+5个随机数字）
-          cId: this.$data.payInfo.checkout.id,//银行卡id
-          vCode: this.$data.payInfo.checkCode, //手机验证码
-          sn: this.$data.payInfo.sn //调用短信接口返回的值
-        }).then(function (res) {
-          if (res.data.code == 1) {
-            this.$router.push({path:'/ticket/refund-success',query:{
-              appid: this.$data.common.appid,
-              uid: this.$data.common.uid,
-              orderid: this.$data.payInfo.orderId
-            }})
-          } else {
+          if (res.body.code != 1) {
             this.$store.commit('MESSAGE_DELAY_SHOW', {
               text: res.body.message
             });
@@ -319,37 +205,12 @@
       submit: function () {
         // 首先判断订单状态,决定是否能支付
         if (this.$data.orderInfo.status == 3 /*&& this.$data.countdown*/) {
-          this.$http.post('/card/list', {
+          this.$store.commit('PAY_CALL', {
             appid: this.$data.common.appid,
-            uid: this.$data.common.uid
-          }).then(function (res) {
-            if (res.data.code == 1) {
-              if (res.data.data.cardList) {
-                this.$data.payInfo.cardList = res.data.data.cardList;
-                this.$data.payInfo.checkout = res.data.data.cardList[0];
-                this.$data.payInfo.peopleInfo = res.data.data.userCardInfo;
-                this.$data.payInfo.bank = true;
-              } else {
-                this.$router.push({
-                  path: '/pay/first-add',
-                  query: {
-                    appid: this.$data.common.appid,
-                    uid: this.$data.common.uid,
-                    id: this.$data.payInfo.orderId,
-                    price: this.$data.payInfo.price,
-                    payType: 0
-                  }
-                });
-              }
-            } else {
-              this.$store.commit('MESSAGE_DELAY_SHOW', {
-                text: res.data.message
-              });
-            }
-          }, function (err) {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: err
-            });
+            uid: this.$data.common.uid,
+            orderId: this.$data.payInfo.orderId,
+            price: this.$data.payInfo.price,
+            type: 'pre'
           });
         }
       }
@@ -743,106 +604,6 @@
           background-color: #8fcfef;
           color: #cfefff;
         }
-      }
-    }
-  }
-
-  .bank {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 88;
-    background: rgba(0, 0, 0, 0.5);
-    .bankList, .checkout {
-      position: absolute;
-      width: 100%;
-      height: 50%;
-      background-color: #FFF;
-      left: 0;
-      bottom: 0;
-      .xx {
-        width: 14px;
-        height: 14px;
-        background: url("../../assets/xx.png") no-repeat center;
-        background-size: 14px 14px;
-        padding: 15px;
-      }
-      .logo {
-        float: left;
-        margin-right: 15px;
-      }
-      .word {
-        float: left;
-        margin-right: 15px;
-        font-size: 15px;
-        color: #000;
-      }
-      .small {
-        float: left;
-        font-size: 12px;
-        color: #999;
-      }
-      .ul {
-        width: 100%;
-        height: 45px;
-        line-height: 45px;
-        text-align: left;
-        padding-left: 15px;
-        color: #999;
-        border-bottom: 1px solid #f5f5f5;
-        button {
-          float: right;
-          height: 44px;
-          padding: 0 15px;
-          font-size: 12px;
-          color: #37abe5;
-          background-color: #FFF;
-        }
-      }
-      ul {
-        li {
-          width: 100%;
-          height: 45px;
-          line-height: 45px;
-          text-align: left;
-          padding-left: 15px;
-          color: #999;
-          border-bottom: 1px solid #f5f5f5;
-          &.active {
-            color: #2ba7e5;
-            background: url("../../assets/select.png") no-repeat 320px;
-            background-size: 16px 11px;
-            span {
-              font-weight: bold;
-            }
-          }
-        }
-      }
-      .new {
-        width: 100%;
-        height: 45px;
-        padding-left: 50px;
-        line-height: 45px;
-        text-align: left;
-        background: url("../../assets/new.png") no-repeat 15px 10px;
-        background-size: 25px 25px;
-        border-bottom: 1px solid #f5f5f5;
-        font-size: 15px;
-        color: #4ab9f1;
-      }
-      .btn {
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        height: 50px;
-        background-color: #4ab9f1;
-        font-size: 15px;
-        color: #FFF;
-        line-height: 50px;
-        text-align: center;
       }
     }
   }
