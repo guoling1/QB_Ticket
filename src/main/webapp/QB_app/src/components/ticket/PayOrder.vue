@@ -210,7 +210,7 @@
       },
       submit: function () {
         // 首先判断订单状态,决定是否能支付
-        if (this.$data.orderInfo.status == 3 && this.$data.countdown) {
+        if ((this.$data.orderInfo.status == 3||this.$data.orderInfo.status == 7) && this.$data.countdown) {
           this.$store.commit('PAY_CALL', {
             appid: this.$data.common.appid,
             uid: this.$data.common.uid,
