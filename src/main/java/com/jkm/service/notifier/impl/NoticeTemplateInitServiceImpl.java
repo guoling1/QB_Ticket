@@ -21,10 +21,6 @@ public class NoticeTemplateInitServiceImpl implements NoticeTemplateInitService 
 
     @Override
     public void initTemplate() {
-        final List<SmsTemplate> messageTemplate = this.messageTemplateService.getMessageTemplate();
-        if (!CollectionUtils.isEmpty(messageTemplate)) {
-            return;
-        }
 
         final String platformName = NotifierConstants.getNotifierConfig().platformName();
 
