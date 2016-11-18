@@ -81,6 +81,7 @@ public class AuthenServiceImpl implements AuthenService {
 	 */
 	@Override
 	public Map<String, Object> fastPay(AuthenData requestData) {
+		logger.info("支付参数为："+JSONObject.fromObject(requestData));
 		Map<String, Object> ret = new HashMap<String, Object>();
 		GetParamRecord gr = new GetParamRecord();
 		gr.setStatus(0);
@@ -192,6 +193,7 @@ public class AuthenServiceImpl implements AuthenService {
 					+ "*********************");
 
 		} catch (Exception e) {
+
 			logger.debug("支付错误信息:", e);
 			ret.put("retCode", "4000");
 			ret.put("retMsg", "支付异常");
@@ -622,7 +624,9 @@ public class AuthenServiceImpl implements AuthenService {
 		}
 		orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId());
 		orderFormService.updateStatus(orderFormOptional.get());
+		logger.error("+++++++++++++++开始支付+++++++++++++++++++");
 		Map<String, Object> ret = this.fastPay(authenData);
+		logger.error("+++++++++++++++支付结束+++++++++++++++++++");
 		if("0000".equals(ret.get("retCode").toString())){//支付成功
 			BindCard bindCard = new BindCard();
 			bindCard.setUid(requestData.getString("uid"));

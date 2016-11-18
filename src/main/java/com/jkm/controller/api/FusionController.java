@@ -6,6 +6,7 @@ import com.jkm.entity.fusion.QueryQuickPayData;
 import com.jkm.entity.fusion.QueryRefundData;
 import com.jkm.entity.fusion.SingleRefundData;
 import com.jkm.service.AuthenService;
+import com.jkm.service.TicketService;
 import com.jkm.util.SnGenerator;
 import com.jkm.util.mq.MqConfig;
 import com.jkm.util.mq.MqProducer;
@@ -30,7 +31,8 @@ public class FusionController extends BaseController {
     @Autowired
     private AuthenService authenService;
 
-
+    @Autowired
+    private TicketService ticketService;
 
     /**
      * 大订单立即支付(首次)
@@ -42,6 +44,7 @@ public class FusionController extends BaseController {
     @RequestMapping(value = "/toPay", method = RequestMethod.POST)
     public ResponseEntityBase<JSONObject> toPay() {
         ResponseEntityBase<JSONObject> responseEntityBase = new ResponseEntityBase<JSONObject>();
+
         try{
             JSONObject jo = super.getRequestJsonParams();
             String uid = super.getUid(jo.getString("appid"),jo.getString("uid"));
