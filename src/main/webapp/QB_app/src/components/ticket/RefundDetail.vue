@@ -128,7 +128,7 @@
       }
     },
     beforeRouteEnter (to, from, next) {
-      if(to.query.grabTicketFormId==undefined){ //预定
+      if(to.query.grabTicketFormId==undefined){
         Vue.http.post('/order/queryById',{orderFormId: to.query.orderid})
           .then(function (res) {
             if(res.data.code==1){
@@ -136,15 +136,18 @@
                 vm.$data.massages=res.data.data;
               })
             }else{
-              this.$store.commit('MESSAGE_DELAY_SHOW', {
-                text: res.body.message
-              });
+              next(function (vm){
+                vm.$store.commit('MESSAGE_DELAY_SHOW', {
+                  text: res.body.message
+                })
+              })
             }
           }, function (err) {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: err
-            });
-            next(false);
+            next(function (vm){
+              vm.$store.commit('MESSAGE_DELAY_SHOW', {
+                text: err
+              })
+            })
           })
       }else {
         Vue.http.post('/order/grab/queryById',{appid:to.query.appid,uid:to.query.uid,grabTicketFormId: to.query.grabTicketFormId})
@@ -154,15 +157,18 @@
                 vm.$data.massages=res.data.data;
               })
             }else{
-              this.$store.commit('MESSAGE_DELAY_SHOW', {
-                text: res.body.message
-              });
+              next(function (vm){
+                vm.$store.commit('MESSAGE_DELAY_SHOW', {
+                  text: res.body.message
+                })
+              })
             }
           }, function (err) {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: err
-            });
-            next(false);
+            next(function (vm){
+              vm.$store.commit('MESSAGE_DELAY_SHOW', {
+                text: err
+              })
+            })
           })
       }
     },
@@ -179,9 +185,6 @@
         this.$router.go(-1);
       },
       confirm:function(){
-        console.log(this.$data.massages)
-        console.log(this.$data.$index)
-        console.log(this.$data.massages.passengers[0].orderFormDetailId)
         this.$http.post('/ticket/refund',{"orderFormDetailId":this.$data.massages.passengers[this.$data.$index].orderFormDetailId})
          .then(function (res) {
            if(res.data.code==1){
@@ -195,7 +198,6 @@
            this.$store.commit('MESSAGE_DELAY_SHOW', {
              text: err
            });
-          next(false);
         })
       },
       success:function(){
