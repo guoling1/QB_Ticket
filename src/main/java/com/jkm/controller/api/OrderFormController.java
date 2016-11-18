@@ -262,6 +262,7 @@ public class OrderFormController extends BaseController {
             final OrderFormDetail next = iterator.next();
             if (orderForm.getId() == next.getOrderFormId()) {
                 final ResponseQueryOrderForm.passenger passenger = responseQueryOrderForm.new passenger();
+                passenger.setOrderFormDetailId(next.getId());
                 passenger.setName(next.getPassengerName());
                 passenger.setPassportSeNo(next.getPassportSeNoPlain().substring(0, 3) + "***********" + next.getPassportSeNoPlain().substring(14));
                 passenger.setPiaoType(next.getPiaoType());
