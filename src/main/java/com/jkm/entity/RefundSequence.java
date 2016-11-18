@@ -14,8 +14,12 @@ import java.io.Serializable;
 @Data
 public class RefundSequence extends BaseEntity{
 
-	/**fastpay|alipay|weixin**/
+	/**fastPay|alipay|weixin**/
 	private String payChannel;
+	/**
+	 * 商户订单号
+	 */
+	private String orderId;
 
 	/**退款流水号**/
 	private String refundSn;
@@ -24,7 +28,7 @@ public class RefundSequence extends BaseEntity{
 	private String reqSn;
 
 	/**退款金额**/
-	private String amount;
+	private long amount;
 
 	/**退款参数**/
 	private String refundParams;
@@ -32,10 +36,14 @@ public class RefundSequence extends BaseEntity{
 	/**返回参数**/
 	private String resultParams;
 
-	/**退款结果
-            S-成功
-   E-异常         U-已受理
-            F-失败**/
+	/**
+	 * 退款结果
+	 * S-成功
+	 * E-异常
+	 * U-已受理
+	 * T-连接失败（超时）
+	 * F-失败
+	 */
 	private String refundResult;
 
 }

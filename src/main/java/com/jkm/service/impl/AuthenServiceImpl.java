@@ -15,6 +15,8 @@ import com.jkm.entity.fusion.head.RequestHead20005;
 import com.jkm.entity.helper.UserBankCardSupporter;
 import com.jkm.enums.EnumGrabTicketStatus;
 import com.jkm.enums.EnumOrderFormStatus;
+import com.jkm.enums.EnumPayResult;
+import com.jkm.enums.EnumRefundResult;
 import com.jkm.enums.notifier.EnumVerificationCodeType;
 import com.jkm.helper.TicketMessageParams.SendPaymentParam;
 import com.jkm.service.*;
@@ -68,6 +70,10 @@ public class AuthenServiceImpl implements AuthenService {
 	private BankCardBinService bankCardBinService;
 	@Autowired
 	private UserInfoService userInfoService;
+	@Autowired
+	private PaySequenceService paySequenceService;
+	@Autowired
+	private RefundSequenceService refundSequenceService;
 	/**
 	 * 快捷支付
 	 * @param requestData
@@ -88,7 +94,14 @@ public class AuthenServiceImpl implements AuthenService {
 		}else{
 			getParamRecordService.insertSelective(gr);
 		}
-
+		PaySequence paySequence = new PaySequence();
+		paySequence.setPayChannel("fastpay");
+		paySequence.setOrderId(requestData.getOrderId()+"");
+		paySequence.setReqSn(requestData.getReqSn());
+		paySequence.setAmount(Long.parseLong(requestData.getAmount())*100);
+		paySequence.setPayParams(JSONObject.fromObject(requestData).toString());
+		paySequence.setPayResult(EnumPayResult.HANDLE.getId());
+		paySequence.setStatus(0);
 		try {
 			Request100005 request100005 = createFastPay(requestData);
 			String xml = XmlUtil.toXML(request100005);
@@ -121,7 +134,6 @@ public class AuthenServiceImpl implements AuthenService {
 				// 将解压解密后的结果转化为Response100000对象
 				Response100005 response100005 = XmlUtil.fromXML(response2,
 						Response100005.class);
-
 				if ("0000".equals(response100005.getInfo().getRetCode())) {
 					JSONObject jo = new JSONObject();
 					jo.put("reqSn",request100005.getInfo().getReqSn());
@@ -138,6 +150,7 @@ public class AuthenServiceImpl implements AuthenService {
 					payResultRecord.setReqSn(request100005.getInfo().getReqSn());
 					payResultRecord.setResultParams(response100005.toString());
 					payResultRecordService.insertSelective(payResultRecord);
+					paySequence.setPayResult(EnumPayResult.SUCCESS.getId());
 				} else if("6666".equals(response100005.getInfo().getRetCode())){
 					JSONObject jo = new JSONObject();
 					jo.put("reqSn",request100005.getInfo().getReqSn());
@@ -154,6 +167,7 @@ public class AuthenServiceImpl implements AuthenService {
 					payResultRecord.setReqSn(request100005.getInfo().getReqSn());
 					payResultRecord.setResultParams(response100005.toString());
 					payResultRecordService.insertSelective(payResultRecord);
+					paySequence.setPayResult(EnumPayResult.HANDLE.getId());
 				}else {
 					ret.put("retCode", response100005.getInfo().getRetCode());
 					ret.put("retMsg", response100005.getInfo().getErrMsg());
@@ -166,11 +180,13 @@ public class AuthenServiceImpl implements AuthenService {
 					payResultRecord.setReqSn(request100005.getInfo().getReqSn());
 					payResultRecord.setResultParams(response100005.toString());
 					payResultRecordService.insertSelective(payResultRecord);
+					paySequence.setPayResult(EnumPayResult.FAIL.getId());
 				}
+				paySequence.setResultParams(JSONObject.fromObject(response100005).toString());
 			} else {//连接超时
 				ret.put("retCode", "5000");
 				ret.put("retMsg", "付款接口连接失败");
-
+				paySequence.setPayResult("T");
 			}
 			logger.debug("****************" + response2
 					+ "*********************");
@@ -179,8 +195,9 @@ public class AuthenServiceImpl implements AuthenService {
 			logger.debug("支付错误信息:", e);
 			ret.put("retCode", "4000");
 			ret.put("retMsg", "支付异常");
+			paySequence.setPayResult(EnumPayResult.EXCEPTION.getId());
 		}finally {
-
+			paySequenceService.insertSelective(paySequence);
 		}
 		return ret;
 	}
@@ -223,6 +240,14 @@ public class AuthenServiceImpl implements AuthenService {
 	@Override
 	public Map<String, Object> singlRefund(SingleRefundData requestData) {
 		Map<String, Object> ret = new HashMap<String, Object>();
+		RefundSequence refundSequence = new RefundSequence();
+		refundSequence.setPayChannel("fastPay");
+		refundSequence.setOrderId(requestData.getOrderId()+"");
+		refundSequence.setRefundSn(requestData.getReqSn());
+		refundSequence.setReqSn(requestData.getOrgSn());
+		refundSequence.setAmount(Long.parseLong(requestData.getRefundAmount())*100);
+		refundSequence.setRefundParams(JSONObject.fromObject(requestData).toString());
+		refundSequence.setStatus(0);
 		try {
 			Request100003 request100003 = createSingleRefund(requestData);
 			String xml = XmlUtil.toXML(request100003);
@@ -271,6 +296,7 @@ public class AuthenServiceImpl implements AuthenService {
 					refundResultRecord.setReqSn(request100003.getInfo().getReqSn());
 					refundResultRecord.setResultParams(response100003.toString());
 					refundResultRecordService.insertSelective(refundResultRecord);
+					refundSequence.setRefundResult(EnumRefundResult.HANDLE.getId());
 				} else {
 					ret.put("retCode", response100003.getInfo().getRetCode());
 					ret.put("retMsg", response100003.getInfo().getErrMsg());
@@ -283,10 +309,13 @@ public class AuthenServiceImpl implements AuthenService {
 					refundResultRecord.setReqSn(request100003.getInfo().getReqSn());
 					refundResultRecord.setResultParams(response100003.toString());
 					refundResultRecordService.insertSelective(refundResultRecord);
+					refundSequence.setRefundResult(EnumRefundResult.FAIL.getId());
 				}
+				refundSequence.setResultParams(JSONObject.fromObject(response100003).toString());
 			} else {
 				ret.put("retCode", "5000");
 				ret.put("retMsg", "单笔退款接口连接失败");
+				refundSequence.setRefundResult(EnumRefundResult.TIMEOUT.getId());
 			}
 			logger.debug("****************" + response2
 					+ "*********************");
@@ -295,6 +324,10 @@ public class AuthenServiceImpl implements AuthenService {
 			logger.error("退款错误信息:"+e);
 			ret.put("retCode", "4000");
 			ret.put("retMsg", "退款异常");
+			refundSequence.setResultParams(e.getMessage());
+			refundSequence.setRefundResult(EnumRefundResult.EXCEPTION.getId());
+		}finally {
+			refundSequenceService.insertSelective(refundSequence);
 		}
 		return ret;
 	}
@@ -579,12 +612,12 @@ public class AuthenServiceImpl implements AuthenService {
 		authenData.setReqSn(SnGenerator.generate());
 		authenData.setAppId(requestData.getString("appid"));
 		authenData.setNonceStr(requestData.getString("nonceStr"));
-
+		authenData.setOrderId(requestData.getLong("orderId"));
 
 		if(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId()!=orderFormOptional.get().getStatus()&&
 				EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId()!=orderFormOptional.get().getStatus()){
 			jo.put("result",false);
-			jo.put("message","状态有误");
+			jo.put("message","订单状态有误");
 			return jo;
 		}
 		orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId());
@@ -665,7 +698,7 @@ public class AuthenServiceImpl implements AuthenService {
 			return jo;
 		}
 
-		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(bindCard.getPhone(),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT_CID);
+		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(bindCard.getPhone(),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
 		int resultType = codeStatus.getKey();
 		if(resultType!=1){
 			jo.put("result",false);
@@ -704,6 +737,13 @@ public class AuthenServiceImpl implements AuthenService {
 		authenData.setReqSn(SnGenerator.generate());
 		authenData.setAppId(requestData.getString("appid"));
 		authenData.setNonceStr(requestData.getString("nonceStr"));
+		authenData.setOrderId(requestData.getLong("orderId"));
+		if(EnumOrderFormStatus.ORDER_FORM_OCCUPY_SEAT_TRUE.getId()!=orderFormOptional.get().getStatus()&&
+				EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_FAIL.getId()!=orderFormOptional.get().getStatus()){
+			jo.put("result",false);
+			jo.put("message","订单状态有误");
+			return jo;
+		}
 		orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId());
 		orderFormService.updateStatus(orderFormOptional.get());
 		Map<String, Object> ret = this.fastPay(authenData);
@@ -765,7 +805,7 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("nonceStr")), "随机参数有误");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("sn")+""), "短信序列码不能为空");
 
-		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(requestData.getString("phoneNo"),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT_GRAP);
+		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(requestData.getString("phoneNo"),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
 		int resultType = codeStatus.getKey();
 		if(resultType!=1){
 			jo.put("result",false);
@@ -795,13 +835,13 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("message","请同意协议");
 			return jo;
 		}
-
 		Optional<GrabTicketForm> grabTicketFormOptional = grabTicketFormService.selectById(requestData.getLong("orderId"));
 		Preconditions.checkState(grabTicketFormOptional.isPresent(), "订单[" + requestData.getLong("orderId") + "]不存在");
 
-		if(EnumGrabTicketStatus.GRAB_FORM_PAY_SUCCESS.getId()==grabTicketFormOptional.get().getStatus()){
+		if(EnumGrabTicketStatus.GRAB_FORM_PAY_WAIT.getId()!=grabTicketFormOptional.get().getStatus()&&
+				EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL.getId()!=grabTicketFormOptional.get().getStatus()){
 			jo.put("result",false);
-			jo.put("message","该订单已支付完毕");
+			jo.put("message","订单状态有误");
 			return jo;
 		}
 		//实名绑卡
@@ -829,7 +869,7 @@ public class AuthenServiceImpl implements AuthenService {
 		authenData.setReqSn(SnGenerator.generate());
 		authenData.setNonceStr(requestData.getString("nonceStr"));
 		authenData.setAppId(requestData.getString("appid"));
-
+		authenData.setOrderId(requestData.getLong("orderId"));
 		Map<String, Object> ret = this.fastPay(authenData);
 		if("0000".equals(ret.get("retCode").toString())){//支付成功
 			BindCard bindCard = new BindCard();
@@ -905,7 +945,7 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("message","无此银行卡信息");
 			return jo;
 		}
-		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(bindCard.getPhone(),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT_GRAPCID);
+		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(bindCard.getPhone(),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
 		int resultType = codeStatus.getKey();
 		if(resultType!=1){
 			jo.put("result",false);
@@ -918,10 +958,10 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkState(grabTicketFormOptional.isPresent(), "订单[" + requestData.getLong("orderId") + "]不存在");
 
 
-
-		if(EnumGrabTicketStatus.GRAB_FORM_PAY_SUCCESS.getId()==grabTicketFormOptional.get().getStatus()){
+		if(EnumGrabTicketStatus.GRAB_FORM_PAY_WAIT.getId()!=grabTicketFormOptional.get().getStatus()&&
+				EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL.getId()!=grabTicketFormOptional.get().getStatus()){
 			jo.put("result",false);
-			jo.put("message","该订单已支付完毕");
+			jo.put("message","订单状态有误");
 			return jo;
 		}
 
@@ -952,6 +992,7 @@ public class AuthenServiceImpl implements AuthenService {
 		authenData.setReqSn(SnGenerator.generate());
 		authenData.setNonceStr(requestData.getString("nonceStr"));
 		authenData.setAppId(requestData.getString("appid"));
+		authenData.setOrderId(requestData.getLong("orderId"));
 		Map<String, Object> ret = this.fastPay(authenData);
 		if("0000".equals(ret.get("retCode").toString())){//支付成功
 			jo.put("result",true);
@@ -1001,68 +1042,19 @@ public class AuthenServiceImpl implements AuthenService {
 		}
 		SendPaymentParam sendPaymentParam = new SendPaymentParam();
 		sendPaymentParam.setAmount(requestData.getString("amount"));
-		if("4".equals(requestData.getString("verificationCodeType"))){
-			Pair<Integer, String> codeStatus = smsAuthService.getVerifyCode(requestData.getString("phone"),EnumVerificationCodeType.PAYMENT);
-			int resultType = codeStatus.getKey();
-			if(resultType!=1){
-				jo.put("result",false);
-				jo.put("message",codeStatus.getValue());
-			}else{
-				sendPaymentParam.setCode(codeStatus.getValue());
-				sendPaymentParam.setMobile(requestData.getString("phone"));
-				sendPaymentParam.setUid(requestData.getString("uid"));
-				long sn = ticketSendMessageService.sendPaymentMessage(sendPaymentParam);
-				jo.put("result",true);
-				jo.put("data",sn);
-				jo.put("message","发送验证码成功");
-			}
-
-		}else if("5".equals(requestData.getString("verificationCodeType"))){
-			Pair<Integer, String> codeStatus = smsAuthService.getVerifyCode(requestData.getString("phone"),EnumVerificationCodeType.PAYMENT_CID);
-			int resultType = codeStatus.getKey();
-			if(resultType!=1){
-				jo.put("result",false);
-				jo.put("message",codeStatus.getValue());
-			}else{
-				sendPaymentParam.setCode(codeStatus.getValue());
-				sendPaymentParam.setMobile(requestData.getString("phone"));
-				sendPaymentParam.setUid(requestData.getString("uid"));
-				long sn = ticketSendMessageService.sendPaymentMessage(sendPaymentParam);
-				jo.put("result",true);
-				jo.put("data",sn);
-				jo.put("message","发送验证码成功");
-			}
-
-		}else if("6".equals(requestData.getString("verificationCodeType"))){
-			Pair<Integer, String> codeStatus = smsAuthService.getVerifyCode(requestData.getString("phone"),EnumVerificationCodeType.PAYMENT_GRAP);
-			int resultType = codeStatus.getKey();
-			if(resultType!=1){
-				jo.put("result",false);
-				jo.put("message",codeStatus.getValue());
-			}else{
-				sendPaymentParam.setCode(codeStatus.getValue());
-				sendPaymentParam.setMobile(requestData.getString("phone"));
-				sendPaymentParam.setUid(requestData.getString("uid"));
-				long sn = ticketSendMessageService.sendPaymentMessage(sendPaymentParam);
-				jo.put("result",true);
-				jo.put("data",sn);
-				jo.put("message","发送验证码成功");
-			}
-		}else if("7".equals(requestData.getString("verificationCodeType"))){
-			Pair<Integer, String> codeStatus = smsAuthService.getVerifyCode(requestData.getString("phone"),EnumVerificationCodeType.PAYMENT_GRAPCID);
-			int resultType = codeStatus.getKey();
-			if(resultType!=1){
-				jo.put("result",false);
-				jo.put("message",codeStatus.getValue());
-			}else{
-				sendPaymentParam.setCode(codeStatus.getValue());
-				sendPaymentParam.setMobile(requestData.getString("phone"));
-				sendPaymentParam.setUid(requestData.getString("uid"));
-				long sn = ticketSendMessageService.sendPaymentMessage(sendPaymentParam);
-				jo.put("result",true);
-				jo.put("data",sn);
-				jo.put("message","发送验证码成功");
-			}
+		Pair<Integer, String> codeStatus = smsAuthService.getVerifyCode(requestData.getString("phone"),EnumVerificationCodeType.PAYMENT);
+		int resultType = codeStatus.getKey();
+		if(resultType!=1){
+			jo.put("result",false);
+			jo.put("message",codeStatus.getValue());
+		}else{
+			sendPaymentParam.setCode(codeStatus.getValue());
+			sendPaymentParam.setMobile(requestData.getString("phone"));
+			sendPaymentParam.setUid(requestData.getString("uid"));
+			long sn = ticketSendMessageService.sendPaymentMessage(sendPaymentParam);
+			jo.put("result",true);
+			jo.put("data",sn);
+			jo.put("message","发送验证码成功");
 		}
 		return jo;
 	}

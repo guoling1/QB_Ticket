@@ -35,4 +35,10 @@ public interface PaySequenceDao {
 	int updateByPrimaryKeySelective(PaySequence record);
 
 
+	/**
+	 * 根据流水号更改订单状态
+	 */
+	void updatePayResultByReqSn(@Param("payResult") String payResult,@Param("reqSn") String reqSn);
+
+
 }
