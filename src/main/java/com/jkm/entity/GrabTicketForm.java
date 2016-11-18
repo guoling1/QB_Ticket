@@ -171,7 +171,8 @@ public class GrabTicketForm extends BaseEntity {
 
     public boolean isCanCancel(){
 
-        return EnumGrabTicketStatus.GRAB_FORM_PAY_WAIT.getId() == this.getStatus();
+        return EnumGrabTicketStatus.GRAB_FORM_PAY_WAIT.getId() == this.getStatus() ||
+                EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL.getId() == this.getStatus();
     }
 
     public boolean isCanCancelBeforeCharge(){

@@ -61,7 +61,7 @@ public interface GrabTicketFormService {
     void handleExpiredOGrabForm(long grabTicketFormId);
 
     /**
-     * 处理未购买套餐到期自动全额退款
+     * 处理抢票失败(未购买套餐,下单失败,下单异常)到期自动全额退款
      * @param grabTicketFormId
      */
     void handleNoPackageWaitRefund(long grabTicketFormId);

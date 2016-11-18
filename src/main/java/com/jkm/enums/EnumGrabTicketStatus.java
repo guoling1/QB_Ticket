@@ -22,7 +22,7 @@ public enum EnumGrabTicketStatus {
     /**
      * 等待客户付款中
      */
-    GRAB_FORM_PAY_WAIT(2, "等待客户付款中"),
+    GRAB_FORM_PAY_WAIT(2, "等待客户付款"),
 
     /**
      * 客户付款成功
