@@ -25,6 +25,10 @@ const mutations = {
     //state.pay.methodPayment = true;
     state.quickPayment.show = true;
   },
+  PAY_CLOSE (state) {
+    state.pay.show = false;
+    state.quickPayment.show = false;
+  },
   QUICK_PAYMENT_CALL (state) {
     state.quickPayment.show = true;
   }

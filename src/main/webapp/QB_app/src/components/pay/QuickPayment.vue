@@ -5,7 +5,7 @@
       <div class="space" v-if="$$show.submitSpace">
         <div class="checkout">
           <div class="space_t">
-            <div class="xx"></div>
+            <div class="xx" @click="close"></div>
             <div class="word">使用银行卡支付</div>
           </div>
           <div class="ul" @click="goList">
@@ -27,7 +27,7 @@
       <div class="space" v-if="$$show.cardListSpace">
         <div class="bankList">
           <div class="space_t">
-            <div class="xx"></div>
+            <div class="xx" @click="close"></div>
             <div class="word">选择银行卡</div>
           </div>
           <ul>
@@ -47,7 +47,7 @@
       <div class="space" v-if="$$show.firstBindSpace">
         <div class="first">
           <div class="space_t">
-            <div class="xx"></div>
+            <div class="xx" @click="close"></div>
             <div class="word">使用银行卡支付</div>
           </div>
           <div class="prompt">
@@ -88,7 +88,7 @@
       <div class="space" v-if="$$show.secondBindSpace">
         <div class="second">
           <div class="space_t">
-            <div class="xx"></div>
+            <div class="xx" @click="close"></div>
             <div class="word">使用银行卡支付</div>
           </div>
           <div class="prompt">
@@ -232,6 +232,9 @@
           vCode: '',
           sn: ''
         }
+      },
+      close: function () {
+        this.$store.commit('PAY_CLOSE');
       },
       send: function (event, type) {
         this.$data.valid_code.sending = true;
