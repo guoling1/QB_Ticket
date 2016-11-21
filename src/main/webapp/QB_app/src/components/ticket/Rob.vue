@@ -7,9 +7,9 @@
           <div class="right">到达城市</div>
         </div>
         <div class="side write">
-          <div class="left" @click="station('stationTHREE')">{{$dataT.from}}</div>
-          <img class="middle" src="../../assets/exchange-blue.png">
-          <div class="right" v-bind:class="{empty:$from.to==0}" @click="station('stationFOUR')">{{$dataT.to}}</div>
+          <div class="left" id="left" @click="station('stationTHREE')">{{$dataT.from}}</div>
+          <img class="middle" @click="change" id="middle" src="../../assets/exchange-blue.png">
+          <div class="right" id="right" v-bind:class="{empty:$from.to==0}" @click="station('stationFOUR')">{{$dataT.to}}</div>
         </div>
       </div>
       <div class="group" @click="time('dateTWO')">
@@ -347,6 +347,21 @@
       },
       show:function(){
         this.$data.$show=!this.$data.$show
+      },
+      change:function () {
+        document.querySelector("#middle").className="middle rotate";
+        document.querySelector("#left").className="left changeLeft";
+        document.querySelector("#right").className="right changeRight";
+        setTimeout(()=> {
+          let tmp="";
+        tmp=this.$data.form_name;
+        this.$data.form_name=this.$data.to_name;
+        this.$data.to_name=tmp;
+        tmp=null;
+        document.querySelector("#middle").className="middle"
+        document.querySelector("#left").className="left"
+        document.querySelector("#right").className="right"
+      },400)
       }
     },
     watch: {
@@ -554,9 +569,15 @@
       }
       .left {
         float: left;
+        position: relative;
+        left: 0;
+        top: 0;
       }
       .right {
         float: right;
+        position: relative;
+        left: 0;
+        top: 0;
         &.empty {
           color: #999;
         }
@@ -868,5 +889,69 @@
       to {
           opacity: 0;
       }
+  }
+  .rotate {
+    -webkit-animation: rotateIn 1s ease 0s 1 both;
+    animation: rotateIn 1s ease 0s 1 both;
+  }
+  .changeLeft {
+    -webkit-animation: left 0.5s ease 0s 1 both;
+    animation: left 0.5s ease 0s 1 both;
+  }
+  .changeRight {
+    -webkit-animation: right 0.5s ease 0s 1 both;
+    animation: right 0.5s ease 0s 1 both;
+  }
+  @-webkit-keyframes rotateIn {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(180deg);
+    }
+  }
+
+  @keyframes rotateIn {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(180deg);
+    }
+  }
+  @-webkit-keyframes left {
+    0% {
+      left: 0;
+    }
+    100% {
+      left:83%;
+    }
+  }
+
+  @keyframes left {
+    0% {
+      left: 0;
+    }
+    100% {
+
+      left:83%;
+    }
+  }
+  @-webkit-keyframes right {
+    0% {
+      left: 0;
+    }
+    100% {
+      left:-83%;
+    }
+  }
+
+  @keyframes right {
+    0% {
+      left: 0;
+    }
+    100% {
+      left:-83%;
+    }
   }
 </style>

@@ -16,16 +16,20 @@
         </div>
       </div>
       <div class="hot">
-        <div class="t">热门</div>
+        <div class="t" id="hot">热门</div>
         <ul>
           <li v-for="ht in hotCity" @click="close($event,ht.code,ht.city)">{{ht.city}}</li>
         </ul>
       </div>
       <div class="shortcut" v-for="(num,key) in list">
-        <div class="i">{{key}}</div>
+        <div class="i" :id="key">{{key}}</div>
         <ul>
           <li v-for="cope in num" @click="close($event,cope.code,cope.city)">{{cope.city}}</li>
         </ul>
+      </div>
+      <div class="nav">
+        <a href="#hot">热门</a>
+        <a :href="'#'+key" v-for="(num,key) in list">{{key}}</a>
       </div>
     </div>
   </transition>
@@ -281,6 +285,18 @@
       li:last-child {
         border: none;
       }
+    }
+  }
+  .nav{
+    position: fixed;
+    top:50px;
+    right: 0;
+    a{
+      font-size: 14px;
+      height: 18px;
+      line-height: 18px;
+      display: block;
+      text-decoration:none; color:#333
     }
   }
 </style>

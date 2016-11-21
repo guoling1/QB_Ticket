@@ -31,7 +31,7 @@
         </div>
       </div>
       <div class="space no-border">
-        <div class="group no-border" v-for="passenger in passengers">
+        <div class="group no-border" v-for="(passenger,index) in passengers">
           <div class="list" @click="minus($event,index)"></div>
           <div class="write no-prompt">
             <span class="name">{{passenger.name}}</span>
