@@ -180,7 +180,7 @@
   .main {
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
     .flexItem(1, 100%);
   }
 
@@ -315,7 +315,7 @@
 
   .notice {
     position: fixed;
-    top: 64px;
+    top: 50px;
     left: 0;
     z-index: 99;
     padding: 0 15px;

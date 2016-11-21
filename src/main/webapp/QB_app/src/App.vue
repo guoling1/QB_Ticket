@@ -62,10 +62,10 @@
 <style lang="less">
   .title {
     width: 100%;
-    height: 64px;
+    height: 50px;
     color: #fefefe;
     background-color: #4ab9f1;
-    padding: 30px 10px 0;
+    padding: 15px 10px 0;
     .back {
       width: 19px;
       height: 24px;
