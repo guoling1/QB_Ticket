@@ -284,9 +284,13 @@
       },
       trainsEnter: function () {
         let checi = '';
+        let firstTime = false;
         this.$data.checi_length = 0;
         for (let i = 0; i < this.$data.trains.length; i++) {
           if (this.$data.trains[i].select) {
+            if(!firstTime){
+              firstTime = this.$data.trains[i].start_time
+            }
             this.$data.checi_length++;
             checi += this.$data.trains[i].train_code + ','
           }
@@ -295,7 +299,7 @@
         this.$data.submitInfo.trainCodes = checi;
         this.$data.trainsShow = false;
         // 计算最早的发车时间 firstStartTime
-        this.$data.submitInfo.firstStartTime = this.$store.state.date.scope.dateTWO.code + ' ' + this.$data.trains[0].start_time;
+        this.$data.submitInfo.firstStartTime = this.$store.state.date.scope.dateTWO.code + ' ' + firstTime;
         let time = new Date(this.$data.submitInfo.firstStartTime).getTime();
         let now = new Date().getTime();
         let poor = time - now;
