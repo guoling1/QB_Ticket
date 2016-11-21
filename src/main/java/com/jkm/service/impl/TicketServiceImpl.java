@@ -30,6 +30,7 @@ import org.apache.bcel.generic.IF_ACMPEQ;
 import org.apache.commons.collections.CollectionUtils;
 import com.jkm.util.DateFormatUtil;
 import com.jkm.util.SnGenerator;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.log4j.Logger;
@@ -254,6 +255,10 @@ public class TicketServiceImpl implements TicketService {
                 Preconditions.checkState(orderFormDetail.isTicketInit(), "乘客的票的记录[" + orderFormDetail.getId() + "]状态不正确");
                 orderFormDetail.setTicketNo(passengersJo.getString("ticket_no"));
                 orderFormDetail.setCxin(passengersJo.getString("cxin"));
+                final String price = passengersJo.getString("price");
+                if (!StringUtils.isBlank(price)) {
+                    orderFormDetail.setPrice(new BigDecimal(price));
+                }
                 this.orderFormDetailService.update(orderFormDetail);
             }
 
