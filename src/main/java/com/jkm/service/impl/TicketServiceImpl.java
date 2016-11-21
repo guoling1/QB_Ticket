@@ -597,8 +597,6 @@ public class TicketServiceImpl implements TicketService {
             jsonArray.add(obj);
                 final HyReturnTicketResponse response = this.hySdkService.returnTicket(request, jsonArray);
                 if(response.getSuccess().equals("true")){
-                    flow.setReqToken(response.getReqToken());
-                    this.refundTicketFlowService.update(flow);
                     log.error("订单号:"+ orderFormDetailId + "请求退票, 退票请求成功......");
                     this.orderFormDetailService.updateStatusById(orderFormDetail.getId() , EnumOrderFormDetailStatus.TICKET_RETURN_REQUESTING);
                     return Pair.of(true , "退票中,请等待");
