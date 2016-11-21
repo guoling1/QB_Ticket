@@ -90,7 +90,11 @@ public class HyCallBackController extends BaseController {
                     + jsonParams.getString("returnstate") + MD5Util.MD5(HySdkConstans.ORDER_SIGN_KEY)).equals(jsonParams.getString("sign"));
             log.info("收到hy线下退票或线下改签的异步通知:" + jsonParams.toString() + "签名结果:" + flag);
         }
-        this.ticketService.handleRefundCallbackMsg(jsonParams);
+        try{
+            this.ticketService.handleRefundCallbackMsg(jsonParams);
+        }catch (final Throwable throwable){
+            log.error("退票回调处理异常" + jsonParams.toString() + "异常信息:" + throwable.getMessage());
+        }
         if (flag) {
             log.info(jsonParams.toString() + "给hy返回success成功");
             ResponseWriter.writeTxtResponse(httpServletResponse, "SUCCESS");

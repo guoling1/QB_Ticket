@@ -34,7 +34,7 @@ public class QueryTicketPriceController extends BaseController {
         JSONObject requestJson = null;
         try {
             requestJson = super.getRequestJsonParams();
-            String uid = super.getUid(requestJson.getString("appid"), requestJson.getString("uid"));
+            String uid = super.getUid(requestJson.get("appid"), requestJson.get("uid"));
             String partnerid = HySdkConstans.QUERY_PARTNER_ID;
             String method = "train_query";
             String from_station = requestJson.getString("from_station");

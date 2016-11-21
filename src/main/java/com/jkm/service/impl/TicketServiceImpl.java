@@ -1250,7 +1250,7 @@ public class TicketServiceImpl implements TicketService {
             }
             this.grabTicketFormService.update(grabTicketForm);
             //退差价
-            final BigDecimal subtract = grabTicketForm.getTicketTotalPrice().subtract(grabTicketForm.getGrabTicketTotalPrice());
+            final BigDecimal subtract = grabTicketForm.getGrabTicketTotalPrice().subtract(grabTicketForm.getTicketTotalPrice());
             if (subtract.compareTo(new BigDecimal(0)) != 0){
                 final SendGrabTicketSuccessParam param = new SendGrabTicketSuccessParam();
                 param.setUid(grabTicketForm.getUid());

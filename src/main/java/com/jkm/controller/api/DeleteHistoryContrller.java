@@ -33,7 +33,7 @@ public class DeleteHistoryContrller extends BaseController {
     public ResponseEntityBase<List<QueryHistory>> delete() throws IOException {
         ResponseEntityBase<List<QueryHistory>> results = new ResponseEntityBase<List<QueryHistory>>();
         JSONObject requestJson = super.getRequestJsonParams();
-        String uid = super.getUid(requestJson.getString("appid"),requestJson.getString("uid"));
+        String uid = super.getUid(requestJson.get("appid"),requestJson.get("uid"));
         this.deleteHistoryService.delete(uid);
         List<QueryHistory> list = this.queryHistoryService.queryHistory(uid);
         results.setData(list);

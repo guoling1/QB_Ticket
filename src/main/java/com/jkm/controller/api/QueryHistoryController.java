@@ -32,7 +32,7 @@ public class QueryHistoryController extends BaseController {
 
         try {
             JSONObject requestJson = super.getRequestJsonParams();
-            String uid = super.getUid(requestJson.getString("appid"),requestJson.getString("uid"));
+            String uid = super.getUid(requestJson.get("appid"),requestJson.get("uid"));
             List<QueryHistory> list = this.queryHistoryService.queryHistory(uid);
             results.setData(list);
         } catch (IOException e) {

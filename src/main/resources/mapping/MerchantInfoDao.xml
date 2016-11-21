@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jkm.dao.MerchantInfoDao">
+
+	<!-- 通用查询结果列-->
+	<sql id="Base_Column_List">
+		 id,	company_name,	reg_address,	business_license_pic,	org_cert_pic,	in_charge_name,	in_charget_email,	in_charget_qq,	in_charget_phone,	type,	status,	create_time,	update_time
+	</sql>
+
+	<!-- 查询（根据主键ID查询） -->
+	<select id="selectByPrimaryKey" resultType="com.jkm.entity.MerchantInfo" parameterType="java.lang.Long">
+		 SELECT
+		 <include refid="Base_Column_List" />
+		 FROM qb_merchant_info
+		 WHERE id = #{id} and status=0
+	</select>
+
+	<!-- 添加 （匹配有值的字段）-->
+	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.entity.MerchantInfo">
+		 INSERT INTO qb_merchant_info
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="companyName != null">
+				 company_name,
+			</if>
+			<if test="regAddress != null">
+				 reg_address,
+			</if>
+			<if test="businessLicensePic != null">
+				 business_license_pic,
+			</if>
+			<if test="orgCertPic != null">
+				 org_cert_pic,
+			</if>
+			<if test="inChargeName != null">
+				 in_charge_name,
+			</if>
+			<if test="inChargetEmail != null">
+				 in_charget_email,
+			</if>
+			<if test="inChargetQq != null">
+				 in_charget_qq,
+			</if>
+			<if test="inChargetPhone != null">
+				 in_charget_phone,
+			</if>
+			<if test="type != null">
+				 type,
+			</if>
+			<if test="status != null">
+				 status,
+			</if>
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="companyName!=null">
+				 #{companyName},
+			</if>
+			<if test="regAddress!=null">
+				 #{regAddress},
+			</if>
+			<if test="businessLicensePic!=null">
+				 #{businessLicensePic},
+			</if>
+			<if test="orgCertPic!=null">
+				 #{orgCertPic},
+			</if>
+			<if test="inChargeName!=null">
+				 #{inChargeName},
+			</if>
+			<if test="inChargetEmail!=null">
+				 #{inChargetEmail},
+			</if>
+			<if test="inChargetQq!=null">
+				 #{inChargetQq},
+			</if>
+			<if test="inChargetPhone!=null">
+				 #{inChargetPhone},
+			</if>
+			<if test="type!=null">
+				 #{type},
+			</if>
+			<if test="status!=null">
+				 #{status},
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 修 改-->
+	<update id="updateByPrimaryKeySelective" parameterType="com.jkm.entity.MerchantInfo">
+		 UPDATE qb_merchant_info
+ 		 <set> 
+			<if test="companyName != null">
+				 company_name = #{companyName},
+			</if>
+			<if test="regAddress != null">
+				 reg_address = #{regAddress},
+			</if>
+			<if test="businessLicensePic != null">
+				 business_license_pic = #{businessLicensePic},
+			</if>
+			<if test="orgCertPic != null">
+				 org_cert_pic = #{orgCertPic},
+			</if>
+			<if test="inChargeName != null">
+				 in_charge_name = #{inChargeName},
+			</if>
+			<if test="inChargetEmail != null">
+				 in_charget_email = #{inChargetEmail},
+			</if>
+			<if test="inChargetQq != null">
+				 in_charget_qq = #{inChargetQq},
+			</if>
+			<if test="inChargetPhone != null">
+				 in_charget_phone = #{inChargetPhone},
+			</if>
+			<if test="type != null">
+				 type = #{type},
+			</if>
+			<if test="status != null">
+				 status = #{status},
+			</if>
+ 		 </set>
+		 WHERE id = #{id}
+	</update>
+
+</mapper>
