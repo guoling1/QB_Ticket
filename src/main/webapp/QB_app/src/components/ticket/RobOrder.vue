@@ -185,7 +185,23 @@
         this.$store.commit('MESSAGE_DELAY_SHOW', {
           text: err
         });
-      })
+      });
+//      this.$http.post('/userInfo/isLogin', {
+//        appid: this.$data.submitInfo.appId,
+//        uid: this.$data.submitInfo.uid
+//      }).then(function (res) {
+//        if (res.data.code == 1) {
+//          console.log(res);
+//        } else {
+//          this.$store.commit('MESSAGE_DELAY_SHOW', {
+//            text: res.data.message
+//          });
+//        }
+//      }, function (err) {
+//        this.$store.commit('MESSAGE_DELAY_SHOW', {
+//          text: err
+//        });
+//      })
     },
     methods: {
       minusChild: function (event, index) {

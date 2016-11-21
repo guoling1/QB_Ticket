@@ -26,11 +26,13 @@
         </div>
       </div>
       <div class="submit" @click="query">查询</div>
-      <div class="history">
-        <div>查询历史</div>
-        <div>清空</div>
+      <div class="flexBox">
+        <div class="history">
+          <div v-for="his in $$data.history" @click="chooseByHistory($event,his)">{{his.fromStationName}} → {{his.toStationName}}</div>
+          <div @click="clearHistory">清空</div>
+        </div>
+        <div class="know" @click="show">订票须知<span></span></div>
       </div>
-      <div class="know" @click="show">订票须知<span></span></div>
     </div>
     <div class="notice" v-if="this.$data.$show">
       <div class="content">
@@ -78,28 +80,27 @@
     <datetime></datetime>
     <stationName></stationName>
     <message></message>
-    <pay></pay>
   </div>
 </template>
 
 <script lang="babel">
+  import Vue from 'vue'
   import Datetime from './Datetime.vue'
   import StationName from './StationName.vue'
   import Message from '../Message.vue'
-  import Pay from '../pay/Main.vue'
 
   export default {
     name: 'menu',
     components: {
       Datetime,
       StationName,
-      Message,
-      Pay
+      Message
     },
     data: function () {
       return {
         appid: '',
         uid: '',
+        history: [],
         form_name: this.$store.state.station.scope.stationONE.station,
         form_code: this.$store.state.station.scope.stationONE.code,
         to_name: this.$store.state.station.scope.stationTWO.station,
@@ -111,9 +112,33 @@
       }
     },
     beforeRouteEnter (to, from, next) {
-      next(function (vm) {
-        vm.$data.appid = to.query.appid;
-        vm.$data.uid = to.query.uid;
+      Vue.http.post('/queryHistory/query', {
+        appid: to.query.appid,
+        uid: to.query.uid
+      }).then(function (res) {
+        if (res.data.code == 1) {
+          next(function (vm) {
+            vm.$data.appid = to.query.appid;
+            vm.$data.uid = to.query.uid;
+            vm.$data.history = res.body.data;
+          });
+        } else {
+          next(function (vm) {
+            vm.$data.appid = to.query.appid;
+            vm.$data.uid = to.query.uid;
+            vm.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: res.data.message
+            });
+          });
+        }
+      }, function (err) {
+        next(function (vm) {
+          vm.$data.appid = to.query.appid;
+          vm.$data.uid = to.query.uid;
+          vm.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: err
+          });
+        });
       });
     },
     methods: {
@@ -131,6 +156,30 @@
             dateWeek: this.$data.date_week,
             onlyGD: this.$data.only_GD
           }
+        })
+      },
+      chooseByHistory: function (event,his) {
+        this.$store.state.station.scope.stationONE.code = his.fromStation;
+        this.$store.state.station.scope.stationONE.station = his.fromStationName;
+        this.$store.state.station.scope.stationTWO.code = his.toStation;
+        this.$store.state.station.scope.stationTWO.station = his.toStationName;
+      },
+      clearHistory: function () {
+        this.$http.post('/deleteHistory/delete',{
+          appid: this.$data.appid,
+          uid: this.$data.uid
+        }).then(function(res) {
+          if(res.body.code==1){
+            this.$data.history = [];
+          }else{
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: res.body.message
+            });
+          }
+        },function(err) {
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: err
+          });
         })
       },
       time: function (name) {
@@ -284,6 +333,7 @@
   }
 
   .history {
+    .flexItem(1, 100%);
     margin-top: 15px;
     font-size: 12px;
     color: #c1c1c1;
