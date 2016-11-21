@@ -69,6 +69,7 @@ public class BindCardServiceImpl implements BindCardService{
         Preconditions.checkNotNull(requestJson.get("isAgree"),"同意协议才能绑定银行卡");
         Preconditions.checkNotNull(requestJson.get("vCode"),"请输入验证码");
         Preconditions.checkNotNull(requestJson.get("bankCode"),"卡宾不能为空");
+        Preconditions.checkNotNull(requestJson.get("bankName"),"银行卡名称不能为空");
         Optional<BankCardBin> bb = bankCardBinService.analyseCardNo(requestJson.getString("cardNo"));
         if(!bb.isPresent()){
             jo.put("result",false);
@@ -88,6 +89,7 @@ public class BindCardServiceImpl implements BindCardService{
         }
         BindCard bindCard = new BindCard();
         bindCard.setCardType("00");
+        bindCard.setBankName(requestJson.getString("bankName"));
         bindCard.setUid(requestJson.getString("uid"));
         bindCard.setCardNo(UserBankCardSupporter.encryptCardNo(requestJson.getString("cardNo")));
         bindCard.setAccountName(requestJson.getString("accountName"));

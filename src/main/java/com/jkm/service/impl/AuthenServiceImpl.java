@@ -543,6 +543,7 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkNotNull(requestData.get("isAgree"),"请勾选并同意协议");
 		Preconditions.checkNotNull(requestData.get("vCode"),"请输入验证码");
 		Preconditions.checkNotNull(requestData.get("bankCode"),"卡宾不能为空");
+		Preconditions.checkNotNull(requestData.get("bankName"),"银行卡名称不能为空");
 		Preconditions.checkNotNull(requestData.get("nonceStr"),"随机参数有误");
 		Preconditions.checkNotNull(requestData.get("sn"),"短信序列码不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("orderId")+""), "订单信息不能为空");
@@ -551,6 +552,7 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("idNo")), "身份证号不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("phoneNo")), "手机号不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("bankCode")), "卡宾不能为空");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("bankName")), "银行卡名称不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("vCode")), "验证码不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("nonceStr")), "随机参数有误");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("sn")+""), "短信序列码不能为空");
@@ -633,6 +635,7 @@ public class AuthenServiceImpl implements AuthenService {
 			bindCard.setCardNo(UserBankCardSupporter.encryptCardNo(requestData.getString("crdNo")));
 			bindCard.setAccountName(requestData.getString("capCrdNm"));
 			bindCard.setCardType("00");
+			bindCard.setBankName(requestData.getString("bankName"));
 			bindCard.setCardId(UserBankCardSupporter.encryptCardId(requestData.getString("idNo")));
 			bindCard.setPhone(requestData.getString("phoneNo"));
 			bindCard.setBankCode(requestData.getString("bankCode"));
@@ -650,6 +653,7 @@ public class AuthenServiceImpl implements AuthenService {
 			bindCard.setCardType("00");
 			bindCard.setCardId(UserBankCardSupporter.encryptCardId(requestData.getString("idNo")));
 			bindCard.setPhone(requestData.getString("phoneNo"));
+			bindCard.setBankName(requestData.getString("bankName"));
 			bindCard.setBankCode(requestData.getString("bankCode"));
 			bindCard.setStatus(0);
 			bindCardService.insertBindCard(bindCard);
@@ -797,6 +801,7 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkNotNull(requestData.get("isAgree"),"请勾选并同意协议");
 		Preconditions.checkNotNull(requestData.get("vCode"),"请输入验证码");
 		Preconditions.checkNotNull(requestData.get("bankCode"),"卡宾不能为空");
+		Preconditions.checkNotNull(requestData.get("bankName"),"银行卡名称不能为空");
 		Preconditions.checkNotNull(requestData.get("nonceStr"),"随机参数有误");
 		Preconditions.checkNotNull(requestData.get("sn"),"短信序列码不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("orderId")+""), "订单信息不能为空");
@@ -805,6 +810,7 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("idNo")), "身份证号不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("phoneNo")), "手机号不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("bankCode")), "卡宾不能为空");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("bankName")), "银行卡名称不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("vCode")), "验证码不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("nonceStr")), "随机参数有误");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("sn")+""), "短信序列码不能为空");
@@ -884,6 +890,7 @@ public class AuthenServiceImpl implements AuthenService {
 			bindCard.setCardId(UserBankCardSupporter.encryptCardId(requestData.getString("idNo")));
 			bindCard.setPhone(requestData.getString("phoneNo"));
 			bindCard.setBankCode(requestData.getString("bankCode"));
+			bindCard.setBankCode(requestData.getString("bankName"));
 			bindCard.setStatus(0);
 			bindCardService.insertBindCard(bindCard);
 			jo.put("result",true);
@@ -899,6 +906,7 @@ public class AuthenServiceImpl implements AuthenService {
 			bindCard.setCardId(UserBankCardSupporter.encryptCardId(requestData.getString("idNo")));
 			bindCard.setPhone(requestData.getString("phoneNo"));
 			bindCard.setBankCode(requestData.getString("bankCode"));
+			bindCard.setBankCode(requestData.getString("bankName"));
 			bindCard.setStatus(0);
 			bindCardService.insertBindCard(bindCard);
 			jo.put("result",true);
