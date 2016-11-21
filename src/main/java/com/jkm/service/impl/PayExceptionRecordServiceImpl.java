@@ -10,19 +10,30 @@ import org.springframework.stereotype.Service;
 @Service
 public class PayExceptionRecordServiceImpl implements PayExceptionRecordService{
     @Autowired
-    private PayExceptionRecordDao payExceptionRecord;
+    private PayExceptionRecordDao payExceptionRecordDao;
     @Override
     public PayExceptionRecord selectByPrimaryKey(Long id) {
-        return payExceptionRecord.selectByPrimaryKey(id);
+        return payExceptionRecordDao.selectByPrimaryKey(id);
     }
 
     @Override
     public int insertSelective(PayExceptionRecord record) {
-        return payExceptionRecord.insertSelective(record);
+        return payExceptionRecordDao.insertSelective(record);
     }
 
     @Override
     public int updateByPrimaryKeySelective(PayExceptionRecord record) {
-        return payExceptionRecord.updateByPrimaryKeySelective(record);
+        return payExceptionRecordDao.updateByPrimaryKeySelective(record);
+    }
+
+    @Override
+    public int insertByCondition(String orderId, String reqSn, String type) {
+        PayExceptionRecord payExceptionRecord = new PayExceptionRecord();
+        payExceptionRecord.setStatus(0);
+        payExceptionRecord.setPayChannel("fastpay");
+        payExceptionRecord.setOrderId(orderId);
+        payExceptionRecord.setReqSn(reqSn);
+        payExceptionRecord.setType(type);
+        return payExceptionRecordDao.insertSelective(payExceptionRecord);
     }
 }

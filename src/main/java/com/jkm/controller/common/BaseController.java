@@ -1,8 +1,13 @@
 package com.jkm.controller.common;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.jkm.entity.MerchantAppInfo;
+import com.jkm.service.MerchantAppInfoService;
+import com.jkm.service.MerchantInfoService;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -24,6 +29,8 @@ public class BaseController {
     protected HttpServletRequest request;
     protected HttpServletResponse response;
     protected String uid;
+    @Autowired
+    private MerchantAppInfoService merchantAppInfoService;
     /**
      * @param binder
      * @throws Exception
@@ -139,9 +146,11 @@ public class BaseController {
      * 获取三方登录id
      * @return
      */
-    public String getUid(String appid,String uid){
-        Preconditions.checkNotNull(appid,"缺失参数appid");
-        Preconditions.checkNotNull(uid,"缺失参数uid");
-        return appid+"_"+uid;
+    public String getUid(Object appid,Object uid){
+        Preconditions.checkArgument((appid != null && appid.toString().length() != 0), "缺失参数appid");
+        Preconditions.checkArgument((uid != null && uid.toString().length() != 0), "缺失参数uid");
+        MerchantAppInfo merchantAppInfo = merchantAppInfoService.selectByOpenId(appid.toString());
+        Preconditions.checkNotNull(merchantAppInfo,"无此商户");
+        return merchantAppInfo.getId()+"_"+uid.toString();
     }
 }

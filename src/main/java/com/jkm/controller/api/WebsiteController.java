@@ -79,7 +79,7 @@ public class WebsiteController extends BaseController {
         ResponseEntityBase responseEntityBase = new ResponseEntityBase();
         try {
             JSONObject requestJson = super.getRequestJsonParams();
-            String uid = super.getUid(requestJson.getString("appid"),requestJson.getString("uid"));
+            String uid = super.getUid(requestJson.get("appid"),requestJson.get("uid"));
             websiteService.importContacts(uid);
             responseEntityBase.setMessage("导入成功");
         } catch (Exception e) {

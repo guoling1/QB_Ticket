@@ -24,4 +24,10 @@ public interface PayExceptionRecordService {
      *
      **/
     int updateByPrimaryKeySelective(PayExceptionRecord record );
+    /**
+     *
+     * 添加 （根据条件）
+     *
+     **/
+    int insertByCondition(String orderId,String reqSn,String type);
 }

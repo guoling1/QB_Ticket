@@ -40,7 +40,7 @@ public class ContactInfoController extends BaseController {
             log.info("联系人参数："+requestJson.toString());
 
             TbContactInfo ti = new TbContactInfo();
-            ti.setUid(super.getUid(requestJson.getString("appid"),requestJson.getString("uid")));
+            ti.setUid(super.getUid(requestJson.get("appid"),requestJson.get("uid")));
             Preconditions.checkNotNull(requestJson.get("name"),"姓名不能为空");
             Preconditions.checkNotNull(requestJson.get("personType"),"请选择乘客类型");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getString("name")), "姓名不能为空");
@@ -156,7 +156,7 @@ public class ContactInfoController extends BaseController {
             JSONObject requestJson = super.getRequestJsonParams();
             log.info("联系人参数："+requestJson.toString());
             TbContactInfo ti = new TbContactInfo();
-            ti.setUid(super.getUid(requestJson.getString("appid"),requestJson.getString("uid")));
+            ti.setUid(super.getUid(requestJson.get("appid"),requestJson.get("uid")));
             if(requestJson.get("name")!=null){
                 ti.setName(requestJson.getString("name"));
             }
@@ -200,7 +200,7 @@ public class ContactInfoController extends BaseController {
         ResponseEntityBase<List<TbContactInfo>> responseEntityBase = new ResponseEntityBase<List<TbContactInfo>>();
         try {
             JSONObject requestJson = super.getRequestJsonParams();
-            String uid = super.getUid(requestJson.getString("appid"),requestJson.getString("uid"));
+            String uid = super.getUid(requestJson.get("appid"),requestJson.get("uid"));
             log.info("联系人参数："+requestJson.toString());
             List<TbContactInfo> list = contactInfoService.selectListByUid(uid);
             responseEntityBase.setData(list);
