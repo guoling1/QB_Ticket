@@ -34,7 +34,7 @@
         order_form_id = #{orderFormId},
         grab_ticket_form_id = #{grabTicketFormId},
         payment_sn = #{paymentSn},
-        order_date = #{date},
+        order_date = #{orderDate},
         refund_amount = #{refundAmount},
         original_amount = #{originalAmount},
         refund_reason = #{refundReason},
