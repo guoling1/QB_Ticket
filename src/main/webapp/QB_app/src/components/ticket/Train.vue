@@ -3,8 +3,8 @@
     <div class="banner">
       <!--<span class="first">前一天</span>-->
 
-      <div class="calendar">
-        {{dateWeek}}
+      <div class="calendar" @click="timer('dateThree')">
+        {{$$data.dateWeek}}
         <img src="../../assets/calendar.png" alt=""/>
       </div>
       <!--<span class="next show">后一天</span>-->
@@ -53,6 +53,7 @@
         </div>
       </li>
     </ul>
+    <datetime></datetime>
     <message></message>
   </div>
 </template>
@@ -60,10 +61,12 @@
 <script lang="babel">
   import Vue from 'vue'
   import Message from '../Message.vue'
+  import Datetime from './Datetime.vue'
   export default {
     name: 'menu',
     components: {
-      Message
+      Message,
+      Datetime
     },
     data () {
       return {
@@ -140,6 +143,61 @@
             dateWeek: this.$data.dateWeek
           }
         });
+      },
+      timer: function (name) {
+        this.$store.commit('TIME_OPEN', {
+          name: name,
+          ctrl: true
+        });
+      }
+    },
+    watch: {
+      dateHttp: function(val,oldVal){
+          Vue.http.post('/queryTicketPrice/query', {
+            appid: this.$route.query.appid, //商户
+            uid: this.$route.query.uid, //用户id
+            from_station: this.$route.query.formCode, //出发站简码
+            to_station: this.$route.query.toCode, //到达站简码
+            from_station_name: this.$route.query.formName,
+            to_station_name: this.$route.query.toName,
+            train_date: val //乘车日期（yyyy-MM-dd）
+          }).then((res)=> {
+            if (res.body.code == 1) {
+            this.$data.only = this.$route.query.onlyGD;
+            if(res.body.data){
+              for (let i = 0; i < res.body.data.length; i++) {
+                let runMin = res.body.data[i].run_time_minute;
+                let runH = 0;
+                let runM = 0;
+                runH = parseInt(runMin / 60);
+                runM = runMin % 60;
+                res.body.data[i]['runTimeShow'] = runH + '小时' + runM + '分钟';
+              }
+            }else{
+              this.$store.commit('MESSAGE_DELAY_SHOW', {
+                text: '暂无查询的车次信息'
+              })
+            }
+            var ary=val.split("-");
+            var date=ary[1]+"月"+ary[2]+"日";
+            var ss=new Date(ary[0],parseInt(ary[1]-1),ary[2])
+            var week=ss.getDay();
+            ary=["日","一","二","三","四","五","六"]
+            this.$data.initStations = res.body.data;
+            this.$data.dateHttp = val;
+            this.$data.dateWeek = date+" 周"+ary[week];
+            this.$data.common.appid = this.$route.query.appid;
+            this.$data.common.uid = this.$route.query.uid;
+          } else {
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: res.body.message
+            })
+          }
+        }, function (err) {
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: err
+            })
+        })
       }
     },
     computed: {
@@ -310,6 +368,11 @@
         return {
           empty: true
         };
+      },
+      $$data: function () {
+        this.$data.dateHttp=this.$store.state.date.scope.dateThree.code;
+        this.$data.dateWeek=this.$store.state.date.scope.dateThree.time;
+        return this.$data;
       }
     }
   }

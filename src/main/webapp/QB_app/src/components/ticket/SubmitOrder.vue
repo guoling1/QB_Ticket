@@ -2,7 +2,7 @@
   <div class="main">
     <div class="date-time">
       <!--<div class="btn left dis">前一天</div>-->
-      <div class="middle">{{dateWeek}}</div>
+      <div class="middle" @click="timer('dateFour')"> {{$$data.dateWeek}}</div>
       <!--<div class="btn right">后一天</div>-->
     </div>
     <div class="space">
@@ -104,17 +104,21 @@
                      :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
       </div>
     </div>
+    <datetime></datetime>
     <message></message>
   </div>
 </template>
 
 <script lang="babel">
+  import Vue from 'vue'
   import Message from '../Message.vue'
+  import Datetime from './Datetime.vue'
 
   export default {
     name: 'menu',
     components: {
-      Message
+      Message,
+      Datetime
     },
     data () {
       // 获取 sessionStorage 的数据 注意转回json
@@ -136,6 +140,20 @@
         vm.$data.common.uid = to.query.uid;
       });
     },
+    methods: {
+      timer: function (name) {
+        this.$store.commit('TIME_OPEN', {
+          name: name,
+          ctrl: true
+        });
+      }
+    },
+    /*watch: {
+      dateHttp: function (val, oldVal) {
+        console.log(this.$data.orderInfo.train_code)
+
+      }
+    },*/
     computed: {
       time: function () {
         let startD = (this.$data.dateHttp + '').split("-");
@@ -162,6 +180,11 @@
         };
         sessionStorage.setItem('preDate', JSON.stringify(sessionDate));
         return sessionDate;
+      },
+      $$data: function () {
+        this.$data.dateHttp=this.$store.state.date.scope.dateFour.code;
+        this.$data.dateWeek=this.$store.state.date.scope.dateFour.time;
+        return this.$data;
       }
     }
   }
