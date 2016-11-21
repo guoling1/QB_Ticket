@@ -10,10 +10,9 @@
           <div class="right">到达城市</div>
         </div>
         <div class="side write">
-          <div class="left" @click="station('stationONE')">{{$$data.form_name}}</div>
-          <img class="middle" src="../../assets/exchange.png">
-
-          <div class="right" @click="station('stationTWO')">{{$$data.to_name}}</div>
+          <div class="left" id="left" @click="station('stationONE')">{{$$data.form_name}}</div>
+          <img class="middle" id="middle" src="../../assets/exchange.png" @click="change">
+          <div class="right" id="right" @click="station('stationTWO')">{{$$data.to_name}}</div>
         </div>
       </div>
       <div class="time" @click="time('dateONE')">
@@ -150,6 +149,22 @@
       },
       show: function () {
         this.$data.$show = !this.$data.$show
+      },
+      change:function () {
+        document.querySelector("#middle").className="middle rotate";
+        document.querySelector("#left").className="left changeLeft";
+        document.querySelector("#right").className="right changeRight";
+        setTimeout(()=> {
+          let tmp="";
+          tmp=this.$data.form_name;
+          this.$data.form_name=this.$data.to_name;
+          this.$data.to_name=tmp;
+          tmp=null;
+          document.querySelector("#middle").className="middle"
+          document.querySelector("#left").className="left"
+          document.querySelector("#right").className="right"
+        },300)
+
       }
     },
     computed: {
@@ -219,11 +234,17 @@
       }
       .left {
         float: left;
-        transition: all 1.5s;
+        /*transition: all 1.5s;*/
+        position: relative;
+        left: 0;
+        top: 0;
       }
       .right {
         float: right;
-        transition: all 1.5s;
+        /*transition: all 1.5s;*/
+        position: relative;
+        left: 0;
+        top: 0;
       }
     }
   }
@@ -355,6 +376,70 @@
       padding: 20px 0 40px;
       color: #999;
       text-align: center;
+    }
+  }
+  .rotate {
+    -webkit-animation: rotateIn 1s ease 0s 1 both;
+    animation: rotateIn 1s ease 0s 1 both;
+  }
+  .changeLeft {
+    -webkit-animation: left 0.5s ease 0s 1 both;
+    animation: left 0.5s ease 0s 1 both;
+  }
+  .changeRight {
+    -webkit-animation: right 0.5s ease 0s 1 both;
+    animation: right 0.5s ease 0s 1 both;
+  }
+  @-webkit-keyframes rotateIn {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(180deg);
+    }
+  }
+
+  @keyframes rotateIn {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(180deg);
+    }
+  }
+  @-webkit-keyframes left {
+    0% {
+      left: 0;
+    }
+    100% {
+      left:270px;
+    }
+  }
+
+  @keyframes left {
+    0% {
+      left: 0;
+    }
+    100% {
+
+      left:270px;
+    }
+  }
+  @-webkit-keyframes right {
+    0% {
+      left: 0;
+    }
+    100% {
+      left:-270px;
+    }
+  }
+
+  @keyframes right {
+    0% {
+      left: 0;
+    }
+    100% {
+      left:-270px;
     }
   }
 </style>
