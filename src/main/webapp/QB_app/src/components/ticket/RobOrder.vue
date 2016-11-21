@@ -23,7 +23,7 @@
           <div class="write no-prompt right">{{$submitInfo.seatTypes}}</div>
         </div>
       </div>
-      <div class="space">
+      <div class="space" v-if="isLogin">
         <div class="group no-border" @click="login">
           <div class="logo"></div>
           <div class="write">使用12306账号登录</div>
@@ -165,7 +165,8 @@
         show: false,
         childs: [],
         errMsg: '',
-        $err: false
+        $err: false,
+        isLogin: false
       }
     },
     created: function () {
@@ -186,22 +187,26 @@
           text: err
         });
       });
-//      this.$http.post('/userInfo/isLogin', {
-//        appid: this.$data.submitInfo.appId,
-//        uid: this.$data.submitInfo.uid
-//      }).then(function (res) {
-//        if (res.data.code == 1) {
-//          console.log(res);
-//        } else {
-//          this.$store.commit('MESSAGE_DELAY_SHOW', {
-//            text: res.data.message
-//          });
-//        }
-//      }, function (err) {
-//        this.$store.commit('MESSAGE_DELAY_SHOW', {
-//          text: err
-//        });
-//      })
+      this.$http.post('/userInfo/isLogin', {
+        appid: this.$data.submitInfo.appId,
+        uid: this.$data.submitInfo.uid
+      }).then(function (res) {
+        if (res.data.code == 1) {
+          if(res.body.data == 1){
+            this.$data.isLogin = false;
+          }else{
+            this.$data.isLogin = true;
+          }
+        } else {
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: res.data.message
+          });
+        }
+      }, function (err) {
+        this.$store.commit('MESSAGE_DELAY_SHOW', {
+          text: err
+        });
+      })
     },
     methods: {
       minusChild: function (event, index) {
@@ -222,7 +227,7 @@
         }
       },
       sev: function () {
-        this.$data.$err = false
+        this.$data.$err = false;
         var addPerson = {
           uid: this.$data.submitInfo.uid,
           appid: this.$data.submitInfo.appId,

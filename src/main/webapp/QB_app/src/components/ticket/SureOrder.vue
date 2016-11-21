@@ -24,7 +24,7 @@
           <div class="write right"><span class="price">￥{{pageInfo.price}}</span></div>
         </div>
       </div>
-      <div class="space">
+      <div class="space" v-if="isLogin">
         <div class="group no-border" @click="login">
           <div class="logo"></div>
           <div class="write">使用12306账号登录</div>
@@ -207,7 +207,8 @@
         childs: [],
         errMsg: '',
         $err: false,
-        perType:["","成人","儿童"]
+        perType:["","成人","儿童"],
+        isLogin: false
       }
     },
     created: function () {
@@ -248,6 +249,26 @@
           text: err
         });
       });
+      this.$http.post('/userInfo/isLogin', {
+        appid: query.appid,
+        uid: query.uid
+      }).then(function (res) {
+        if (res.data.code == 1) {
+          if(res.body.data == 1){
+            this.$data.isLogin = false;
+          }else{
+            this.$data.isLogin = true;
+          }
+        } else {
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: res.data.message
+          });
+        }
+      }, function (err) {
+        this.$store.commit('MESSAGE_DELAY_SHOW', {
+          text: err
+        });
+      })
     },
     methods: {
       minusChild: function (event, index) {

@@ -9,8 +9,8 @@
             <div class="word">使用银行卡支付</div>
           </div>
           <div class="ul" @click="goList">
-            <!--<div class="logo">logo</div>-->
-            <div class="word">{{default_card.info.bankCode}}</div>
+            <div class="logo" v-bind:class="default_card.info.bankCode"></div>
+            <div class="word">{{default_card.info.bankName}}</div>
             <div class="word">{{default_card.info.cardNo}}</div>
             <div class="small">储蓄卡</div>
             <div class="list"></div>
@@ -33,8 +33,8 @@
           <ul>
             <li v-for="(card,index) in card_list" v-bind:class="{active:default_card.index==index}"
                 @click="select($event,card,index)">
-              <!--<div class="logo">logo</div>-->
-              <div class="word">{{card.bankCode}}</div>
+              <div class="logo" v-bind:class="card.bankCode"></div>
+              <div class="word">{{card.bankName}}</div>
               <div class="word">{{card.cardNo}}</div>
               <div class="small">储蓄卡</div>
             </li>
@@ -189,7 +189,8 @@
           crdNo: '',
           phoneNo: '',
           isAgree: 0,
-          bankCode: ''
+          bankCode: '',
+          bankName: ''
         },
         space_ctrl: {
           submitSpace: false,
@@ -312,6 +313,7 @@
             isAgree: this.$data.fill_from.isAgree,
             vCode: this.$data.valid_code.vCode,
             bankCode: this.$data.fill_from.bankCode,
+            bankName: this.$data.fill_from.bankName,
             sn: this.$data.valid_code.sn
           }
         }
@@ -365,7 +367,8 @@
         const val = this.$data.fill_from.crdNo;
         this.$http.post('/bankCardBin/cardNoInfo', {cardNo: val}).then(function (res) {
           if (res.data.code == 1) {
-            this.$data.fill_from.bankCode = res.data.data.bankName;
+            this.$data.fill_from.bankCode = res.data.data.shorthand;
+            this.$data.fill_from.bankName = res.data.data.bankName;
           } else {
             this.$store.commit('MESSAGE_DELAY_SHOW', {
               text: res.data.message
@@ -432,7 +435,78 @@
     bottom: 0;
     .logo {
       float: left;
+      margin-top: 8px;
       margin-right: 15px;
+      width: 25px;
+      height: 25px;
+      &.ICBC {
+        background: url("../../assets/bank/ICBC.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.CCB {
+        background: url("../../assets/bank/CCB.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.ABC {
+        background: url("../../assets/bank/ABC.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.BOC {
+        background: url("../../assets/bank/BOC.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.CMB {
+        background: url("../../assets/bank/CMB.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.CMB {
+        background: url("../../assets/bank/CMB.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.BANKCOMM {
+        background: url("../../assets/bank/BANKCOMM.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.CMBC {
+        width: 30px;
+        height: 25px;
+        background: url("../../assets/bank/CMBC.png") no-repeat center;
+        background-size: 30px 25px;
+      }
+      &.PSBC {
+        background: url("../../assets/bank/PSBC.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.CGB {
+        background: url("../../assets/bank/CGB.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.CEB {
+        width: 50px;
+        height: 25px;
+        background: url("../../assets/bank/CEB.png") no-repeat center;
+        background-size: 50px 25px;
+      }
+      &.CITIC {
+        background: url("../../assets/bank/CITIC.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.CIB {
+        width: 40px;
+        height: 25px;
+        background: url("../../assets/bank/CIB.png") no-repeat center;
+        background-size: 40px 25px;
+      }
+      &.SHBANK {
+        background: url("../../assets/bank/SHBANK.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.PINGAN {
+        width: 75px;
+        height: 25px;
+        background: url("../../assets/bank/PINGAN.png") no-repeat center;
+        background-size: 75px 25px;
+      }
     }
     .word {
       float: left;
