@@ -144,10 +144,8 @@
         let runMin = this.$data.orderInfo.run_time_minute;
         let runH = 0;
         let runM = 0;
-        if (runMin >= 60) {
-          runH = parseInt(runMin / 60);
-          runM = runMin % 60;
-        }
+        runH = parseInt(runMin / 60);
+        runM = runMin % 60;
         let weekWord = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
         let arriveMs = start.getTime() + (runMin * 60 * 1000);
         let arrive = new Date(arriveMs);

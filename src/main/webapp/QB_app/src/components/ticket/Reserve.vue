@@ -212,8 +212,7 @@
           document.querySelector("#middle").className="middle"
           document.querySelector("#left").className="left"
           document.querySelector("#right").className="right"
-        },300)
-
+        },400)
       }
     },
     computed: {
@@ -462,7 +461,7 @@
       left: 0;
     }
     100% {
-      left:270px;
+      left:83%;
     }
   }
 
@@ -472,7 +471,7 @@
     }
     100% {
 
-      left:270px;
+      left:83%;
     }
   }
   @-webkit-keyframes right {
@@ -480,7 +479,7 @@
       left: 0;
     }
     100% {
-      left:-270px;
+      left:-83%;
     }
   }
 
@@ -489,7 +488,7 @@
       left: 0;
     }
     100% {
-      left:-270px;
+      left:-83%;
     }
   }
 </style>
