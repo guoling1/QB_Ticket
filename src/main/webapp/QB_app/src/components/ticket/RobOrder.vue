@@ -350,11 +350,18 @@
       ,
       passengers: function () {
         let storeDate = this.$store.state.contact.info;
-        let data = [];
         this.$data.submitInfo.grabPassengers = [];
-        for (let i in storeDate) {
+//        for (let i in storeDate) {
+//          if (storeDate[i]) {
+//            this.$data.submitInfo.grabPassengers.push({
+//              id: storeDate[i].id,
+//              name: storeDate[i].name,
+//              piaoType: storeDate[i].personType
+//            });
+//          }
+//        }
+        for(let i=0;i<storeDate.length;i++){
           if (storeDate[i]) {
-            data.push(storeDate[i]);
             this.$data.submitInfo.grabPassengers.push({
               id: storeDate[i].id,
               name: storeDate[i].name,
@@ -362,9 +369,8 @@
             });
           }
         }
-        return data;
-      }
-      ,
+        return this.$data.submitInfo.grabPassengers;
+      },
       $submitInfo: function () {
         let data = this.$data.submitInfo;
         if (data.seatTypes == '0,1,2,3,4,6,O,M,P,9') {
