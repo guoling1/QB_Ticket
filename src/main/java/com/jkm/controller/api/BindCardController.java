@@ -34,7 +34,7 @@ public class BindCardController extends BaseController {
         try{
             JSONObject requestJson = super.getRequestJsonParams();
             log.info("银行卡参数："+requestJson.toString());
-            requestJson.put("uid",super.getUid(requestJson.getString("appid"),requestJson.getString("uid")));
+            requestJson.put("uid",super.getUid(requestJson.get("appid"),requestJson.get("uid")));
             JSONObject jo = bindCardService.insertSelective(requestJson);
             if(jo.getBoolean("result")){
                 responseEntityBase.setMessage(jo.getString("message"));
@@ -62,7 +62,7 @@ public class BindCardController extends BaseController {
         ResponseEntityBase<JSONObject> responseEntityBase = new ResponseEntityBase<JSONObject>();
         try {
             JSONObject requestJson = super.getRequestJsonParams();
-            String uid = super.getUid(requestJson.getString("appid"),requestJson.getString("uid"));
+            String uid = super.getUid(requestJson.get("appid"),requestJson.get("uid"));
             log.info("银行卡参数："+requestJson.toString());
             JSONObject list = bindCardService.selectByUid(uid);
             responseEntityBase.setData(list);

@@ -33,7 +33,7 @@ public class UserInfoController extends BaseController {
         ResponseEntityBase<String> responseEntityBase = new ResponseEntityBase<String>();
         try{
             JSONObject requestJson = super.getRequestJsonParams();
-            String uid = super.getUid(requestJson.getString("appid"),requestJson.getString("uid"));
+            String uid = super.getUid(requestJson.get("appid"),requestJson.get("uid"));
             UserInfo u = userInfoService.selectByUid(uid);
             if(u==null){
                 responseEntityBase.setData("");
@@ -58,7 +58,7 @@ public class UserInfoController extends BaseController {
         ResponseEntityBase<Integer> responseEntityBase = new ResponseEntityBase<Integer>();
         try{
             JSONObject requestJson = super.getRequestJsonParams();
-            String uid = super.getUid(requestJson.getString("appid"),requestJson.getString("uid"));
+            String uid = super.getUid(requestJson.get("appid"),requestJson.get("uid"));
             int isLogin = userInfoService.isLogin(uid);
             responseEntityBase.setData(isLogin);
         }catch (Exception e){

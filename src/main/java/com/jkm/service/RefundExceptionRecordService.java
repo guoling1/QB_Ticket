@@ -24,4 +24,10 @@ public interface RefundExceptionRecordService {
      *
      **/
     int updateByPrimaryKeySelective( RefundExceptionRecord record );
+    /**
+     *
+     * 添加 （根据条件）
+     *
+     **/
+    int insertByCondition(String orderId,String reqSn,String type);
 }

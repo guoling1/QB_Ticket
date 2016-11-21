@@ -3,15 +3,14 @@ package com.jkm.controller.api;
 import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
 import com.jkm.entity.OrderForm;
+import com.jkm.entity.PayExceptionRecord;
+import com.jkm.entity.RefundExceptionRecord;
 import com.jkm.entity.fusion.QueryQuickPayData;
 import com.jkm.entity.fusion.QueryRefundData;
 import com.jkm.entity.fusion.SingleRefundData;
 import com.jkm.enums.EnumGrabTicketStatus;
 import com.jkm.enums.EnumOrderFormStatus;
-import com.jkm.service.AuthenService;
-import com.jkm.service.GrabTicketFormService;
-import com.jkm.service.OrderFormService;
-import com.jkm.service.TicketService;
+import com.jkm.service.*;
 import com.jkm.util.SnGenerator;
 import com.jkm.util.mq.MqConfig;
 import com.jkm.util.mq.MqProducer;
@@ -55,7 +54,7 @@ public class FusionController extends BaseController {
         long orderId = 0;
         try{
             JSONObject jo = super.getRequestJsonParams();
-            String uid = super.getUid(jo.getString("appid"),jo.getString("uid"));
+            String uid = super.getUid(jo.get("appid"),jo.get("uid"));
             jo.put("uid",uid);
             orderId = jo.getLong("orderId");
             JSONObject responseJo = authenService.toPay(jo);
@@ -95,7 +94,7 @@ public class FusionController extends BaseController {
         long orderId = 0;
         try{
             JSONObject jo = super.getRequestJsonParams();
-            String uid = super.getUid(jo.getString("appid"),jo.getString("uid"));
+            String uid = super.getUid(jo.get("appid"),jo.get("uid"));
             jo.put("uid",uid);
             orderId = jo.getLong("orderId");
             JSONObject responseJo = authenService.toPayByCid(jo);
@@ -136,7 +135,7 @@ public class FusionController extends BaseController {
         long orderId = 0;
         try{
             JSONObject jo = super.getRequestJsonParams();
-            String uid = super.getUid(jo.getString("appid"),jo.getString("uid"));
+            String uid = super.getUid(jo.get("appid"),jo.get("uid"));
             jo.put("uid",uid);
             orderId = jo.getLong("orderId");
             JSONObject responseJo = authenService.toPayGrab(jo);
@@ -172,7 +171,7 @@ public class FusionController extends BaseController {
         long orderId = 0;
         try{
             JSONObject jo = super.getRequestJsonParams();
-            String uid = super.getUid(jo.getString("appid"),jo.getString("uid"));
+            String uid = super.getUid(jo.get("appid"),jo.get("uid"));
             jo.put("uid",uid);
             orderId = jo.getLong("orderId");
             JSONObject responseJo = authenService.toPayGrabByCid(jo);
@@ -207,7 +206,7 @@ public class FusionController extends BaseController {
         ResponseEntityBase<Long> responseEntityBase = new ResponseEntityBase<Long>();
         try{
             JSONObject jo = super.getRequestJsonParams();
-            String uid = super.getUid(jo.getString("appid"),jo.getString("uid"));
+            String uid = super.getUid(jo.get("appid"),jo.get("uid"));
             jo.put("uid",uid);
             JSONObject responseJo = authenService.getCode(jo);
             if(responseJo.getBoolean("result")==true){
@@ -312,12 +311,6 @@ public class FusionController extends BaseController {
         JSONObject responseJo = new JSONObject();
         try{
             JSONObject mqJo = new JSONObject();
-//            mqJo.put("reqSn","20161111132457210572");
-//            mqJo.put("dt", "20161111");
-//            mqJo.put("sendCount",0);
-//            mqJo.put("orderId",165);
-//            MqProducer.sendMessage(mqJo, MqConfig.FAST_PAY_QUERY,2000);
-
             mqJo.put("orderFormDetailId", 200);
             mqJo.put("reqSn", "20161117155508149191");
             mqJo.put("sendCount", 0);
@@ -331,5 +324,6 @@ public class FusionController extends BaseController {
         }
         return responseJo;
     }
+
 
 }

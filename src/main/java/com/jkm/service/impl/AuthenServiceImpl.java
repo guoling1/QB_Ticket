@@ -624,6 +624,11 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("message","订单状态有误");
 			return jo;
 		}
+		if(System.currentTimeMillis()>orderFormOptional.get().getExpireTime().getTime()){
+			jo.put("result",false);
+			jo.put("message","订单已超时");
+			return jo;
+		}
 		orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId());
 		orderFormService.updateStatus(orderFormOptional.get());
 		logger.error("+++++++++++++++开始支付+++++++++++++++++++");
@@ -752,6 +757,11 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("message","订单状态有误");
 			return jo;
 		}
+		if(System.currentTimeMillis()>orderFormOptional.get().getExpireTime().getTime()){
+			jo.put("result",false);
+			jo.put("message","订单已超时");
+			return jo;
+		}
 		orderFormOptional.get().setStatus(EnumOrderFormStatus.ORDER_FORM_CUSTOMER_PAY_GOING.getId());
 		orderFormService.updateStatus(orderFormOptional.get());
 		Map<String, Object> ret = this.fastPay(authenData);
@@ -852,6 +862,11 @@ public class AuthenServiceImpl implements AuthenService {
 				EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL.getId()!=grabTicketFormOptional.get().getStatus()){
 			jo.put("result",false);
 			jo.put("message","订单状态有误");
+			return jo;
+		}
+		if(System.currentTimeMillis()>grabTicketFormOptional.get().getExpireTime().getTime()){
+			jo.put("result",false);
+			jo.put("message","订单已超时");
 			return jo;
 		}
 		//实名绑卡
@@ -974,6 +989,11 @@ public class AuthenServiceImpl implements AuthenService {
 				EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL.getId()!=grabTicketFormOptional.get().getStatus()){
 			jo.put("result",false);
 			jo.put("message","订单状态有误");
+			return jo;
+		}
+		if(System.currentTimeMillis()>grabTicketFormOptional.get().getExpireTime().getTime()){
+			jo.put("result",false);
+			jo.put("message","订单已超时");
 			return jo;
 		}
 
