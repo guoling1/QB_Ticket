@@ -71,7 +71,10 @@
     </div>
     <div class="pack" v-show="pack">
       <div class="select">
-        <div class="xx"></div>
+        <div class="space_t">
+          <div class="xx" @click="pack=false"></div>
+          <div class="word">选择出票套餐</div>
+        </div>
         <ul>
           <li @click="packHide(2)" v-bind:class="{active:submitInfo.buyTicketPackageId==2}"><span>¥ 20/人套餐</span>
             极速出票，赠送78万保险
@@ -182,7 +185,23 @@
         this.$store.commit('MESSAGE_DELAY_SHOW', {
           text: err
         });
-      })
+      });
+//      this.$http.post('/userInfo/isLogin', {
+//        appid: this.$data.submitInfo.appId,
+//        uid: this.$data.submitInfo.uid
+//      }).then(function (res) {
+//        if (res.data.code == 1) {
+//          console.log(res);
+//        } else {
+//          this.$store.commit('MESSAGE_DELAY_SHOW', {
+//            text: res.data.message
+//          });
+//        }
+//      }, function (err) {
+//        this.$store.commit('MESSAGE_DELAY_SHOW', {
+//          text: err
+//        });
+//      })
     },
     methods: {
       minusChild: function (event, index) {
@@ -372,6 +391,32 @@
     -ms-flex: @val;
     flex: @val;
     width: @width;
+  }
+
+  .space_t {
+    width: 100%;
+    height: 49px;
+    line-height: 49px;
+    border-bottom: 1px solid #f5f5f5;
+    position: relative;
+    .xx {
+      width: 14px;
+      height: 14px;
+      background: url("../../assets/xx.png") no-repeat center;
+      background-size: 14px 14px;
+      padding: 15px;
+      position: absolute;
+      top: 9px;
+      left: 10px;
+    }
+    .word {
+      font-size: 15px;
+      color: #111;
+      width: 100%;
+      height: 49px;
+      line-height: 49px;
+      text-align: center;
+    }
   }
 
   .main {

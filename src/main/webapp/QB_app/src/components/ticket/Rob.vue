@@ -81,7 +81,10 @@
     </div>
     <div class="pack" v-show="pack">
       <div class="select">
-        <div class="xx"></div>
+        <div class="space_t">
+          <div class="xx" @click="pack=false"></div>
+          <div class="word">选择抢票套餐</div>
+        </div>
         <ul>
           <li @click="packHide(2)" v-bind:class="{active:submitInfo.grabTicketPackageId==2}"><span>¥ 10/人套餐</span>
             高速网络
@@ -101,7 +104,10 @@
     </div>
     <div class="pack" v-show="timer">
       <div class="select">
-        <div class="xx"></div>
+        <div class="space_t">
+          <div class="xx" @click="timer=false"></div>
+          <div class="word">选择抢票时效</div>
+        </div>
         <ul>
           <li @click="timerHide(1)" v-if="$canGrabTimeType>=1" v-bind:class="{active:submitInfo.grabTimeType==1}"><span>抢至发车前3小时</span>
           </li>
@@ -116,7 +122,10 @@
     </div>
     <div class="pack" v-show="seat">
       <div class="select">
-        <div class="xx" @click="close"></div>
+        <div class="space_t">
+          <div class="xx" @click="seat=false"></div>
+          <div class="word">选择坐席</div>
+        </div>
         <ul>
           <li @click="$shortSeat[0]=!$shortSeat[0]" v-bind:class="{active:$shortSeat[0]}"><span>无座</span></li>
           <li @click="$shortSeat[1]=!$shortSeat[1]" v-bind:class="{active:$shortSeat[1]}"><span>硬座</span></li>
@@ -246,9 +255,6 @@
       });
     },
     methods: {
-      close:function () {
-        this.$router.go(-1)
-      },
       select: function (event, station) {
         station.select = !station.select;
       },
@@ -437,10 +443,36 @@
     width: @width;
   }
 
+  .space_t {
+    width: 100%;
+    height: 49px;
+    line-height: 49px;
+    border-bottom: 1px solid #f5f5f5;
+    position: relative;
+    .xx {
+      width: 14px;
+      height: 14px;
+      background: url("../../assets/xx.png") no-repeat center;
+      background-size: 14px 14px;
+      padding: 15px;
+      position: absolute;
+      top: 9px;
+      left: 10px;
+    }
+    .word {
+      font-size: 15px;
+      color: #111;
+      width: 100%;
+      height: 49px;
+      line-height: 49px;
+      text-align: center;
+    }
+  }
+
   .main {
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
     .flexItem(1, 100%);
   }
 
@@ -468,6 +500,8 @@
         margin-right: 18px;
       }
       .write {
+        height: 56px;
+        overflow: hidden;
         &.empty {
           color: #CCC;
         }
@@ -570,10 +604,10 @@
     background-color: #FFF;
     .title {
       width: 100%;
-      height: 64px;
+      height: 50px;
       color: #fefefe;
       background-color: #4ab9f1;
-      padding: 30px 10px 0;
+      padding: 15px 10px 0;
       .back {
         width: 19px;
         height: 24px;

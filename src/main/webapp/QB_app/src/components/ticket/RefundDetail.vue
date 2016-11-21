@@ -40,7 +40,10 @@
     <div class="mask" v-if="$open">
       <!-- 第一层遮罩：确认退票 -->
       <div class="floor" v-if="$$open">
-        <p class="x" @click="show">×</p>
+        <div class="space_t">
+          <div class="xx" @click="show"></div>
+          <div class="word">退票</div>
+        </div>
         <div class="table">
           <div class="train-info">
             <div class="left">
@@ -254,6 +257,32 @@
     flex: @val;
   }
 
+  .space_t {
+    width: 100%;
+    height: 49px;
+    line-height: 49px;
+    border-bottom: 1px solid #f5f5f5;
+    position: relative;
+    .xx {
+      width: 14px;
+      height: 14px;
+      background: url("../../assets/xx.png") no-repeat center;
+      background-size: 14px 14px;
+      padding: 15px;
+      position: absolute;
+      top: 9px;
+      left: 10px;
+    }
+    .word {
+      font-size: 15px;
+      color: #111;
+      width: 100%;
+      height: 49px;
+      line-height: 49px;
+      text-align: center;
+    }
+  }
+
   .main {
     width: 100%;
     height: 100%;
@@ -386,17 +415,9 @@
       position: absolute;;
       bottom:0;
       left:0;
-      .x{
-        font-size: 16px;
-        color: #999999;
-        height: 52px;
-        line-height: 52px;
-        margin-left: 21px;
-        text-align: left;
-      }
       .table{
         width: 350px;
-        margin: 0 auto;
+        margin: 15px auto 0;
         border: 1px solid #ebebeb;
         border-radius: 1px;
         z-index: 10;

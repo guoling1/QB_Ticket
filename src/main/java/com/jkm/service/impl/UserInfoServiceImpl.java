@@ -108,4 +108,20 @@ public class UserInfoServiceImpl implements UserInfoService {
         }
         return jo;
     }
+
+    @Override
+    public int isLogin(String uid) {
+        int flag = 1;
+        UserInfo userInfo = userInfoDao.selectByUid(uid);
+        if(userInfo==null){
+            flag = 0;
+        }else{
+            if(userInfo.getAccount()!=null&&!"".equals(userInfo.getAccount())){
+                flag = 1;
+            }else{
+                flag = 0;
+            }
+        }
+        return flag;
+    }
 }

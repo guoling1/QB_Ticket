@@ -22,6 +22,10 @@ public class BindCard extends BaseEntity{
 	 * 卡bin
 	 */
 	private String bankCode;
+	/**
+	 *银行卡名称
+	 */
+	private String bankName;
 
 	/**
 	 * 银行卡姓名
