@@ -62,9 +62,9 @@ public class UserInfoController extends BaseController {
             int isLogin = userInfoService.isLogin(uid);
             responseEntityBase.setData(isLogin);
         }catch (Exception e){
-            log.error("判断是否登录异常",e);
+            log.debug("登录异常", e);
             responseEntityBase.setCode(500);
-            responseEntityBase.setMessage("fail");
+            responseEntityBase.setMessage("登录异常");
         }
         return responseEntityBase;
     }
