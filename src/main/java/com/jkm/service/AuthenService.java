@@ -53,13 +53,13 @@ public interface AuthenService {
 	 * @param requestData
 	 * @return
 	 */
-	public JSONObject toPayGrab(JSONObject requestData) throws Exception;
+	public JSONObject toPayGrab(JSONObject requestData);
 	/**
 	 * 多次支付
 	 * @param requestData
 	 * @return
 	 */
-	public JSONObject toPayGrabByCid(JSONObject requestData) throws Exception;
+	public JSONObject toPayGrabByCid(JSONObject requestData);
 	/**
 	 * 获取短信验证按
 	 * @param requestData

@@ -32,6 +32,7 @@
         checi,
         order_number,
         passenger_info,
+        expire_time,
         remark,
         status
         )VALUES(
@@ -64,6 +65,7 @@
         #{checi},
         #{orderNumber},
         #{passengerInfo},
+        #{expireTime},
         #{remark},
         #{status}
         )
@@ -100,6 +102,7 @@
         checi= #{checi},
         order_number= #{orderNumber},
         passenger_info= #{passengerInfo},
+        expire_time = #{expireTime},
         remark= #{remark},
         status= #{status} WHERE id = #{id}
     </update>
