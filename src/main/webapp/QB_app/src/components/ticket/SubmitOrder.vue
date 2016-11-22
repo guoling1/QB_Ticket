@@ -1,9 +1,9 @@
 <template lang="html">
   <div class="main">
     <div class="date-time">
-      <!--<div class="btn left dis">前一天</div>-->
+      <div class="btn left dis" @click="before">前一天</div>
       <div class="middle" @click="timer('dateFour')"> {{$$data.dateWeek}}</div>
-      <!--<div class="btn right">后一天</div>-->
+      <div class="btn right" @click="after">后一天</div>
     </div>
     <div class="space">
       <div class="left">
@@ -146,14 +146,72 @@
           name: name,
           ctrl: true
         });
+      },
+      after: function () {
+        var time=this.$data.dateHttp;
+        time=new Date(time);
+        var dd=new Date((time/1000+86400)*1000)
+        let day = dd.getDate();
+        if (day < 10) {
+          day = '0' + day;
+        }
+        var newDay=dd.getFullYear()+"-"+(dd.getMonth()+1)+"-"+day
+        this.$data.dateHttp=newDay
+        document.querySelector('.left').className="btn left dis"
+        document.querySelector('.right').className="btn right"
+      },
+      before: function () {
+        var time=this.$data.dateHttp;
+        time=new Date(time);
+        var dd=new Date((time/1000-86400)*1000)
+        let day = dd.getDate();
+        if (day < 10) {
+          day = '0' + day;
+        }
+        var newDay=dd.getFullYear()+"-"+(dd.getMonth()+1)+"-"+day
+        this.$data.dateHttp=newDay
+        document.querySelector('.left').className="btn left"
+        document.querySelector('.right').className="btn right dis"
       }
     },
-    /*watch: {
+    watch: {
       dateHttp: function (val, oldVal) {
-        console.log(this.$data.orderInfo.train_code)
+        Vue.http.post('/queryTicketPrice/query', {
+          appid: this.$route.query.appid, //商户
+          uid: this.$route.query.uid, //用户id
+          from_station: this.$data.orderInfo.from_station_code, //出发站简码
+          to_station: this.$data.orderInfo.to_station_code, //到达站简码
+          from_station_name: this.$data.orderInfo.from_station_name,
+          to_station_name: this.$data.orderInfo.to_station_name,
+          train_date: val //乘车日期（yyyy-MM-dd）
+        }).then((res)=> {
+          if (res.body.code == 1) {
+            for(var i=0;i<res.body.data.length;i++){
+              if(res.body.data[i].train_code==this.$data.orderInfo.train_code){
+                this.$data.orderInfo=res.body.data[i]
+                break;
+              }
+            }
+          } else {
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: res.body.message
+            })
+          }
+        }, function (err) {
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: err
+          })
+        })
+        var ary=val.split("-");
+        var date=ary[1]+"月"+ary[2]+"日";
+        var ss=new Date(ary[0],parseInt(ary[1]-1),ary[2])
+        var week=ss.getDay();
+        ary=["日","一","二","三","四","五","六"]
+        this.$data.dateHttp = val;
+        this.$data.dateWeek = date+" 周"+ary[week];
 
       }
-    },*/
+    },
     computed: {
       time: function () {
         let startD = (this.$data.dateHttp + '').split("-");
