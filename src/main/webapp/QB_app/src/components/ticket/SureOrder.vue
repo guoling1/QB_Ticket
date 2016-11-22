@@ -431,7 +431,7 @@
         this.$data.sureOrder.passengers = [];
         for(let i=0;i<storeDate.length;i++){
           if (storeDate[i]) {
-            this.$data.submitInfo.grabPassengers.push({
+            this.$data.sureOrder.passengers.push({
               id: storeDate[i].id,
               name: storeDate[i].name,
               piaoType: storeDate[i].personType
