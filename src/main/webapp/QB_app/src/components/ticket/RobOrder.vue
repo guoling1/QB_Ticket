@@ -341,13 +341,11 @@
     computed: {
       $payInfo: function () {
         return this.$data.payInfo;
-      }
-      ,
+      },
       $$childs: function () {
         this.$data.childs.piaoType = '儿童';
         return this.$data.childs;
-      }
-      ,
+      },
       passengers: function () {
         let storeDate = this.$store.state.contact.info;
         let data = [];
