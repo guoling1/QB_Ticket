@@ -59,31 +59,36 @@ public class BaseController {
      * @return
      * @throws IOException
      */
-    protected JSONObject getRequestJsonParams() throws IOException {
-        if (request == null) {
-            return null;
-        }
-        String line = "";
-        StringBuilder body = new StringBuilder();
-        int counter = 0;
-        InputStream stream;
-        stream = request.getInputStream();
-        //读取POST提交的数据内容
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream,"utf-8"));
-        while ((line = reader.readLine()) != null) {
-            if(counter > 0){
-                body.append("\r\n");
+    protected JSONObject getRequestJsonParams(){
+        try{
+            if (request == null) {
+                return null;
             }
-            body.append(line);
-            counter++;
+            String line = "";
+            StringBuilder body = new StringBuilder();
+            int counter = 0;
+            InputStream stream;
+            stream = request.getInputStream();
+            //读取POST提交的数据内容
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream,"utf-8"));
+            while ((line = reader.readLine()) != null) {
+                if(counter > 0){
+                    body.append("\r\n");
+                }
+                body.append(line);
+                counter++;
+            }
+            if(!"".equals(body)){
+                JSONObject jo = JSONObject.fromObject(body.toString());
+                logger.info("请求参数为："+jo.toString());
+                return  jo;
+            }else{
+                return null;
+            }
+        }catch(Exception e){
+            logger.info("获取参数异常",e);
         }
-        if(!"".equals(body)){
-            JSONObject jo = JSONObject.fromObject(body.toString());
-            logger.info("请求参数为："+jo.toString());
-            return  jo;
-        }else{
-            return null;
-        }
+        return null;
     }
 
     /**

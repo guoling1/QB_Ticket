@@ -801,7 +801,7 @@ public class AuthenServiceImpl implements AuthenService {
 	}
 
 	@Override
-	public JSONObject toPayGrab(JSONObject requestData) throws Exception {
+	public JSONObject toPayGrab(JSONObject requestData) {
 		JSONObject jo = new JSONObject();
 		Preconditions.checkNotNull(requestData.get("crdNo"),"缺少银行卡号");
 		Preconditions.checkNotNull(requestData.get("orderId"),"订单号不能为空");
@@ -911,7 +911,11 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("result",true);
 			jo.put("data",ret.get("retData"));
 			jo.put("message","支付成功");
-			ticketService.handleGrabCustomerPayMsg(requestData.getLong("orderId"),authenData.getReqSn(),true);
+			try {
+				ticketService.handleGrabCustomerPayMsg(requestData.getLong("orderId"),authenData.getReqSn(),true);
+			} catch (Exception e) {
+				logger.error("抢票单回调错误",e);
+			}
 		}else if("6666".equals(ret.get("retCode").toString())){
 			BindCard bindCard = new BindCard();
 			bindCard.setUid(requestData.getString("uid"));
@@ -948,13 +952,17 @@ public class AuthenServiceImpl implements AuthenService {
 		}else{//支付失败
 			jo.put("result",false);
 			jo.put("message",ret.get("retMsg"));
-			ticketService.handleGrabCustomerPayMsg(requestData.getLong("orderId"),authenData.getReqSn(),false);
+			try {
+				ticketService.handleGrabCustomerPayMsg(requestData.getLong("orderId"),authenData.getReqSn(),false);
+			} catch (Exception e) {
+				logger.error("抢票单回调错误",e);
+			}
 		}
 		return jo;
 	}
 
 	@Override
-	public JSONObject toPayGrabByCid(JSONObject requestData) throws Exception {
+	public JSONObject toPayGrabByCid(JSONObject requestData){
 		JSONObject jo = new JSONObject();
 		Preconditions.checkNotNull(requestData.get("orderId"),"订单号不能为空");
 		Preconditions.checkNotNull(requestData.get("cId"),"银行信息不能为空");
@@ -1038,7 +1046,11 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("result",true);
 			jo.put("data",ret.get("retData"));
 			jo.put("message","支付成功");
-			ticketService.handleGrabCustomerPayMsg(requestData.getLong("orderId"),authenData.getReqSn(),true);
+			try {
+				ticketService.handleGrabCustomerPayMsg(requestData.getLong("orderId"),authenData.getReqSn(),true);
+			} catch (Exception e) {
+				logger.error("抢票单回调错误",e);
+			}
 		}else if("6666".equals(ret.get("retCode").toString())){
 			jo.put("result",true);
 			jo.put("data",ret.get("retData"));
@@ -1064,7 +1076,11 @@ public class AuthenServiceImpl implements AuthenService {
 		}else{//支付失败
 			jo.put("result",false);
 			jo.put("message",ret.get("retMsg"));
-			ticketService.handleGrabCustomerPayMsg(requestData.getLong("orderId"),authenData.getReqSn(),false);
+			try {
+				ticketService.handleGrabCustomerPayMsg(requestData.getLong("orderId"),authenData.getReqSn(),false);
+			} catch (Exception e) {
+				logger.error("抢票单回调错误",e);
+			}
 		}
 		return jo;
 	}

@@ -184,7 +184,6 @@ public class FusionController extends BaseController {
             }
         }catch(Exception e){
             logger.error("立即支付(多次)异常",e);
-            System.out.println("支付异常"+e);
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
