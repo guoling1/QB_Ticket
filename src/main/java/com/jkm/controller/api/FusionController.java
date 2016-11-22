@@ -183,7 +183,8 @@ public class FusionController extends BaseController {
                 responseEntityBase.setCode(400);
             }
         }catch(Exception e){
-            logger.info("立即支付(多次)异常",e);
+            logger.error("立即支付(多次)异常",e);
+            System.out.println("支付异常"+e);
             if(e.getMessage()==null){
                 responseEntityBase.setMessage("支付异常");
             }else{
@@ -191,6 +192,7 @@ public class FusionController extends BaseController {
             }
             responseEntityBase.setCode(500);
             grabTicketFormService.updateStatusById(EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL,orderId);
+            e.printStackTrace();
         }
         return responseEntityBase;
     }

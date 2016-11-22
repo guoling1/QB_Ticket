@@ -967,36 +967,42 @@ public class AuthenServiceImpl implements AuthenService {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getString("vCode")), "验证码不能为空");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(requestData.getLong("sn")+""), "短信序列码不能为空");
 		BindCard bindCard = bindCardService.selectByPrimaryKey(requestData.getLong("cId"));
+		logger.error("进入验证银行卡");
 		if(bindCard==null){
 			jo.put("result",false);
 			jo.put("message","无此银行卡信息");
 			return jo;
 		}
+		logger.error("出验证银行卡");
 		Pair<Integer, String> codeStatus = smsAuthService.checkVerifyCode(bindCard.getPhone(),requestData.getString("vCode"),EnumVerificationCodeType.PAYMENT);
 		int resultType = codeStatus.getKey();
+		logger.error("进入短信验证");
 		if(resultType!=1){
 			jo.put("result",false);
 			jo.put("message",codeStatus.getValue());
 			return jo;
 		}
-
+		logger.error("出短信验证");
 
 		Optional<GrabTicketForm> grabTicketFormOptional = grabTicketFormService.selectById(requestData.getLong("orderId"));
 		Preconditions.checkState(grabTicketFormOptional.isPresent(), "订单[" + requestData.getLong("orderId") + "]不存在");
 
-
+		logger.error("进入订单状态查询");
 		if(EnumGrabTicketStatus.GRAB_FORM_PAY_WAIT.getId()!=grabTicketFormOptional.get().getStatus()&&
 				EnumGrabTicketStatus.GRAB_FORM_PAY_FAIL.getId()!=grabTicketFormOptional.get().getStatus()){
 			jo.put("result",false);
 			jo.put("message","订单状态有误");
 			return jo;
 		}
+		logger.error("出订单状态查询");
+		logger.error("进入订单超时判断");
 		if(System.currentTimeMillis()>grabTicketFormOptional.get().getExpireTime().getTime()){
 			jo.put("result",false);
 			jo.put("message","订单已超时");
 			return jo;
 		}
-
+		logger.error("出超时判断");
+		logger.error("进入实名绑定");
 		//实名绑卡
 		UserInfo u = new UserInfo();
 		u.setAppId(requestData.getString("appid"));
@@ -1010,7 +1016,7 @@ public class AuthenServiceImpl implements AuthenService {
 			jo.put("message",userInfo.getString("message"));
 			return jo;
 		}
-
+		logger.error("出实名绑定");
 		BigDecimal amount = grabTicketFormOptional.get().getGrabTotalPrice();
 		grabTicketFormService.updateStatusById(EnumGrabTicketStatus.GRAB_FORM_PAY_ING,requestData.getLong("orderId"));
 
@@ -1025,7 +1031,9 @@ public class AuthenServiceImpl implements AuthenService {
 		authenData.setNonceStr(requestData.getString("nonceStr"));
 		authenData.setAppId(requestData.getString("appid"));
 		authenData.setOrderId(requestData.getLong("orderId"));
+		logger.error("进入开始支付");
 		Map<String, Object> ret = this.fastPay(authenData);
+		logger.error("结束开始支付");
 		if("0000".equals(ret.get("retCode").toString())){//支付成功
 			jo.put("result",true);
 			jo.put("data",ret.get("retData"));
