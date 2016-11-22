@@ -13,6 +13,10 @@ import './directives'
 // 添加 全局 filter
 import './filters'
 
+// 添加自定义 插件
+import Validate from './plugin/validate'
+Vue.use(Validate);
+
 // 添加路由变化监听
 router.beforeEach((to, from, next) => {
   next();
