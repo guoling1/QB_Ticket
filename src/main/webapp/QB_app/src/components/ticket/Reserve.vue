@@ -12,6 +12,7 @@
         <div class="side write">
           <div class="left" id="left" @click="station('stationONE')">{{$$data.form_name}}</div>
           <img class="middle" id="middle" src="../../assets/exchange.png" @click="change">
+
           <div class="right" id="right" @click="station('stationTWO')">{{$$data.to_name}}</div>
         </div>
       </div>
@@ -27,7 +28,9 @@
       <div class="submit" @click="query">查询</div>
       <div class="flexBox">
         <div class="history">
-          <div v-for="his in $$data.history" @click="chooseByHistory($event,his)">{{his.fromStationName}} → {{his.toStationName}}</div>
+          <div v-for="his in $$data.history" @click="chooseByHistory($event,his)">{{his.fromStationName}} →
+            {{his.toStationName}}
+          </div>
           <div @click="clearHistory">清空</div>
         </div>
         <div class="know" @click="show">订票须知<span></span></div>
@@ -111,33 +114,15 @@
       }
     },
     beforeRouteEnter (to, from, next) {
-      Vue.http.post('/queryHistory/query', {
+      Vue.__http.post('/queryHistory/query', {
         appid: to.query.appid,
         uid: to.query.uid
-      }).then(function (res) {
-        if (res.data.code == 1) {
-          next(function (vm) {
-            vm.$data.appid = to.query.appid;
-            vm.$data.uid = to.query.uid;
-            vm.$data.history = res.body.data;
-          });
-        } else {
-          next(function (vm) {
-            vm.$data.appid = to.query.appid;
-            vm.$data.uid = to.query.uid;
-            vm.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.data.message
-            });
-          });
-        }
-      }, function (err) {
+      }, function (res) {
         next(function (vm) {
           vm.$data.appid = to.query.appid;
           vm.$data.uid = to.query.uid;
-          vm.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
-          });
-        });
+          vm.$data.history = res.body.data;
+        })
       });
     },
     methods: {
@@ -157,25 +142,25 @@
           }
         })
       },
-      chooseByHistory: function (event,his) {
+      chooseByHistory: function (event, his) {
         this.$store.state.station.scope.stationONE.code = his.fromStation;
         this.$store.state.station.scope.stationONE.station = his.fromStationName;
         this.$store.state.station.scope.stationTWO.code = his.toStation;
         this.$store.state.station.scope.stationTWO.station = his.toStationName;
       },
       clearHistory: function () {
-        this.$http.post('/deleteHistory/delete',{
+        this.$http.post('/deleteHistory/delete', {
           appid: this.$data.appid,
           uid: this.$data.uid
-        }).then(function(res) {
-          if(res.body.code==1){
+        }).then(function (res) {
+          if (res.body.code == 1) {
             this.$data.history = [];
-          }else{
+          } else {
             this.$store.commit('MESSAGE_DELAY_SHOW', {
               text: res.body.message
             });
           }
-        },function(err) {
+        }, function (err) {
           this.$store.commit('MESSAGE_DELAY_SHOW', {
             text: err
           });
@@ -199,22 +184,22 @@
       show: function () {
         this.$data.$show = !this.$data.$show
       },
-      change:function () {
-        document.querySelector("#middle").className="middle rotate";
-        document.querySelector("#left").className="left changeLeft";
-        document.querySelector("#right").className="right changeRight";
-        setTimeout(()=> {
-          let tmp="";
-          tmp=this.$data.form_name;
-          this.$data.form_name=this.$data.to_name;
-          this.$data.to_name=tmp;
-          tmp=this.$data.form_code;
-          this.$data.form_code=this.$data.to_code;
-          this.$data.to_code=tmp;
-          tmp=null;
-          document.querySelector("#middle").className="middle"
-          document.querySelector("#left").className="left"
-          document.querySelector("#right").className="right"
+      change: function () {
+        document.querySelector("#middle").className = "middle rotate";
+        document.querySelector("#left").className = "left changeLeft";
+        document.querySelector("#right").className = "right changeRight";
+        setTimeout(()=>{
+          let tmp = "";
+          tmp = this.$data.form_name;
+          this.$data.form_name = this.$data.to_name;
+          this.$data.to_name = tmp;
+          tmp = this.$data.form_code;
+          this.$data.form_code = this.$data.to_code;
+          this.$data.to_code = tmp;
+          tmp = null;
+          document.querySelector("#middle").className = "middle"
+          document.querySelector("#left").className = "left"
+          document.querySelector("#right").className = "right"
         },400)
       }
     },
@@ -430,18 +415,22 @@
       text-align: center;
     }
   }
+
   .rotate {
     -webkit-animation: rotateIn 1s ease 0s 1 both;
     animation: rotateIn 1s ease 0s 1 both;
   }
+
   .changeLeft {
     -webkit-animation: left 0.5s ease 0s 1 both;
     animation: left 0.5s ease 0s 1 both;
   }
+
   .changeRight {
     -webkit-animation: right 0.5s ease 0s 1 both;
     animation: right 0.5s ease 0s 1 both;
   }
+
   @-webkit-keyframes rotateIn {
     0% {
       transform: rotate(0deg);
@@ -459,12 +448,13 @@
       transform: rotate(180deg);
     }
   }
+
   @-webkit-keyframes left {
     0% {
       left: 0;
     }
     100% {
-      left:83%;
+      left: 83%;
     }
   }
 
@@ -474,15 +464,16 @@
     }
     100% {
 
-      left:83%;
+      left: 83%;
     }
   }
+
   @-webkit-keyframes right {
     0% {
       left: 0;
     }
     100% {
-      left:-83%;
+      left: -83%;
     }
   }
 
@@ -491,7 +482,7 @@
       left: 0;
     }
     100% {
-      left:-83%;
+      left: -83%;
     }
   }
 </style>

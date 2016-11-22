@@ -14,8 +14,8 @@ import './directives'
 import './filters'
 
 // 添加自定义 插件
-import Validate from './plugin/validate'
-Vue.use(Validate);
+import Resource from './plugin/resource'
+Vue.use(Resource);
 
 // 添加路由变化监听
 router.beforeEach((to, from, next) => {
