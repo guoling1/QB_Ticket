@@ -1,13 +1,12 @@
 <template lang="html">
   <div class="main">
     <div class="banner">
-      <!--<span class="first">前一天</span>-->
-
+      <span class="first" @click="before">前一天</span>
       <div class="calendar" @click="timer('dateThree')">
         {{$$data.dateWeek}}
         <img src="../../assets/calendar.png" alt=""/>
       </div>
-      <!--<span class="next show">后一天</span>-->
+      <span class="next show" @click="after">后一天</span>
     </div>
     <div class="empty" v-if="stations.empty">没有符合查询条件的车次</div>
     <ul v-if="!stations.empty">
@@ -79,7 +78,8 @@
         only: false,
         initStations: [],
         // 火车票筛选信息
-        screenConfig: this.$store.state.screen.config
+        screenConfig: this.$store.state.screen.config,
+        obj:""
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -149,10 +149,40 @@
           name: name,
           ctrl: true
         });
+      },
+      after: function () {
+        var time=this.$data.dateHttp;
+        time=new Date(time);
+        var dd=new Date((time/1000+86400)*1000)
+        let day = dd.getDate();
+        if (day < 10) {
+          day = '0' + day;
+        }
+        var newDay=dd.getFullYear()+"-"+(dd.getMonth()+1)+"-"+day
+        this.$data.dateHttp=newDay
+        document.querySelector('.first').className="first"
+        document.querySelector('.next').className="next show"
+      },
+      before: function () {
+        var time=this.$data.dateHttp;
+        time=new Date(time);
+        var dd=new Date((time/1000-86400)*1000)
+        let day = dd.getDate();
+        if (day < 10) {
+          day = '0' + day;
+        }
+        var newDay=dd.getFullYear()+"-"+(dd.getMonth()+1)+"-"+day
+        this.$data.dateHttp=newDay
+        document.querySelector('.first').className="first show"
+        document.querySelector('.next').className="next"
       }
     },
     watch: {
       dateHttp: function(val,oldVal){
+        if(oldVal==""){
+          this.$data.obj=val
+        }
+        if(val!=oldVal&&oldVal!=""&&oldVal!=this.$data.obj){
           Vue.http.post('/queryTicketPrice/query', {
             appid: this.$route.query.appid, //商户
             uid: this.$route.query.uid, //用户id
@@ -197,7 +227,9 @@
             this.$store.commit('MESSAGE_DELAY_SHOW', {
               text: err
             })
-        })
+          })
+        }
+
       }
     },
     computed: {

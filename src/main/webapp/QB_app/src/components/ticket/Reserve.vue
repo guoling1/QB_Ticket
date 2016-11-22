@@ -208,6 +208,9 @@
           tmp=this.$data.form_name;
           this.$data.form_name=this.$data.to_name;
           this.$data.to_name=tmp;
+          tmp=this.$data.form_code;
+          this.$data.form_code=this.$data.to_code;
+          this.$data.to_code=tmp;
           tmp=null;
           document.querySelector("#middle").className="middle"
           document.querySelector("#left").className="left"

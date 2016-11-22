@@ -36,7 +36,7 @@ public class BaseControllerInterceptor extends HandlerInterceptorAdapter {
 						String appId = param[1];
 						MerchantAppInfo merchantAppInfo = merchantAppInfoService.selectByPrimaryKey(Long.parseLong(appId));
 						if(merchantAppInfo==null){
-							response.sendError(502,"非法数据、未通过验证");
+							response.sendError(506,"非法数据、未通过验证");
 							flag = false;
 						}
 					}
