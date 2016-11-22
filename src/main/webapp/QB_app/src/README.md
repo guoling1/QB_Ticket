@@ -34,6 +34,8 @@ vue 内置命名
 
   以 $$ 开头 主要用于监听页面数据变化
 
+  data的数据不直接输出到页面上,必须经过计算属性 computed 转一次
+
 方法 methods 数据 data
 
   不需要特殊处理 正常的驼峰命名 意思明确即可
@@ -48,3 +50,9 @@ beforeRouteEnter 在这个项目中弃用
 store 分类使用
 
   组件/模版 控制器 model_ctrl
+
+[data filter computed]
+
+* 基础数据 data 存储页面存储页面传递,ajax请求的数据(尽量避免中文/会被url转码的符号)
+* 过滤器 filter 主要用于处理页面展示数据时的转换
+* 计算属性 computed 主要处理数据变化(保证引起数据变化的点唯一) 或者就直接return,相当于监控data的变化

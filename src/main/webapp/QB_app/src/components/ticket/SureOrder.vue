@@ -433,7 +433,6 @@
           if (storeDate[i]) {
             this.$data.sureOrder.passengers.push({
               id: storeDate[i].id,
-              name: storeDate[i].name,
               piaoType: storeDate[i].personType
             });
           }
