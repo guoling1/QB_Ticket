@@ -341,27 +341,18 @@
     computed: {
       $payInfo: function () {
         return this.$data.payInfo;
-      }
-      ,
+      },
       $$childs: function () {
         this.$data.childs.piaoType = '儿童';
         return this.$data.childs;
-      }
-      ,
+      },
       passengers: function () {
         let storeDate = this.$store.state.contact.info;
+        let data = [];
         this.$data.submitInfo.grabPassengers = [];
-//        for (let i in storeDate) {
-//          if (storeDate[i]) {
-//            this.$data.submitInfo.grabPassengers.push({
-//              id: storeDate[i].id,
-//              name: storeDate[i].name,
-//              piaoType: storeDate[i].personType
-//            });
-//          }
-//        }
         for(let i=0;i<storeDate.length;i++){
           if (storeDate[i]) {
+            data.push(storeDate[i]);
             this.$data.submitInfo.grabPassengers.push({
               id: storeDate[i].id,
               name: storeDate[i].name,
@@ -369,7 +360,7 @@
             });
           }
         }
-        return this.$data.submitInfo.grabPassengers;
+        return data;
       },
       $submitInfo: function () {
         let data = this.$data.submitInfo;

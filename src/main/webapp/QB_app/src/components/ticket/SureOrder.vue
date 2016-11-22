@@ -428,17 +428,18 @@
       },
       passengers: function () {
         let storeDate = this.$store.state.contact.info;
+        let data = [];
         this.$data.sureOrder.passengers = [];
         for(let i=0;i<storeDate.length;i++){
           if (storeDate[i]) {
+            data.push(storeDate[i]);
             this.$data.sureOrder.passengers.push({
               id: storeDate[i].id,
-              name: storeDate[i].name,
               piaoType: storeDate[i].personType
             });
           }
         }
-        return this.$data.sureOrder.passengers;
+        return data;
       },
       pageInfo () {
         return {
