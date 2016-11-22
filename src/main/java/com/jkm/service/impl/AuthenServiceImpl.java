@@ -597,8 +597,8 @@ public class AuthenServiceImpl implements AuthenService {
 		UserInfo u = new UserInfo();
 		u.setAppId(requestData.getString("appid"));
 		u.setUid(requestData.getString("uid"));
-		u.setCardId(requestData.getString("idNo"));
-		u.setCardNo(requestData.getString("crdNo"));
+		u.setCardId(UserBankCardSupporter.encryptCardId(requestData.getString("idNo")));
+		u.setCardNo(UserBankCardSupporter.encryptCardNo(requestData.getString("crdNo")));
 		u.setRealName(requestData.getString("capCrdNm"));
 		JSONObject userInfo = userInfoService.bindAuthenUserInfo(u);
 		if(!userInfo.getBoolean("result")){
@@ -873,8 +873,8 @@ public class AuthenServiceImpl implements AuthenService {
 		UserInfo u = new UserInfo();
 		u.setAppId(requestData.getString("appid"));
 		u.setUid(requestData.getString("uid"));
-		u.setCardId(requestData.getString("idNo"));
-		u.setCardNo(requestData.getString("crdNo"));
+		u.setCardId(UserBankCardSupporter.encryptCardId(requestData.getString("idNo")));
+		u.setCardNo(UserBankCardSupporter.encryptCardNo(requestData.getString("crdNo")));
 		u.setRealName(requestData.getString("capCrdNm"));
 		JSONObject userInfo = userInfoService.bindAuthenUserInfo(u);
 		if(!userInfo.getBoolean("result")){
