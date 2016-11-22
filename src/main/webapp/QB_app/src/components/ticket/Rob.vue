@@ -250,8 +250,19 @@
     },
     beforeRouteEnter (to, from, next) {
       next(function (vm) {
-        vm.$data.submitInfo.appId = to.query.appid;
-        vm.$data.submitInfo.uid = to.query.uid;
+        if(from.path=="/ticket/main-menu/reserve"){
+          vm.$data.submitInfo.appId = to.query.appid;
+          vm.$data.submitInfo.uid = to.query.uid;
+        }else {
+          vm.$data.submitInfo.appId = to.query.appid;
+          vm.$data.submitInfo.uid = to.query.uid;
+          vm.$store.state.station.scope.stationTHREE.station = to.query.from_name;
+          vm.$store.state.station.scope.stationTHREE.code = to.query.from_code;
+          vm.$store.state.station.scope.stationFOUR.station = to.query.to_name;
+          vm.$store.state.station.scope.stationFOUR.code = to.query.to_code;
+          vm.$data.submitInfo.trainCodes = to.query.train_code;
+          vm.$data.submitInfo.seatTypes = to.query.table;
+        }
       });
     },
     methods: {
@@ -329,7 +340,7 @@
       },
       submit: function () {
         sessionStorage.setItem('robOrder', JSON.stringify(this.$data.submitInfo));
-        if(this.$data.checi_length==0){
+        if(this.$data.submitInfo.trainCodes=="请选择车次"){
           this.$data.$err=true
           this.$data.errMsg="请指定车次"
         }

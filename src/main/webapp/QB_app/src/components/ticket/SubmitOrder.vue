@@ -31,7 +31,7 @@
                      :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'二等座',price:orderInfo.edz_price}}">预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.edz_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'二等座',train_code:orderInfo.train_code,time:dateWeek}}">抢票</router-link>
       </div>
       <div class="group" v-if="orderInfo.ydz_num!='--'">
         <div class="left">一等座</div>
@@ -41,7 +41,7 @@
                      :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'一等座',price:orderInfo.ydz_price}}">预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.ydz_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'一等座',train_code:orderInfo.train_code,time:dateWeek}}">抢票</router-link>
       </div>
       <div class="group" v-if="orderInfo.swz_num!='--'">
         <div class="left">商务座</div>
@@ -51,7 +51,7 @@
                      :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'商务座',price:orderInfo.swz_price}}">预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.swz_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'商务座',train_code:orderInfo.train_code,time:dateWeek}}">抢票</router-link>
       </div>
       <div class="group" v-if="orderInfo.yz_num!='--'">
         <div class="left">硬座</div>
@@ -61,7 +61,7 @@
                      :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'硬座',price:orderInfo.yz_price}}">预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.yz_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'硬座',train_code:orderInfo.train_code,time:dateWeek}}">抢票</router-link>
       </div>
       <div class="group" v-if="orderInfo.rz_num!='--'">
         <div class="left">软座</div>
@@ -71,7 +71,7 @@
                      :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'软座',price:orderInfo.rz_price}}">预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.rz_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'软座',train_code:orderInfo.train_code,time:dateWeek}}">抢票</router-link>
       </div>
       <div class="group" v-if="orderInfo.yw_num!='--'">
         <div class="left">硬卧</div>
@@ -81,7 +81,7 @@
                      :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'硬卧',price:orderInfo.yw_price}}">预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.yw_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'硬卧',train_code:orderInfo.train_code,time:dateWeek}}">抢票</router-link>
       </div>
       <div class="group" v-if="orderInfo.rw_num!='--'">
         <div class="left">软卧</div>
@@ -91,7 +91,7 @@
                      :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'软卧',price:orderInfo.rw_price}}">预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.rw_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'软卧',train_code:orderInfo.train_code,time:dateWeek}}">抢票</router-link>
       </div>
       <div class="group" v-if="orderInfo.wz_num!='--'">
         <div class="left">无座</div>
@@ -101,7 +101,7 @@
                      :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'无座',price:orderInfo.wz_price}}">预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.wz_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'无座',train_code:orderInfo.train_code,time:dateWeek}}">抢票</router-link>
       </div>
     </div>
     <datetime></datetime>
