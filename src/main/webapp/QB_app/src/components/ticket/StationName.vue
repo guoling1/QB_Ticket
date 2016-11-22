@@ -293,10 +293,11 @@
     right: 0;
     a{
       font-size: 14px;
-      height: 18px;
-      line-height: 18px;
+      height: 19px;
+      line-height: 19px;
       display: block;
-      text-decoration:none; color:#333
+      text-decoration:none;
+      color:#4ab9f1;
     }
   }
 </style>

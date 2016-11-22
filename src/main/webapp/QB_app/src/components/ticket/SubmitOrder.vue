@@ -129,7 +129,8 @@
         },
         orderInfo: JSON.parse(sessionStorage.getItem('preOrder')),
         dateHttp: '',
-        dateWeek: ''
+        dateWeek: '',
+        obj:""
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -176,40 +177,44 @@
     },
     watch: {
       dateHttp: function (val, oldVal) {
-        Vue.http.post('/queryTicketPrice/query', {
-          appid: this.$route.query.appid, //商户
-          uid: this.$route.query.uid, //用户id
-          from_station: this.$data.orderInfo.from_station_code, //出发站简码
-          to_station: this.$data.orderInfo.to_station_code, //到达站简码
-          from_station_name: this.$data.orderInfo.from_station_name,
-          to_station_name: this.$data.orderInfo.to_station_name,
-          train_date: val //乘车日期（yyyy-MM-dd）
-        }).then((res)=> {
-          if (res.body.code == 1) {
-            for(var i=0;i<res.body.data.length;i++){
-              if(res.body.data[i].train_code==this.$data.orderInfo.train_code){
-                this.$data.orderInfo=res.body.data[i]
-                break;
+        if(oldVal==""){
+          this.$data.obj=val
+        }
+        if(val!=oldVal&&oldVal!=""&&oldVal!=this.$data.obj){
+          Vue.http.post('/queryTicketPrice/query', {
+            appid: this.$route.query.appid, //商户
+            uid: this.$route.query.uid, //用户id
+            from_station: this.$data.orderInfo.from_station_code, //出发站简码
+            to_station: this.$data.orderInfo.to_station_code, //到达站简码
+            from_station_name: this.$data.orderInfo.from_station_name,
+            to_station_name: this.$data.orderInfo.to_station_name,
+            train_date: val //乘车日期（yyyy-MM-dd）
+          }).then((res)=> {
+            if (res.body.code == 1) {
+              for(var i=0;i<res.body.data.length;i++){
+                if(res.body.data[i].train_code==this.$data.orderInfo.train_code){
+                  this.$data.orderInfo=res.body.data[i]
+                  break;
+                }
               }
+            } else {
+              this.$store.commit('MESSAGE_DELAY_SHOW', {
+                text: res.body.message
+              })
             }
-          } else {
+          }, function (err) {
             this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.body.message
+              text: err
             })
-          }
-        }, function (err) {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
           })
-        })
-        var ary=val.split("-");
-        var date=ary[1]+"月"+ary[2]+"日";
-        var ss=new Date(ary[0],parseInt(ary[1]-1),ary[2])
-        var week=ss.getDay();
-        ary=["日","一","二","三","四","五","六"]
-        this.$data.dateHttp = val;
-        this.$data.dateWeek = date+" 周"+ary[week];
-
+          var ary=val.split("-");
+          var date=ary[1]+"月"+ary[2]+"日";
+          var ss=new Date(ary[0],parseInt(ary[1]-1),ary[2])
+          var week=ss.getDay();
+          ary=["日","一","二","三","四","五","六"]
+          this.$data.dateHttp = val;
+          this.$data.dateWeek = date+" 周"+ary[week];
+        }
       }
     },
     computed: {
