@@ -78,7 +78,8 @@
         only: false,
         initStations: [],
         // 火车票筛选信息
-        screenConfig: this.$store.state.screen.config
+        screenConfig: this.$store.state.screen.config,
+        obj:""
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -178,7 +179,10 @@
     },
     watch: {
       dateHttp: function(val,oldVal){
-        if(val!=oldVal&&oldVal!=""){
+        if(oldVal==""){
+          this.$data.obj=val
+        }
+        if(val!=oldVal&&oldVal!=""&&oldVal!=this.$data.obj){
           Vue.http.post('/queryTicketPrice/query', {
             appid: this.$route.query.appid, //商户
             uid: this.$route.query.uid, //用户id
