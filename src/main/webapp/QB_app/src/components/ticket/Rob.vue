@@ -61,7 +61,7 @@
         </div>
         <div class="result">
           <div class="cont">
-            <div class="emptyInfo" v-if="!$trains||$trains==[]">暂无所查询的车次信息</div>
+            <div class="emptyInfo" v-if="!$trains||$trains.length==0">暂无所查询的车次信息</div>
             <div class="top" v-for="station in $trains" @click="select($event,station)">
               <span class="checi">{{station.train_code}}</span>
 
@@ -404,6 +404,8 @@
           uid: this.$data.submitInfo.uid,
           from_station: this.$store.state.station.scope.stationTHREE.code,
           to_station: this.$store.state.station.scope.stationFOUR.code,
+          from_station_name: this.$store.state.station.scope.stationTHREE.station,
+          to_station_name: this.$store.state.station.scope.stationFOUR.station,
           train_date: this.$store.state.date.scope.dateTWO.code
         }).then(function (res) {
           if(res.data){
