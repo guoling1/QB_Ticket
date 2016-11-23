@@ -834,7 +834,7 @@
 
   .notice {
     position: fixed;
-    top: 64px;
+    top: 0;
     left: 0;
     z-index: 99;
     padding: 0 15px;
@@ -842,7 +842,7 @@
     height: 100%;
     background: rgba(255, 255, 255, .9);
     .content {
-      height: 80%;
+      height: 90%;
       overflow: auto;
       text-align: left;
       font-size: 12px;
