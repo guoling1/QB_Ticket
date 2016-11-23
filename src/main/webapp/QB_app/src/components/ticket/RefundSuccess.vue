@@ -71,48 +71,45 @@
         orderInfo: []
       }
     },
+    beforeCreate: function () {
+      let query = this.$route.query;
+      this.$http.post('/order/queryById', {
+        orderFormId: query.orderid
+      }).then(function (res) {
+        this.$data.orderInfo = res.data;
+        this.$data.common.appid = query.appid;
+        this.$data.common.uid = query.uid;
+      }, function () {
+        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          text: '查询订单信息失败'
+        })
+      });
+    },
     created: function () {
       // 这里 轮询 等待回调
       let polling = '';
       const pollFun = ()=>{
-        this.$http.post('/order/queryById', {orderFormId: this.$data.orderInfo.orderFormId}).then(function (res) {
-          if (res.data.code == 1 && res.data.data.status == 10) {
+        this.$http.post('/order/queryById', {
+          appid: query.appid,
+          uid: query.uid
+        }).then(function (res) {
+          if (res.data.status == 10) {
             clearInterval(polling);
-            this.$data.orderInfo = res.data.data;
-          } else if (res.data.code == 1 && (res.data.data.status == 8 ||res.data.data.status == 11)) {
+            this.$data.orderInfo = res.data;
+          } else if (res.data.status == 8 || res.data.status == 11) {
             clearInterval(polling);
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '出票失败'
             });
           }
-        })
+        }, function () {
+          clearInterval(polling);
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '查询订单信息失败'
+          })
+        });
       }
       polling = setInterval(pollFun, 1500);
-    },
-    beforeRouteEnter (to, from, next) {
-      Vue.http.post('/order/queryById', {
-        orderFormId: to.query.orderid
-      }).then(function (res) {
-        if (res.data.code == 1) {
-          next(function (vm) {
-            vm.$data.orderInfo = res.data.data;
-            vm.$data.common.appid = to.query.appid;
-            vm.$data.common.uid = to.query.uid;
-          });
-        } else {
-          next(function (vm){
-            vm.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.body.message
-            })
-          })
-        }
-      }, function (err) {
-        next(function (vm){
-          vm.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
-          })
-        })
-      });
     },
     methods: {
       tobuy: function () {

@@ -150,7 +150,7 @@
       },
       selectC:function (msg) {
         this.$data.pageConfig.endTime=msg;
-      },
+      }
     },
     computed: {
       show () {

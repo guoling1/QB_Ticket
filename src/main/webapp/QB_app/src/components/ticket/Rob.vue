@@ -9,7 +9,10 @@
         <div class="side write">
           <div class="left" id="left" @click="station('stationTHREE')">{{$dataT.from}}</div>
           <img class="middle" @click="change" id="middle" src="../../assets/exchange-blue.png">
-          <div class="right" id="right" v-bind:class="{empty:$from.to==0}" @click="station('stationFOUR')">{{$dataT.to}}</div>
+
+          <div class="right" id="right" v-bind:class="{empty:$from.to==0}" @click="station('stationFOUR')">
+            {{$dataT.to}}
+          </div>
         </div>
       </div>
       <div class="group" @click="time('dateTWO')">
@@ -160,6 +163,7 @@
           <li> 我们提供的是火车票代购服务，您接受本协议，意味着您同意我们使用您填写的乘客信息进行代购，包括但不限于授权我们使用您的乘客信息进行注册，代购，退票等操作，同时您必须遵守12306的购票规定的服务条款。</li>
         </ol>
         <h4>取票说明</h4>
+
         <p>发车前凭订票时登记的证件和电子订单号，可在全国任意火车站或代售点取票。部分高铁动车组列车可持二代居民身份证直接检票进站</p>
         <h4>退票说明</h4>
         <ol>
@@ -169,21 +173,30 @@
           <li> 已经打印车票，需要携带车票前往火车站窗口办理。</li>
         </ol>
         <h4>退票手续费</h4>
+
         <p>每张票按梯次收取退票手续费：</p>
+
         <p>发车前15天（不含）以上，不收取退票费；</p>
+
         <p>发车前49小时以上，手续费5%；</p>
+
         <p>发车前25-49小时，手续费10%；</p>
+
         <p>发车前25小时内，手续费20%；</p>
+
         <p class="red">最终退款以铁路局实退金额为准。</p>
+
         <p>如果您购买了出票套餐，我们在退保险成功后和票款一同退还至支付银行卡。</p>
         <h4>改签说明</h4>
+
         <p>本系统暂不支持在线改签，您可以在线发起退票后重新购买车票，或者前往火车站窗口办理。</p>
+
         <p>如果在车站改签的车票低于原车票金额，我司将会退还差价至您支付时使用的银行卡。</p>
       </div>
       <div class="x" @click="show">×</div>
     </div>
     <div class="err" v-if="this.$data.$err">
-        {{errMsg}}
+      {{errMsg}}
     </div>
     <datetime></datetime>
     <stationName></stationName>
@@ -243,27 +256,23 @@
         pack: false,
         timer: false,
         seat: false,
-        $show:false,
-        errMsg:'',
-        $err:false
+        $show: false,
+        errMsg: '',
+        $err: false
       }
     },
-    beforeRouteEnter (to, from, next) {
-      next(function (vm) {
-        if(from.path=="/ticket/main-menu/reserve"){
-          vm.$data.submitInfo.appId = to.query.appid;
-          vm.$data.submitInfo.uid = to.query.uid;
-        }else {
-          vm.$data.submitInfo.appId = to.query.appid;
-          vm.$data.submitInfo.uid = to.query.uid;
-          vm.$store.state.station.scope.stationTHREE.station = to.query.from_name;
-          vm.$store.state.station.scope.stationTHREE.code = to.query.from_code;
-          vm.$store.state.station.scope.stationFOUR.station = to.query.to_name;
-          vm.$store.state.station.scope.stationFOUR.code = to.query.to_code;
-          vm.$data.submitInfo.trainCodes = to.query.train_code;
-          vm.$data.submitInfo.seatTypes = to.query.table;
-        }
-      });
+    created: function () {
+      let query = this.$route.query;
+      this.$data.submitInfo.appId = query.appid;
+      this.$data.submitInfo.uid = query.uid;
+      if(query.to_name){
+        this.$store.state.station.scope.stationTHREE.station = query.from_name;
+        this.$store.state.station.scope.stationTHREE.code = query.from_code;
+        this.$store.state.station.scope.stationFOUR.station = query.to_name;
+        this.$store.state.station.scope.stationFOUR.code = query.to_code;
+        this.$data.submitInfo.trainCodes = query.train_code;
+        this.$data.submitInfo.seatTypes = query.table;
+      }
     },
     methods: {
       select: function (event, station) {
@@ -299,7 +308,7 @@
         this.$data.checi_length = 0;
         for (let i = 0; i < this.$data.trains.length; i++) {
           if (this.$data.trains[i].select) {
-            if(!firstTime){
+            if (!firstTime) {
               firstTime = this.$data.trains[i].start_time
             }
             this.$data.checi_length++;
@@ -340,63 +349,59 @@
       },
       submit: function () {
         sessionStorage.setItem('robOrder', JSON.stringify(this.$data.submitInfo));
-        if(this.$data.submitInfo.trainCodes=="请选择车次"){
-          this.$data.$err=true
-          this.$data.errMsg="请指定车次"
+        if (this.$data.submitInfo.trainCodes == "请选择车次") {
+          this.$data.$err = true;
+          this.$data.errMsg = "请指定车次"
         }
-        if(this.$data.submitInfo.toStationName=="选择城市"){
-          this.$data.$err=true
-          this.$data.errMsg="请选择到达城市"
+        if (this.$data.submitInfo.toStationName == "选择城市") {
+          this.$data.$err = true;
+          this.$data.errMsg = "请选择到达城市"
         }
-
         setTimeout(()=>{
-          this.$data.$err=false
+          this.$data.$err = false
         },1000);
-        if(this.$data.$err==false){
+        if (this.$data.$err == false) {
           this.$router.push({
             path: '/ticket/rob-order',
             query: {appid: this.$data.submitInfo.appId, uid: this.$data.submitInfo.uid}
           })
         }
-
       },
-      show:function(){
-        this.$data.$show=!this.$data.$show
+      show: function () {
+        this.$data.$show = !this.$data.$show
       },
-      change:function () {
-        document.querySelector("#middle").className="middle rotate";
-        document.querySelector("#left").className="left changeLeft";
-        document.querySelector("#right").className="right changeRight";
-        setTimeout(()=> {
-          let tmp="";
-        tmp=this.$data.form_name;
-        this.$data.form_name=this.$data.to_name;
-        this.$data.to_name=tmp;
-        tmp=null;
-        document.querySelector("#middle").className="middle"
-        document.querySelector("#left").className="left"
-        document.querySelector("#right").className="right"
-      },400)
+      change: function () {
+        document.querySelector("#middle").className = "middle rotate";
+        document.querySelector("#left").className = "left changeLeft";
+        document.querySelector("#right").className = "right changeRight";
+        setTimeout(()=>{
+          let tmp = "";
+          tmp = this.$data.form_name;
+          this.$data.form_name = this.$data.to_name;
+          this.$data.to_name = tmp;
+          tmp = null;
+          document.querySelector("#middle").className = "middle"
+          document.querySelector("#left").className = "left"
+          document.querySelector("#right").className = "right"
+        },400);
       }
     },
     watch: {
       $dataT: function () {
         this.$http.post('/grabTicketQuery/query', {
-          from_station: this.$store.state.station.scope.stationTHREE.code, //出发站简码
-          to_station: this.$store.state.station.scope.stationFOUR.code, //到达站简码
-          train_date: this.$store.state.date.scope.dateTWO.code //乘车日期（yyyy-MM-dd）
+          from_station: this.$store.state.station.scope.stationTHREE.code,
+          to_station: this.$store.state.station.scope.stationFOUR.code,
+          train_date: this.$store.state.date.scope.dateTWO.code
         }).then(function (res) {
-          if (res.data.code == 1 && !!res.data.data) {
-            for (let i = 0; i < res.data.data.length; i++) {
-              res.data.data[i].select = false;
-            }
-            this.$data.trains = res.data.data;
+          for (let i = 0; i < res.data.length; i++) {
+            res.data[i].select = false;
           }
-        }, function (err) {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
-          });
-        })
+          this.$data.trains = res.data;
+        },function(){
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '查询车次信息失败'
+          })
+        });
       }
     },
     computed: {
@@ -827,96 +832,102 @@
     line-height: 24px;
   }
 
-  .notice{
+  .notice {
     position: fixed;
     top: 64px;
     left: 0;
     z-index: 99;
-    padding:0 15px;
+    padding: 0 15px;
     width: 100%;
     height: 100%;
-    background: rgba(255,255,255,.9);
-    .content{
+    background: rgba(255, 255, 255, .9);
+    .content {
       height: 80%;
       overflow: auto;
       text-align: left;
       font-size: 12px;
       line-height: 21px;
     }
-    h4{
+    h4 {
       font-size: 14px;
       font-weight: bold;
       line-height: 21px;
       padding-top: 17px;
     }
-    p{
+    p {
       line-height: 21px;
     }
-    ol{
+    ol {
       padding-left: 15px;
       list-style: decimal;
-      li{
+      li {
         line-height: 21px;
       }
     }
-    .red{
+    .red {
       color: #ff6565;
     }
-    .x{
+    .x {
       height: 20%;
       width: 100%;
       font-size: 30px;
-      padding:20px 0 40px;
+      padding: 20px 0 40px;
       color: #999;
       text-align: center;
     }
   }
-  .err{
-    background: rgba(0,0,0,0.8);
+
+  .err {
+    background: rgba(0, 0, 0, 0.8);
     height: 30px;
     line-height: 30px;
     padding: 0 5px;
     position: fixed;
     top: 35%;
     left: 33%;
-    background: rgba(0,0,0,.5);
+    background: rgba(0, 0, 0, .5);
     border-radius: 5px;
     border: 2px solid #666;
     color: #ebeeef;
     -webkit-animation: fadeOut 1s ease 0.2s 1 both;
     animation: fadeOut 1s ease 0.2s 1 both;
   }
-  @-webkit-keyframes fadeOut {
-      from {
-          opacity: 1;
-      }
 
-      to {
-          opacity: 0;
-      }
+  @-webkit-keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 0;
+    }
   }
 
   @keyframes fadeOut {
-      from {
-          opacity: 1;
-      }
+    from {
+      opacity: 1;
+    }
 
-      to {
-          opacity: 0;
-      }
+    to {
+      opacity: 0;
+    }
   }
+
   .rotate {
     -webkit-animation: rotateIn 1s ease 0s 1 both;
     animation: rotateIn 1s ease 0s 1 both;
   }
+
   .changeLeft {
     -webkit-animation: left 0.5s ease 0s 1 both;
     animation: left 0.5s ease 0s 1 both;
   }
+
   .changeRight {
     -webkit-animation: right 0.5s ease 0s 1 both;
     animation: right 0.5s ease 0s 1 both;
   }
+
   @-webkit-keyframes rotateIn {
     0% {
       transform: rotate(0deg);
@@ -934,12 +945,13 @@
       transform: rotate(180deg);
     }
   }
+
   @-webkit-keyframes left {
     0% {
       left: 0;
     }
     100% {
-      left:83%;
+      left: 83%;
     }
   }
 
@@ -949,15 +961,16 @@
     }
     100% {
 
-      left:83%;
+      left: 83%;
     }
   }
+
   @-webkit-keyframes right {
     0% {
       left: 0;
     }
     100% {
-      left:-83%;
+      left: -83%;
     }
   }
 
@@ -966,7 +979,7 @@
       left: 0;
     }
     100% {
-      left:-83%;
+      left: -83%;
     }
   }
 </style>

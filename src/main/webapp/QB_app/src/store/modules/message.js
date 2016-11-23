@@ -19,7 +19,7 @@ const mutations = {
     setTimeout(function () {
       state.message = false;
       state.delay = false;
-    }, 3000);
+    }, 1000);
   },
   MESSAGE_DELAY_HIDE (state) {
     state.message = false;

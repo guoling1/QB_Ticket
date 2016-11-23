@@ -22,16 +22,20 @@
         <div class="left">
           <span class="name">{{passenger.name}}</span>
           <span class="type">{{passenger.piaoTypeName}}</span>
+
           <p class="number">
             {{passenger.passportSeNo}}
           </p>
+
           <p class="state" id="esc">{{passengerStatus[passenger.status-1]}}
             <span @click="show(index)" v-if="passenger.status==2">退票</span>
           </p>
         </div>
         <div class="right">
           <p class="seat">{{passenger.cxin}}</p>
+
           <p class="seatType">{{massages.zwName}}</p>
+
           <p class="price">￥{{passenger.price}}</p>
         </div>
       </li>
@@ -67,14 +71,18 @@
               <div class="left">
                 <span class="name">{{massages.passengers[this.$data.$index].name}}</span>
                 <span class="type">{{massages.passengers[this.$data.$index].piaoTypeName}}</span>
+
                 <p class="number">
                   {{massages.passengers[this.$data.$index].passportSeNo}}
                 </p>
+
                 <p class="state">{{passengerStatus[massages.passengers[this.$data.$index].status-1]}}</p>
               </div>
               <div class="right">
                 <p class="seat">{{massages.passengers[this.$data.$index].cxin}}</p>
+
                 <p class="seatType">{{massages.zwName}}</p>
+
                 <p class="price">￥{{massages.passengers[this.$data.$index].price}}</p>
               </div>
             </li>
@@ -82,23 +90,32 @@
         </div>
         <div class="notice">
           <p>在线退票时间：6:00-22:55（其他时间须前往火车站窗口办理)</p>
+
           <p>发车前35分钟且未打印纸质车票，可在“我的订单”中申请退票</p>
+
           <p>已经打印车票，需要携带车票前往火车站窗口办理。</p>
+
           <p>退票手续费：</p>
+
           <p>发车前15天（不含）以上，不收取退票费；</p>
+
           <p>发车前49小时以上，手续费5%；</p>
+
           <p>发车前25-49小时，手续费10%；</p>
+
           <p>发车前25小时内，手续费20%；</p>
         </div>
         <div class="button">
           <p @click="show">不退了</p>
+
           <p @click.self="confirm">确定退票</p>
         </div>
       </div>
       <!-- 第二层：退票成功 -->
       <div class="success" v-else="$$open">
         <div class="content">
-          <img src="../../assets/success.png" alt="" />
+          <img src="../../assets/success.png" alt=""/>
+
           <p>退票成功</p>
         </div>
         <div class="sure" @click.self="success()">确定</div>
@@ -119,96 +136,72 @@
     },
     data () {
       return {
-        open:false,
-        $open:true,
-        massages:[],
-        passengerStatus:["票初始化","出票成功","出票失败","退票中","退票请求成功","退票成功","退票失败","订单取消","退票受理中"]
+        open: false,
+        $open: true,
+        massages: [],
+        passengerStatus: ["票初始化", "出票成功", "出票失败", "退票中", "退票请求成功", "退票成功", "退票失败", "订单取消", "退票受理中"]
       }
     },
-    beforeRouteEnter (to, from, next) {
-      if(to.query.grabTicketFormId==undefined){
-        Vue.http.post('/order/queryById',{orderFormId: to.query.orderid})
-          .then(function (res) {
-            if(res.data.code==1){
-              next(vm=> {
-                vm.$data.massages=res.data.data;
-              })
-            }else{
-              next(function (vm){
-                vm.$store.commit('MESSAGE_DELAY_SHOW', {
-                  text: res.body.message
-                })
-              })
-            }
-          }, function (err) {
-            next(function (vm){
-              vm.$store.commit('MESSAGE_DELAY_SHOW', {
-                text: err
-              })
-            })
+    beforeCreate: function () {
+      let query = this.$route.query;
+      if (to.query.grabTicketFormId == undefined) {
+        this.$http.post('/order/queryById', {
+          orderFormId: query.orderid
+        }).then(function (res) {
+          this.$data.massages = res.data;
+        }, function () {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '查询订单信息失败'
           })
-      }else {
-        Vue.http.post('/order/grab/queryById',{appid:to.query.appid,uid:to.query.uid,grabTicketFormId: to.query.grabTicketFormId})
-          .then(function (res) {
-            if(res.data.code==1){
-              next(vm=> {
-                vm.$data.massages=res.data.data;
-              })
-            }else{
-              next(function (vm){
-                vm.$store.commit('MESSAGE_DELAY_SHOW', {
-                  text: res.body.message
-                })
-              })
-            }
-          }, function (err) {
-            next(function (vm){
-              vm.$store.commit('MESSAGE_DELAY_SHOW', {
-                text: err
-              })
-            })
+        });
+      } else {
+        this.$http.post('/order/grab/queryById', {
+          grabTicketFormId: query.grabTicketFormId,
+          appid: query.appid,
+          uid: query.uid
+        }).then(function (res) {
+          this.$data.massages = res.data;
+        }, function () {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '查询订单信息失败'
           })
+        });
       }
     },
     methods: {
-      show:function(index){
-        if(index=="undefined"){
-          this.$data.open=!this.$data.open;
-        }else {
-          this.$data.open=!this.$data.open;
-          this.$data.$index=index;
+      show: function (index) {
+        if (index == "undefined") {
+          this.$data.open = !this.$data.open;
+        } else {
+          this.$data.open = !this.$data.open;
+          this.$data.$index = index;
         }
       },
       back: function () {
         this.$router.go(-1);
       },
-      confirm:function(){
-        this.$http.post('/ticket/refund',{"orderFormDetailId":this.$data.massages.passengers[this.$data.$index].orderFormDetailId})
-         .then(function (res) {
-           if(res.data.code==1){
-             this.$data.$open=!this.$data.$open;
-           }else{
-             this.$store.commit('MESSAGE_DELAY_SHOW', {
-               text: res.body.message
-             });
-           }
-        }, function (err) {
-           this.$store.commit('MESSAGE_DELAY_SHOW', {
-             text: err
-           });
-        })
+      confirm: function () {
+        this.$http.post('/ticket/refund', {
+          orderFormDetailId: this.$data.massages.passengers[this.$data.$index].orderFormDetailId
+        }).then(function () {
+          this.$data.$open = !this.$data.$open;
+        }, function () {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '退票失败'
+          })
+        });
       },
-      success:function(){
-        this.$data.open=false;
-        this.$data.$open=true;
-        this.$data.massages.passengers[this.$data.$index].status=9;
+      success: function () {
+        this.$data.open = false;
+        this.$data.$open = true;
+        this.$data.massages.passengers[this.$data.$index].status = 9;
       }
     },
-    computed:{
-      $open:function(){
+    computed: {
+      $open: function () {
         return this.$data.open
       },
-      $$open:function(){
+      $$open: function () {
         return this.$data.$open;
       },
       otherInfo: function () {
@@ -244,7 +237,7 @@
         }
       }
     }
-}
+  }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -287,9 +280,10 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background:#f5f5f5;
-    .flexItem(1, 100 %);
+    background: #f5f5f5;
+    .flexItem(1, 100%);
   }
+
   .train-info {
     padding: 20px 15px;
     background-color: #FFF;
@@ -341,58 +335,59 @@
       font-weight: bold;
     }
   }
-  .bottom{
+
+  .bottom {
     background: #fff;
     padding: 0 15px;
     overflow: hidden;
-    li:last-child{
+    li:last-child {
       border: none;
     }
-    li{
+    li {
       padding: 17px 0 14px 0;
       overflow: hidden;
       border-bottom: 1px solid #c9c9c9;
       color: #999;
-      .left{
+      .left {
         float: left;
         position: relative;
-        .name{
+        .name {
           position: absolute;;
           left: 0;
           color: #000;
           font-size: 15px;
         }
-        .type{
+        .type {
           font-size: 12px;
         }
-        .state{
+        .state {
           text-align: left;
           font-size: 12px;
-          span{
+          span {
             display: inline-block;
             margin-left: 12px;
             color: #1ca0e2;
           }
         }
-        .number{
+        .number {
           height: 35px;
           line-height: 35px;
         }
       }
 
-      .right{
+      .right {
         float: right;
         font-size: 12px;
-        .seat{
+        .seat {
           color: #000;
           font-size: 15px;
         }
-        .seatType{
+        .seatType {
           height: 31px;
           line-height: 31px;
           text-align: right;
         }
-        .price{
+        .price {
           color: #000;
           text-align: right;
         }
@@ -400,7 +395,8 @@
     }
 
   }
-  .mask{
+
+  .mask {
     //display: none;
     width: 100%;
     height: 100%;
@@ -409,13 +405,13 @@
     left: 0;
     background: rgba(0, 0, 0, .7);
 
-    .floor{
+    .floor {
       background: #fff;
       width: 100%;
       position: absolute;;
-      bottom:0;
-      left:0;
-      .table{
+      bottom: 0;
+      left: 0;
+      .table {
         width: 350px;
         margin: 15px auto 0;
         border: 1px solid #ebebeb;
@@ -423,43 +419,44 @@
         z-index: 10;
         overflow: hidden;
       }
-      .notice{
+      .notice {
         margin: 25px 0 14px 20px;
         font-size: 12px;
         color: #999;
         z-index: -2;
-        p{
+        p {
           line-height: 24px;
           text-align: left;
         }
       }
-      .button{
+      .button {
         border-top: 1px solid #ebebeb;
         color: #4ab9f1;
         font-size: 15px;
-        p{
+        p {
           float: left;
           width: 50%;
           height: 50px;
-          border-right:  1px solid #ebebeb;
+          border-right: 1px solid #ebebeb;
           line-height: 50px;
           text-align: center;
         }
       }
     }
   }
-  .success{
+
+  .success {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
     background: #fff;
 
-    .content{
+    .content {
       width: 100%;
       height: 295px;
       border-bottom: 1px solid #ededed;
-      img{
+      img {
         margin-top: 85px;
         display: inline-block;
         position: relative;
@@ -467,12 +464,12 @@
         width: 82px;
         height: 82px;
       }
-      p{
+      p {
         font-size: 18px;
         margin-top: 17px;
       }
     }
-    .sure{
+    .sure {
       height: 50px;
       line-height: 50px;
       font-size: 15px;
@@ -480,7 +477,8 @@
       font-weight: bold;
     }
   }
-  .return{
+
+  .return {
     width: 100%;
     height: 50px;
     line-height: 50px;
