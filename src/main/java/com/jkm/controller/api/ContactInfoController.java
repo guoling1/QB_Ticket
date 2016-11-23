@@ -178,9 +178,14 @@ public class ContactInfoController extends BaseController {
             if(requestJson.get("id")!=null){
                 ti.setId(requestJson.getLong("id"));
             }
-            int rowNum = contactInfoService.updateByPrimaryKeySelective(ti);
-            responseEntityBase.setMessage("修改成功");
-            responseEntityBase.setData(rowNum);
+            JSONObject rowResult = contactInfoService.updateByPrimaryKeySelective(ti);
+            if(rowResult.getBoolean("result")){
+                responseEntityBase.setMessage("修改成功");
+                responseEntityBase.setData(rowResult.getInt("data"));
+            }else{
+                responseEntityBase.setMessage(rowResult.getString("message"));
+                responseEntityBase.setCode(401);
+            }
         }catch (Exception e){
             log.error("修改联系人异常",e);
             responseEntityBase.setCode(500);
