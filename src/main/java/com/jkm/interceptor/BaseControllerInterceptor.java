@@ -27,14 +27,14 @@ public class BaseControllerInterceptor extends HandlerInterceptorAdapter {
 
 		if(request.getMethod().toUpperCase().equals("POST")){//防止篡改url地址
 			String url = request.getHeader("Referer");
-			if(url!=null&&url.contains("?")){
+			if(url!=null&&url.contains("appid")){
 				String current = url.substring(url.indexOf("?")+1,url.length());
 				String[] arr = current.split("&");
 				for(int i=0;i<arr.length;i++){
 					String[] param = arr[i].split("=");
 					if("appid".equals(param[0])){
 						String appId = param[1];
-						MerchantAppInfo merchantAppInfo = merchantAppInfoService.selectByPrimaryKey(Long.parseLong(appId));
+						MerchantAppInfo merchantAppInfo = merchantAppInfoService.selectByOpenId(appId);
 						if(merchantAppInfo==null){
 							response.sendError(506,"非法数据、未通过验证");
 							flag = false;
