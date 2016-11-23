@@ -34,7 +34,7 @@
         <ul style="padding:0">
           <li>
             <label for="name">乘客姓名</label>
-            <input type="text" name="name" id='name' placeholder="必填">
+            <input type="text" name="name" id='name' placeholder="必填" style="width: 80%">
           </li>
           <li>
             <label for="sex">乘客性别</label>
@@ -48,7 +48,7 @@
           </li>
           <li>
             <label for="identy">证件号码</label>
-            <input type="text" name="identy" id='identy' placeholder="必填">
+            <input type="text" name="identy" id='identy' placeholder="必填" style="width: 80%">
           </li>
           <li>
             <label for="personType">乘客类型</label>
@@ -56,7 +56,7 @@
           </li>
           <li style="border:none">
             <label for="tel">手机号码</label>
-            <input type="text" name="tel" id='tel'>
+            <input type="text" name="tel" id='tel' style="width: 80%">
           </li>
         </ul>
       </div>
