@@ -23,8 +23,8 @@ import java.util.Date;
 @RequestMapping(value = "/grabTicketQuery")
 public class GrabTicketQueryController extends BaseController {
 
-    @Autowired
-    private QueryTicketPriceService queryTicketPriceService;
+//    @Autowired
+//    private QueryTicketPriceService queryTicketPriceService;
 
     @Autowired
     private GrabTicketQueryService grabTicketQueryService;
@@ -46,7 +46,7 @@ public class GrabTicketQueryController extends BaseController {
             String to_station_name = requestJson.getString("to_station_name");
             String train_date = requestJson.getString("train_date");
             String purpose_codes = "ADULT";
-            responseJson = this.queryTicketPriceService.queryTicket(uid, partnerid, method, from_station, to_station, from_station_name, to_station_name, train_date, purpose_codes);
+            responseJson = this.grabTicketQueryService.grabTicketQuery(uid, partnerid, method, from_station, to_station, from_station_name, to_station_name, train_date, purpose_codes);
 
             JSONArray arrayResult = new JSONArray();
             JSONArray ja = responseJson.getJSONArray("data");
