@@ -144,7 +144,7 @@
     },
     beforeCreate: function () {
       let query = this.$route.query;
-      if (to.query.grabTicketFormId == undefined) {
+      if (query.grabTicketFormId == undefined) {
         this.$http.post('/order/queryById', {
           orderFormId: query.orderid
         }).then(function (res) {

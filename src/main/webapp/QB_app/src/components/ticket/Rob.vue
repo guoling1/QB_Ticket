@@ -60,6 +60,7 @@
       </div>
       <div class="result">
         <div class="cont">
+          <div class="emptyInfo" v-if="!$trains||$trains==[]">暂无所查询的车次信息</div>
           <div class="top" v-for="station in $trains" @click="select($event,station)">
             <span class="checi">{{station.train_code}}</span>
 
@@ -251,7 +252,7 @@
         checi_length: 0,
         table_length: 0,
         canGrabTimeType: 4,
-        trains: '',
+        trains: [],
         trainsShow: false,
         pack: false,
         timer: false,
@@ -393,10 +394,14 @@
           to_station: this.$store.state.station.scope.stationFOUR.code,
           train_date: this.$store.state.date.scope.dateTWO.code
         }).then(function (res) {
-          for (let i = 0; i < res.data.length; i++) {
-            res.data[i].select = false;
+          if(res.data){
+            for (let i = 0; i < res.data.length; i++) {
+              res.data[i].select = false;
+            }
+            this.$data.trains = res.data;
+          }else{
+            this.$data.trains = res.data;
           }
-          this.$data.trains = res.data;
         },function(){
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '查询车次信息失败'
@@ -666,13 +671,18 @@
     .result {
       .flexItem(1);
       width: 100%;
-      overflow: hidden;
+      height: 100%;
+      overflow: auto;
       position: relative;
+      -webkit-overflow-scrolling: touch;
       .cont {
         width: 100%;
         height: 100%;
         overflow: auto;
         padding-bottom: 50px;
+        .emptyInfo{
+          margin-top: 15px;
+        }
         .top {
           padding: 15px 20px;
           height: 70px;
@@ -772,7 +782,7 @@
     .select {
       position: absolute;
       width: 100%;
-      height: 50%;
+      height: 60%;
       background-color: #FFF;
       left: 0;
       bottom: 0;

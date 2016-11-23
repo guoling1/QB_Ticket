@@ -396,6 +396,7 @@
     overflow: auto;
     width: 100%;
     padding: 111px 0 50px 0;
+    -webkit-overflow-scrolling: touch;
     li {
       background: #fff;
       height: 65px;

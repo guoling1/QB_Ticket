@@ -15,19 +15,19 @@
           </ul>
         </div>
       </div>
-      <div class="hot">
+      <div class="hot" v-show="!result">
         <div class="t" id="hot">热门</div>
         <ul>
           <li v-for="ht in hotCity" @click="close($event,ht.code,ht.city)">{{ht.city}}</li>
         </ul>
       </div>
-      <div class="shortcut" v-for="(num,key) in list">
+      <div class="shortcut" v-for="(num,key) in list" v-show="!result">
         <div class="i" :id="key">{{key}}</div>
         <ul>
           <li v-for="cope in num" @click="close($event,cope.code,cope.city)">{{cope.city}}</li>
         </ul>
       </div>
-      <div class="nav">
+      <div class="nav" v-show="!result">
         <a href="#hot">热门</a>
         <a :href="'#'+key" v-for="(num,key) in list">{{key}}</a>
       </div>
@@ -177,6 +177,7 @@
     top: 0;
     left: 0;
     z-index: 99;
+    -webkit-overflow-scrolling: touch;
   }
 
   .float {
@@ -216,6 +217,8 @@
     height: 100%;
     .flexItem(1, 100%);
     background-color: #FFF;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
     .empty {
       width: 100%;
       text-align: center;

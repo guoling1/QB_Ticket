@@ -376,6 +376,7 @@
     overflow: auto;
     background: #f6f6f6;
     .flexItem(1, 100%);
+    -webkit-overflow-scrolling: touch;
 
     .banner {
       padding: 9px 20px;
