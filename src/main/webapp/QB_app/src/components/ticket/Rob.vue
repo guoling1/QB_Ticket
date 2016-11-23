@@ -400,6 +400,8 @@
     watch: {
       $dataT: function () {
         this.$http.post('/grabTicketQuery/query', {
+          appid: this.$data.submitInfo.appId,
+          uid: this.$data.submitInfo.uid,
           from_station: this.$store.state.station.scope.stationTHREE.code,
           to_station: this.$store.state.station.scope.stationFOUR.code,
           train_date: this.$store.state.date.scope.dateTWO.code
