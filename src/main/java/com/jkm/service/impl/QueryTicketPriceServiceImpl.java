@@ -44,7 +44,6 @@ public class QueryTicketPriceServiceImpl implements QueryTicketPriceService {
 
         JSONObject responseJson = new JSONObject();
         responseJson = HttpMethod.httpClient(jsonObject, "http://searchtrain.hangtian123.net/trainSearch");
-
         queryHistoryService.save(uid,from_station,to_station,from_station_name,to_station_name);
         return responseJson;
     }
