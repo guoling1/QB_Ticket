@@ -69,23 +69,25 @@
       </div>
       <div class="submit" @click="submit">立即抢票</div>
     </div>
-    <div class="pack" v-show="pack">
-      <div class="select">
-        <div class="space_t">
-          <div class="xx" @click="pack=false"></div>
-          <div class="word">选择出票套餐</div>
+    <transition name="fade">
+      <div class="pack" v-show="pack">
+        <div class="select">
+          <div class="space_t">
+            <div class="xx" @click="pack=false"></div>
+            <div class="word">选择出票套餐</div>
+          </div>
+          <ul>
+            <li @click="packHide(2)" v-bind:class="{active:submitInfo.buyTicketPackageId==2}"><span>¥ 20/人套餐</span>
+              极速出票，赠送78万保险
+            </li>
+            <li @click="packHide(3)" v-bind:class="{active:submitInfo.buyTicketPackageId==3}"><span>¥ 30/人套餐</span>
+              优先出票，赠送300万保险
+            </li>
+            <li @click="packHide(1)" v-bind:class="{active:submitInfo.buyTicketPackageId==1}">不购买 出票慢，失败的可能性增加</li>
+          </ul>
         </div>
-        <ul>
-          <li @click="packHide(2)" v-bind:class="{active:submitInfo.buyTicketPackageId==2}"><span>¥ 20/人套餐</span>
-            极速出票，赠送78万保险
-          </li>
-          <li @click="packHide(3)" v-bind:class="{active:submitInfo.buyTicketPackageId==3}"><span>¥ 30/人套餐</span>
-            优先出票，赠送300万保险
-          </li>
-          <li @click="packHide(1)" v-bind:class="{active:submitInfo.buyTicketPackageId==1}">不购买 出票慢，失败的可能性增加</li>
-        </ul>
       </div>
-    </div>
+    </transition>
     <contacts></contacts>
     <!-- 添加儿童 -->
     <div class="content" v-if="show">
@@ -368,6 +370,14 @@
     -ms-flex: @val;
     flex: @val;
     width: @width;
+  }
+
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .3s
+  }
+
+  .fade-enter, .fade-leave-active {
+    opacity: 0
   }
 
   .space_t {

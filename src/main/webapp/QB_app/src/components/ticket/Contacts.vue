@@ -1,67 +1,69 @@
 <template lang="html">
-  <div class="main" v-if="showModule">
-    <div class="header">
-      <div class="close" @click='close'></div>
-      <h1>常用联系人</h1>
-    </div>
-    <div class="banner con">
-      <div class="bannerLeft" @click="show">新增联系人</div>
-      <div class="bannerRight" @click="importCon">导入12306联系人</div>
-    </div>
-    <ul id="list">
-      <li v-for="(people,index) in peoples" @click="change(index,people)" :class="people.selected?'select':''">
-        <span class="option"></span>
-
-        <div class="passen">
-          <span class="name">{{people.name}}</span>
-          <span class="type">({{people.piaoType}})</span>
-
-          <p>{{people.identy}}</p>
-        </div>
-        <span class="edit" @click="show(index)"></span>
-      </li>
-    </ul>
-    <div class="bottom" @click="close">确定</div>
-    <div class="mask" id="mask" @click.self="shut">
-      <div class="err" v-if="this.$data.$err">
-        {{errMsg}}
+  <transition name="fade">
+    <div class="main" v-if="showModule">
+      <div class="header">
+        <div class="close" @click='close'></div>
+        <h1>常用联系人</h1>
       </div>
-      <div class="content">
-        <div class="sub">
-          <span class="del" @click="del(index)">删除联系人</span>
-          <span class="sev" @click="sev(index)">保存</span>
+      <div class="banner con">
+        <div class="bannerLeft" @click="show">新增联系人</div>
+        <div class="bannerRight" @click="importCon">导入12306联系人</div>
+      </div>
+      <ul id="list">
+        <li v-for="(people,index) in peoples" @click="change(index,people)" :class="people.selected?'select':''">
+          <span class="option"></span>
+
+          <div class="passen">
+            <span class="name">{{people.name}}</span>
+            <span class="type">({{people.piaoType}})</span>
+
+            <p>{{people.identy}}</p>
+          </div>
+          <span class="edit" @click="show(index)"></span>
+        </li>
+      </ul>
+      <div class="bottom" @click="close">确定</div>
+      <div class="mask" id="mask" @click.self="shut">
+        <div class="err" v-if="this.$data.$err">
+          {{errMsg}}
         </div>
-        <ul style="padding:0">
-          <li>
-            <label for="name">乘客姓名</label>
-            <input type="text" name="name" id='name' placeholder="必填" style="width: 80%">
-          </li>
-          <li>
-            <label for="sex">乘客性别</label>
-            <label style="margin-left:10px;color:#999"><input type="radio" name="sex" value="男"
-                                                              checked="checked">男</label>
-            <label style="margin-left:20px;color:#999"><input type="radio" name="sex" value="女">女</label>
-          </li>
-          <li class="typeLi">
-            <label for="identyType">证件类型</label>
-            <input type="text" name="identyType" id='identyType' readOnly="true" value="二代身份证">
-          </li>
-          <li>
-            <label for="identy">证件号码</label>
-            <input type="text" name="identy" id='identy' placeholder="必填" style="width: 80%">
-          </li>
-          <li>
-            <label for="personType">乘客类型</label>
-            <input type="text" name="personType" id='personType' readOnly="true" value="成人">
-          </li>
-          <li style="border:none">
-            <label for="tel">手机号码</label>
-            <input type="text" name="tel" id='tel' style="width: 80%">
-          </li>
-        </ul>
+        <div class="content">
+          <div class="sub">
+            <span class="del" @click="del(index)">删除联系人</span>
+            <span class="sev" @click="sev(index)">保存</span>
+          </div>
+          <ul style="padding:0">
+            <li>
+              <label for="name">乘客姓名</label>
+              <input type="text" name="name" id='name' placeholder="必填" style="width: 80%">
+            </li>
+            <li>
+              <label for="sex">乘客性别</label>
+              <label style="margin-left:10px;color:#999"><input type="radio" name="sex" value="男"
+                                                                checked="checked">男</label>
+              <label style="margin-left:20px;color:#999"><input type="radio" name="sex" value="女">女</label>
+            </li>
+            <li class="typeLi">
+              <label for="identyType">证件类型</label>
+              <input type="text" name="identyType" id='identyType' readOnly="true" value="二代身份证">
+            </li>
+            <li>
+              <label for="identy">证件号码</label>
+              <input type="text" name="identy" id='identy' placeholder="必填" style="width: 80%">
+            </li>
+            <li>
+              <label for="personType">乘客类型</label>
+              <input type="text" name="personType" id='personType' readOnly="true" value="成人">
+            </li>
+            <li style="border:none">
+              <label for="tel">手机号码</label>
+              <input type="text" name="tel" id='tel' style="width: 80%">
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
+  </transition>
 </template>
 <script lang="babel">
   import Vue from 'vue';
@@ -314,6 +316,14 @@
     -ms-flex: @val;
     flex: @val;
     width: @width;
+  }
+
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .3s
+  }
+
+  .fade-enter, .fade-leave-active {
+    opacity: 0
   }
 
   .main {

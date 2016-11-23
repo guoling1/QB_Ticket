@@ -92,34 +92,44 @@
         </div>
       </div>
     </div>
-    <div class="pack" v-show="pack">
-      <div class="select">
-        <div class="xx"></div>
-        <ul>
-          <li @click="packHide(2)" v-bind:class="{active:sureOrder.buyTicketPackageId==2}"><span>¥ 20/人套餐</span>
-            极速出票，赠送78万保险
-          </li>
-          <li @click="packHide(3)" v-bind:class="{active:sureOrder.buyTicketPackageId==3}"><span>¥ 30/人套餐</span>
-            优先出票，赠送300万保险
-          </li>
-          <li @click="packHide(1)" v-bind:class="{active:sureOrder.buyTicketPackageId==1}">不购买 出票慢，失败的可能性增加</li>
-        </ul>
-      </div>
-    </div>
-    <div class="skip" v-show="skip">
-      <div class="show">
-        <div class="xx"></div>
-        <div class="content">
-          <div class="image"></div>
-          <div class="word">您没有选择“出票套餐”</div>
-          <div class="small">出票失败率提高，安全保障降低</div>
-        </div>
-        <div class="btn">
-          <div class="sub" @click="submit($event)">放弃</div>
-          <div class="close" @click="skipHide">增加保障</div>
+    <transition name="fade">
+      <div class="pack" v-show="pack">
+        <div class="select">
+          <div class="space_t">
+            <div class="xx" @click="pack=false"></div>
+            <div class="word">选择出票套餐</div>
+          </div>
+          <ul>
+            <li @click="packHide(2)" v-bind:class="{active:sureOrder.buyTicketPackageId==2}"><span>¥ 20/人套餐</span>
+              极速出票，赠送78万保险
+            </li>
+            <li @click="packHide(3)" v-bind:class="{active:sureOrder.buyTicketPackageId==3}"><span>¥ 30/人套餐</span>
+              优先出票，赠送300万保险
+            </li>
+            <li @click="packHide(1)" v-bind:class="{active:sureOrder.buyTicketPackageId==1}">不购买 出票慢，失败的可能性增加</li>
+          </ul>
         </div>
       </div>
-    </div>
+    </transition>
+    <transition name="fade">
+      <div class="skip" v-show="skip">
+        <div class="show">
+          <div class="space_t">
+            <div class="xx" @click="skip=false"></div>
+            <div class="word">提示</div>
+          </div>
+          <div class="content">
+            <div class="image"></div>
+            <div class="word">您没有选择“出票套餐”</div>
+            <div class="small">出票失败率提高，安全保障降低</div>
+          </div>
+          <div class="btn">
+            <div class="sub" @click="submit($event)">放弃</div>
+            <div class="close" @click="skipHide">增加保障</div>
+          </div>
+        </div>
+      </div>
+    </transition>
     <contacts></contacts>
     <!-- 添加儿童 -->
     <div class="content" v-if="show">
@@ -442,12 +452,46 @@
     width: @width;
   }
 
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .3s
+  }
+
+  .fade-enter, .fade-leave-active {
+    opacity: 0
+  }
+
   .main {
     width: 100%;
     height: 100%;
     overflow: auto;
     .flexItem(1, 100%);
     background-color: #f5f5f5;
+  }
+
+  .space_t {
+    width: 100%;
+    height: 49px;
+    line-height: 49px;
+    border-bottom: 1px solid #f5f5f5;
+    position: relative;
+    .xx {
+      width: 14px;
+      height: 14px;
+      background: url("../../assets/xx.png") no-repeat center;
+      background-size: 14px 14px;
+      padding: 15px;
+      position: absolute;
+      top: 9px;
+      left: 10px;
+    }
+    .word {
+      font-size: 15px;
+      color: #111;
+      width: 100%;
+      height: 49px;
+      line-height: 49px;
+      text-align: center;
+    }
   }
 
   .train-info {
