@@ -2,6 +2,7 @@
   <div class="main">
     <div class="banner">
       <span class="first" @click="before">前一天</span>
+
       <div class="calendar" @click="timer('dateThree')">
         {{$$data.dateWeek}}
         <img src="../../assets/calendar.png" alt=""/>
@@ -16,7 +17,7 @@
 
           <div class="topRight">
             <p>￥{{station.low_price}}<span>起</span></p>
-            <span class="time">{{station.runTimeShow}}</span>
+            <span class="time">{{station.run_time_minute | minute2time}}</span>
           </div>
           <div class="topMiddle">
             <div class="form">
@@ -79,56 +80,37 @@
         initStations: [],
         // 火车票筛选信息
         screenConfig: this.$store.state.screen.config,
-        obj:""
+        obj: ""
       }
     },
-    beforeRouteEnter (to, from, next) {
-      Vue.http.post('/queryTicketPrice/query', {
-        appid: to.query.appid, //商户
-        uid: to.query.uid, //用户id
-        from_station: to.query.formCode, //出发站简码
-        to_station: to.query.toCode, //到达站简码
-        from_station_name: to.query.formName,
-        to_station_name: to.query.toName,
-        train_date: to.query.dateHttp //乘车日期（yyyy-MM-dd）
+    beforeCreate: function () {
+      let query = this.$route.query;
+      this.$http.post('/queryTicketPrice/query', {
+        appid: query.appid,
+        uid: query.uid,
+        from_station: query.formCode,
+        to_station: query.toCode,
+        from_station_name: query.formName,
+        to_station_name: query.toName,
+        train_date: query.dateHttp
       }).then(function (res) {
-        if (res.body.code == 1) {
-          next(function (vm) {
-            vm.$data.only = to.query.onlyGD;
-            if(res.body.data){
-              for (let i = 0; i < res.body.data.length; i++) {
-                let runMin = res.body.data[i].run_time_minute;
-                let runH = 0;
-                let runM = 0;
-                runH = parseInt(runMin / 60);
-                runM = runMin % 60;
-                res.body.data[i]['runTimeShow'] = runH + '小时' + runM + '分钟';
-              }
-            }else{
-              vm.$store.commit('MESSAGE_DELAY_SHOW', {
-                text: '暂无查询的车次信息'
-              })
-            }
-            vm.$data.initStations = res.body.data;
-            vm.$data.dateHttp = to.query.dateHttp;
-            vm.$data.dateWeek = to.query.dateWeek;
-            vm.$data.common.appid = to.query.appid;
-            vm.$data.common.uid = to.query.uid;
-          });
+        this.$data.common.appid = query.appid;
+        this.$data.common.uid = query.uid;
+        this.$data.only = query.onlyGD;
+        this.$data.dateHttp = query.dateHttp;
+        this.$data.dateWeek = query.dateWeek;
+        if (res.data) {
+          this.$data.initStations = res.data;
         } else {
-          next(function (vm){
-            vm.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.body.message
-            })
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: '暂无查询的车次信息'
           })
         }
-      }, function (err) {
-        next(function (vm){
-          vm.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
-          })
+      }, function () {
+        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          text: '获取车次信息失败'
         })
-      })
+      });
     },
     methods: {
       router: function (event, station) {
@@ -151,39 +133,37 @@
         });
       },
       after: function () {
-        var time=this.$data.dateHttp;
-        time=new Date(time);
-        var dd=new Date((time/1000+86400)*1000)
+        var time = this.$data.dateHttp;
+        time = new Date(time);
+        var dd = new Date((time / 1000 + 86400) * 1000);
         let day = dd.getDate();
         if (day < 10) {
           day = '0' + day;
         }
-        var newDay=dd.getFullYear()+"-"+(dd.getMonth()+1)+"-"+day
-        this.$data.dateHttp=newDay
-        document.querySelector('.first').className="first"
-        document.querySelector('.next').className="next show"
+        this.$data.dateHttp = dd.getFullYear() + "-" + (dd.getMonth() + 1) + "-" + day;
+        document.querySelector('.first').className = "first";
+        document.querySelector('.next').className = "next show"
       },
       before: function () {
-        var time=this.$data.dateHttp;
-        time=new Date(time);
-        var dd=new Date((time/1000-86400)*1000)
+        var time = this.$data.dateHttp;
+        time = new Date(time);
+        var dd = new Date((time / 1000 - 86400) * 1000);
         let day = dd.getDate();
         if (day < 10) {
           day = '0' + day;
         }
-        var newDay=dd.getFullYear()+"-"+(dd.getMonth()+1)+"-"+day
-        this.$data.dateHttp=newDay
-        document.querySelector('.first').className="first show"
-        document.querySelector('.next').className="next"
+        this.$data.dateHttp = dd.getFullYear() + "-" + (dd.getMonth() + 1) + "-" + day;
+        document.querySelector('.first').className = "first show";
+        document.querySelector('.next').className = "next"
       }
     },
     watch: {
-      dateHttp: function(val,oldVal){
-        if(oldVal==""){
-          this.$data.obj=val
+      dateHttp: function (val, oldVal) {
+        if (oldVal == "") {
+          this.$data.obj = val
         }
-        if(val!=oldVal&&oldVal!=""&&oldVal!=this.$data.obj){
-          Vue.http.post('/queryTicketPrice/query', {
+        if (val != oldVal && oldVal != "" && oldVal != this.$data.obj) {
+          this.$http.post('/queryTicketPrice/query', {
             appid: this.$route.query.appid, //商户
             uid: this.$route.query.uid, //用户id
             from_station: this.$route.query.formCode, //出发站简码
@@ -191,58 +171,23 @@
             from_station_name: this.$route.query.formName,
             to_station_name: this.$route.query.toName,
             train_date: val //乘车日期（yyyy-MM-dd）
-          }).then((res)=> {
-            if (res.body.code == 1) {
-            this.$data.only = this.$route.query.onlyGD;
-            if(res.body.data){
-              for (let i = 0; i < res.body.data.length; i++) {
-                let runMin = res.body.data[i].run_time_minute;
-                let runH = 0;
-                let runM = 0;
-                runH = parseInt(runMin / 60);
-                runM = runMin % 60;
-                res.body.data[i]['runTimeShow'] = runH + '小时' + runM + '分钟';
-              }
-            }else{
+          }).then(function (res) {
+            if (res.data) {
+              this.$data.initStations = res.data;
+            } else {
               this.$store.commit('MESSAGE_DELAY_SHOW', {
                 text: '暂无查询的车次信息'
               })
             }
-            var ary=val.split("-");
-            var date=ary[1]+"月"+ary[2]+"日";
-            var ss=new Date(ary[0],parseInt(ary[1]-1),ary[2])
-            var week=ss.getDay();
-            ary=["日","一","二","三","四","五","六"]
-            this.$data.initStations = res.body.data;
-            this.$data.dateHttp = val;
-            this.$data.dateWeek = date+" 周"+ary[week];
-            this.$data.common.appid = this.$route.query.appid;
-            this.$data.common.uid = this.$route.query.uid;
-          } else {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.body.message
-            })
-          }
-        }, function (err) {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: err
+          }, function () {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '获取车次信息失败'
             })
           })
         }
-
       }
     },
     computed: {
-      time: function () {
-        let runMin = this.$data.initStations.run_time_minute;
-        let runH = 0;
-        let runM = 0;
-        if (runMin >= 60) {
-          runH = parseInt(runMin / 60);
-          runM = runMin % 60;
-        }
-        return runH + '小时' + runM + '分钟';
-      },
       stations () {
         if (this.initStations) {
           // 优先筛选条件
@@ -402,8 +347,8 @@
         };
       },
       $$data: function () {
-        this.$data.dateHttp=this.$store.state.date.scope.dateThree.code;
-        this.$data.dateWeek=this.$store.state.date.scope.dateThree.time;
+        this.$data.dateHttp = this.$store.state.date.scope.dateThree.code;
+        this.$data.dateWeek = this.$store.state.date.scope.dateThree.time;
         return this.$data;
       }
     }
@@ -421,7 +366,7 @@
     width: @width;
   }
 
-  .empty{
+  .empty {
     margin-top: 20px;
   }
 

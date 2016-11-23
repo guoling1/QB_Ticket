@@ -113,15 +113,18 @@
         $show: false
       }
     },
-    beforeRouteEnter (to, from, next) {
-      Vue.__http.post('/queryHistory/query', {
-        appid: to.query.appid,
-        uid: to.query.uid
-      }, function (res) {
-        next(function (vm) {
-          vm.$data.appid = to.query.appid;
-          vm.$data.uid = to.query.uid;
-          vm.$data.history = res.body.data;
+    beforeCreate:function () {
+      let query = this.$route.query;
+      this.$http.post('/queryHistory/query', {
+        appid: query.appid,
+        uid: query.uid
+      }).then(function (res) {
+        this.$data.appid = query.appid;
+        this.$data.uid = query.uid;
+        this.$data.history = res.data;
+      },function(){
+        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          text: '获取历史查询记录失败'
         })
       });
     },

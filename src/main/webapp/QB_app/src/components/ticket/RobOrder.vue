@@ -175,38 +175,26 @@
         appid: this.$data.submitInfo.appId,
         uid: this.$data.submitInfo.uid
       }).then(function (res) {
-        if (res.data.code == 1) {
-          this.$data.submitInfo.phone = res.data.data;
-        } else {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: res.data.message
-          });
-        }
-      }, function (err) {
-        this.$store.commit('MESSAGE_DELAY_SHOW', {
-          text: err
-        });
+        this.$data.submitInfo.phone = res.data;
+      }, function () {
+        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          text: '获取手机号失败'
+        })
       });
       this.$http.post('/userInfo/isLogin', {
         appid: this.$data.submitInfo.appId,
         uid: this.$data.submitInfo.uid
       }).then(function (res) {
-        if (res.data.code == 1) {
-          if(res.body.data == 1){
-            this.$data.isLogin = false;
-          }else{
-            this.$data.isLogin = true;
-          }
+        if (res.data == 1) {
+          this.$data.isLogin = false;
         } else {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: res.data.message
-          });
+          this.$data.isLogin = true;
         }
-      }, function (err) {
-        this.$store.commit('MESSAGE_DELAY_SHOW', {
-          text: err
-        });
-      })
+      }, function () {
+        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          text: '获取12306登录信息失败'
+        })
+      });
     },
     methods: {
       minusChild: function (event, index) {
@@ -221,7 +209,7 @@
           this.$data.errMsg = "请先添加成人";
           setTimeout(()=>{
             this.$data.$err = false
-          },1000);
+          }, 1000);
         } else {
           this.$data.show = !this.$data.show
         }
@@ -245,27 +233,20 @@
         }
         setTimeout(()=>{
           this.$data.$err = false
-        },1000);
+        }, 1000);
         if (this.$data.$err == false) {
-          Vue.http.post('/contactInfo/add', JSON.stringify(addPerson))
-            .then((res)=>{
-            if (res.data.code == 1) {
-              this.$data.show = !this.$data.show;
-              let newPerson = {};
-              newPerson.id = res.data.data;
-              newPerson.name = document.querySelector('#name').value;
-              newPerson.piaoType = 2;
-              this.$data.childs.push(newPerson);
-            } else {
-              this.$store.commit('MESSAGE_DELAY_SHOW', {
-                text: res.body.message
-              });
-            }
-          }).catch(function (err) {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: err
-            });
-          })
+          this.$http.post('/contactInfo/add', JSON.stringify(addPerson)).then(function (res) {
+            this.$data.show = !this.$data.show;
+            let newPerson = {};
+            newPerson.id = res.data.data;
+            newPerson.name = document.querySelector('#name').value;
+            newPerson.piaoType = 2;
+            this.$data.childs.push(newPerson);
+          }, function () {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '添加联系人失败'
+            })
+          });
         }
       },
       login: function () {
@@ -314,27 +295,21 @@
           this.$data.errMsg = "请添加乘客";
           setTimeout(()=>{
             this.$data.$err = false
-          },1000);
+          }, 1000);
         } else {
           this.$http.post('/ticket/grab', data).then(function (res) {
-            if (res.data.code == 1) {
-              this.$store.commit('PAY_CALL', {
-                appid: this.$data.submitInfo.appId,
-                uid: this.$data.submitInfo.uid,
-                orderId: res.body.data.grabTicketFormId,
-                price: res.body.data.price,
-                type: 'rob'
-              });
-            } else {
-              this.$store.commit('MESSAGE_DELAY_SHOW', {
-                text: res.data.message
-              });
-            }
-          }, function (err) {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: err
+            this.$store.commit('PAY_CALL', {
+              appid: this.$data.submitInfo.appId,
+              uid: this.$data.submitInfo.uid,
+              orderId: res.data.grabTicketFormId,
+              price: res.data.price,
+              type: 'rob'
             });
-          })
+          }, function () {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '订单提交失败'
+            })
+          });
         }
       }
     },
@@ -350,7 +325,7 @@
         let storeDate = this.$store.state.contact.info;
         let data = [];
         this.$data.submitInfo.grabPassengers = [];
-        for(let i=0;i<storeDate.length;i++){
+        for (let i = 0; i < storeDate.length; i++) {
           if (storeDate[i]) {
             data.push(storeDate[i]);
             this.$data.submitInfo.grabPassengers.push({
@@ -381,7 +356,7 @@
         return data;
       }
     }
-    }
+  }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

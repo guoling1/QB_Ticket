@@ -233,42 +233,31 @@
       this.$data.sureOrder.uid = query.uid;
       this.$data.sureOrder.price = query.price;
       this.$data.otherData.table = query.table;
+
       this.$http.post('/userInfo/findPhone', {
         appid: query.appid,
         uid: query.uid
       }).then(function (res) {
-        if (res.body.code == 1) {
-          this.$data.sureOrder.mobile = res.data.data;
-        } else {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: res.body.message
-          });
-        }
-      }, function (err) {
-        this.$store.commit('MESSAGE_DELAY_SHOW', {
-          text: err
-        });
+        this.$data.sureOrder.mobile = res.data;
+      },function(){
+        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          text: '获取手机号失败'
+        })
       });
       this.$http.post('/userInfo/isLogin', {
         appid: query.appid,
         uid: query.uid
       }).then(function (res) {
-        if (res.data.code == 1) {
-          if(res.body.data == 1){
-            this.$data.isLogin = false;
-          }else{
-            this.$data.isLogin = true;
-          }
-        } else {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: res.data.message
-          });
+        if(res.data == 1){
+          this.$data.isLogin = false;
+        }else{
+          this.$data.isLogin = true;
         }
-      }, function (err) {
-        this.$store.commit('MESSAGE_DELAY_SHOW', {
-          text: err
-        });
-      })
+      },function(){
+        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          text: '获取12306登录信息失败'
+        })
+      });
     },
     methods: {
       minusChild: function (event, index) {
@@ -306,38 +295,31 @@
         };
         var reg=/^[1-9][0-9]{3}(0[1-9]|1[0-2])([0-2][1-9]|3[0-1])$/;
         if(document.querySelector('#name').value==""){
-          this.$data.$err=true
+          this.$data.$err=true;
           this.$data.errMsg="请填写乘客姓名"
         }else if(document.querySelector('#birthday').value==""){
-          this.$data.$err=true
+          this.$data.$err=true;
           this.$data.errMsg="请填写出生日期"
         }else if (!reg.test(document.querySelector('#birthday').value)) {
-          this.$data.$err=true
+          this.$data.$err=true;
           this.$data.errMsg="请填写正确的出生日期"
         }
         setTimeout(()=>{
           this.$data.$err = false
         },1000);
         if (this.$data.$err == false) {
-          Vue.http.post('/contactInfo/add', JSON.stringify(addPerson))
-            .then((res)=>{
-            if (res.data.code == 1) {
-              this.$data.show = !this.$data.show;
-              addPerson.id = res.data.data;
-              if (addPerson.personType == 2) {
-                addPerson.personType = "儿童"
-              }
-              this.$data.childs.push(addPerson);
-            }else{
-              this.$store.commit('MESSAGE_DELAY_SHOW', {
-                text: res.body.message
-              });
+          this.$http.post('/contactInfo/add', JSON.stringify(addPerson)).then(function (res) {
+            this.$data.show = !this.$data.show;
+            addPerson.id = res.data.data;
+            if (addPerson.personType == 2) {
+              addPerson.personType = "儿童"
             }
-          }).catch(function (err) {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: err
-            });
-          })
+            this.$data.childs.push(addPerson);
+          },function(){
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '添加联系人失败'
+            })
+          });
         }
       },
       detailShow: function () {
@@ -370,29 +352,27 @@
         this.$data.skip = false;
         var reg=/^1(3|4|5|7|8)\d{9}$/;
         if(this.$data.sureOrder.passengers==""){
-          this.$data.$err=true
-          this.$data.errMsg="请添加乘客"
+          this.$data.$err=true;
+          this.$data.errMsg="请添加乘客";
           setTimeout(()=>{
             this.$data.$err=false
           },1000);
         }else if(!reg.test(this.$data.sureOrder.mobile)){
-          this.$data.$err=true
-          this.$data.errMsg="请填写正确的手机号"
+          this.$data.$err=true;
+          this.$data.errMsg="请填写正确的手机号";
           setTimeout(()=>{
             this.$data.$err=false
           },1000);
         }else {
           this.$http.post('/ticket/submitOrder', JSON.stringify(this.$data.sureOrder)).then(function (res) {
-            if (res.data.code == 1) {
-              this.$router.push({
-                path: '/ticket/pay-order',
-                query: {appid: this.$data.sureOrder.appId, uid: this.$data.sureOrder.uid, id: res.data.data.orderFormId}
-              });
-            } else {
-              console.log(res.data.message);
-            }
-          }, function (err) {
-            console.log(err);
+            this.$router.push({
+              path: '/ticket/pay-order',
+              query: {appid: this.$data.sureOrder.appId, uid: this.$data.sureOrder.uid, id: res.data.orderFormId}
+            });
+          },function(){
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '订单提交失败'
+            })
           });
         }
       },

@@ -7,6 +7,29 @@ import router from './routers'
 import VueResource from 'vue-resource'
 Vue.use(VueResource);
 
+// ajax 请求的全局拦截器
+Vue.http.interceptors.push((request, next) => {
+  next((response) => {
+    let {status,body} = response;
+    if (status == 200) {
+      if (body.code != 1) {
+        response.status = 500;
+        response.statusMessage = body.message || '系统异常';
+        response.statusText = 'Internal Server Error';
+        response.ok = false;
+      } else {
+        response.data = body.data;
+      }
+    } else if (status == 506) {
+      console.log(response);
+      console.log('禁止操作');
+    } else {
+      response.statusMessage = '系统异常';
+    }
+    return response;
+  })
+});
+
 // 添加 全局 directive
 import './directives'
 
@@ -14,8 +37,6 @@ import './directives'
 import './filters'
 
 // 添加自定义 插件
-import Resource from './plugin/resource'
-Vue.use(Resource);
 
 // 添加路由变化监听
 router.beforeEach((to, from, next) => {

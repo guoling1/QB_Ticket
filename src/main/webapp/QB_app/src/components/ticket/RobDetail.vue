@@ -1,6 +1,7 @@
 <template lang="html">
   <div class="main">
-    <div class="state" v-if="$$orderInfo.status==3||$$orderInfo.status==5||$$orderInfo.status==6||$$orderInfo.status==7||$$orderInfo.status==11">
+    <div class="state"
+         v-if="$$orderInfo.status==3||$$orderInfo.status==5||$$orderInfo.status==6||$$orderInfo.status==7||$$orderInfo.status==11">
       <i></i>
       <span>正在奋力抢票中...</span>
     </div>
@@ -10,7 +11,8 @@
     <div class="state" v-if="$$orderInfo.status==9">
       <span>抢票成功</span>
     </div>
-    <div class="state" v-if="$$orderInfo.status==10||$$orderInfo.status==14||$$orderInfo.status==15||$$orderInfo.status==16">
+    <div class="state"
+         v-if="$$orderInfo.status==10||$$orderInfo.status==14||$$orderInfo.status==15||$$orderInfo.status==16">
       <span>订单已取消</span>
     </div>
     <div class="space">
@@ -76,32 +78,21 @@
         orderInfo: ''
       }
     },
-    beforeRouteEnter (to, from, next) {
-      Vue.http.post('/order/grab/queryById', {
-        appid: to.query.appid,
-        uid: to.query.uid,
-        grabTicketFormId: to.query.orderid
+    beforeCreate: function () {
+      let query = this.$route.query;
+      this.$http.post('/order/grab/queryById', {
+        grabTicketFormId: query.orderid,
+        appid: query.appid,
+        uid: query.uid
       }).then(function (res) {
-        let info = res.data.data;
+        let info = res.data;
         info.passengerInfo = JSON.parse(info.passengerInfo);
-        if (res.data.code == 1) {
-          next(function (vm) {
-            vm.$data.common.appid = to.query.appid;
-            vm.$data.common.uid = to.query.uid;
-            vm.$data.orderInfo = info;
-          });
-        }else{
-          next(function (vm){
-            vm.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.body.message
-            })
-          })
-        }
-      }, function (err) {
-        next(function (vm){
-          vm.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
-          })
+        this.$data.common.appid = query.appid;
+        this.$data.common.uid = query.uid;
+        this.$data.orderInfo = info;
+      }, function () {
+        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          text: '查询订单信息失败'
         })
       });
     },
@@ -110,16 +101,14 @@
         this.$http.post('/ticket/cancel/grab', {
           grabTicketFormId: this.$data.orderInfo.grabTicketFormId
         }).then(function (res) {
-          if (res.data.code != 1) {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.body.message
-            });
-          }
-        }, function (err) {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '订单取消成功'
           });
-        })
+        }, function () {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '订单取消失败'
+          })
+        });
       }
     },
     computed: {

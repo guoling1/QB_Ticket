@@ -113,60 +113,54 @@
         detail: false
       }
     },
+    beforeCreate:function () {
+      let query = this.$route.query;
+      this.$http.post('/order/queryById', {
+        orderFormId: query.id
+      }).then(function (res) {
+        this.$data.orderInfo = res.data;
+        this.$data.common.appid = query.appid;
+        this.$data.common.uid = query.uid;
+        this.$data.payInfo.orderId = query.id;
+        this.$data.payInfo.price = res.data.totalPrice;
+        if(res.data.status == 3){
+          this.timer(this.$data.orderInfo.expireTime);
+        }
+      },function(){
+        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          text: '查询订单信息失败'
+        })
+      });
+    },
     created: function () {
       // 这里 轮询 等待回调
       let polling = '';
       const pollFun = ()=>{
-        this.$http.post('/order/queryById', {orderFormId: this.$data.orderInfo.orderFormId}).then(function (res) {
-          if (res.data.code == 1 && (res.data.data.status == 3 ||res.data.data.status ==  7)) {
+        this.$http.post('/order/queryById', {
+          orderFormId: this.$data.orderInfo.orderFormId
+        }).then(function (res) {
+          if ((res.data.status == 3 ||res.data.status ==  7)) {
             clearInterval(polling);
-            this.$data.orderInfo = res.data.data;
-            this.$data.payInfo.price = res.data.data.totalPrice;
-            // 调用定时器
-            this.timer(this.$data.orderInfo.expireTime);
-          } else if (res.data.code == 1 && (res.data.data.status == 4 ||res.data.data.status ==  6)) {
+            this.$data.orderInfo = res.data;
+            this.$data.payInfo.price = res.data.totalPrice;
+          } else if ((res.data.status == 4 ||res.data.status ==  6)) {
             clearInterval(polling);
-            this.$data.orderInfo = res.data.data;
+            this.$data.orderInfo = res.data;
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '占座失败'
             });
-          } else if (res.data.code == 1 && res.data.data.status == 13) {
+          } else if (res.data.status == 13) {
             clearInterval(polling);
-            this.$data.orderInfo = res.data.data;
+            this.$data.orderInfo = res.data;
           }
-        })
+        },function(){
+          clearInterval(polling);
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '查询订单信息失败'
+          })
+        });
       }
       polling = setInterval(pollFun, 1500);
-    },
-    beforeRouteEnter (to, from, next) {
-      Vue.http.post('/order/queryById', {
-        "orderFormId": to.query.id
-      }).then(function (res) {
-        if (res.data.code == 1) {
-          next(function (vm) {
-            vm.$data.orderInfo = res.data.data;
-            vm.$data.common.appid = to.query.appid;
-            vm.$data.common.uid = to.query.uid;
-            vm.$data.payInfo.orderId = to.query.id;
-            vm.$data.payInfo.price = res.data.data.totalPrice;
-            if(res.data.data.status == 3){
-              vm.timer(vm.$data.orderInfo.expireTime);
-            }
-          });
-        } else {
-          next(function (vm){
-            vm.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.body.message
-            })
-          })
-        }
-      }, function (err) {
-        next(function (vm){
-          vm.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
-          })
-        })
-      });
     },
     methods: {
       detailShow: function () {
@@ -193,17 +187,15 @@
       cancel: function () {
         this.$http.post('/ticket/cancelOrder', {
           orderFormId: this.$data.orderInfo.orderFormId
-        }).then(function (res) {
-          if (res.body.code != 1) {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.body.message
-            });
-          }
-        }, function (err) {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
-          });
-        })
+        }).then(function () {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '订单取消成功'
+          })
+        },function(){
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '订单取消失败'
+          })
+        });
       },
       submit: function () {
         // 首先判断订单状态,决定是否能支付

@@ -79,6 +79,22 @@
         robOrderStatus: ["", "", "待支付", "抢票中", "未支付", "抢票中", "抢票中", "抢票中", "抢票失败", "抢票成功", "订单已取消", "抢票中", "", "", "退款中", "退款成功", "退款失败", "", "待支付", "待支付"]
       }
     },
+    beforeCreate:function () {
+      let query = this.$route.query;
+      this.$http.post('/order/queryMyOrder', {
+        orderFormId: 0,
+        appid: query.appid,
+        uid: query.uid
+      }).then(function (res) {
+        this.$data.common.appid = query.appid;
+        this.$data.common.uid = query.uid;
+        this.$data.preMassages = res.data;
+      },function(){
+        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          text: '查询订票单失败'
+        })
+      });
+    },
     methods: {
       preGo: function (event, massage) {
         if(massage.status==3||massage.status==5||massage.status==7){
@@ -132,17 +148,15 @@
               appid: this.$data.common.appid,
               uid: this.$data.common.uid
             }).then(function (res) {
-              if (res.data.code == 1) {
-                for (let i = 0; i < res.data.data.length; i++) {
-                  res.data.data[i].passengerInfo = JSON.parse(res.data.data[i].passengerInfo);
-                }
-                this.$data.robMassages = res.data.data;
-              } else {
-                console.log(res.data.message);
+              for (let i = 0; i < res.data.length; i++) {
+                res.data[i].passengerInfo = JSON.parse(res.data[i].passengerInfo);
               }
-            }, function (err) {
-              console.log(err);
-            })
+              this.$data.robMassages = res.data;
+            },function(){
+              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+                text: '查询抢票单失败'
+              })
+            });
           }
         }
       }
@@ -151,27 +165,6 @@
       $robMassages: function () {
         return this.$data.robMassages;
       }
-    },
-    beforeRouteEnter(to, from, next) {
-      Vue.http.post('/order/queryMyOrder', {
-        appid: to.query.appid,
-        uid: to.query.uid,
-        orderFormId: 0
-      }).then(function (response) {
-        next(function (vm) {
-          vm.$data.common.appid = to.query.appid;
-          vm.$data.common.uid = to.query.uid;
-          if (response.data.code == 1) {
-            vm.$data.preMassages = response.data.data;
-          }
-        })
-      }).catch(function (err) {
-        next(function (vm){
-          vm.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
-          })
-        })
-      })
     }
   }
 </script>
