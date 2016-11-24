@@ -31,11 +31,12 @@
         </div>
       </div>
       <div class="space no-border">
-        <div class="group no-border" v-for="(passenger,index) in passengers">
+        <div class="group no-border" v-for="(passenger,index) in passengers.data">
           <div class="list" @click="minus($event,index)"></div>
           <div class="write no-prompt">
             <span class="name">{{passenger.name}}</span>
-            {{passenger.identy}}
+            <span v-if="passenger.personType==1">{{passenger.identy}}</span>
+            <span v-if="passenger.personType==2">请使用{{passengers.data[0].name}}的身份证取票</span>
             <span class="info">{{perType[passenger.personType]}}票</span>
           </div>
         </div>
@@ -43,9 +44,13 @@
           <div class="list" @click="minusChild($event,index)"></div>
           <div class="write no-prompt">
             <span class="name">{{child.name}}</span>
+            <span>请使用{{passengers.data[0].name}}的身份证取票</span>
             <span class="info">{{child.personType}}票</span>
           </div>
         </div>
+      </div>
+      <div class="state" v-show="childs.length>0||passengers.child">
+        儿童票按成人价收款,差价在购票成功后退回
       </div>
       <div class="space no-padding">
         <div class="handle">
@@ -149,6 +154,7 @@
           <input type="text" name="birthday" id='birthday' placeholder="出生年月日，如：20160101">
         </li>
       </ul>
+      <div class="prote">儿童票按成人价收款。差价在购票成功后的1-3个工作日退回原支付银行卡。部分银行处理缓慢，不会超过7个工作日。</div>
       <div class="sure" @click="sev">保存</div>
       <div class="err" v-if="this.$data.$err">
         {{errMsg}}
@@ -250,9 +256,7 @@
       }).then(function (res) {
         this.$data.sureOrder.mobile = res.data;
       },function(){
-        this.$store.commit('MESSAGE_ACCORD_SHOW', {
-          text: '获取手机号失败'
-        })
+        console.log('获取手机号失败');
       });
       this.$http.post('/userInfo/isLogin', {
         appid: query.appid,
@@ -264,9 +268,7 @@
           this.$data.isLogin = true;
         }
       },function(){
-        this.$store.commit('MESSAGE_ACCORD_SHOW', {
-          text: '获取12306登录信息失败'
-        })
+        console.log('获取12306登录信息失败');
       });
     },
     methods: {
@@ -423,9 +425,13 @@
       passengers: function () {
         let storeDate = this.$store.state.contact.info;
         let data = [];
+        let hasChild = false;
         this.$data.sureOrder.passengers = [];
         for(let i=0;i<storeDate.length;i++){
           if (storeDate[i]) {
+            if(storeDate[i].personType == 2){
+              hasChild = true;
+            }
             data.push(storeDate[i]);
             this.$data.sureOrder.passengers.push({
               id: storeDate[i].id,
@@ -433,7 +439,10 @@
             });
           }
         }
-        return data;
+        return {
+          data: data,
+          child: hasChild
+        };
       },
       pageInfo () {
         return {
@@ -462,6 +471,26 @@
 
   .fade-enter, .fade-leave-active {
     opacity: 0
+  }
+
+  .state {
+    width: 100%;
+    height: auto;
+    background-color: #fef0f0;
+    border: 1px solid #fed4d4;
+    line-height: 24px;
+    font-size: 15px;
+    color: #ff6565;
+    text-align: center;
+    padding: 15px;
+  }
+
+  .prote {
+    font-size: 14px;
+    color: #c1c1c1;
+    float: left;
+    padding: 15px;
+    text-align: left;
   }
 
   .main {
