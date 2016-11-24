@@ -90,8 +90,8 @@
       let polling = '';
       const pollFun = ()=>{
         this.$http.post('/order/queryById', {
-          appid: query.appid,
-          uid: query.uid
+          appid: this.$data.common.appid,
+          uid: this.$data.common.uid
         }).then(function (res) {
           if (res.data.status == 10) {
             clearInterval(polling);

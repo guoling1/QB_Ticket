@@ -417,9 +417,7 @@
             this.$data.trains = res.data;
           }
         },function(){
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: '查询车次信息失败'
-          })
+          console.log('查询车次信息失败');
         });
       }
     },
