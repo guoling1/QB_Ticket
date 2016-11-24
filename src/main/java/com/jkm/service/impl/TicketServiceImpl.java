@@ -1908,7 +1908,7 @@ public class TicketServiceImpl implements TicketService {
     private RefundOrderFlow initRefundOrderFlow(final OrderForm orderForm) {
         log.info("订单[" + orderForm.getId() + "]初始化退款单");
         final Optional<RefundOrderFlow> refundOrderFlowOptional = this.refundOrderFlowService.selectByOrderFormId(orderForm.getId());
-        Preconditions.checkState(!refundOrderFlowOptional.isPresent(), "订单[" + orderForm.getId() + "]已经生成退款单[" + refundOrderFlowOptional.get().getId() + "]");
+        Preconditions.checkState(!refundOrderFlowOptional.isPresent(), "订单[" + orderForm.getId() + "]已经生成退款单");
         final RefundOrderFlow refundOrderFlow = new RefundOrderFlow();
         refundOrderFlow.setOrderFormId(orderForm.getId());
         refundOrderFlow.setPaymentSn(orderForm.getPaymentSn());
