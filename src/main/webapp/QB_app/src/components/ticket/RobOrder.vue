@@ -115,9 +115,6 @@
       <div class="prote">儿童票按成人价收款，差价在购票成功后的1-3个工作日退回原支付银行卡。部分银行处理缓慢，不会超过7个工作日。</div>
       <div class="sure" @click="sev">保存</div>
     </div>
-    <div class="err" v-if="this.$data.$err">
-      {{errMsg}}
-    </div>
     <message></message>
     <pay></pay>
   </div>
@@ -172,8 +169,6 @@
         },
         show: false,
         childs: [],
-        errMsg: '',
-        $err: false,
         isLogin: false
       }
     },
@@ -209,17 +204,14 @@
       },
       addChild: function () {
         if (this.$data.submitInfo.grabPassengers.length == 0) {
-          this.$data.$err = true;
-          this.$data.errMsg = "请先添加成人";
-          setTimeout(()=>{
-            this.$data.$err = false
-          }, 1000);
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '请先添加随行成人'
+          })
         } else {
           this.$data.show = !this.$data.show
         }
       },
       sev: function () {
-        this.$data.$err = false;
         var addPerson = {
           uid: this.$data.submitInfo.uid,
           appid: this.$data.submitInfo.appId,
@@ -228,17 +220,20 @@
           birthday: document.querySelector('#birthday').value,
           personType: 2
         };
+        var reg=/^[1-9][0-9]{3}(0[1-9]|1[0-2])([0-2][1-9]|3[0-1])$/;
         if (document.querySelector('#name').value == "") {
-          this.$data.$err = true
-          this.$data.errMsg = "请填写乘客姓名"
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '请填写儿童姓名'
+          })
         } else if (document.querySelector('#birthday').value == "") {
-          this.$data.$err = true
-          this.$data.errMsg = "请填写正确的出生日期"
-        }
-        setTimeout(()=>{
-          this.$data.$err = false
-        }, 1000);
-        if (this.$data.$err == false) {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '请填写出生日期'
+          })
+        }else if (!reg.test(document.querySelector('#birthday').value)) {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '请填写正确的出生日期'
+          })
+        }else {
           this.$http.post('/contactInfo/add', JSON.stringify(addPerson)).then(function (res) {
             this.$data.show = !this.$data.show;
             let newPerson = {};
@@ -293,13 +288,15 @@
           data.seatTypes = data.seatTypes.replace('特等座', 'P');
           data.seatTypes = data.seatTypes.replace('商务座', '9');
         }
-        this.$data.$err = false;
+        var reg=/^1(3|4|5|7|8)\d{9}$/;
         if (this.$data.submitInfo.grabPassengers == "") {
-          this.$data.$err = true;
-          this.$data.errMsg = "请添加乘客";
-          setTimeout(()=>{
-            this.$data.$err = false
-          }, 1000);
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '请添加乘客'
+          })
+        }else if(!reg.test(this.$data.submitInfo.phone)){
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '请填写正确的手机号'
+          })
         } else {
           this.$http.post('/ticket/grab', data).then(function (res) {
             this.$store.commit('PAY_CALL', {
@@ -684,39 +681,4 @@
     }
   }
 
-  .err {
-    background: rgba(0, 0, 0, 0.8);
-    height: 30px;
-    line-height: 30px;
-    padding: 0 5px;
-    position: fixed;
-    top: 35%;
-    left: 33%;
-    background: rgba(0, 0, 0, .5);
-    border-radius: 5px;
-    border: 2px solid #666;
-    color: #ebeeef;
-    -webkit-animation: fadeOut 1s ease 0.2s 1 both;
-    animation: fadeOut 1s ease 0.2s 1 both;
-  }
-
-  @-webkit-keyframes fadeOut {
-    from {
-      opacity: 1;
-    }
-
-    to {
-      opacity: 0;
-    }
-  }
-
-  @keyframes fadeOut {
-    from {
-      opacity: 1;
-    }
-
-    to {
-      opacity: 0;
-    }
-  }
 </style>
