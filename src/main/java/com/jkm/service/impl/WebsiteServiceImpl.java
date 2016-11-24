@@ -84,7 +84,7 @@ public class WebsiteServiceImpl implements WebsiteService {
         Preconditions.checkNotNull(userInfoResult.getAccount(),"未添加12306账号或账户异常，不能使用此功能");
         JSONObject userInfoJson = new JSONObject();
         userInfoJson.put("trainAccount",userInfoResult.getAccount());
-        userInfoJson.put("pass",DESUtil.decrypt(userInfoResult.getPwd()));
+        userInfoJson.put("pass",UserBankCardSupporter.decryptPwd(userInfoResult.getPwd()));
         String tempData = null;
         try {
             tempData = DESUtil.encrypt(userInfoJson.toString());
@@ -111,8 +111,15 @@ public class WebsiteServiceImpl implements WebsiteService {
                         contactInfo.setAddress(contactsArr.getJSONObject(i).getString("address"));
                         contactInfo.setName(contactsArr.getJSONObject(i).getString("name"));
                         contactInfo.setIsUserSelf(contactsArr.getJSONObject(i).getInt("isUserSelf"));
-                        contactInfo.setPersonType(contactsArr.getJSONObject(i).getInt("personType"));
-
+                        if(contactsArr.getJSONObject(i).getInt("personType")==0){
+                            contactInfo.setPersonType(1);
+                        }
+                        if(contactsArr.getJSONObject(i).getInt("personType")==1){
+                            contactInfo.setPersonType(2);
+                        }
+                        if(contactsArr.getJSONObject(i).getInt("personType")==2){
+                            contactInfo.setPersonType(3);
+                        }
                         int count=0;
                         if(!(EnumTrainTicketType.CHILDREN.getId()).equals(contactInfo.getPersonType()+"")){
                             count = contactInfoDao.selectCountByIdenty(contactInfo.getIdenty(),contactInfo.getUid());
