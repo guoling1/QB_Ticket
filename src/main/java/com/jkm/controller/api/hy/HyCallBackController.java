@@ -7,6 +7,7 @@ import com.jkm.util.ResponseWriter;
 import com.jkm.controller.common.BaseController;
 import com.jkm.service.hy.helper.HySdkConstans;
 import com.jkm.util.MD5Util;
+import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * Created by yuxiang on 2016-11-01.
@@ -143,8 +145,8 @@ public class HyCallBackController extends BaseController {
         jsonParams.put("isSuccess", request.getParameter("isSuccess"));
 
         final boolean signCorrect = this.isSignCorrect(jsonParams);
-        log.info("收到确认订单的异步通知:[" + jsonParams + "],签名结果[" + signCorrect + "]");
-        this.postHandle("", "确认订单回调", 0, response.toString(), "", 0);
+        log.info("收到确认订单的异步通知:[" + JSONObject.fromObject(request.getParameterMap()).toString() + "],签名结果[" + signCorrect + "]");
+        this.postHandle("", "确认订单回调", 0, JSONObject.fromObject(request.getParameterMap()).toString(), "", 0);
         if (signCorrect) {
             this.ticketService.handleConfirmOrderCallbackResponse(jsonParams);
             ResponseWriter.writeTxtResponse(response, "success");
@@ -154,7 +156,6 @@ public class HyCallBackController extends BaseController {
             ResponseWriter.writeTxtResponse(response, "false");
         }
     }
-
 
     private boolean isSignCorrect(final JSONObject jsonObject) {
         try {
