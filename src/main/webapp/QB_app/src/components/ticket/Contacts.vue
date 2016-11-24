@@ -23,7 +23,7 @@
         </li>
       </ul>
       <div class="bottom" @click="close">确定</div>
-      <div class="mask" id="mask" @click.self="shut">
+      <div class="mask" id="mask" v-show="mask" @click="mask=false">
         <div class="content">
           <div class="sub">
             <span class="del" @click="del(index)">删除联系人</span>
@@ -75,7 +75,8 @@
         $index: '',
         keepID: [],
         uid: '',
-        appid: ''
+        appid: '',
+        mask: false
       }
     },
     computed: {
