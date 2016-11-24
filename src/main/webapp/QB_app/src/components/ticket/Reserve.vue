@@ -156,18 +156,10 @@
           appid: this.$data.appid,
           uid: this.$data.uid
         }).then(function (res) {
-          if (res.body.code == 1) {
-            this.$data.history = [];
-          } else {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.body.message
-            });
-          }
-        }, function (err) {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
-          });
-        })
+          this.$data.history = [];
+        },function(){
+          console.log('获取历史查询记录失败');
+        });
       },
       time: function (name) {
         this.$store.commit('TIME_OPEN', {

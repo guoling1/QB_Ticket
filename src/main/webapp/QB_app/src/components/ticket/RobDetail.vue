@@ -100,7 +100,20 @@
       cancel: function () {
         this.$http.post('/ticket/cancel/grab', {
           grabTicketFormId: this.$data.orderInfo.grabTicketFormId
-        }).then(function (res) {
+        }).then(function () {
+          this.$http.post('/order/grab/queryById', {
+            grabTicketFormId: this.$data.orderInfo.grabTicketFormId,
+            appid: this.$data.common.appid,
+            uid: this.$data.common.uid
+          }).then(function (res) {
+            let info = res.data;
+            info.passengerInfo = JSON.parse(info.passengerInfo);
+            this.$data.orderInfo = info;
+          }, function () {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '查询订单信息失败'
+            })
+          });
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '订单取消成功'
           });

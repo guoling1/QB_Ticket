@@ -20,7 +20,7 @@
             </div>
             <span class="name" v-for="passenger in massage.passengers">{{passenger.name}}</span>
             <span class="price" v-for="passenger in massage.passengers">￥{{passenger.price}}</span>
-            <p class="static" v-for="passenger in massage.passengers">{{orderStatus[massage.status+1]}}</p>
+            <p class="static" v-for="passenger in massage.passengers">{{orderStatus[massage.status]}}</p>
           </div>
         </li>
       </ul>
@@ -74,9 +74,8 @@
         preShow: true,
         robMassages: false,
         robShow: false,
-        passengerStatus: ["票初始化", "出票成功", "出票失败", "退票中", "退票请求成功", "退票成功", "退票失败", "订单取消"],
-        orderStatus: ["订单已删除", " ", "订单初始化", "占座申请中", "占座成功", "占座失败", "支付中", "客户付款成功", "客户付款失败", "确认出票请求失败", "确认出票请求成功", "出票成功", "出票失败", "订单已经退票", "订单取消", "退票中", "退票成功", "退票失败"],
-        robOrderStatus: ["", "", "待支付", "抢票中", "未支付", "抢票中", "抢票中", "抢票中", "抢票失败", "抢票成功", "订单已取消", "抢票中", "", "", "退款中", "退款成功", "退款失败", "", "待支付", "待支付"]
+        orderStatus: ["", "出票失败", "占座中", "待支付", "出票失败", "出票失败", "出票中", "支付失败", "出票失败", "出票中", "出票成功", "出票失败", "订单取消", "订单取消", "订单取消", "订单取消", "订单取消"],
+        robOrderStatus: ["", "", "待支付", "抢票中", "未支付", "抢票中", "抢票中", "抢票中", "抢票失败", "抢票成功", "已取消", "抢票中", "", "", "已取消", "已取消", "已取消", "", "待支付", "待支付"]
       }
     },
     beforeCreate:function () {
