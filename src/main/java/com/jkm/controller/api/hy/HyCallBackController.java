@@ -80,8 +80,11 @@ public class HyCallBackController extends BaseController {
              final String sign = MD5Util.MD5(HySdkConstans.ORDER_PARTNER_ID + jsonParams.getString("returntype") +jsonParams.getString("timestamp") +
                   jsonParams.getString("apiorderid") + jsonParams.getString("trainorderid") + jsonParams.getString("token") +
                   jsonParams.getString("returnmoney") + jsonParams.getString("returnstate") + MD5Util.MD5(HySdkConstans.ORDER_SIGN_KEY));
-            flag = sign.equals(jsonParams.getString("sign"));
-            System.out.println(sign);
+
+            final String signGrab = MD5Util.MD5(HySdkConstans.GRAB_PARTNER_ID + jsonParams.getString("returntype") +jsonParams.getString("timestamp") +
+                    jsonParams.getString("apiorderid") + jsonParams.getString("trainorderid") + jsonParams.getString("token") +
+                    jsonParams.getString("returnmoney") + jsonParams.getString("returnstate") + MD5Util.MD5(HySdkConstans.GRAB_SIGN_KEY));
+            flag = sign.equals(jsonParams.getString("sign")) || signGrab.equals(jsonParams.getString("sign"));
             log.info("收到hy线上退票的异步通知:" + jsonParams.toString() + "签名结果:" + flag);
         }else{
             this.postHandle("", "收到hy线下退票结果推送", 0, jsonParams.toString(), "", 0);
@@ -92,7 +95,11 @@ public class HyCallBackController extends BaseController {
                     + jsonParams.getString("returnstate") + MD5Util.MD5(HySdkConstans.ORDER_SIGN_KEY)).equals(jsonParams.getString("sign"));
             log.info("收到hy线下退票或线下改签的异步通知:" + jsonParams.toString() + "签名结果:" + flag);
         }
-        this.ticketService.handleRefundCallbackMsg(jsonParams);
+        try{
+            this.ticketService.handleRefundCallbackMsg(jsonParams);
+        }catch (final Throwable throwable){
+            log.error("退票回调处理异常" + jsonParams.toString() + "异常信息:" + throwable.getMessage());
+        }
         if (flag) {
             log.info(jsonParams.toString() + "给hy返回success成功");
             ResponseWriter.writeTxtResponse(httpServletResponse, "SUCCESS");

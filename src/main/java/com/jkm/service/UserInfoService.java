@@ -70,4 +70,11 @@ public interface UserInfoService {
      *
      **/
     JSONObject bindAuthenUserInfo(UserInfo record );
+
+    /**
+     *
+     * 根据用户uid判断是否登录
+     *
+     **/
+    int isLogin (String uid);
 }

@@ -23,7 +23,7 @@ public class UserInfoController extends BaseController {
     @Autowired
     private UserInfoService userInfoService;
     /**
-     * 绑定银行卡
+     * 根据用户id查找用户信息
      * @return
      * @throws Exception
      */
@@ -33,7 +33,7 @@ public class UserInfoController extends BaseController {
         ResponseEntityBase<String> responseEntityBase = new ResponseEntityBase<String>();
         try{
             JSONObject requestJson = super.getRequestJsonParams();
-            String uid = super.getUid(requestJson.getString("appid"),requestJson.getString("uid"));
+            String uid = super.getUid(requestJson.get("appid"),requestJson.get("uid"));
             UserInfo u = userInfoService.selectByUid(uid);
             if(u==null){
                 responseEntityBase.setData("");
@@ -48,5 +48,24 @@ public class UserInfoController extends BaseController {
         return responseEntityBase;
     }
 
-
+    /**
+     * 判断是否登陆
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/isLogin", method = RequestMethod.POST)
+    public ResponseEntityBase<Integer> isLogin(){
+        ResponseEntityBase<Integer> responseEntityBase = new ResponseEntityBase<Integer>();
+        try{
+            JSONObject requestJson = super.getRequestJsonParams();
+            String uid = super.getUid(requestJson.get("appid"),requestJson.get("uid"));
+            int isLogin = userInfoService.isLogin(uid);
+            responseEntityBase.setData(isLogin);
+        }catch (Exception e){
+            log.debug("登录异常", e);
+            responseEntityBase.setCode(500);
+            responseEntityBase.setMessage("登录异常");
+        }
+        return responseEntityBase;
+    }
 }

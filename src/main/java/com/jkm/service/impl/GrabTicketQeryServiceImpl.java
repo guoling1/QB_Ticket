@@ -17,7 +17,8 @@ import java.util.Date;
 public class GrabTicketQeryServiceImpl implements GrabTicketQueryService {
 
     @Override
-    public JSONObject grabTicketQuery(String partnerid, String method, String from_station, String to_station, String train_date, String purpose_codes) {
+    public JSONObject grabTicketQuery(String uid, String partnerid, String method, String from_station,
+           String to_station, String from_station_name, String to_station_name, String train_date, String purpose_codes) {
 
 //        JSONObject jsonObject = null;
         SimpleDateFormat date = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -32,7 +33,9 @@ public class GrabTicketQeryServiceImpl implements GrabTicketQueryService {
             jsonObject.put("sign", sign);
             jsonObject.put("train_date", train_date);
             jsonObject.put("from_station", from_station);
+            jsonObject.put("from_station_name",from_station_name);
             jsonObject.put("to_station", to_station);
+            jsonObject.put("to_station_name",to_station_name);
             jsonObject.put("purpose_codes",purpose_codes);
 //            jsonObject.put("needdistance", needdistance);
 
@@ -44,4 +47,6 @@ public class GrabTicketQeryServiceImpl implements GrabTicketQueryService {
         responseJson = HttpMethod.httpClient(jsonObject, "http://searchtrain.hangtian123.net/trainSearch");
         return responseJson;
     }
+
+
 }

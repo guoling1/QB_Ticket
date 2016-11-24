@@ -165,7 +165,7 @@ public class EntityUtil {
      */
     private String processResultMapId( String beanName ) {
 //        return beanName.substring(0, 1).toLowerCase() + beanName.substring(1);
-        return bean_package+beanName;
+        return bean_package+"."+beanName;
     }
  
  

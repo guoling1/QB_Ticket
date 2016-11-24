@@ -10,10 +10,10 @@
           <div class="right">到达城市</div>
         </div>
         <div class="side write">
-          <div class="left" @click="station('stationONE')">{{$$data.form_name}}</div>
-          <img class="middle" src="../../assets/exchange.png">
+          <div class="left" id="left" @click="station('stationONE')">{{$$data.form_name}}</div>
+          <img class="middle" id="middle" src="../../assets/exchange.png" @click="change">
 
-          <div class="right" @click="station('stationTWO')">{{$$data.to_name}}</div>
+          <div class="right" id="right" @click="station('stationTWO')">{{$$data.to_name}}</div>
         </div>
       </div>
       <div class="time" @click="time('dateONE')">
@@ -26,11 +26,15 @@
         </div>
       </div>
       <div class="submit" @click="query">查询</div>
-      <div class="history">
-        <div>查询历史</div>
-        <div>清空</div>
+      <div class="flexBox">
+        <div class="history">
+          <div v-for="his in $$data.history" @click="chooseByHistory($event,his)">{{his.fromStationName}} →
+            {{his.toStationName}}
+          </div>
+          <div @click="clearHistory">清空</div>
+        </div>
+        <div class="know" @click="show">订票须知<span></span></div>
       </div>
-      <div class="know" @click="show">订票须知<span></span></div>
     </div>
     <div class="notice" v-if="this.$data.$show">
       <div class="content">
@@ -78,28 +82,27 @@
     <datetime></datetime>
     <stationName></stationName>
     <message></message>
-    <pay></pay>
   </div>
 </template>
 
 <script lang="babel">
+  import Vue from 'vue'
   import Datetime from './Datetime.vue'
   import StationName from './StationName.vue'
   import Message from '../Message.vue'
-  import Pay from '../pay/Main.vue'
 
   export default {
     name: 'menu',
     components: {
       Datetime,
       StationName,
-      Message,
-      Pay
+      Message
     },
     data: function () {
       return {
         appid: '',
         uid: '',
+        history: [],
         form_name: this.$store.state.station.scope.stationONE.station,
         form_code: this.$store.state.station.scope.stationONE.code,
         to_name: this.$store.state.station.scope.stationTWO.station,
@@ -110,10 +113,19 @@
         $show: false
       }
     },
-    beforeRouteEnter (to, from, next) {
-      next(function (vm) {
-        vm.$data.appid = to.query.appid;
-        vm.$data.uid = to.query.uid;
+    beforeCreate:function () {
+      let query = this.$route.query;
+      this.$http.post('/queryHistory/query', {
+        appid: query.appid,
+        uid: query.uid
+      }).then(function (res) {
+        this.$data.appid = query.appid;
+        this.$data.uid = query.uid;
+        this.$data.history = res.data;
+      },function(){
+        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          text: '获取历史查询记录失败'
+        })
       });
     },
     methods: {
@@ -133,6 +145,30 @@
           }
         })
       },
+      chooseByHistory: function (event, his) {
+        this.$store.state.station.scope.stationONE.code = his.fromStation;
+        this.$store.state.station.scope.stationONE.station = his.fromStationName;
+        this.$store.state.station.scope.stationTWO.code = his.toStation;
+        this.$store.state.station.scope.stationTWO.station = his.toStationName;
+      },
+      clearHistory: function () {
+        this.$http.post('/deleteHistory/delete', {
+          appid: this.$data.appid,
+          uid: this.$data.uid
+        }).then(function (res) {
+          if (res.body.code == 1) {
+            this.$data.history = [];
+          } else {
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: res.body.message
+            });
+          }
+        }, function (err) {
+          this.$store.commit('MESSAGE_DELAY_SHOW', {
+            text: err
+          });
+        })
+      },
       time: function (name) {
         this.$store.commit('TIME_OPEN', {
           name: name,
@@ -150,6 +186,24 @@
       },
       show: function () {
         this.$data.$show = !this.$data.$show
+      },
+      change: function () {
+        document.querySelector("#middle").className = "middle rotate";
+        document.querySelector("#left").className = "left changeLeft";
+        document.querySelector("#right").className = "right changeRight";
+        setTimeout(()=>{
+          let tmp = "";
+          tmp = this.$data.form_name;
+          this.$data.form_name = this.$data.to_name;
+          this.$data.to_name = tmp;
+          tmp = this.$data.form_code;
+          this.$data.form_code = this.$data.to_code;
+          this.$data.to_code = tmp;
+          tmp = null;
+          document.querySelector("#middle").className = "middle"
+          document.querySelector("#left").className = "left"
+          document.querySelector("#right").className = "right"
+        },400)
       }
     },
     computed: {
@@ -180,7 +234,7 @@
   .main {
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
     .flexItem(1, 100%);
   }
 
@@ -219,11 +273,17 @@
       }
       .left {
         float: left;
-        transition: all 1.5s;
+        /*transition: all 1.5s;*/
+        position: relative;
+        left: 0;
+        top: 0;
       }
       .right {
         float: right;
-        transition: all 1.5s;
+        /*transition: all 1.5s;*/
+        position: relative;
+        left: 0;
+        top: 0;
       }
     }
   }
@@ -284,6 +344,7 @@
   }
 
   .history {
+    .flexItem(1, 100%);
     margin-top: 15px;
     font-size: 12px;
     color: #c1c1c1;
@@ -315,7 +376,7 @@
 
   .notice {
     position: fixed;
-    top: 64px;
+    top: 0;
     left: 0;
     z-index: 99;
     padding: 0 15px;
@@ -323,7 +384,7 @@
     height: 100%;
     background: rgba(255, 255, 255, .9);
     .content {
-      height: 80%;
+      height: 90%;
       overflow: auto;
       text-align: left;
       font-size: 12px;
@@ -355,6 +416,76 @@
       padding: 20px 0 40px;
       color: #999;
       text-align: center;
+    }
+  }
+
+  .rotate {
+    -webkit-animation: rotateIn 1s ease 0s 1 both;
+    animation: rotateIn 1s ease 0s 1 both;
+  }
+
+  .changeLeft {
+    -webkit-animation: left 0.5s ease 0s 1 both;
+    animation: left 0.5s ease 0s 1 both;
+  }
+
+  .changeRight {
+    -webkit-animation: right 0.5s ease 0s 1 both;
+    animation: right 0.5s ease 0s 1 both;
+  }
+
+  @-webkit-keyframes rotateIn {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(180deg);
+    }
+  }
+
+  @keyframes rotateIn {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(180deg);
+    }
+  }
+
+  @-webkit-keyframes left {
+    0% {
+      left: 0;
+    }
+    100% {
+      left: 83%;
+    }
+  }
+
+  @keyframes left {
+    0% {
+      left: 0;
+    }
+    100% {
+
+      left: 83%;
+    }
+  }
+
+  @-webkit-keyframes right {
+    0% {
+      left: 0;
+    }
+    100% {
+      left: -83%;
+    }
+  }
+
+  @keyframes right {
+    0% {
+      left: 0;
+    }
+    100% {
+      left: -83%;
     }
   }
 </style>

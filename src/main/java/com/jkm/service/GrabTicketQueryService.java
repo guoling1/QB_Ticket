@@ -7,6 +7,7 @@ import net.sf.json.JSONObject;
  */
 public interface GrabTicketQueryService {
 
+
     /**
      * 抢票查询
      * @param method
@@ -15,5 +16,6 @@ public interface GrabTicketQueryService {
      * @param to_station
      * @return
      */
-    JSONObject grabTicketQuery(String partnerid, String method, String from_station, String to_station, String train_date, String purpose_codes);
+    JSONObject grabTicketQuery(String uid, String partnerid, String method, String from_station, String to_station, String from_station_name, String to_station_name, String train_date, String purpose_codes);
+//    JSONObject grabTicketQuery(String partnerid, String method, String from_station, String to_station, String train_date, String purpose_codes);
 }

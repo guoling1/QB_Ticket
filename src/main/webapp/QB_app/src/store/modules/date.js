@@ -25,6 +25,14 @@ const state = {
     dateTWO: {
       time: now().time,
       code: now().code
+    },
+    dateThree: {
+      time: now().time,
+      code: now().code
+    },
+    dateFour: {
+      time: now().time,
+      code: now().code
     }
   },
   now: ''

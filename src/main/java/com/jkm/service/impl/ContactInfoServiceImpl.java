@@ -7,7 +7,6 @@ import com.jkm.entity.helper.UserBankCardSupporter;
 import com.jkm.enums.EnumTrainTicketType;
 import com.jkm.service.ContactInfoService;
 import com.jkm.util.IdcardInfoExtractor;
-import com.jkm.util.ValidationUtil;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,7 +141,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     }
 
     @Override
-    public int updateByPrimaryKeySelective(TbContactInfo tbContactInfo) {
+    public JSONObject updateByPrimaryKeySelective(TbContactInfo tbContactInfo) {
         if("1".equals(tbContactInfo.getIdentyType())){
             if(tbContactInfo.getIdenty()!=null&&!"".equals(tbContactInfo.getIdenty())){
                 IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(UserBankCardSupporter.decryptCardId(tbContactInfo.getIdenty()));
@@ -154,7 +153,22 @@ public class ContactInfoServiceImpl implements ContactInfoService {
             }
 
         }
-        return contactInfoDao.updateByPrimaryKeySelective(tbContactInfo);
+
+        JSONObject jo = new JSONObject();
+        int count = 0;
+        if(!(EnumTrainTicketType.CHILDREN.getId()).equals(tbContactInfo.getPersonType()+"")){
+            count = contactInfoDao.selectCountByIdenty(tbContactInfo.getIdenty(),tbContactInfo.getUid());
+        }
+        if(count>0){
+            jo.put("result",false);
+            jo.put("message","身份证号重复");
+        }else{
+            int resultCount = contactInfoDao.updateByPrimaryKeySelective(tbContactInfo);
+            jo.put("result",true);
+            jo.put("data",resultCount);
+            jo.put("message","修改成功");
+        }
+        return jo;
     }
 
     @Override

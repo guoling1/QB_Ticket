@@ -83,4 +83,7 @@ public class UserBankCardSupporter {
     static public String encryptMobile(final String mobile) {
         return AESUtil.encrypt(mobile, BankConstants.getConfig().userBankCardKey());
     }
+//    public static void main(String[] args){
+//        System.out.print(decryptCardNo("koNgydHRFMS1l012_IVauhkwMZtZ1bS7DKkM5PoiHRk"));
+//    }
 }

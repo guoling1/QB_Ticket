@@ -40,7 +40,7 @@ public class ContactInfoController extends BaseController {
             log.info("联系人参数："+requestJson.toString());
 
             TbContactInfo ti = new TbContactInfo();
-            ti.setUid(super.getUid(requestJson.getString("appid"),requestJson.getString("uid")));
+            ti.setUid(super.getUid(requestJson.get("appid"),requestJson.get("uid")));
             Preconditions.checkNotNull(requestJson.get("name"),"姓名不能为空");
             Preconditions.checkNotNull(requestJson.get("personType"),"请选择乘客类型");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getString("name")), "姓名不能为空");
@@ -156,7 +156,7 @@ public class ContactInfoController extends BaseController {
             JSONObject requestJson = super.getRequestJsonParams();
             log.info("联系人参数："+requestJson.toString());
             TbContactInfo ti = new TbContactInfo();
-            ti.setUid(super.getUid(requestJson.getString("appid"),requestJson.getString("uid")));
+            ti.setUid(super.getUid(requestJson.get("appid"),requestJson.get("uid")));
             if(requestJson.get("name")!=null){
                 ti.setName(requestJson.getString("name"));
             }
@@ -178,9 +178,14 @@ public class ContactInfoController extends BaseController {
             if(requestJson.get("id")!=null){
                 ti.setId(requestJson.getLong("id"));
             }
-            int rowNum = contactInfoService.updateByPrimaryKeySelective(ti);
-            responseEntityBase.setMessage("修改成功");
-            responseEntityBase.setData(rowNum);
+            JSONObject rowResult = contactInfoService.updateByPrimaryKeySelective(ti);
+            if(rowResult.getBoolean("result")){
+                responseEntityBase.setMessage("修改成功");
+                responseEntityBase.setData(rowResult.getInt("data"));
+            }else{
+                responseEntityBase.setMessage(rowResult.getString("message"));
+                responseEntityBase.setCode(401);
+            }
         }catch (Exception e){
             log.error("修改联系人异常",e);
             responseEntityBase.setCode(500);
@@ -200,7 +205,7 @@ public class ContactInfoController extends BaseController {
         ResponseEntityBase<List<TbContactInfo>> responseEntityBase = new ResponseEntityBase<List<TbContactInfo>>();
         try {
             JSONObject requestJson = super.getRequestJsonParams();
-            String uid = super.getUid(requestJson.getString("appid"),requestJson.getString("uid"));
+            String uid = super.getUid(requestJson.get("appid"),requestJson.get("uid"));
             log.info("联系人参数："+requestJson.toString());
             List<TbContactInfo> list = contactInfoService.selectListByUid(uid);
             responseEntityBase.setData(list);

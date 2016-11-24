@@ -1,9 +1,9 @@
 <template lang="html">
   <div class="main">
     <div class="date-time">
-      <!--<div class="btn left dis">前一天</div>-->
-      <div class="middle">{{dateWeek}}</div>
-      <!--<div class="btn right">后一天</div>-->
+      <div class="btn left dis" @click="before">前一天</div>
+      <div class="middle" @click="timer('dateFour')"> {{$$data.dateWeek}}</div>
+      <div class="btn right" @click="after">后一天</div>
     </div>
     <div class="space">
       <div class="left">
@@ -28,93 +28,121 @@
         <div class="left"><span v-bind:class="{active:orderInfo.edz_num>0}">{{orderInfo.edz_price}}</span>元</div>
         <div class="left"><span>{{orderInfo.edz_num}}</span>张</div>
         <router-link class="right blue" v-if="orderInfo.edz_num>0"
-                     :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'二等座',price:orderInfo.edz_price}}">预定
+                     :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'二等座',price:orderInfo.edz_price}}">
+          预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.edz_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'二等座',train_code:orderInfo.train_code,time:dateWeek}}">
+          抢票
+        </router-link>
       </div>
       <div class="group" v-if="orderInfo.ydz_num!='--'">
         <div class="left">一等座</div>
         <div class="left"><span v-bind:class="{active:orderInfo.edz_num>0}">{{orderInfo.ydz_price}}</span>元</div>
         <div class="left"><span>{{orderInfo.ydz_num}}</span>张</div>
         <router-link class="right blue" v-if="orderInfo.ydz_num>0"
-                     :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'一等座',price:orderInfo.ydz_price}}">预定
+                     :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'一等座',price:orderInfo.ydz_price}}">
+          预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.ydz_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'一等座',train_code:orderInfo.train_code,time:dateWeek}}">
+          抢票
+        </router-link>
       </div>
       <div class="group" v-if="orderInfo.swz_num!='--'">
         <div class="left">商务座</div>
         <div class="left"><span v-bind:class="{active:orderInfo.swz_num>0}">{{orderInfo.swz_price}}</span>元</div>
         <div class="left"><span>{{orderInfo.swz_num}}</span>张</div>
         <router-link class="right blue" v-if="orderInfo.swz_num>0"
-                     :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'商务座',price:orderInfo.swz_price}}">预定
+                     :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'商务座',price:orderInfo.swz_price}}">
+          预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.swz_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'商务座',train_code:orderInfo.train_code,time:dateWeek}}">
+          抢票
+        </router-link>
       </div>
       <div class="group" v-if="orderInfo.yz_num!='--'">
         <div class="left">硬座</div>
         <div class="left"><span v-bind:class="{active:orderInfo.yz_num>0}">{{orderInfo.yz_price}}</span>元</div>
         <div class="left"><span>{{orderInfo.yz_num}}</span>张</div>
         <router-link class="right blue" v-if="orderInfo.yz_num>0"
-                     :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'硬座',price:orderInfo.yz_price}}">预定
+                     :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'硬座',price:orderInfo.yz_price}}">
+          预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.yz_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'硬座',train_code:orderInfo.train_code,time:dateWeek}}">
+          抢票
+        </router-link>
       </div>
       <div class="group" v-if="orderInfo.rz_num!='--'">
         <div class="left">软座</div>
         <div class="left"><span v-bind:class="{active:orderInfo.rz_num>0}">{{orderInfo.rz_price}}</span>元</div>
         <div class="left"><span>{{orderInfo.rz_num}}</span>张</div>
         <router-link class="right blue" v-if="orderInfo.rz_num>0"
-                     :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'软座',price:orderInfo.rz_price}}">预定
+                     :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'软座',price:orderInfo.rz_price}}">
+          预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.rz_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'软座',train_code:orderInfo.train_code,time:dateWeek}}">
+          抢票
+        </router-link>
       </div>
       <div class="group" v-if="orderInfo.yw_num!='--'">
         <div class="left">硬卧</div>
         <div class="left"><span v-bind:class="{active:orderInfo.yw_num>0}">{{orderInfo.yw_price}}</span>元</div>
         <div class="left"><span>{{orderInfo.yw_num}}</span>张</div>
         <router-link class="right blue" v-if="orderInfo.yw_num>0"
-                     :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'硬卧',price:orderInfo.yw_price}}">预定
+                     :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'硬卧',price:orderInfo.yw_price}}">
+          预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.yw_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'硬卧',train_code:orderInfo.train_code,time:dateWeek}}">
+          抢票
+        </router-link>
       </div>
       <div class="group" v-if="orderInfo.rw_num!='--'">
         <div class="left">软卧</div>
         <div class="left"><span v-bind:class="{active:orderInfo.rw_num>0}">{{orderInfo.rw_price}}</span>元</div>
         <div class="left"><span>{{orderInfo.rw_num}}</span>张</div>
         <router-link class="right blue" v-if="orderInfo.rw_num>0"
-                     :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'软卧',price:orderInfo.rw_price}}">预定
+                     :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'软卧',price:orderInfo.rw_price}}">
+          预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.rw_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'软卧',train_code:orderInfo.train_code,time:dateWeek}}">
+          抢票
+        </router-link>
       </div>
       <div class="group" v-if="orderInfo.wz_num!='--'">
         <div class="left">无座</div>
         <div class="left"><span v-bind:class="{active:orderInfo.wz_num>0}">{{orderInfo.wz_price}}</span>元</div>
         <div class="left"><span>{{orderInfo.wz_num}}</span>张</div>
         <router-link class="right blue" v-if="orderInfo.wz_num>0"
-                     :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'无座',price:orderInfo.wz_price}}">预定
+                     :to="{path:'/ticket/sure-order',query:{appid:common.appid,uid:common.uid,table:'无座',price:orderInfo.wz_price}}">
+          预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.wz_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid}}">抢票</router-link>
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'无座',train_code:orderInfo.train_code,time:dateWeek}}">
+          抢票
+        </router-link>
       </div>
     </div>
+    <datetime></datetime>
     <message></message>
   </div>
 </template>
 
 <script lang="babel">
+  import Vue from 'vue'
   import Message from '../Message.vue'
+  import Datetime from './Datetime.vue'
 
   export default {
     name: 'menu',
     components: {
-      Message
+      Message,
+      Datetime
     },
     data () {
       // 获取 sessionStorage 的数据 注意转回json
@@ -125,7 +153,8 @@
         },
         orderInfo: JSON.parse(sessionStorage.getItem('preOrder')),
         dateHttp: '',
-        dateWeek: ''
+        dateWeek: '',
+        obj: ""
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -136,6 +165,81 @@
         vm.$data.common.uid = to.query.uid;
       });
     },
+    methods: {
+      timer: function (name) {
+        this.$store.commit('TIME_OPEN', {
+          name: name,
+          ctrl: true
+        });
+      },
+      after: function () {
+        var time = this.$data.dateHttp;
+        time = new Date(time);
+        var dd = new Date((time / 1000 + 86400) * 1000);
+        let day = dd.getDate();
+        if (day < 10) {
+          day = '0' + day;
+        }
+        this.$data.dateHttp = dd.getFullYear() + "-" + (dd.getMonth() + 1) + "-" + day;
+        document.querySelector('.left').className = "btn left dis";
+        document.querySelector('.right').className = "btn right"
+      },
+      before: function () {
+        var time = this.$data.dateHttp;
+        time = new Date(time);
+        var dd = new Date((time / 1000 - 86400) * 1000);
+        let day = dd.getDate();
+        if (day < 10) {
+          day = '0' + day;
+        }
+        this.$data.dateHttp = dd.getFullYear() + "-" + (dd.getMonth() + 1) + "-" + day;
+        document.querySelector('.left').className = "btn left";
+        document.querySelector('.right').className = "btn right dis"
+      }
+    },
+    watch: {
+      dateHttp: function (val, oldVal) {
+        if (oldVal == "") {
+          this.$data.obj = val
+        }
+        if (val != oldVal && oldVal != "" && oldVal != this.$data.obj) {
+          this.$http.post('/queryTicketPrice/query', {
+            appid: this.$route.query.appid,
+            uid: this.$route.query.uid,
+            from_station: this.$data.orderInfo.from_station_code,
+            to_station: this.$data.orderInfo.to_station_code,
+            from_station_name: this.$data.orderInfo.from_station_name,
+            to_station_name: this.$data.orderInfo.to_station_name,
+            train_date: val
+          }).then(function (res) {
+            if (res.data) {
+              for (var i = 0; i < res.data.length; i++) {
+                if (res.data[i].train_code == this.$data.orderInfo.train_code) {
+                  this.$data.orderInfo = res.data[i];
+                  break;
+                }
+              }
+              this.$data.initStations = res.data;
+            } else {
+              this.$store.commit('MESSAGE_DELAY_SHOW', {
+                text: '暂无查询的车次信息'
+              })
+            }
+          }, function () {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '获取车次信息失败'
+            })
+          });
+          var ary = val.split("-");
+          var date = ary[1] + "月" + ary[2] + "日";
+          var ss = new Date(ary[0], parseInt(ary[1] - 1), ary[2])
+          var week = ss.getDay();
+          ary = ["日", "一", "二", "三", "四", "五", "六"]
+          this.$data.dateHttp = val;
+          this.$data.dateWeek = date + " 周" + ary[week];
+        }
+      }
+    },
     computed: {
       time: function () {
         let startD = (this.$data.dateHttp + '').split("-");
@@ -144,10 +248,8 @@
         let runMin = this.$data.orderInfo.run_time_minute;
         let runH = 0;
         let runM = 0;
-        if (runMin >= 60) {
-          runH = parseInt(runMin / 60);
-          runM = runMin % 60;
-        }
+        runH = parseInt(runMin / 60);
+        runM = runMin % 60;
         let weekWord = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
         let arriveMs = start.getTime() + (runMin * 60 * 1000);
         let arrive = new Date(arriveMs);
@@ -164,6 +266,11 @@
         };
         sessionStorage.setItem('preDate', JSON.stringify(sessionDate));
         return sessionDate;
+      },
+      $$data: function () {
+        this.$data.dateHttp = this.$store.state.date.scope.dateFour.code;
+        this.$data.dateWeek = this.$store.state.date.scope.dateFour.time;
+        return this.$data;
       }
     }
   }

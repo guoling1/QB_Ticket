@@ -83,7 +83,7 @@ public interface ContactInfoService {
      * @param contactInfo
      * @return
      */
-    int updateByPrimaryKeySelective(TbContactInfo tbContactInfo);
+    JSONObject updateByPrimaryKeySelective(TbContactInfo tbContactInfo);
 
     /**
      * 根据uid查询用户列表

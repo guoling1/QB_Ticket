@@ -62,18 +62,12 @@
     methods: {
       submit: function () {
         this.$http.post('/website/addWebSite', this.$data.loginData).then(function (res) {
-          if (res.data.code == 1) {
-            this.$router.go(-1);
-          } else {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.body.message
-            });
-          }
-        }, function (err) {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
-          });
-        })
+          this.$router.go(-1);
+        },function(){
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '登录12306账号失败'
+          })
+        });
       }
     }
   }

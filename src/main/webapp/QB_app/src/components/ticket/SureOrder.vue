@@ -24,14 +24,14 @@
           <div class="write right"><span class="price">￥{{pageInfo.price}}</span></div>
         </div>
       </div>
-      <div class="space">
+      <div class="space" v-if="isLogin">
         <div class="group no-border" @click="login">
           <div class="logo"></div>
           <div class="write">使用12306账号登录</div>
         </div>
       </div>
       <div class="space no-border">
-        <div class="group no-border" v-for="passenger in passengers">
+        <div class="group no-border" v-for="(passenger,index) in passengers">
           <div class="list" @click="minus($event,index)"></div>
           <div class="write no-prompt">
             <span class="name">{{passenger.name}}</span>
@@ -92,34 +92,44 @@
         </div>
       </div>
     </div>
-    <div class="pack" v-show="pack">
-      <div class="select">
-        <div class="xx"></div>
-        <ul>
-          <li @click="packHide(2)" v-bind:class="{active:sureOrder.buyTicketPackageId==2}"><span>¥ 20/人套餐</span>
-            极速出票，赠送78万保险
-          </li>
-          <li @click="packHide(3)" v-bind:class="{active:sureOrder.buyTicketPackageId==3}"><span>¥ 30/人套餐</span>
-            优先出票，赠送300万保险
-          </li>
-          <li @click="packHide(1)" v-bind:class="{active:sureOrder.buyTicketPackageId==1}">不购买 出票慢，失败的可能性增加</li>
-        </ul>
-      </div>
-    </div>
-    <div class="skip" v-show="skip">
-      <div class="show">
-        <div class="xx"></div>
-        <div class="content">
-          <div class="image"></div>
-          <div class="word">您没有选择“出票套餐”</div>
-          <div class="small">出票失败率提高，安全保障降低</div>
-        </div>
-        <div class="btn">
-          <div class="sub" @click="submit($event)">放弃</div>
-          <div class="close" @click="skipHide">增加保障</div>
+    <transition name="fade">
+      <div class="pack" v-show="pack">
+        <div class="select">
+          <div class="space_t">
+            <div class="xx" @click="pack=false"></div>
+            <div class="word">选择出票套餐</div>
+          </div>
+          <ul>
+            <li @click="packHide(2)" v-bind:class="{active:sureOrder.buyTicketPackageId==2}"><span>¥ 20/人套餐</span>
+              极速出票，赠送78万保险
+            </li>
+            <li @click="packHide(3)" v-bind:class="{active:sureOrder.buyTicketPackageId==3}"><span>¥ 30/人套餐</span>
+              优先出票，赠送300万保险
+            </li>
+            <li @click="packHide(1)" v-bind:class="{active:sureOrder.buyTicketPackageId==1}">不购买 出票慢，失败的可能性增加</li>
+          </ul>
         </div>
       </div>
-    </div>
+    </transition>
+    <transition name="fade">
+      <div class="skip" v-show="skip">
+        <div class="show">
+          <div class="space_t">
+            <div class="xx" @click="skip=false"></div>
+            <div class="word">提示</div>
+          </div>
+          <div class="content">
+            <div class="image"></div>
+            <div class="word">您没有选择“出票套餐”</div>
+            <div class="small">出票失败率提高，安全保障降低</div>
+          </div>
+          <div class="btn">
+            <div class="sub" @click="submit($event)">放弃</div>
+            <div class="close" @click="skipHide">增加保障</div>
+          </div>
+        </div>
+      </div>
+    </transition>
     <contacts></contacts>
     <!-- 添加儿童 -->
     <div class="content" v-if="show">
@@ -207,7 +217,8 @@
         childs: [],
         errMsg: '',
         $err: false,
-        perType:["","成人","儿童"]
+        perType:["","成人","儿童"],
+        isLogin: false
       }
     },
     created: function () {
@@ -232,21 +243,30 @@
       this.$data.sureOrder.uid = query.uid;
       this.$data.sureOrder.price = query.price;
       this.$data.otherData.table = query.table;
+
       this.$http.post('/userInfo/findPhone', {
         appid: query.appid,
         uid: query.uid
       }).then(function (res) {
-        if (res.body.code == 1) {
-          this.$data.sureOrder.mobile = res.data.data;
-        } else {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: res.body.message
-          });
+        this.$data.sureOrder.mobile = res.data;
+      },function(){
+        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          text: '获取手机号失败'
+        })
+      });
+      this.$http.post('/userInfo/isLogin', {
+        appid: query.appid,
+        uid: query.uid
+      }).then(function (res) {
+        if(res.data == 1){
+          this.$data.isLogin = false;
+        }else{
+          this.$data.isLogin = true;
         }
-      }, function (err) {
-        this.$store.commit('MESSAGE_DELAY_SHOW', {
-          text: err
-        });
+      },function(){
+        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          text: '获取12306登录信息失败'
+        })
       });
     },
     methods: {
@@ -264,11 +284,9 @@
       },
       addChild: function () {
         if (this.$data.sureOrder.passengers.length == 0) {
-          this.$data.$err=true;
-          this.$data.errMsg="请先添加成人";
-          setTimeout(()=>{
-            this.$data.$err=false
-          },1000);
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '请先添加随行成人'
+          })
         } else {
           this.$data.show = !this.$data.show
         }
@@ -285,38 +303,37 @@
         };
         var reg=/^[1-9][0-9]{3}(0[1-9]|1[0-2])([0-2][1-9]|3[0-1])$/;
         if(document.querySelector('#name').value==""){
-          this.$data.$err=true
-          this.$data.errMsg="请填写乘客姓名"
-        }else if(document.querySelector('#birthday').value==""){
-          this.$data.$err=true
-          this.$data.errMsg="请填写出生日期"
-        }else if (!reg.test(document.querySelector('#birthday').value)) {
-          this.$data.$err=true
-          this.$data.errMsg="请填写正确的出生日期"
-        }
-        setTimeout(()=>{
-          this.$data.$err = false
-        },1000);
-        if (this.$data.$err == false) {
-          Vue.http.post('/contactInfo/add', JSON.stringify(addPerson))
-            .then((res)=>{
-            if (res.data.code == 1) {
-              this.$data.show = !this.$data.show;
-              addPerson.id = res.data.data;
-              if (addPerson.personType == 2) {
-                addPerson.personType = "儿童"
-              }
-              this.$data.childs.push(addPerson);
-            }else{
-              this.$store.commit('MESSAGE_DELAY_SHOW', {
-                text: res.body.message
-              });
-            }
-          }).catch(function (err) {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: err
-            });
+          this.$data.$err=true;
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '请填写儿童姓名'
           })
+        }else if(document.querySelector('#birthday').value==""){
+          this.$data.$err=true;
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '请填写出生日期'
+          })
+        }else if (!reg.test(document.querySelector('#birthday').value)) {
+          this.$data.$err=true;
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '请填写正确的出生日期'
+          })
+        }
+//        setTimeout(()=>{
+//          this.$data.$err = false
+//        },1000);
+        if (this.$data.$err == false) {
+          this.$http.post('/contactInfo/add', JSON.stringify(addPerson)).then(function (res) {
+            this.$data.show = !this.$data.show;
+            addPerson.id = res.data.data;
+            if (addPerson.personType == 2) {
+              addPerson.personType = "儿童"
+            }
+            this.$data.childs.push(addPerson);
+          },function(){
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '添加联系人失败'
+            })
+          });
         }
       },
       detailShow: function () {
@@ -349,29 +366,27 @@
         this.$data.skip = false;
         var reg=/^1(3|4|5|7|8)\d{9}$/;
         if(this.$data.sureOrder.passengers==""){
-          this.$data.$err=true
-          this.$data.errMsg="请添加乘客"
+          this.$data.$err=true;
+          this.$data.errMsg="请添加乘客";
           setTimeout(()=>{
             this.$data.$err=false
           },1000);
         }else if(!reg.test(this.$data.sureOrder.mobile)){
-          this.$data.$err=true
-          this.$data.errMsg="请填写正确的手机号"
+          this.$data.$err=true;
+          this.$data.errMsg="请填写正确的手机号";
           setTimeout(()=>{
             this.$data.$err=false
           },1000);
         }else {
           this.$http.post('/ticket/submitOrder', JSON.stringify(this.$data.sureOrder)).then(function (res) {
-            if (res.data.code == 1) {
-              this.$router.push({
-                path: '/ticket/pay-order',
-                query: {appid: this.$data.sureOrder.appId, uid: this.$data.sureOrder.uid, id: res.data.data.orderFormId}
-              });
-            } else {
-              console.log(res.data.message);
-            }
-          }, function (err) {
-            console.log(err);
+            this.$router.push({
+              path: '/ticket/pay-order',
+              query: {appid: this.$data.sureOrder.appId, uid: this.$data.sureOrder.uid, id: res.data.orderFormId}
+            });
+          },function(){
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '订单提交失败'
+            })
           });
         }
       },
@@ -409,13 +424,13 @@
         let storeDate = this.$store.state.contact.info;
         let data = [];
         this.$data.sureOrder.passengers = [];
-        for (let i in storeDate) {
+        for(let i=0;i<storeDate.length;i++){
           if (storeDate[i]) {
             data.push(storeDate[i]);
             this.$data.sureOrder.passengers.push({
               id: storeDate[i].id,
               piaoType: storeDate[i].personType
-            })
+            });
           }
         }
         return data;
@@ -441,12 +456,46 @@
     width: @width;
   }
 
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .3s
+  }
+
+  .fade-enter, .fade-leave-active {
+    opacity: 0
+  }
+
   .main {
     width: 100%;
     height: 100%;
     overflow: auto;
     .flexItem(1, 100%);
     background-color: #f5f5f5;
+  }
+
+  .space_t {
+    width: 100%;
+    height: 49px;
+    line-height: 49px;
+    border-bottom: 1px solid #f5f5f5;
+    position: relative;
+    .xx {
+      width: 14px;
+      height: 14px;
+      background: url("../../assets/xx.png") no-repeat center;
+      background-size: 14px 14px;
+      padding: 15px;
+      position: absolute;
+      top: 9px;
+      left: 10px;
+    }
+    .word {
+      font-size: 15px;
+      color: #111;
+      width: 100%;
+      height: 49px;
+      line-height: 49px;
+      text-align: center;
+    }
   }
 
   .train-info {

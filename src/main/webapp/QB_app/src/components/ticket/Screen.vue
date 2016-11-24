@@ -150,7 +150,7 @@
       },
       selectC:function (msg) {
         this.$data.pageConfig.endTime=msg;
-      },
+      }
     },
     computed: {
       show () {
@@ -175,8 +175,7 @@
   }
 
   .fade-enter-active, .fade-leave-active {
-    transition: opacity .5s;
-    opacity: 0.5
+    transition: opacity .3s;
   }
 
   .fade-enter, .fade-leave-active {

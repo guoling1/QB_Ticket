@@ -5,12 +5,12 @@
       <div class="space" v-if="$$show.submitSpace">
         <div class="checkout">
           <div class="space_t">
-            <div class="xx"></div>
+            <div class="xx" @click="close"></div>
             <div class="word">使用银行卡支付</div>
           </div>
           <div class="ul" @click="goList">
-            <!--<div class="logo">logo</div>-->
-            <div class="word">{{default_card.info.bankCode}}</div>
+            <div class="logo" v-bind:class="default_card.info.bankCode"></div>
+            <div class="word">{{default_card.info.bankName}}</div>
             <div class="word">{{default_card.info.cardNo}}</div>
             <div class="small">储蓄卡</div>
             <div class="list"></div>
@@ -27,14 +27,14 @@
       <div class="space" v-if="$$show.cardListSpace">
         <div class="bankList">
           <div class="space_t">
-            <div class="xx"></div>
+            <div class="xx" @click="close"></div>
             <div class="word">选择银行卡</div>
           </div>
           <ul>
             <li v-for="(card,index) in card_list" v-bind:class="{active:default_card.index==index}"
                 @click="select($event,card,index)">
-              <!--<div class="logo">logo</div>-->
-              <div class="word">{{card.bankCode}}</div>
+              <div class="logo" v-bind:class="card.bankCode"></div>
+              <div class="word">{{card.bankName}}</div>
               <div class="word">{{card.cardNo}}</div>
               <div class="small">储蓄卡</div>
             </li>
@@ -47,7 +47,7 @@
       <div class="space" v-if="$$show.firstBindSpace">
         <div class="first">
           <div class="space_t">
-            <div class="xx"></div>
+            <div class="xx" @click="close"></div>
             <div class="word">使用银行卡支付</div>
           </div>
           <div class="prompt">
@@ -88,7 +88,7 @@
       <div class="space" v-if="$$show.secondBindSpace">
         <div class="second">
           <div class="space_t">
-            <div class="xx"></div>
+            <div class="xx" @click="close"></div>
             <div class="word">使用银行卡支付</div>
           </div>
           <div class="prompt">
@@ -189,7 +189,8 @@
           crdNo: '',
           phoneNo: '',
           isAgree: 0,
-          bankCode: ''
+          bankCode: '',
+          bankName: ''
         },
         space_ctrl: {
           submitSpace: false,
@@ -200,28 +201,23 @@
       }
     },
     created: function () {
+      let query = this.$route.query;
       this.$http.post('/card/list', {
-        appid: this.$data.from_data.appid,
-        uid: this.$data.from_data.uid
+        appid: query.appid,
+        uid: query.uid
       }).then(function (res) {
-        if (res.body.code == 1) {
-          if (res.body.data.cardList) {
-            this.$data.card_list = res.body.data.cardList;
-            this.$data.default_card.info = res.body.data.cardList[0];
-            this.$data.user_info = res.body.data.userCardInfo;
-            this.$data.space_ctrl.submitSpace = true;
-          } else {
-            this.$data.space_ctrl.firstBindSpace = true;
-          }
+        if (res.data.cardList) {
+          this.$data.card_list = res.data.cardList;
+          this.$data.default_card.info = res.data.cardList[0];
+          this.$data.user_info = res.data.userCardInfo;
+          this.$data.space_ctrl.submitSpace = true;
         } else {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: res.body.message
-          });
+          this.$data.space_ctrl.firstBindSpace = true;
         }
-      }, function (err) {
-        this.$store.commit('MESSAGE_DELAY_SHOW', {
-          text: err
-        });
+      }, function () {
+        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          text: '获取银行卡列表失败'
+        })
       });
     },
     methods: {
@@ -232,6 +228,9 @@
           vCode: '',
           sn: ''
         }
+      },
+      close: function () {
+        this.$store.commit('PAY_CLOSE');
       },
       send: function (event, type) {
         this.$data.valid_code.sending = true;
@@ -254,35 +253,28 @@
           }
         }
         this.$http.post('/authen/getCode', submitData).then(function (res) {
-          if (res.data.code == 1) {
-            this.$data.valid_code.sn = res.data.data;
-            let polling = '';
-            const pollFun = ()=>{
-              this.$data.valid_code.timer--;
-              if (this.$data.valid_code.sending) {
-                if (this.$data.valid_code.timer < 0) {
-                  this.$data.valid_code.timer = 60;
-                  this.$data.valid_code.sending = false;
-                  clearInterval(polling);
-                }
-              } else {
+          this.$data.valid_code.sn = res.data;
+          let polling = '';
+          const pollFun = ()=>{
+            this.$data.valid_code.timer--;
+            if (this.$data.valid_code.sending) {
+              if (this.$data.valid_code.timer < 0) {
                 this.$data.valid_code.timer = 60;
+                this.$data.valid_code.sending = false;
                 clearInterval(polling);
               }
+            } else {
+              this.$data.valid_code.timer = 60;
+              clearInterval(polling);
             }
-            polling = setInterval(pollFun, 1000);
-          } else {
-            this.$data.valid_code.sending = false;
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.data.message
-            });
           }
-        }, function (err) {
+          polling = setInterval(pollFun, 1000);
+        }, function () {
           this.$data.valid_code.sending = false;
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
-          });
-        })
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '验证码发送失败'
+          })
+        });
       },
       pay: function (event, type) {
         let submitData = {};
@@ -309,28 +301,23 @@
             isAgree: this.$data.fill_from.isAgree,
             vCode: this.$data.valid_code.vCode,
             bankCode: this.$data.fill_from.bankCode,
+            bankName: this.$data.fill_from.bankName,
             sn: this.$data.valid_code.sn
           }
         }
-        this.$http.post(this.$data.pay_type[this.$data.from_data.type + '_' + type].payAddress, submitData).then(function (res) {
-          if (res.data.code == 1) {
-            this.$router.push({
-              path: this.$data.pay_type[this.$data.from_data.type + '_' + type].goAddress, query: {
-                appid: this.$data.from_data.appid,
-                uid: this.$data.from_data.uid,
-                orderid: this.$data.from_data.orderId
-              }
-            })
-          } else {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.body.message
-            });
-          }
-        }, function (err) {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
-          });
-        })
+        this.$http.post(this.$data.pay_type[this.$data.from_data.type + '_' + type].payAddress, submitData).then(function () {
+          this.$router.push({
+            path: this.$data.pay_type[this.$data.from_data.type + '_' + type].goAddress, query: {
+              appid: this.$data.from_data.appid,
+              uid: this.$data.from_data.uid,
+              orderid: this.$data.from_data.orderId
+            }
+          })
+        }, function () {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '付款失败'
+          })
+        });
       },
       goList: function () {
         this.reset();
@@ -361,18 +348,13 @@
       bin: function () {
         const val = this.$data.fill_from.crdNo;
         this.$http.post('/bankCardBin/cardNoInfo', {cardNo: val}).then(function (res) {
-          if (res.data.code == 1) {
-            this.$data.fill_from.bankCode = res.data.data.bankName;
-          } else {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.data.message
-            });
-          }
-        }, function (err) {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: err
-          });
-        })
+          this.$data.fill_from.bankCode = res.data.data.shorthand;
+          this.$data.fill_from.bankName = res.data.data.bankName;
+        }, function () {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '查询银行卡信息失败'
+          })
+        });
       }
     },
     computed: {
@@ -429,7 +411,78 @@
     bottom: 0;
     .logo {
       float: left;
+      margin-top: 8px;
       margin-right: 15px;
+      width: 25px;
+      height: 25px;
+      &.ICBC {
+        background: url("../../assets/bank/ICBC.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.CCB {
+        background: url("../../assets/bank/CCB.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.ABC {
+        background: url("../../assets/bank/ABC.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.BOC {
+        background: url("../../assets/bank/BOC.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.CMB {
+        background: url("../../assets/bank/CMB.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.CMB {
+        background: url("../../assets/bank/CMB.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.BANKCOMM {
+        background: url("../../assets/bank/BANKCOMM.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.CMBC {
+        width: 30px;
+        height: 25px;
+        background: url("../../assets/bank/CMBC.png") no-repeat center;
+        background-size: 30px 25px;
+      }
+      &.PSBC {
+        background: url("../../assets/bank/PSBC.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.CGB {
+        background: url("../../assets/bank/CGB.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.CEB {
+        width: 50px;
+        height: 25px;
+        background: url("../../assets/bank/CEB.png") no-repeat center;
+        background-size: 50px 25px;
+      }
+      &.CITIC {
+        background: url("../../assets/bank/CITIC.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.CIB {
+        width: 40px;
+        height: 25px;
+        background: url("../../assets/bank/CIB.png") no-repeat center;
+        background-size: 40px 25px;
+      }
+      &.SHBANK {
+        background: url("../../assets/bank/SHBANK.png") no-repeat center;
+        background-size: 25px 25px;
+      }
+      &.PINGAN {
+        width: 75px;
+        height: 25px;
+        background: url("../../assets/bank/PINGAN.png") no-repeat center;
+        background-size: 75px 25px;
+      }
     }
     .word {
       float: left;

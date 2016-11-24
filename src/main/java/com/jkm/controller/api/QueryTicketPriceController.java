@@ -34,7 +34,7 @@ public class QueryTicketPriceController extends BaseController {
         JSONObject requestJson = null;
         try {
             requestJson = super.getRequestJsonParams();
-            String uid = super.getUid(requestJson.getString("appid"), requestJson.getString("uid"));
+            String uid = super.getUid(requestJson.get("appid"), requestJson.get("uid"));
             String partnerid = HySdkConstans.QUERY_PARTNER_ID;
             String method = "train_query";
             String from_station = requestJson.getString("from_station");
@@ -44,8 +44,14 @@ public class QueryTicketPriceController extends BaseController {
             String train_date = requestJson.getString("train_date");
             String purpose_codes = "ADULT";
             responseJson = this.queryTicketPriceService.queryTicket(uid, partnerid, method, from_station, to_station, from_station_name, to_station_name, train_date, purpose_codes);
-
             JSONArray arrayResult = new JSONArray();
+            if (requestJson.get("code")!=200){
+//                arrayResult.add(responseJson.g);
+                results.setCode(1);
+                results.setMessage("没有符合条件的车次信息");
+                return results;
+            }
+//            JSONArray arrayResult = new JSONArray();
             JSONArray ja = responseJson.getJSONArray("data");
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
             Date date = new Date();
@@ -79,9 +85,10 @@ public class QueryTicketPriceController extends BaseController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            results.setCode(-1);
-            results.setMessage("没有符合条件的车次信息");
+//            results.setCode(1);
+//            results.setMessage("没有符合条件的车次信息");
         }
+
         return results;
     }
 

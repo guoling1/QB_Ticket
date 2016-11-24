@@ -83,8 +83,8 @@ public class UserInfoServiceImpl implements UserInfoService {
             u.setPhone(record.getPhone());
             u.setAccount(record.getAccount());
             u.setPwd(record.getPwd());
-            u.setCardId(UserBankCardSupporter.encryptCardId(record.getCardId()));
-            u.setCardNo(UserBankCardSupporter.encryptCardNo(record.getCardNo()));
+            u.setCardId(record.getCardId());
+            u.setCardNo(record.getCardNo());
             u.setRealName(record.getRealName());
             u.setStatus(0);
             userInfoDao.insert(u);
@@ -92,7 +92,7 @@ public class UserInfoServiceImpl implements UserInfoService {
         }else{
             if(userInfo.getCardId()!=null&&userInfo.getRealName()!=null
                     &&!"".equals(userInfo.getCardId())&&!"".equals(userInfo.getRealName())){
-                if((record.getCardId()).equals(UserBankCardSupporter.decryptCardId(userInfo.getCardId()))&&record.getRealName().equals(userInfo.getRealName())){
+                if((record.getCardId()).equals(userInfo.getCardId())&&record.getRealName().equals(userInfo.getRealName())){
                     jo.put("result",true);
                 }else{
                     jo.put("result",false);
@@ -100,12 +100,28 @@ public class UserInfoServiceImpl implements UserInfoService {
                 }
             }else{
                 userInfo.setRealName(record.getRealName());
-                userInfo.setCardNo(UserBankCardSupporter.encryptCardNo(record.getCardNo()));
-                userInfo.setCardId(UserBankCardSupporter.encryptCardId(record.getCardId()));
+                userInfo.setCardNo(record.getCardNo());
+                userInfo.setCardId(record.getCardId());
                 userInfoDao.updateByPrimaryKeySelective(userInfo);
                 jo.put("result",true);
             }
         }
         return jo;
+    }
+
+    @Override
+    public int isLogin(String uid) {
+        int flag = 1;
+        UserInfo userInfo = userInfoDao.selectByUid(uid);
+        if(userInfo==null){
+            flag = 0;
+        }else{
+            if(userInfo.getAccount()!=null&&!"".equals(userInfo.getAccount())){
+                flag = 1;
+            }else{
+                flag = 0;
+            }
+        }
+        return flag;
     }
 }

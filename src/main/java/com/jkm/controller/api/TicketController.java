@@ -9,10 +9,12 @@ import com.jkm.controller.helper.response.*;
 import com.jkm.entity.GrabTicketForm;
 import com.jkm.entity.OrderForm;
 import com.jkm.enums.EnumGrabTicketStatus;
+import com.jkm.enums.EnumGrabTimeType;
 import com.jkm.service.GrabTicketFormService;
 import com.jkm.service.OrderFormService;
 import com.jkm.service.TicketService;
 import com.jkm.service.TrainTripsQueryService;
+import com.jkm.util.DateFormatUtil;
 import com.jkm.util.ValidateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -158,6 +161,12 @@ public class TicketController extends BaseController{
     public ResponseEntityBase<ResponseGrabTicket> grabTicket(@RequestBody final RequestGrabTicket requset) throws Exception {
         final ResponseEntityBase<ResponseGrabTicket> result = new ResponseEntityBase<>();
         try{
+            final Date parse = DateFormatUtil.parse(requset.getFirstStartTime(), DateFormatUtil.yyyy_MM_dd_HH_mm);
+            if ((parse.getTime() - new Date().getTime()) < (EnumGrabTimeType.of(requset.getGrabTimeType()).getHour()*60*60*1000 + 5*60*1000)){
+                result.setCode(-1);
+                result.setMessage("发车时间较近");
+                return  result;
+            }
             requset.setUid(super.getUid(requset.getAppId(), requset.getUid()));
             Preconditions.checkState(ValidateUtils.isMobile(requset.getPhone()), "联系手机输入错误");
             logger.info("用户uid=" + requset.getUid() + "下了一个抢票单");
@@ -165,12 +174,13 @@ public class TicketController extends BaseController{
                 result.setCode(1);
                 result.setMessage("订单受理成功");
                 result.setData(responseGrabTicket);
+            return result;
         }catch(final Throwable throwable){
             logger.error("下抢票单异常 异常信息:" + throwable.getMessage());
             result.setCode(-1);
             result.setMessage("订单受理失败");
+            return result;
         }
-        return result;
     }
 
 

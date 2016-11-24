@@ -23,7 +23,7 @@
           <div class="write no-prompt right">{{$submitInfo.seatTypes}}</div>
         </div>
       </div>
-      <div class="space">
+      <div class="space" v-if="isLogin">
         <div class="group no-border" @click="login">
           <div class="logo"></div>
           <div class="write">使用12306账号登录</div>
@@ -69,20 +69,25 @@
       </div>
       <div class="submit" @click="submit">立即抢票</div>
     </div>
-    <div class="pack" v-show="pack">
-      <div class="select">
-        <div class="xx"></div>
-        <ul>
-          <li @click="packHide(2)" v-bind:class="{active:submitInfo.buyTicketPackageId==2}"><span>¥ 20/人套餐</span>
-            极速出票，赠送78万保险
-          </li>
-          <li @click="packHide(3)" v-bind:class="{active:submitInfo.buyTicketPackageId==3}"><span>¥ 30/人套餐</span>
-            优先出票，赠送300万保险
-          </li>
-          <li @click="packHide(1)" v-bind:class="{active:submitInfo.buyTicketPackageId==1}">不购买 出票慢，失败的可能性增加</li>
-        </ul>
+    <transition name="fade">
+      <div class="pack" v-show="pack">
+        <div class="select">
+          <div class="space_t">
+            <div class="xx" @click="pack=false"></div>
+            <div class="word">选择出票套餐</div>
+          </div>
+          <ul>
+            <li @click="packHide(2)" v-bind:class="{active:submitInfo.buyTicketPackageId==2}"><span>¥ 20/人套餐</span>
+              极速出票，赠送78万保险
+            </li>
+            <li @click="packHide(3)" v-bind:class="{active:submitInfo.buyTicketPackageId==3}"><span>¥ 30/人套餐</span>
+              优先出票，赠送300万保险
+            </li>
+            <li @click="packHide(1)" v-bind:class="{active:submitInfo.buyTicketPackageId==1}">不购买 出票慢，失败的可能性增加</li>
+          </ul>
+        </div>
       </div>
-    </div>
+    </transition>
     <contacts></contacts>
     <!-- 添加儿童 -->
     <div class="content" v-if="show">
@@ -162,7 +167,8 @@
         show: false,
         childs: [],
         errMsg: '',
-        $err: false
+        $err: false,
+        isLogin: false
       }
     },
     created: function () {
@@ -171,18 +177,26 @@
         appid: this.$data.submitInfo.appId,
         uid: this.$data.submitInfo.uid
       }).then(function (res) {
-        if (res.data.code == 1) {
-          this.$data.submitInfo.phone = res.data.data;
+        this.$data.submitInfo.phone = res.data;
+      }, function () {
+        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          text: '获取手机号失败'
+        })
+      });
+      this.$http.post('/userInfo/isLogin', {
+        appid: this.$data.submitInfo.appId,
+        uid: this.$data.submitInfo.uid
+      }).then(function (res) {
+        if (res.data == 1) {
+          this.$data.isLogin = false;
         } else {
-          this.$store.commit('MESSAGE_DELAY_SHOW', {
-            text: res.data.message
-          });
+          this.$data.isLogin = true;
         }
-      }, function (err) {
-        this.$store.commit('MESSAGE_DELAY_SHOW', {
-          text: err
-        });
-      })
+      }, function () {
+        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          text: '获取12306登录信息失败'
+        })
+      });
     },
     methods: {
       minusChild: function (event, index) {
@@ -197,13 +211,13 @@
           this.$data.errMsg = "请先添加成人";
           setTimeout(()=>{
             this.$data.$err = false
-          },1000);
+          }, 1000);
         } else {
           this.$data.show = !this.$data.show
         }
       },
       sev: function () {
-        this.$data.$err = false
+        this.$data.$err = false;
         var addPerson = {
           uid: this.$data.submitInfo.uid,
           appid: this.$data.submitInfo.appId,
@@ -221,27 +235,20 @@
         }
         setTimeout(()=>{
           this.$data.$err = false
-        },1000);
+        }, 1000);
         if (this.$data.$err == false) {
-          Vue.http.post('/contactInfo/add', JSON.stringify(addPerson))
-            .then((res)=>{
-            if (res.data.code == 1) {
-              this.$data.show = !this.$data.show;
-              let newPerson = {};
-              newPerson.id = res.data.data;
-              newPerson.name = document.querySelector('#name').value;
-              newPerson.piaoType = 2;
-              this.$data.childs.push(newPerson);
-            } else {
-              this.$store.commit('MESSAGE_DELAY_SHOW', {
-                text: res.body.message
-              });
-            }
-          }).catch(function (err) {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: err
-            });
-          })
+          this.$http.post('/contactInfo/add', JSON.stringify(addPerson)).then(function (res) {
+            this.$data.show = !this.$data.show;
+            let newPerson = {};
+            newPerson.id = res.data.data;
+            newPerson.name = document.querySelector('#name').value;
+            newPerson.piaoType = 2;
+            this.$data.childs.push(newPerson);
+          }, function () {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '添加联系人失败'
+            })
+          });
         }
       },
       login: function () {
@@ -290,45 +297,37 @@
           this.$data.errMsg = "请添加乘客";
           setTimeout(()=>{
             this.$data.$err = false
-          },1000);
+          }, 1000);
         } else {
           this.$http.post('/ticket/grab', data).then(function (res) {
-            if (res.data.code == 1) {
-              this.$store.commit('PAY_CALL', {
-                appid: this.$data.submitInfo.appId,
-                uid: this.$data.submitInfo.uid,
-                orderId: res.body.data.grabTicketFormId,
-                price: res.body.data.price,
-                type: 'rob'
-              });
-            } else {
-              this.$store.commit('MESSAGE_DELAY_SHOW', {
-                text: res.data.message
-              });
-            }
-          }, function (err) {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: err
+            this.$store.commit('PAY_CALL', {
+              appid: this.$data.submitInfo.appId,
+              uid: this.$data.submitInfo.uid,
+              orderId: res.data.grabTicketFormId,
+              price: res.data.price,
+              type: 'rob'
             });
-          })
+          }, function () {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '订单提交失败'
+            })
+          });
         }
       }
     },
     computed: {
       $payInfo: function () {
         return this.$data.payInfo;
-      }
-      ,
+      },
       $$childs: function () {
         this.$data.childs.piaoType = '儿童';
         return this.$data.childs;
-      }
-      ,
+      },
       passengers: function () {
         let storeDate = this.$store.state.contact.info;
         let data = [];
         this.$data.submitInfo.grabPassengers = [];
-        for (let i in storeDate) {
+        for (let i = 0; i < storeDate.length; i++) {
           if (storeDate[i]) {
             data.push(storeDate[i]);
             this.$data.submitInfo.grabPassengers.push({
@@ -339,8 +338,7 @@
           }
         }
         return data;
-      }
-      ,
+      },
       $submitInfo: function () {
         let data = this.$data.submitInfo;
         if (data.seatTypes == '0,1,2,3,4,6,O,M,P,9') {
@@ -360,7 +358,7 @@
         return data;
       }
     }
-    }
+  }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -372,6 +370,40 @@
     -ms-flex: @val;
     flex: @val;
     width: @width;
+  }
+
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .3s
+  }
+
+  .fade-enter, .fade-leave-active {
+    opacity: 0
+  }
+
+  .space_t {
+    width: 100%;
+    height: 49px;
+    line-height: 49px;
+    border-bottom: 1px solid #f5f5f5;
+    position: relative;
+    .xx {
+      width: 14px;
+      height: 14px;
+      background: url("../../assets/xx.png") no-repeat center;
+      background-size: 14px 14px;
+      padding: 15px;
+      position: absolute;
+      top: 9px;
+      left: 10px;
+    }
+    .word {
+      font-size: 15px;
+      color: #111;
+      width: 100%;
+      height: 49px;
+      line-height: 49px;
+      text-align: center;
+    }
   }
 
   .main {
