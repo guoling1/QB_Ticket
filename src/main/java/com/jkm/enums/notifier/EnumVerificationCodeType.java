@@ -30,7 +30,7 @@ public enum EnumVerificationCodeType {
     /**
      * 支付
      */
-    PAYMENT(4, EnumNoticeType.PAYMENT_CODE, 5);
+    PAYMENT(4, EnumNoticeType.PAYMENT_CODE, 100);
 
 
     private static final Map<Integer, EnumVerificationCodeType> TYPE_MAP = new HashMap<>();
