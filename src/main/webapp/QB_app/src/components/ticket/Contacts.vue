@@ -1,22 +1,22 @@
 <template lang="html">
   <transition name="fade">
-    <div class="main" v-if="showModule">
+    <div class="main flex-box-column flexBox" v-if="showModule">
       <div class="header">
         <div class="close" @click='close'></div>
         <h1>常用联系人</h1>
       </div>
-      <div class="banner con">
-        <div class="bannerLeft" @click="show">新增联系人</div>
-        <div class="bannerRight" @click="importCon">导入12306联系人</div>
-      </div>
-      <ul id="list">
-        <li v-for="(people,index) in peoples" @click="change(index,people)" :class="people.selected?'select':''">
-          <span class="option"></span>
+      <div class="contact flex-box-column flexBox">
+        <div class="banner con">
+          <div class="bannerLeft" @click="mask=true">新增联系人</div>
+          <div class="bannerRight" @click="importCon">导入12306联系人</div>
+        </div>
+        <ul id="list">
+          <li v-for="(people,index) in peoples" @click="change(index,people)" :class="people.selected?'select':''">
+            <span class="option"></span>
 
-          <div class="passen">
-            <span class="name">{{people.name}}</span>
-            <span class="type">({{people.piaoType}})</span>
-
+            <div class="passen">
+              <span class="name">{{people.name}}</span>
+              <span class="type">({{people.piaoType}})</span>
             <p>{{people.identy}}</p>
           </div>
           <span class="edit" @click="show(index)"></span>
@@ -122,9 +122,6 @@
       }
     },
     methods: {
-      shut: function () {
-        document.querySelector("#mask").style.display = "none";
-      },
       importCon: function () {
         this.$http.post('/website/importContacts', {
           appid: this.$route.query.appid,
@@ -269,6 +266,16 @@
             });
           }
         } else {
+          if (document.querySelector('#name').value == "") {
+            this.$data.$err = true
+            this.$data.errMsg = "请填写乘客姓名"
+          } else if (!reg.test(document.querySelector('#identy').value)) {
+            this.$data.$err = true
+            this.$data.errMsg = "请填写正确的身份证号"
+          }
+          setTimeout(()=>{
+            this.$data.$err = false
+          },1000);
           addPerson.id = this.$data.massages[idx].id;
           addPerson.sex = addPerson.sex == "男" ? 0 : 1;
           if (document.querySelector('#name').value == "") {
@@ -315,11 +322,11 @@
   }
 
   .fade-enter-active, .fade-leave-active {
-    transition: opacity .3s
+    transition: opacity .3s;
   }
 
   .fade-enter, .fade-leave-active {
-    opacity: 0
+    opacity: 0;
   }
 
   .main {
@@ -334,13 +341,18 @@
     z-index: 99;
   }
 
+  .contact {
+    width: 100%;
+    height: 100%;
+    .flexItem(1, 100%);
+  }
+
   .header {
     width: 100%;
-    height: 64px;
+    height: 50px;
     color: #fefefe;
-    position: fixed;
     background-color: #4ab9f1;
-    padding: 30px 10px 0;
+    padding: 15px 10px 0;
     .close {
       width: 19px;
       height: 24px;
@@ -356,21 +368,13 @@
     }
   }
 
-  .con {
-    background: #fff;
-    position: fixed;
-    top: 64px;
-    padding: 0 15px;
-    background: #fff;
-    width: 100%;
-  }
-
   .banner {
     height: 45px;
     font-size: 15px;
     color: #1ca0e2;
     padding: 10px 0;
     margin-bottom: 5px;
+    background-color: #FFF;
     .bannerLeft {
       float: left;
       width: 50%;
@@ -385,7 +389,7 @@
   ul {
     overflow: auto;
     width: 100%;
-    padding: 111px 0 50px 0;
+    padding-bottom: 50px;
     -webkit-overflow-scrolling: touch;
     li {
       background: #fff;
@@ -449,7 +453,6 @@
   }
 
   .mask {
-    display: none;
     position: fixed;
     top: 0;
     left: 0;

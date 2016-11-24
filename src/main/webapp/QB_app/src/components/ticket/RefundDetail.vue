@@ -139,7 +139,7 @@
         open: false,
         $open: true,
         massages: [],
-        passengerStatus: ["票初始化", "出票成功", "出票失败", "退票中", "退票请求成功", "退票成功", "退票失败", "订单取消", "退票受理中"]
+        passengerStatus: ["出票成功", "出票成功", "出票失败", "退票中", "退票中", "已退票", "退票失败", "已取消"]
       }
     },
     beforeCreate: function () {

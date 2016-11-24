@@ -35,21 +35,21 @@
           </div>
         </div>
         <div class="bottom">
-          <p v-if="station.edz_num!='--'">二等座:<span class="num">{{station.edz_num}}</span>张</p>
+          <p v-if="station.edz_num!='--'">二等座:<span class="num">{{station.edz_num}}</span></p>
 
-          <p v-if="station.ydz_num!='--'">一等座:<span class="num">{{station.ydz_num}}</span>张</p>
+          <p v-if="station.ydz_num!='--'">一等座:<span class="num">{{station.ydz_num}}</span></p>
 
-          <p v-if="station.swz_num!='--'">商务座:<span class="num">{{station.swz_num}}</span>张</p>
+          <p v-if="station.swz_num!='--'">商务座:<span class="num">{{station.swz_num}}</span></p>
 
-          <p v-if="station.yz_num!='--'">硬座:<span class="num">{{station.yz_num}}</span>张</p>
+          <p v-if="station.yz_num!='--'">硬座:<span class="num">{{station.yz_num}}</span></p>
 
-          <p v-if="station.rz_num!='--'">软座:<span class="num">{{station.rz_num}}</span>张</p>
+          <p v-if="station.rz_num!='--'">软座:<span class="num">{{station.rz_num}}</span></p>
 
-          <p v-if="station.yw_num!='--'">硬卧:<span class="num">{{station.yw_num}}</span>张</p>
+          <p v-if="station.yw_num!='--'">硬卧:<span class="num">{{station.yw_num}}</span></p>
 
-          <p v-if="station.rw_num!='--'">软卧:<span class="num">{{station.rw_num}}</span>张</p>
+          <p v-if="station.rw_num!='--'">软卧:<span class="num">{{station.rw_num}}</span></p>
 
-          <p v-if="station.wz_num!='--'">无座:<span class="num">{{station.wz_num}}</span>张</p>
+          <p v-if="station.wz_num!='--'">无座:<span class="num">{{station.wz_num}}</span></p>
         </div>
       </li>
     </ul>
@@ -526,7 +526,7 @@
           display: inline-block;
           height: 33.5px;
           line-height: 33.5px;
-          margin-right: 18px;
+          margin-right: 10px;
         }
         span {
           color: #3cb687;
