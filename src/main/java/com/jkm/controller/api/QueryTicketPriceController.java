@@ -44,44 +44,50 @@ public class QueryTicketPriceController extends BaseController {
             String train_date = requestJson.getString("train_date");
             String purpose_codes = "ADULT";
             responseJson = this.queryTicketPriceService.queryTicket(uid, partnerid, method, from_station, to_station, from_station_name, to_station_name, train_date, purpose_codes);
-
             JSONArray arrayResult = new JSONArray();
-            JSONArray ja = responseJson.getJSONArray("data");
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
-            Date date = new Date();
-            String now = sdf.format(date.getTime() + 30 * 60 * 1000);
-            String now1 = now.substring(8, 12);
-            String times = now.substring(0, 8);
-            long times1 = Long.parseLong(times);
-            long now2 = Long.parseLong(now1);
-            if (ja.size() > 0) {
-                for (int i = 0; i < ja.size(); i++) {
-                    String starTime = ja.getJSONObject(i).getString("start_time");
-                    String trainStartDate = ja.getJSONObject(i).getString("train_start_date");
-                    //// TODO: 2016/11/17 将字符串转为long
-                    starTime = starTime.replace(":", "");
-                    trainStartDate = trainStartDate.replace("-", "");
-                    long trainStartDates = Long.parseLong(trainStartDate);
-                    long startLongTime = Long.parseLong(starTime);
-                    if (trainStartDates == times1) {
-                        if (startLongTime > now2) {
+            if (requestJson.get("code")!=200 && responseJson.get("data")==null){
+                results.setCode(1);
+                results.setMessage("没有符合条件的车次信息");
+                return results;
+            }else {
+//            JSONArray arrayResult = new JSONArray();
+                JSONArray ja = responseJson.getJSONArray("data");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
+                Date date = new Date();
+                String now = sdf.format(date.getTime() + 30 * 60 * 1000);
+                String now1 = now.substring(8, 12);
+                String times = now.substring(0, 8);
+                long times1 = Long.parseLong(times);
+                long now2 = Long.parseLong(now1);
+                if (ja.size() > 0) {
+                    for (int i = 0; i < ja.size(); i++) {
+                        String starTime = ja.getJSONObject(i).getString("start_time");
+                        String trainStartDate = ja.getJSONObject(i).getString("train_start_date");
+                        //// TODO: 2016/11/17 将字符串转为long
+                        starTime = starTime.replace(":", "");
+                        trainStartDate = trainStartDate.replace("-", "");
+                        long trainStartDates = Long.parseLong(trainStartDate);
+                        long startLongTime = Long.parseLong(starTime);
+                        if (trainStartDates == times1) {
+                            if (startLongTime > now2) {
+                                arrayResult.add(ja.getJSONObject(i));
+                            }
+
+                        } else {
                             arrayResult.add(ja.getJSONObject(i));
                         }
-
-                    } else {
-                        arrayResult.add(ja.getJSONObject(i));
                     }
                 }
+
+                results.setData(arrayResult);
+                return results;
             }
-
-            results.setData(arrayResult);
-            return results;
-
         } catch (Exception e) {
             e.printStackTrace();
-            results.setCode(-1);
-            results.setMessage("没有符合条件的车次信息");
+//            results.setCode(1);
+//            results.setMessage("没有符合条件的车次信息");
         }
+
         return results;
     }
 

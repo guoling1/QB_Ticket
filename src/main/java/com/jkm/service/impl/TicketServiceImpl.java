@@ -385,7 +385,7 @@ public class TicketServiceImpl implements TicketService {
         } else {
             log.info("确认订单回调函数--出票失败");
             orderForm.setStatus(EnumOrderFormStatus.ORDER_FORM_TICKET_FAIL.getId());
-            orderForm.setRemark(jsonObject.getString("code"));
+            orderForm.setRemark(EnumOrderFormStatus.ORDER_FORM_TICKET_FAIL.getValue());
             this.orderFormService.update(orderForm);
             this.orderFormDetailService.updateStatusByOrderFormId(EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getValue(),
                     EnumOrderFormDetailStatus.TICKET_BUY_FAIL.getId(), orderForm.getId());

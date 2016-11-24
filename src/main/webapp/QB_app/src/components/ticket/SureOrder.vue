@@ -284,11 +284,9 @@
       },
       addChild: function () {
         if (this.$data.sureOrder.passengers.length == 0) {
-          this.$data.$err=true;
-          this.$data.errMsg="请先添加成人";
-          setTimeout(()=>{
-            this.$data.$err=false
-          },1000);
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '请先添加随行成人'
+          })
         } else {
           this.$data.show = !this.$data.show
         }
@@ -306,17 +304,23 @@
         var reg=/^[1-9][0-9]{3}(0[1-9]|1[0-2])([0-2][1-9]|3[0-1])$/;
         if(document.querySelector('#name').value==""){
           this.$data.$err=true;
-          this.$data.errMsg="请填写乘客姓名"
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '请填写儿童姓名'
+          })
         }else if(document.querySelector('#birthday').value==""){
           this.$data.$err=true;
-          this.$data.errMsg="请填写出生日期"
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '请填写出生日期'
+          })
         }else if (!reg.test(document.querySelector('#birthday').value)) {
           this.$data.$err=true;
-          this.$data.errMsg="请填写正确的出生日期"
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '请填写正确的出生日期'
+          })
         }
-        setTimeout(()=>{
-          this.$data.$err = false
-        },1000);
+//        setTimeout(()=>{
+//          this.$data.$err = false
+//        },1000);
         if (this.$data.$err == false) {
           this.$http.post('/contactInfo/add', JSON.stringify(addPerson)).then(function (res) {
             this.$data.show = !this.$data.show;
