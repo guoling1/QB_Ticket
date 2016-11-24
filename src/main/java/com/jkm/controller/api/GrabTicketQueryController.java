@@ -3,7 +3,6 @@ package com.jkm.controller.api;
 import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
 import com.jkm.service.GrabTicketQueryService;
-import com.jkm.service.QueryTicketPriceService;
 import com.jkm.service.hy.helper.HySdkConstans;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -49,6 +48,11 @@ public class GrabTicketQueryController extends BaseController {
             responseJson = this.grabTicketQueryService.grabTicketQuery(uid, partnerid, method, from_station, to_station, from_station_name, to_station_name, train_date, purpose_codes);
 
             JSONArray arrayResult = new JSONArray();
+            if (requestJson.get("code")!=200 && responseJson.get("data")==null){
+                results.setCode(1);
+                results.setMessage("没有符合条件的车次信息");
+                return results;
+            }else {
             JSONArray ja = responseJson.getJSONArray("data");
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
             Date date = new Date();
@@ -80,7 +84,9 @@ public class GrabTicketQueryController extends BaseController {
             results.setData(arrayResult);
             return results;
 
-        } catch (Exception e) {
+        }
+        }
+        catch (Exception e) {
             e.printStackTrace();
             results.setCode(-1);
             results.setMessage("没有符合条件的车次信息");
