@@ -45,12 +45,11 @@ public class QueryTicketPriceController extends BaseController {
             String purpose_codes = "ADULT";
             responseJson = this.queryTicketPriceService.queryTicket(uid, partnerid, method, from_station, to_station, from_station_name, to_station_name, train_date, purpose_codes);
             JSONArray arrayResult = new JSONArray();
-//            if (requestJson.get("code")!=200){
-////                arrayResult.add(responseJson.g);
-//                results.setCode(1);
-//                results.setMessage("没有符合条件的车次信息");
-//                return results;
-//            }else {
+            if (requestJson.get("code")!=200 && responseJson.get("data")==null){
+                results.setCode(1);
+                results.setMessage("没有符合条件的车次信息");
+                return results;
+            }else {
 //            JSONArray arrayResult = new JSONArray();
                 JSONArray ja = responseJson.getJSONArray("data");
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
@@ -82,11 +81,11 @@ public class QueryTicketPriceController extends BaseController {
 
                 results.setData(arrayResult);
                 return results;
-//            }
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            results.setCode(1);
-            results.setMessage("没有符合条件的车次信息");
+//            results.setCode(1);
+//            results.setMessage("没有符合条件的车次信息");
         }
 
         return results;
