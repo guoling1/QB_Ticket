@@ -174,7 +174,7 @@
         childs: [],
         errMsg: '',
         $err: false,
-        isLogin: false
+        isLogin: true
       }
     },
     created: function () {
