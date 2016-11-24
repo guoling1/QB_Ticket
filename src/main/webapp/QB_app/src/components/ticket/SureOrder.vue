@@ -150,9 +150,6 @@
         </li>
       </ul>
       <div class="sure" @click="sev">保存</div>
-      <div class="err" v-if="this.$data.$err">
-        {{errMsg}}
-      </div>
     </div>
     <message></message>
   </div>
@@ -215,8 +212,6 @@
         skip: false,
         show: false,
         childs: [],
-        errMsg: '',
-        $err: false,
         perType:["","成人","儿童"],
         isLogin: false
       }
@@ -292,7 +287,6 @@
         }
       },
       sev: function () {
-        this.$data.$err = false;
         var addPerson = {
           uid: this.$data.sureOrder.uid,
           appid: this.$data.sureOrder.appId,
@@ -303,25 +297,18 @@
         };
         var reg=/^[1-9][0-9]{3}(0[1-9]|1[0-2])([0-2][1-9]|3[0-1])$/;
         if(document.querySelector('#name').value==""){
-          this.$data.$err=true;
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '请填写儿童姓名'
           })
         }else if(document.querySelector('#birthday').value==""){
-          this.$data.$err=true;
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '请填写出生日期'
           })
         }else if (!reg.test(document.querySelector('#birthday').value)) {
-          this.$data.$err=true;
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '请填写正确的出生日期'
           })
-        }
-//        setTimeout(()=>{
-//          this.$data.$err = false
-//        },1000);
-        if (this.$data.$err == false) {
+        }else {
           this.$http.post('/contactInfo/add', JSON.stringify(addPerson)).then(function (res) {
             this.$data.show = !this.$data.show;
             addPerson.id = res.data.data;
@@ -366,17 +353,13 @@
         this.$data.skip = false;
         var reg=/^1(3|4|5|7|8)\d{9}$/;
         if(this.$data.sureOrder.passengers==""){
-          this.$data.$err=true;
-          this.$data.errMsg="请添加乘客";
-          setTimeout(()=>{
-            this.$data.$err=false
-          },1000);
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '请添加乘客'
+          })
         }else if(!reg.test(this.$data.sureOrder.mobile)){
-          this.$data.$err=true;
-          this.$data.errMsg="请填写正确的手机号";
-          setTimeout(()=>{
-            this.$data.$err=false
-          },1000);
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '请填写正确的手机号'
+          })
         }else {
           this.$http.post('/ticket/submitOrder', JSON.stringify(this.$data.sureOrder)).then(function (res) {
             this.$router.push({
@@ -931,42 +914,6 @@
       font-size: 15px;
       background: #4ab9f1;
       color: #fff;
-    }
-  }
-
-  .err {
-    background: rgba(0, 0, 0, 0.8);
-    height: 30px;
-    line-height: 30px;
-    padding: 0 5px;
-    position: fixed;
-    top: 35%;
-    left: 33%;
-    background: rgba(0, 0, 0, .5);
-    border-radius: 5px;
-    border: 2px solid #666;
-    color: #ebeeef;
-    -webkit-animation: fadeOut 1s ease 0.2s 1 both;
-    animation: fadeOut 1s ease 0.2s 1 both;
-  }
-
-  @-webkit-keyframes fadeOut {
-    from {
-      opacity: 1;
-    }
-
-    to {
-      opacity: 0;
-    }
-  }
-
-  @keyframes fadeOut {
-    from {
-      opacity: 1;
-    }
-
-    to {
-      opacity: 0;
     }
   }
 </style>

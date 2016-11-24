@@ -180,7 +180,9 @@
         if (day < 10) {
           day = '0' + day;
         }
-        this.$data.dateHttp = dd.getFullYear() + "-" + (dd.getMonth() + 1) + "-" + day;
+        let ary = ["日", "一", "二", "三", "四", "五", "六"]
+        this.$store.state.date.scope.dateFour.code = dd.getFullYear() + "-" + (dd.getMonth() + 1) + "-" + day;
+        this.$store.state.date.scope.dateFour.time = (dd.getMonth() + 1) + "月" + day+"日 周"+ary[dd.getDay()];
         document.querySelector('.left').className = "btn left dis";
         document.querySelector('.right').className = "btn right"
       },
@@ -192,7 +194,9 @@
         if (day < 10) {
           day = '0' + day;
         }
-        this.$data.dateHttp = dd.getFullYear() + "-" + (dd.getMonth() + 1) + "-" + day;
+        let ary = ["日", "一", "二", "三", "四", "五", "六"]
+        this.$store.state.date.scope.dateFour.code = dd.getFullYear() + "-" + (dd.getMonth() + 1) + "-" + day;
+        this.$store.state.date.scope.dateFour.time = (dd.getMonth() + 1) + "月" + day+"日 周"+ary[dd.getDay()];
         document.querySelector('.left').className = "btn left";
         document.querySelector('.right').className = "btn right dis"
       }
