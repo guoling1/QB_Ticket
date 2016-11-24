@@ -79,8 +79,7 @@
         only: false,
         initStations: [],
         // 火车票筛选信息
-        screenConfig: this.$store.state.screen.config,
-        obj: ""
+        screenConfig: this.$store.state.screen.config
       }
     },
     beforeCreate: function () {
@@ -136,7 +135,9 @@
         if (day < 10) {
           day = '0' + day;
         }
-        this.$data.dateHttp = dd.getFullYear() + "-" + (dd.getMonth() + 1) + "-" + day;
+        let ary = ["日", "一", "二", "三", "四", "五", "六"]
+        this.$store.state.date.scope.dateThree.code = dd.getFullYear() + "-" + (dd.getMonth() + 1) + "-" + day;
+        this.$store.state.date.scope.dateThree.time = (dd.getMonth() + 1) + "月" + day+"日 周"+ary[dd.getDay()];
         document.querySelector('.first').className = "first";
         document.querySelector('.next').className = "next show"
       },
@@ -148,17 +149,16 @@
         if (day < 10) {
           day = '0' + day;
         }
-        this.$data.dateHttp = dd.getFullYear() + "-" + (dd.getMonth() + 1) + "-" + day;
+        let ary = ["日", "一", "二", "三", "四", "五", "六"]
+        this.$store.state.date.scope.dateThree.code = dd.getFullYear() + "-" + (dd.getMonth() + 1) + "-" + day;
+        this.$store.state.date.scope.dateThree.time = (dd.getMonth() + 1) + "月" + day+"日 周"+ary[dd.getDay()];
         document.querySelector('.first').className = "first show";
         document.querySelector('.next').className = "next"
       }
     },
     watch: {
       dateHttp: function (val, oldVal) {
-        if (oldVal == "") {
-          this.$data.obj = val
-        }
-        if (val != oldVal && oldVal != "" && oldVal != this.$data.obj) {
+        if (val != oldVal && oldVal != "") {
           this.$http.post('/queryTicketPrice/query', {
             appid: this.$route.query.appid, //商户
             uid: this.$route.query.uid, //用户id

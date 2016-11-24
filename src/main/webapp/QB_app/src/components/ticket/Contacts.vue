@@ -17,18 +17,13 @@
             <div class="passen">
               <span class="name">{{people.name}}</span>
               <span class="type">({{people.piaoType}})</span>
-
-              <p>{{people.identy}}</p>
-            </div>
-            <span class="edit" @click="show(index)"></span>
-          </li>
-        </ul>
-        <div class="bottom" @click="close">确定</div>
-      </div>
-      <div class="mask" v-show="mask">
-        <div class="err" v-if="this.$data.$err">
-          {{errMsg}}
-        </div>
+            <p>{{people.identy}}</p>
+          </div>
+          <span class="edit" @click="show(index)"></span>
+        </li>
+      </ul>
+      <div class="bottom" @click="close">确定</div>
+      <div class="mask" id="mask" @click.self="shut">
         <div class="content">
           <div class="sub">
             <span class="del" @click="del(index)">删除联系人</span>
@@ -80,10 +75,7 @@
         $index: '',
         keepID: [],
         uid: '',
-        appid: '',
-        mask: false,
-        errMsg: '',
-        $err: false
+        appid: ''
       }
     },
     computed: {
@@ -198,10 +190,8 @@
         var mask = document.getElementById("mask");
         if (isNaN(idx)) {
           mask.style.display = "block";
-          this.$data.$err = false
         } else {
           mask.style.display = "block";
-          this.$data.errMsg = false;
           this.$data.$index = idx;
           document.querySelector('#name').value = this.$data.massages[idx].name;
           document.querySelector('#identyType').value = "二代身份证";
@@ -236,8 +226,6 @@
         });
       },
       sev: function (idx) {
-        this.$data.mask = false;
-        this.$data.$err = false;
         var addPerson = {
           uid: this.$data.uid,
           appid: this.$data.appid,
@@ -253,16 +241,18 @@
         if ((typeof idx) !== 'number') {
           addPerson.sex = addPerson.sex == "男" ? 0 : 1;
           if (document.querySelector('#name').value == "") {
-            this.$data.$err = true
-            this.$data.errMsg = "请填写乘客姓名"
-          } else if (!reg.test(document.querySelector('#identy').value)) {
-            this.$data.$err = true
-            this.$data.errMsg = "请填写正确的身份证号"
-          }
-          setTimeout(()=>{
-            this.$data.$err = false
-          },1000);
-          if (this.$data.$err == false) {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '请填写乘客姓名'
+            })
+          }else if(document.querySelector('#identy').value==''){
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '请填写身份证号'
+            })
+          } else if (document.querySelector('#identy').value!=''&&!reg.test(document.querySelector('#identy').value)) {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '请填写正确的身份证号'
+            })
+          }else {
             this.$http.post('/contactInfo/add', JSON.stringify(addPerson)).then(function (res) {
               addPerson.id = res.data.data;
               addPerson.selected = false;
@@ -288,7 +278,19 @@
           },1000);
           addPerson.id = this.$data.massages[idx].id;
           addPerson.sex = addPerson.sex == "男" ? 0 : 1;
-          if (this.$data.$err == false) {
+          if (document.querySelector('#name').value == "") {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '请填写乘客姓名'
+            })
+          }else if(document.querySelector('#identy').value==''){
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '请填写身份证号'
+            })
+          } else if (document.querySelector('#identy').value!=''&&!reg.test(document.querySelector('#identy').value)) {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '请填写正确的身份证号'
+            })
+          }else {
             this.$http.post('/contactInfo/update', JSON.stringify(addPerson)).then(function (res) {
               addPerson.selected = false;
               for (var i in addPerson) {
@@ -343,22 +345,6 @@
     width: 100%;
     height: 100%;
     .flexItem(1, 100%);
-  }
-
-  .err {
-    background: rgba(0, 0, 0, 0.8);
-    height: 30px;
-    line-height: 30px;
-    padding: 0 5px;
-    position: fixed;
-    top: 35%;
-    left: 33%;
-    background: rgba(0, 0, 0, .5);
-    border-radius: 5px;
-    border: 2px solid #666;
-    color: #ebeeef;
-    -webkit-animation: fadeOut 1s ease 0.2s 1 both;
-    animation: fadeOut 1s ease 0.2s 1 both;
   }
 
   .header {
@@ -529,23 +515,4 @@
     }
   }
 
-  @-webkit-keyframes fadeOut {
-    from {
-      opacity: 1;
-    }
-
-    to {
-      opacity: 0;
-    }
-  }
-
-  @keyframes fadeOut {
-    from {
-      opacity: 1;
-    }
-
-    to {
-      opacity: 0;
-    }
-  }
 </style>

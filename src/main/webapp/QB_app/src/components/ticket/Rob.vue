@@ -206,9 +206,6 @@
         <div class="x" @click="show">×</div>
       </div>
     </transition>
-    <div class="err" v-if="this.$data.$err">
-      {{errMsg}}
-    </div>
     <datetime></datetime>
     <stationName></stationName>
     <message></message>
@@ -267,9 +264,7 @@
         pack: false,
         timer: false,
         seat: false,
-        $show: false,
-        errMsg: '',
-        $err: false
+        $show: false
       }
     },
     created: function () {
@@ -360,18 +355,15 @@
       },
       submit: function () {
         sessionStorage.setItem('robOrder', JSON.stringify(this.$data.submitInfo));
-        if (this.$data.submitInfo.trainCodes == "请选择车次") {
-          this.$data.$err = true;
-          this.$data.errMsg = "请指定车次"
-        }
         if (this.$data.submitInfo.toStationName == "选择城市") {
-          this.$data.$err = true;
-          this.$data.errMsg = "请选择到达城市"
-        }
-        setTimeout(()=>{
-          this.$data.$err = false
-        },1000);
-        if (this.$data.$err == false) {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '请选择到达城市'
+          })
+        }else if (this.$data.submitInfo.trainCodes == "请选择车次") {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '请指定车次'
+          })
+        }else{
           this.$router.push({
             path: '/ticket/rob-order',
             query: {appid: this.$data.submitInfo.appId, uid: this.$data.submitInfo.uid}
@@ -904,42 +896,6 @@
       padding: 20px 0 40px;
       color: #999;
       text-align: center;
-    }
-  }
-
-  .err {
-    background: rgba(0, 0, 0, 0.8);
-    height: 30px;
-    line-height: 30px;
-    padding: 0 5px;
-    position: fixed;
-    top: 35%;
-    left: 33%;
-    background: rgba(0, 0, 0, .5);
-    border-radius: 5px;
-    border: 2px solid #666;
-    color: #ebeeef;
-    -webkit-animation: fadeOut 1s ease 0.2s 1 both;
-    animation: fadeOut 1s ease 0.2s 1 both;
-  }
-
-  @-webkit-keyframes fadeOut {
-    from {
-      opacity: 1;
-    }
-
-    to {
-      opacity: 0;
-    }
-  }
-
-  @keyframes fadeOut {
-    from {
-      opacity: 1;
-    }
-
-    to {
-      opacity: 0;
     }
   }
 
