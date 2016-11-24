@@ -1,9 +1,11 @@
 package com.jkm.service.impl;
 
 import com.google.common.base.Preconditions;
+import com.jkm.dao.ContactInfoDao;
 import com.jkm.entity.UserInfo;
 import com.jkm.entity.helper.UserBankCardSupporter;
 import com.jkm.enums.EnumAddUserStatus;
+import com.jkm.enums.EnumTrainTicketType;
 import com.jkm.service.ContactInfoService;
 import com.jkm.service.UserInfoService;
 import com.jkm.service.WebsiteService;
@@ -25,6 +27,9 @@ public class WebsiteServiceImpl implements WebsiteService {
     private UserInfoService userInfoService;
     @Autowired
     private ContactInfoService contactInfoService;
+    @Autowired
+    private ContactInfoDao contactInfoDao;
+
 
     /**
      * 1.登录12306
@@ -98,7 +103,7 @@ public class WebsiteServiceImpl implements WebsiteService {
                         contactInfo.setBirthday(contactsArr.getJSONObject(i).getString("birthday"));
                         contactInfo.setSex(contactsArr.getJSONObject(i).getInt("sex"));
                         contactInfo.setTel(contactsArr.getJSONObject(i).getString("phone"));
-                        contactInfo.setIdenty(contactsArr.getJSONObject(i).getString("identy"));
+                        contactInfo.setIdenty(UserBankCardSupporter.encryptCardNo(contactsArr.getJSONObject(i).getString("identy")));
                         contactInfo.setIdentyType("1");//只接受身份证
                         contactInfo.setCountry(contactsArr.getJSONObject(i).getString("country"));
                         contactInfo.setCheckStatus(0);
@@ -107,8 +112,12 @@ public class WebsiteServiceImpl implements WebsiteService {
                         contactInfo.setName(contactsArr.getJSONObject(i).getString("name"));
                         contactInfo.setIsUserSelf(contactsArr.getJSONObject(i).getInt("isUserSelf"));
                         contactInfo.setPersonType(contactsArr.getJSONObject(i).getInt("personType"));
-                        TbContactInfo resultContactInfo = contactInfoService.findByUidAndIdenty(contactInfo);
-                        if(resultContactInfo==null){
+
+                        int count=0;
+                        if(!(EnumTrainTicketType.CHILDREN.getId()).equals(contactInfo.getPersonType()+"")){
+                            count = contactInfoDao.selectCountByIdenty(contactInfo.getIdenty(),contactInfo.getUid());
+                        }
+                        if(count==0){
                             contactInfoService.add(contactInfo);
                         }
                     }

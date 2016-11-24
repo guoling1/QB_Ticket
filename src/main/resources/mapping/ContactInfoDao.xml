@@ -101,7 +101,7 @@
     </select>
 
     <select id="findByUidAndIdenty" resultType="com.jkm.entity.TbContactInfo">
-        SELECT * FROM tb_contact_info WHERE uid = #{uid} and identy=#{identy} and status=0
+        SELECT * FROM tb_contact_info WHERE uid = #{uid} and identy=#{identy} and status=0 and person_type='1'
     </select>
 
     <select id="selectByIds" resultType="com.jkm.entity.TbContactInfo">
