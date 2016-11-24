@@ -228,7 +228,6 @@
       },
       sev: function (idx) {
         this.$data.mask = false;
-        this.$data.$err = false;
         var addPerson = {
           uid: this.$data.uid,
           appid: this.$data.appid,
