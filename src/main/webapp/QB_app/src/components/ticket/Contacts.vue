@@ -192,9 +192,9 @@
       show: function (idx) {
         var mask = document.getElementById("mask");
         if (isNaN(idx)) {
-          mask.style.display = "block";
+          this.$data.mask = true;
         } else {
-          mask.style.display = "block";
+          this.$data.mask = true;
           this.$data.$index = idx;
           document.querySelector('#name').value = this.$data.massages[idx].name;
           document.querySelector('#identyType').value = "二代身份证";
