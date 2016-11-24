@@ -75,7 +75,8 @@
         $index: '',
         keepID: [],
         uid: '',
-        appid: ''
+        appid: '',
+        mask: false
       }
     },
     computed: {
@@ -226,6 +227,8 @@
         });
       },
       sev: function (idx) {
+        this.$data.mask = false;
+        this.$data.$err = false;
         var addPerson = {
           uid: this.$data.uid,
           appid: this.$data.appid,
