@@ -227,6 +227,7 @@
         });
       },
       sev: function (idx) {
+        this.$data.mask = false;
         var addPerson = {
           uid: this.$data.uid,
           appid: this.$data.appid,
