@@ -142,12 +142,12 @@ public class ContactInfoServiceImpl implements ContactInfoService {
 
     @Override
     public JSONObject updateByPrimaryKeySelective(TbContactInfo tbContactInfo) {
+        TbContactInfo ti = contactInfoDao.selectById(tbContactInfo.getId());
         if("1".equals(tbContactInfo.getIdentyType())){
             if(tbContactInfo.getIdenty()!=null&&!"".equals(tbContactInfo.getIdenty())){
                 IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(UserBankCardSupporter.decryptCardId(tbContactInfo.getIdenty()));
                 tbContactInfo.setBirthday(idcardInfo.getYear()+"-"+idcardInfo.getMonth()+"-"+idcardInfo.getDay());
             }else{
-                TbContactInfo ti = contactInfoDao.selectById(tbContactInfo.getId());
                 IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(UserBankCardSupporter.decryptCardId(ti.getIdenty()));
                 tbContactInfo.setBirthday(idcardInfo.getYear()+"-"+idcardInfo.getMonth()+"-"+idcardInfo.getDay());
             }
@@ -156,7 +156,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
 
         JSONObject jo = new JSONObject();
         int count = 0;
-        if(!(EnumTrainTicketType.CHILDREN.getId()).equals(tbContactInfo.getPersonType()+"")){
+        if(!(EnumTrainTicketType.CHILDREN.getId()).equals(tbContactInfo.getPersonType()+"")&&!tbContactInfo.getIdenty().equals(ti.getIdenty())){
             count = contactInfoDao.selectCountByIdenty(tbContactInfo.getIdenty(),tbContactInfo.getUid());
         }
         if(count>0){
