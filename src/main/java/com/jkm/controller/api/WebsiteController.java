@@ -42,8 +42,6 @@ public class WebsiteController extends BaseController {
     public ResponseEntityBase<Long> addWebSite(@RequestBody RequestAddWebSite req) throws Exception {
         ResponseEntityBase<Long> responseEntityBase = new ResponseEntityBase<Long>();
         try{
-
-            JSONObject requestJson = super.getRequestJsonParams();
             Preconditions.checkArgument(!Strings.isNullOrEmpty(req.getUid()), "uid不能为空");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(req.getAppid()), "appid不能为空");
 
