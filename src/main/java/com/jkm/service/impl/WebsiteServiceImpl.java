@@ -3,9 +3,9 @@ package com.jkm.service.impl;
 import com.google.common.base.Preconditions;
 import com.jkm.controller.helper.request.RequestWeb;
 import com.jkm.dao.ContactInfoDao;
+import com.jkm.entity.TbContactInfo;
 import com.jkm.entity.UserInfo;
 import com.jkm.entity.helper.UserBankCardSupporter;
-import com.jkm.enums.EnumAddUserStatus;
 import com.jkm.enums.EnumTrainTicketType;
 import com.jkm.service.ContactInfoService;
 import com.jkm.service.UserInfoService;
@@ -13,17 +13,15 @@ import com.jkm.service.WebsiteService;
 import com.jkm.service.hy.helper.HySdkConstans;
 import com.jkm.util.DESUtil;
 import com.jkm.util.HttpClientUtil;
-import com.jkm.entity.TbContactInfo;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class WebsiteServiceImpl implements WebsiteService {
-    private final Logger logger = LoggerFactory.getLogger(WebsiteServiceImpl.class);
+    private static Logger logger = Logger.getLogger(WebsiteServiceImpl.class);
     @Autowired
     private UserInfoService userInfoService;
     @Autowired
@@ -146,7 +144,7 @@ public class WebsiteServiceImpl implements WebsiteService {
                 }
             }
         } catch (Exception e) {
-            logger.info("导入联系人加密错误",e.getMessage());
+            logger.info("导入联系人加密错误",e);
         }
     }
 }
