@@ -50,7 +50,7 @@
         <div class="small">￥<span>{{$$orderInfo.grabTotalPrice}}</span></div>
       </div>
     </div>
-    <div class="space">
+    <div class="space" v-if="$$orderInfo.status!=4&&$$orderInfo.status!=10&&$$orderInfo.status!=14&&$$orderInfo.status!=15&&$$orderInfo.status!=16">
       <div class="cancel" @click="cancel">取消抢票</div>
     </div>
     <router-link class="submit" to="/ticket/train-menu/train">返回</router-link>
