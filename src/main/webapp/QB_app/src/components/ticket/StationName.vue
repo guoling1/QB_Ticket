@@ -93,6 +93,7 @@
     methods: {
       close: function (event, code, station) {
         this.$data.$result = false;
+        document.querySelector('.float').style.zIndex="-1";
         this.$store.commit('STATION_CLOSE', {
           ctrl: false,
           code: code,
@@ -104,6 +105,7 @@
         let val = event.target.value;
         if (!val || val == "") {
           this.$data.$result = false;
+          document.querySelector('.float').style.zIndex="-1";
           return;
         }
         let matchList = [];

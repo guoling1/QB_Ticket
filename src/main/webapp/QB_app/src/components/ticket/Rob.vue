@@ -19,7 +19,7 @@
         <div class="prompt">出发日期</div>
         <div class="write no-prompt">{{$dataT.date}}</div>
       </div>
-      <div class="group" @click="trainsShow=true">
+      <div class="group" @click="trainsShowFun">
         <div class="prompt">指定车次</div>
         <div class="write no-prompt" v-bind:class="{empty:$submitInfo.trainCodes=='请选择车次'}">{{$submitInfo.trainCodes}}
         </div>
@@ -282,6 +282,29 @@
       }
     },
     methods: {
+      trainsShowFun: function () {
+        this.$http.post('/grabTicketQuery/query', {
+          appid: this.$data.submitInfo.appId,
+          uid: this.$data.submitInfo.uid,
+          from_station: this.$store.state.station.scope.stationTHREE.code,
+          to_station: this.$store.state.station.scope.stationFOUR.code,
+          from_station_name: this.$store.state.station.scope.stationTHREE.station,
+          to_station_name: this.$store.state.station.scope.stationFOUR.station,
+          train_date: this.$store.state.date.scope.dateTWO.code
+        }).then(function (res) {
+          if(res.data){
+            for (let i = 0; i < res.data.length; i++) {
+              res.data[i].select = false;
+            }
+          }
+          this.$data.trains = res.data;
+          this.$data.trainsShow = true;
+        },function(){
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '查询车次信息失败'
+          });
+        });
+      },
       packBGHide: function (event) {
         if (event.target.className == "pack") {
           this.$data.pack = false;
@@ -403,30 +426,6 @@
           document.querySelector("#left").className = "left"
           document.querySelector("#right").className = "right"
         },400);
-      }
-    },
-    watch: {
-      $dataT: function () {
-        this.$http.post('/grabTicketQuery/query', {
-          appid: this.$data.submitInfo.appId,
-          uid: this.$data.submitInfo.uid,
-          from_station: this.$store.state.station.scope.stationTHREE.code,
-          to_station: this.$store.state.station.scope.stationFOUR.code,
-          from_station_name: this.$store.state.station.scope.stationTHREE.station,
-          to_station_name: this.$store.state.station.scope.stationFOUR.station,
-          train_date: this.$store.state.date.scope.dateTWO.code
-        }).then(function (res) {
-          if(res.data){
-            for (let i = 0; i < res.data.length; i++) {
-              res.data[i].select = false;
-            }
-            this.$data.trains = res.data;
-          }else{
-            this.$data.trains = res.data;
-          }
-        },function(){
-          console.log('查询车次信息失败');
-        });
       }
     },
     computed: {

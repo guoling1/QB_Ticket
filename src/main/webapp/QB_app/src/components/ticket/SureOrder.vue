@@ -846,7 +846,7 @@
     .show {
       position: absolute;
       width: 100%;
-      height: 50%;
+      height: 368px;
       background-color: #FFF;
       left: 0;
       bottom: 0;
