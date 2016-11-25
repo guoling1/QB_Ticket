@@ -86,7 +86,7 @@ public class HttpClientUtil {
         logger.info("+++++++结果+++++++++++++");
         logger.info(result.toString());
         logger.info("+++++++结果+++++++++++++");
-        if(result!=null){
+        if(result!=null&&!"".equals(result.toString())){
             return JSONObject.fromObject(result.toString().trim());
         }else{
             return null;
