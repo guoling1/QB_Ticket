@@ -188,6 +188,16 @@
         this.$http.post('/ticket/cancelOrder', {
           orderFormId: this.$data.orderInfo.orderFormId
         }).then(function () {
+          this.$http.post('/order/queryById', {
+            orderFormId: this.$data.payInfo.orderId
+          }).then(function (res) {
+            this.$data.orderInfo = res.data;
+            this.$data.payInfo.price = res.data.totalPrice;
+          },function(){
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '查询订单信息失败'
+            })
+          });
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '订单取消成功'
           })
