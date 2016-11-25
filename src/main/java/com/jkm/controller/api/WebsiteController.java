@@ -49,13 +49,14 @@ public class WebsiteController extends BaseController {
             String data = requestJson.getString("data");
             String uid = requestJson.getString("uid");
             String appid = requestJson.getString("appid");
-            long backId = websiteService.addWebSite(data,super.getUid(appid,uid),appid);
-            if(backId>0){
+
+            JSONObject backObject = websiteService.addWebSite(data,super.getUid(appid,uid),appid);
+            if(backObject.getBoolean("result")&&backObject.getLong("data")>0){
                 responseEntityBase.setMessage("登录成功");
-                responseEntityBase.setData(backId);
+                responseEntityBase.setData(backObject.getLong("data"));
             }else{
                 responseEntityBase.setCode(400);
-                responseEntityBase.setMessage("登录失败");
+                responseEntityBase.setMessage(backObject.getString("message"));
             }
         }catch(Exception e){
             log.error("添加12306账号失败",e);

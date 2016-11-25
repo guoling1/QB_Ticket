@@ -40,7 +40,7 @@ public class WebsiteServiceImpl implements WebsiteService {
      * @return
      */
     @Override
-    public long addWebSite(String data, String uid, String appid) throws Exception {
+    public JSONObject addWebSite(String data, String uid, String appid) throws Exception {
         long backId = 0;
 
         JSONObject webSiteInfo = JSONObject.fromObject(data);
@@ -50,6 +50,8 @@ public class WebsiteServiceImpl implements WebsiteService {
         jo.put("accountversion","2");
         //①
         JSONObject responseJson = HttpClientUtil.sendPost(jo, HySdkConstans.ACCOUNT_VALIDATE_URL);
+
+        JSONObject jb = new JSONObject();
         if(responseJson.getBoolean("success")){
             UserInfo userInfo = new UserInfo();
             userInfo.setStatus(0);
@@ -68,8 +70,14 @@ public class WebsiteServiceImpl implements WebsiteService {
                     backId = userInfoResult.getId();
                 }
             }
+            jb.put("result",true);
+            jb.put("data",backId);
+            jb.put("message","登陆成功");
+        }else{
+            jb.put("result",false);
+            jb.put("message",responseJson.getString("errorMsg"));
         }
-        return backId;
+        return jb;
     }
 
     /**
