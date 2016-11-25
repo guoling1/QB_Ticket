@@ -4,13 +4,17 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.jkm.controller.common.BaseController;
 import com.jkm.controller.helper.ResponseEntityBase;
+import com.jkm.controller.helper.request.RequestAddWebSite;
+import com.jkm.controller.helper.request.RequestUserInfo;
 import com.jkm.service.WebsiteService;
 import com.jkm.util.DESUtil;
 import com.jkm.util.HttpClientUtil;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,22 +39,13 @@ public class WebsiteController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/addWebSite", method = RequestMethod.POST)
-    public ResponseEntityBase<Long> addWebSite() throws Exception {
+    public ResponseEntityBase<Long> addWebSite(@RequestBody RequestAddWebSite req) throws Exception {
         ResponseEntityBase<Long> responseEntityBase = new ResponseEntityBase<Long>();
         try{
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(req.getUid()), "uid不能为空");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(req.getAppid()), "appid不能为空");
 
-            JSONObject requestJson = super.getRequestJsonParams();
-            Preconditions.checkNotNull(requestJson.get("data"),"缺失参数data");
-            Preconditions.checkNotNull(requestJson.get("uid"),"缺失参数uid");
-            Preconditions.checkNotNull(requestJson.get("appid"),"缺失参数appid");
-            Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getString("data")), "data不能为空");
-            Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getString("uid")), "uid不能为空");
-            Preconditions.checkArgument(!Strings.isNullOrEmpty(requestJson.getString("appid")), "appid不能为空");
-            String data = requestJson.getString("data");
-            String uid = requestJson.getString("uid");
-            String appid = requestJson.getString("appid");
-
-            JSONObject backObject = websiteService.addWebSite(data,super.getUid(appid,uid),appid);
+            JSONObject backObject = websiteService.addWebSite(req.getData(),super.getUid(req.getAppid(),req.getUid()),req.getAppid());
             if(backObject.getBoolean("result")&&backObject.getLong("data")>0){
                 responseEntityBase.setMessage("登录成功");
                 responseEntityBase.setData(backObject.getLong("data"));

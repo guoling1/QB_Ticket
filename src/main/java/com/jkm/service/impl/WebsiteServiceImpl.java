@@ -1,6 +1,7 @@
 package com.jkm.service.impl;
 
 import com.google.common.base.Preconditions;
+import com.jkm.controller.helper.request.RequestWeb;
 import com.jkm.dao.ContactInfoDao;
 import com.jkm.entity.UserInfo;
 import com.jkm.entity.helper.UserBankCardSupporter;
@@ -40,11 +41,11 @@ public class WebsiteServiceImpl implements WebsiteService {
      * @return
      */
     @Override
-    public JSONObject addWebSite(String data, String uid, String appid) throws Exception {
+    public JSONObject addWebSite(RequestWeb data, String uid, String appid) throws Exception {
         long backId = 0;
 
         JSONObject webSiteInfo = JSONObject.fromObject(data);
-        String tempData = DESUtil.encrypt(data);
+        String tempData = DESUtil.encrypt(webSiteInfo.toString());
         JSONObject jo = new JSONObject();
         jo.put("data",tempData);
         jo.put("accountversion","2");
@@ -52,30 +53,35 @@ public class WebsiteServiceImpl implements WebsiteService {
         JSONObject responseJson = HttpClientUtil.sendPost(jo, HySdkConstans.ACCOUNT_VALIDATE_URL);
 
         JSONObject jb = new JSONObject();
-        if(responseJson.getBoolean("success")){
-            UserInfo userInfo = new UserInfo();
-            userInfo.setStatus(0);
-            userInfo.setUid(uid);
-            userInfo.setAppId(appid);
-            userInfo.setAccount(webSiteInfo.getString("trainAccount"));
-            userInfo.setPwd(UserBankCardSupporter.encryptPwd(webSiteInfo.getString("pass")));
-            UserInfo userInfoResult = userInfoService.selectByUid(uid);
-            //②
-            if(userInfoResult==null){
-                backId = userInfoService.insert(userInfo);
-            }else{
-                userInfo.setId(userInfoResult.getId());
-                int updataRows = userInfoService.updateByPrimaryKeySelective(userInfo);
-                if(updataRows>0){//修改成功
-                    backId = userInfoResult.getId();
+        if(responseJson!=null){
+            if(responseJson.getBoolean("success")){
+                UserInfo userInfo = new UserInfo();
+                userInfo.setStatus(0);
+                userInfo.setUid(uid);
+                userInfo.setAppId(appid);
+                userInfo.setAccount(webSiteInfo.getString("trainAccount"));
+                userInfo.setPwd(UserBankCardSupporter.encryptPwd(webSiteInfo.getString("pass")));
+                UserInfo userInfoResult = userInfoService.selectByUid(uid);
+                //②
+                if(userInfoResult==null){
+                    backId = userInfoService.insert(userInfo);
+                }else{
+                    userInfo.setId(userInfoResult.getId());
+                    int updataRows = userInfoService.updateByPrimaryKeySelective(userInfo);
+                    if(updataRows>0){//修改成功
+                        backId = userInfoResult.getId();
+                    }
                 }
+                jb.put("result",true);
+                jb.put("data",backId);
+                jb.put("message","登陆成功");
+            }else{
+                jb.put("result",false);
+                jb.put("message",responseJson.getString("errorMsg"));
             }
-            jb.put("result",true);
-            jb.put("data",backId);
-            jb.put("message","登陆成功");
         }else{
             jb.put("result",false);
-            jb.put("message",responseJson.getString("errorMsg"));
+            jb.put("message","通道返回信息为空");
         }
         return jb;
     }

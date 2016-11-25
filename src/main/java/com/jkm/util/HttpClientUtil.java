@@ -76,7 +76,15 @@ public class HttpClientUtil {
                     e.printStackTrace();
                 }
         }
-        return JSONObject.fromObject(result.toString().trim());
+        System.out.println("+++++++结果+++++++++++++");
+        System.out.println(result);
+        System.out.println("+++++++结果+++++++++++++");
+        if(result!=null){
+            return JSONObject.fromObject(result.toString().trim());
+        }else{
+            return null;
+        }
+
     }
 
     /**
