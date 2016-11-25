@@ -347,14 +347,16 @@
       },
       bin: function () {
         const val = this.$data.fill_from.crdNo;
-        this.$http.post('/bankCardBin/cardNoInfo', {cardNo: val}).then(function (res) {
-          this.$data.fill_from.bankCode = res.data.shorthand;
-          this.$data.fill_from.bankName = res.data.bankName;
-        }, function () {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: '查询银行卡信息失败'
-          })
-        });
+        if (val.length >= 16) {
+          this.$http.post('/bankCardBin/cardNoInfo', {cardNo: val}).then(function (res) {
+            this.$data.fill_from.bankCode = res.data.shorthand;
+            this.$data.fill_from.bankName = res.data.bankName;
+          }, function () {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '查询银行卡信息失败'
+            })
+          });
+        }
       }
     },
     computed: {
@@ -569,7 +571,7 @@
   .first, .second {
     position: absolute;
     width: 100%;
-    height: 70%;
+    height: 75%;
     background-color: #FFF;
     left: 0;
     bottom: 0;

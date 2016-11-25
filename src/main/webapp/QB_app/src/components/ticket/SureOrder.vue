@@ -219,7 +219,7 @@
         show: false,
         childs: [],
         perType:["","成人","儿童"],
-        isLogin: false
+        isLogin: true
       }
     },
     created: function () {

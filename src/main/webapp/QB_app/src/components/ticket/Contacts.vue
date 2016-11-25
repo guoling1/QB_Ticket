@@ -17,13 +17,15 @@
             <div class="passen">
               <span class="name">{{people.name}}</span>
               <span class="type">({{people.piaoType}})</span>
-            <p>{{people.identy}}</p>
-          </div>
-          <span class="edit" @click="show(index)"></span>
-        </li>
-      </ul>
-      <div class="bottom" @click="close">确定</div>
-      <div class="mask" id="mask" v-show="mask" @click="mask=false">
+
+              <p>{{people.identy}}</p>
+            </div>
+            <span class="edit" @click="show(index)"></span>
+          </li>
+        </ul>
+        <div class="bottom" @click="close">确定</div>
+      </div>
+      <div class="mask" id="mask" v-show="mask">
         <div class="content">
           <div class="sub">
             <span class="del" @click="del(index)">删除联系人</span>
@@ -246,15 +248,15 @@
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '请填写乘客姓名'
             })
-          }else if(document.querySelector('#identy').value==''){
+          } else if (document.querySelector('#identy').value == '') {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '请填写身份证号'
             })
-          } else if (document.querySelector('#identy').value!=''&&!reg.test(document.querySelector('#identy').value)) {
+          } else if (document.querySelector('#identy').value != '' && !reg.test(document.querySelector('#identy').value)) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '请填写正确的身份证号'
             })
-          }else {
+          } else {
             this.$http.post('/contactInfo/add', JSON.stringify(addPerson)).then(function (res) {
               addPerson.id = res.data.data;
               addPerson.selected = false;
@@ -284,15 +286,15 @@
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '请填写乘客姓名'
             })
-          }else if(document.querySelector('#identy').value==''){
+          } else if (document.querySelector('#identy').value == '') {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '请填写身份证号'
             })
-          } else if (document.querySelector('#identy').value!=''&&!reg.test(document.querySelector('#identy').value)) {
+          } else if (document.querySelector('#identy').value != '' && !reg.test(document.querySelector('#identy').value)) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '请填写正确的身份证号'
             })
-          }else {
+          } else {
             this.$http.post('/contactInfo/update', JSON.stringify(addPerson)).then(function (res) {
               addPerson.selected = false;
               for (var i in addPerson) {

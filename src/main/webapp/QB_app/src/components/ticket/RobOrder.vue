@@ -169,7 +169,7 @@
         },
         show: false,
         childs: [],
-        isLogin: false
+        isLogin: true
       }
     },
     created: function () {
