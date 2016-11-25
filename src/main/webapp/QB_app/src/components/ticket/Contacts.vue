@@ -17,7 +17,6 @@
             <div class="passen">
               <span class="name">{{people.name}}</span>
               <span class="type">({{people.piaoType}})</span>
-
               <p>{{people.identy}}</p>
             </div>
             <span class="edit" @click="show(index)"></span>
@@ -140,7 +139,7 @@
             };
             for (var i = 0; i < massages.length; i++) {
               massages[i].piaoType = type[massages[i].personType];
-              massages[i].sex = massages[i].sex == 0 ? "男" : "女";
+              massages[i].sex = (massages[i].sex == 0 ? "男" : "女");
               massages[i].selected = false;
               if (this.$store.state.contact.keepID.length != 0) {
                 for (var j = 0; j < this.$store.state.contact.keepID.length; j++) {
@@ -234,7 +233,7 @@
           uid: this.$data.uid,
           appid: this.$data.appid,
           name: document.querySelector('#name').value,
-          sex: 1,
+          sex: document.querySelector(':checked').value,
           identyType: 1,
           identy: document.querySelector('#identy').value,
           tel: document.querySelector('#tel').value,
@@ -243,7 +242,7 @@
         };
         var reg = /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/i;
         if ((typeof idx) !== 'number') {
-          addPerson.sex = addPerson.sex == "男" ? 0 : 1;
+          addPerson.sex = (addPerson.sex == "男" ? 0 : 1);
           if (document.querySelector('#name').value == "") {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '请填写乘客姓名'
@@ -270,18 +269,8 @@
             });
           }
         } else {
-          if (document.querySelector('#name').value == "") {
-            this.$data.$err = true
-            this.$data.errMsg = "请填写乘客姓名"
-          } else if (!reg.test(document.querySelector('#identy').value)) {
-            this.$data.$err = true
-            this.$data.errMsg = "请填写正确的身份证号"
-          }
-          setTimeout(()=>{
-            this.$data.$err = false
-          },1000);
           addPerson.id = this.$data.massages[idx].id;
-          addPerson.sex = addPerson.sex == "男" ? 0 : 1;
+          addPerson.sex = (addPerson.sex == "男" ? 0 : 1);
           if (document.querySelector('#name').value == "") {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '请填写乘客姓名'
