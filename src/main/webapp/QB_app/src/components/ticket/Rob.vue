@@ -278,6 +278,7 @@
         this.$store.state.station.scope.stationFOUR.code = query.to_code;
         this.$data.submitInfo.trainCodes = query.train_code;
         this.$data.submitInfo.seatTypes = query.table;
+        this.$data.submitInfo.firstStartTime = query.firstStartTime;
       }
     },
     methods: {
