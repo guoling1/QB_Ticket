@@ -2,7 +2,7 @@
   <transition name="fade">
     <div class="main flex-box-column flexBox" v-show="show">
       <div class="result flex-box-column flexBox"></div>
-      <div class="bg"></div>
+      <div class="bg" @click="enter"></div>
       <div class="body">
         <div class="banner">
           <span @click="reset">重置</span>

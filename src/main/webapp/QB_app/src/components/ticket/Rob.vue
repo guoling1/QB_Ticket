@@ -86,7 +86,7 @@
       </div>
     </transition>
     <transition name="fade">
-      <div class="pack" v-show="pack">
+      <div class="pack" v-show="pack" @click="packBGHide($event)">
         <div class="select">
           <div class="space_t">
             <div class="xx" @click="pack=false"></div>
@@ -111,7 +111,7 @@
       </div>
     </transition>
     <transition name="fade">
-      <div class="pack" v-show="timer">
+      <div class="timer" v-show="timer" @click="timerBGHide($event)">
         <div class="select">
           <div class="space_t">
             <div class="xx" @click="timer=false"></div>
@@ -131,7 +131,7 @@
       </div>
     </transition>
     <transition name="fade">
-      <div class="pack" v-show="seat">
+      <div class="seat" v-show="seat" @click="seatBGHide($event)">
         <div class="select">
           <div class="space_t">
             <div class="xx" @click="seat=false"></div>
@@ -282,6 +282,21 @@
       }
     },
     methods: {
+      packBGHide: function (event) {
+        if (event.target.className == "pack") {
+          this.$data.pack = false;
+        }
+      },
+      timerBGHide: function (event) {
+        if (event.target.className == "timer") {
+          this.$data.timer = false;
+        }
+      },
+      seatBGHide: function (event) {
+        if (event.target.className == "seat") {
+          this.$data.seat = false;
+        }
+      },
       select: function (event, station) {
         station.select = !station.select;
       },
@@ -784,7 +799,7 @@
     }
   }
 
-  .pack {
+  .pack,.timer,.seat {
     position: fixed;
     top: 0;
     left: 0;

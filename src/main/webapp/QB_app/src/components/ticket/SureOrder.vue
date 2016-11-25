@@ -98,7 +98,7 @@
       </div>
     </div>
     <transition name="fade">
-      <div class="pack" v-show="pack">
+      <div class="pack" v-show="pack" @click="packBGHide($event)">
         <div class="select">
           <div class="space_t">
             <div class="xx" @click="pack=false"></div>
@@ -218,7 +218,7 @@
         skip: false,
         show: false,
         childs: [],
-        perType:["","成人","儿童"],
+        perType: ["", "成人", "儿童"],
         isLogin: true
       }
     },
@@ -250,23 +250,28 @@
         uid: query.uid
       }).then(function (res) {
         this.$data.sureOrder.mobile = res.data;
-      },function(){
+      }, function () {
         console.log('获取手机号失败');
       });
       this.$http.post('/userInfo/isLogin', {
         appid: query.appid,
         uid: query.uid
       }).then(function (res) {
-        if(res.data == 1){
+        if (res.data == 1) {
           this.$data.isLogin = false;
-        }else{
+        } else {
           this.$data.isLogin = true;
         }
-      },function(){
+      }, function () {
         console.log('获取12306登录信息失败');
       });
     },
     methods: {
+      packBGHide: function (event) {
+        if (event.target.className == "pack") {
+          this.$data.pack = false;
+        }
+      },
       minusChild: function (event, index) {
         this.$data.childs.splice(index, 1);
       },
@@ -297,20 +302,20 @@
           birthday: document.querySelector('#birthday').value,
           personType: 2
         };
-        var reg=/^[1-9][0-9]{3}(0[1-9]|1[0-2])([0-2][1-9]|3[0-1])$/;
-        if(document.querySelector('#name').value==""){
+        var reg = /^[1-9][0-9]{3}(0[1-9]|1[0-2])([0-2][1-9]|3[0-1])$/;
+        if (document.querySelector('#name').value == "") {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '请填写儿童姓名'
           })
-        }else if(document.querySelector('#birthday').value==""){
+        } else if (document.querySelector('#birthday').value == "") {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '请填写出生日期'
           })
-        }else if (!reg.test(document.querySelector('#birthday').value)) {
+        } else if (!reg.test(document.querySelector('#birthday').value)) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '请填写正确的出生日期'
           })
-        }else {
+        } else {
           this.$http.post('/contactInfo/add', JSON.stringify(addPerson)).then(function (res) {
             this.$data.show = !this.$data.show;
             addPerson.id = res.data.data;
@@ -318,7 +323,7 @@
               addPerson.personType = "儿童"
             }
             this.$data.childs.push(addPerson);
-          },function(){
+          }, function () {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '添加联系人失败'
             })
@@ -339,36 +344,36 @@
         this.$data.skip = false;
       },
       submit: function (event, skip) {
-        var ary=[];
-        for(var i=0;i<this.$data.childs.length;i++){
+        var ary = [];
+        for (var i = 0; i < this.$data.childs.length; i++) {
           ary.push({
-            id:this.$data.childs[i].id,
-            piaoType:2
+            id: this.$data.childs[i].id,
+            piaoType: 2
           })
         }
-        this.$data.sureOrder.passengers=this.$data.sureOrder.passengers.concat(ary);
+        this.$data.sureOrder.passengers = this.$data.sureOrder.passengers.concat(ary);
         // 判断是否选择了套餐
         if (this.$data.sureOrder.buyTicketPackageId == 1 && !!skip) {
           this.$data.skip = true;
           return false;
         }
         this.$data.skip = false;
-        var reg=/^1(3|4|5|7|8)\d{9}$/;
-        if(this.$data.sureOrder.passengers==""){
+        var reg = /^1(3|4|5|7|8)\d{9}$/;
+        if (this.$data.sureOrder.passengers == "") {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '请添加乘客'
           })
-        }else if(!reg.test(this.$data.sureOrder.mobile)){
+        } else if (!reg.test(this.$data.sureOrder.mobile)) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '请填写正确的手机号'
           })
-        }else {
+        } else {
           this.$http.post('/ticket/submitOrder', JSON.stringify(this.$data.sureOrder)).then(function (res) {
             this.$router.push({
               path: '/ticket/pay-order',
               query: {appid: this.$data.sureOrder.appId, uid: this.$data.sureOrder.uid, id: res.data.orderFormId}
             });
-          },function(){
+          }, function () {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '订单提交失败'
             })
@@ -410,9 +415,9 @@
         let data = [];
         let hasChild = false;
         this.$data.sureOrder.passengers = [];
-        for(let i=0;i<storeDate.length;i++){
+        for (let i = 0; i < storeDate.length; i++) {
           if (storeDate[i]) {
-            if(storeDate[i].personType == 2){
+            if (storeDate[i].personType == 2) {
               hasChild = true;
             }
             data.push(storeDate[i]);

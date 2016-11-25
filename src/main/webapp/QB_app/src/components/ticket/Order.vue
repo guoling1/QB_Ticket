@@ -26,7 +26,7 @@
       </ul>
       <!-- 抢票 -->
       <ul v-show="robShow">
-        <li v-for="massage in robMassages" @click="robGo($event,massage)">
+        <li v-for="massage in robMassages" @click="robGo($event,massage)" v-if="massage.status!=2&&massage.status!=18&&massage.status!=19">
           <div class="top" v-if="massage.isGrab==1">
             <span class="date">{{massage.startDate}} {{massage.startTime}} 出发</span>
             <span class="checi">{{massage.checi}}</span>

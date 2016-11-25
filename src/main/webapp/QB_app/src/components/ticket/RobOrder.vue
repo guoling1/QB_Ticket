@@ -75,7 +75,7 @@
       <div class="submit" @click="submit">立即抢票</div>
     </div>
     <transition name="fade">
-      <div class="pack" v-show="pack">
+      <div class="pack" v-show="pack" @click="packBGHide($event)">
         <div class="select">
           <div class="space_t">
             <div class="xx" @click="pack=false"></div>
@@ -196,6 +196,11 @@
       });
     },
     methods: {
+      packBGHide: function (event) {
+        if (event.target.className == "pack") {
+          this.$data.pack = false;
+        }
+      },
       minusChild: function (event, index) {
         this.$data.childs.splice(index, 1);
       },
