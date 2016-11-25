@@ -48,7 +48,7 @@ public class GrabTicketQueryController extends BaseController {
             responseJson = this.grabTicketQueryService.grabTicketQuery(uid, partnerid, method, from_station, to_station, from_station_name, to_station_name, train_date, purpose_codes);
 
             JSONArray arrayResult = new JSONArray();
-            if (requestJson.get("code")!=200 && responseJson.get("data")==null){
+            if (requestJson.getInt("code")!=200 && responseJson.get("data")==null){
                 results.setCode(1);
                 results.setMessage("没有符合条件的车次信息");
                 return results;
