@@ -1,5 +1,6 @@
 package com.jkm.service;
 
+import com.jkm.controller.helper.request.RequestWeb;
 import net.sf.json.JSONObject;
 
 /**
@@ -13,7 +14,7 @@ public interface WebsiteService {
      * @param appid
      * @return
      */
-    JSONObject addWebSite(String data,String uid, String appid) throws Exception;
+    JSONObject addWebSite(RequestWeb data, String uid, String appid) throws Exception;
 
     /**
      * 一键导入联系人
