@@ -106,13 +106,59 @@
           </div>
           <ul>
             <li @click="packHide(2)" v-bind:class="{active:sureOrder.buyTicketPackageId==2}"><span>¥ 20/人套餐</span>
-              极速出票，赠送78万保险
+              极速出票，赠送80万保险<span class="know" @click.stop="insurance=true"></span>
             </li>
             <li @click="packHide(3)" v-bind:class="{active:sureOrder.buyTicketPackageId==3}"><span>¥ 30/人套餐</span>
-              优先出票，赠送300万保险
+              优先出票，赠送160万保险<span class="know" @click.stop="insurance=true"></span>
             </li>
             <li @click="packHide(1)" v-bind:class="{active:sureOrder.buyTicketPackageId==1}">不购买 出票慢，失败的可能性增加</li>
           </ul>
+          <div class="insurance" v-show="insurance">
+            <div class="word">
+              合众人寿20元火车意外伤害保险保额：<br>
+
+              1). 成年火车意外险保额80万、火车意外伤害医疗保险责任保额15000元；<br>
+
+              2). 未成年火车意外险保额最高赔付不超过￥10万人民币，意外医疗保险最高赔付不超过15000元；<br>
+
+              合众人寿30元火车意外伤害保险保额：<br>
+
+              成人交通工具意外伤害160万元，0-9周岁交通工具意外伤害20万，10-17周岁交通工具意外伤害50万，意外医疗0.4万元；<br>
+
+              2. 投保年龄： 出生30天到80岁，且身体健康者；<br>
+
+              3. 被保险人在本保险合同载明的保险责任生效当日当次以乘客身份乘坐合法商业运营的客运火车，并遵守承运人关于安全乘坐的规定，自通过车站安全检查时起至被保险人抵达火车票载明的终点走出火车车门时止；<br>
+
+              4. 限购份数： 每人每次至多购买一份，多购无效；<br>
+
+              5. 保障利益：<br>
+
+              火车意外伤害：被保险人以乘客身份乘坐合法商业运营的客运火车，并遵守承运人关于安全乘坐的规定，在保险责任期限内遭受意外伤害所导致的意外伤害残疾和意外伤害身故保险责任。<br>
+
+              火车意外伤害医疗：被保险人以乘客身份乘坐合法商业运营的客运火车，并遵守承运人关于安全乘坐的规定，在保险责期限内遭受意外伤害所导致的意外伤害医疗保险责任。<br>
+
+              6. 如发生合同约定的保险事故，需在十日内通知本公司，报案电话：95515。<br>
+
+              7. （以上说明未尽事宜，以《交通工具意外伤害保险条款（2014版）》为准。）<br>
+
+
+              备注：<br>
+
+              1、 护照，港澳台通行证可以不用出生日期购买。<br>
+
+              2、 18岁以下儿童可以单独证件投保，无需监护人。<br>
+
+              3、 18岁以下儿童也可以使用监护人证件投保。<br>
+
+              4、 保险生效时间为火车发车时间，被保险人上车车门关闭时起。<br>
+
+              5、 保险结束时间为火车到达时间，被保险人抵达火车票载明的终点走出火车车门时止。<br>
+
+              6、 火车票发车时间之前1小时以上可以退保。<br>
+            </div>
+
+            <div class="x" @click="insurance=false">×</div>
+          </div>
         </div>
       </div>
     </transition>
@@ -219,7 +265,8 @@
         show: false,
         childs: [],
         perType: ["", "成人", "儿童"],
-        isLogin: true
+        isLogin: true,
+        insurance: false
       }
     },
     created: function () {
@@ -810,6 +857,28 @@
         background-size: 14px 14px;
         padding: 15px;
       }
+      .insurance {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 9999;
+        width: 100%;
+        height: 100%;
+        padding: 25px 15px;
+        background: rgba(255, 255, 255, 1);
+        .word {
+          height: 90%;
+          text-align: left;
+          overflow: auto;
+        }
+        .x {
+          height: 10%;
+          width: 100%;
+          font-size: 30px;
+          color: #999;
+          text-align: center;
+        }
+      }
       ul {
         li {
           width: 100%;
@@ -821,6 +890,15 @@
           border-bottom: 1px solid #f5f5f5;
           span {
             color: #000;
+          }
+          .know {
+            display: inline-block;
+            width: 13px;
+            height: 13px;
+            margin-top: 5px;
+            margin-left: 5px;
+            background: url('../../assets/know.png') no-repeat;
+            background-size: 13px 13px;
           }
           &.active {
             color: #2ba7e5;
