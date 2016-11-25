@@ -32,7 +32,7 @@
           预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.edz_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'二等座',train_code:orderInfo.train_code,time:dateWeek}}">
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'二等座',train_code:orderInfo.train_code,time:dateWeek,firstStartTime:this.$data.orderInfo.train_start_date.substring(0,4)+'-'+this.$data.orderInfo.train_start_date.substring(2,4)+'-'+this.$data.orderInfo.train_start_date.substring(6,8)+' '+this.$data.orderInfo.start_time}}">
           抢票
         </router-link>
       </div>
@@ -45,7 +45,7 @@
           预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.ydz_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'一等座',train_code:orderInfo.train_code,time:dateWeek}}">
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'一等座',train_code:orderInfo.train_code,time:dateWeek,firstStartTime:this.$data.orderInfo.train_start_date.substring(0,4)+'-'+this.$data.orderInfo.train_start_date.substring(2,4)+'-'+this.$data.orderInfo.train_start_date.substring(6,8)+' '+this.$data.orderInfo.start_time}}">
           抢票
         </router-link>
       </div>
@@ -58,7 +58,7 @@
           预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.swz_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'商务座',train_code:orderInfo.train_code,time:dateWeek}}">
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'商务座',train_code:orderInfo.train_code,time:dateWeek,firstStartTime:this.$data.orderInfo.train_start_date.substring(0,4)+'-'+this.$data.orderInfo.train_start_date.substring(2,4)+'-'+this.$data.orderInfo.train_start_date.substring(6,8)+' '+this.$data.orderInfo.start_time}}">
           抢票
         </router-link>
       </div>
@@ -71,7 +71,7 @@
           预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.yz_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'硬座',train_code:orderInfo.train_code,time:dateWeek}}">
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'硬座',train_code:orderInfo.train_code,time:dateWeek,firstStartTime:this.$data.orderInfo.train_start_date.substring(0,4)+'-'+this.$data.orderInfo.train_start_date.substring(2,4)+'-'+this.$data.orderInfo.train_start_date.substring(6,8)+' '+this.$data.orderInfo.start_time}}">
           抢票
         </router-link>
       </div>
@@ -84,7 +84,7 @@
           预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.rz_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'软座',train_code:orderInfo.train_code,time:dateWeek}}">
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'软座',train_code:orderInfo.train_code,time:dateWeek,firstStartTime:this.$data.orderInfo.train_start_date.substring(0,4)+'-'+this.$data.orderInfo.train_start_date.substring(2,4)+'-'+this.$data.orderInfo.train_start_date.substring(6,8)+' '+this.$data.orderInfo.start_time}}">
           抢票
         </router-link>
       </div>
@@ -97,7 +97,7 @@
           预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.yw_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'硬卧',train_code:orderInfo.train_code,time:dateWeek}}">
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'硬卧',train_code:orderInfo.train_code,time:dateWeek,firstStartTime:this.$data.orderInfo.train_start_date.substring(0,4)+'-'+this.$data.orderInfo.train_start_date.substring(2,4)+'-'+this.$data.orderInfo.train_start_date.substring(6,8)+' '+this.$data.orderInfo.start_time}}">
           抢票
         </router-link>
       </div>
@@ -110,7 +110,7 @@
           预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.rw_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'软卧',train_code:orderInfo.train_code,time:dateWeek}}">
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'软卧',train_code:orderInfo.train_code,time:dateWeek,firstStartTime:this.$data.orderInfo.train_start_date.substring(0,4)+'-'+this.$data.orderInfo.train_start_date.substring(2,4)+'-'+this.$data.orderInfo.train_start_date.substring(6,8)+' '+this.$data.orderInfo.start_time}}">
           抢票
         </router-link>
       </div>
@@ -123,7 +123,7 @@
           预定
         </router-link>
         <router-link class="right red" v-if="orderInfo.wz_num<=0"
-                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'无座',train_code:orderInfo.train_code,time:dateWeek}}">
+                     :to="{path:'/ticket/main-menu/rob',query:{appid:common.appid,uid:common.uid,to_code:orderInfo.to_station_code,to_name:orderInfo.to_station_name,from_code:orderInfo.from_station_code,from_name:orderInfo.from_station_name,table:'无座',train_code:orderInfo.train_code,time:dateWeek,firstStartTime:this.$data.orderInfo.train_start_date.substring(0,4)+'-'+this.$data.orderInfo.train_start_date.substring(2,4)+'-'+this.$data.orderInfo.train_start_date.substring(6,8)+' '+this.$data.orderInfo.start_time}}">
           抢票
         </router-link>
       </div>
@@ -154,7 +154,8 @@
         orderInfo: JSON.parse(sessionStorage.getItem('preOrder')),
         dateHttp: '',
         dateWeek: '',
-        obj: ""
+        obj: "",
+        time:''
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -163,6 +164,7 @@
         vm.$data.dateWeek = to.query.dateWeek;
         vm.$data.common.appid = to.query.appid;
         vm.$data.common.uid = to.query.uid;
+
       });
     },
     methods: {
