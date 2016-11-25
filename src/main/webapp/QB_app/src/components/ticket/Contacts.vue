@@ -25,7 +25,7 @@
         </ul>
         <div class="bottom" @click="close">确定</div>
       </div>
-      <div class="mask" id="mask" v-show="mask">
+      <div class="mask" id="mask" v-show="mask" @click="maskBGHide($event)">
         <div class="content">
           <div class="sub">
             <span class="del" @click="del(index)">删除联系人</span>
@@ -125,6 +125,11 @@
       }
     },
     methods: {
+      packBGHide: function (event) {
+        if (event.target.className == "mask") {
+          this.$data.mask = false;
+        }
+      },
       importCon: function () {
         this.$http.post('/website/importContacts', {
           appid: this.$route.query.appid,
