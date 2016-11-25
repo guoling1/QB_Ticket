@@ -63,9 +63,9 @@
       submit: function () {
         this.$http.post('/website/addWebSite', this.$data.loginData).then(function (res) {
           this.$router.go(-1);
-        },function(){
+        },function(err){
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: '登录12306账号失败'
+            text: err.message
           })
         });
       }

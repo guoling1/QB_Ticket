@@ -171,14 +171,10 @@
             if (res.data) {
               this.$data.initStations = res.data;
             } else {
-              this.$store.commit('MESSAGE_DELAY_SHOW', {
-                text: '暂无查询的车次信息'
-              })
+              console.log('暂无查询的车次信息');
             }
           }, function () {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: '获取车次信息失败'
-            })
+            console.log('获取车次信息失败');
           })
         }
       }

@@ -277,6 +277,7 @@
         });
       },
       pay: function (event, type) {
+        event.disabled = true;
         let submitData = {};
         if (type == 'by_cid') {
           submitData = {
@@ -314,6 +315,7 @@
             }
           })
         }, function () {
+          event.disabled = false;
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '付款失败'
           })

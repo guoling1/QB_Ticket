@@ -123,9 +123,7 @@
         this.$data.uid = query.uid;
         this.$data.history = res.data;
       },function(){
-        this.$store.commit('MESSAGE_ACCORD_SHOW', {
-          text: '获取历史查询记录失败'
-        })
+        console.log('获取历史查询记录失败');
       });
     },
     methods: {
@@ -155,10 +153,10 @@
         this.$http.post('/deleteHistory/delete', {
           appid: this.$data.appid,
           uid: this.$data.uid
-        }).then(function (res) {
+        }).then(function () {
           this.$data.history = [];
         },function(){
-          console.log('获取历史查询记录失败');
+          console.log('清空历史查询记录失败');
         });
       },
       time: function (name) {
