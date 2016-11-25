@@ -24,7 +24,7 @@
         </ul>
         <div class="bottom" @click="close">确定</div>
       </div>
-      <div class="mask" id="mask" v-show="mask" @click="maskBGHide($event)">
+      <div class="mask" id="mask" v-show="mask" @click="packBGHide($event)">
         <div class="content">
           <div class="sub">
             <span class="del" @click="del(index)">删除联系人</span>
@@ -265,7 +265,7 @@
               addPerson.id = res.data.data;
               addPerson.selected = false;
               this.$data.massages.push(addPerson);
-              document.querySelector("#mask").style.display = "none";
+              //document.querySelector("#mask").style.display = "none";
               this.$data.$index = "";
             }, function () {
               this.$store.commit('MESSAGE_ACCORD_SHOW', {
@@ -294,7 +294,7 @@
               for (var i in addPerson) {
                 this.$set(this.$data.massages[idx], i, addPerson[i])
               }
-              document.querySelector("#mask").style.display = "none";
+              //document.querySelector("#mask").style.display = "none";
               this.$data.$index = "";
             }, function () {
               this.$store.commit('MESSAGE_ACCORD_SHOW', {
