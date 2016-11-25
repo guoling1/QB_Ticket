@@ -1,6 +1,10 @@
 package com.jkm.util;
 
+
+
+
 import net.sf.json.JSONObject;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +20,7 @@ import java.util.Map;
  * Created by Administrator on 2016/11/1.
  */
 public class HttpClientUtil {
+    private static Logger logger = Logger.getLogger(HttpClientUtil.class);
     /**
      * 向指定URL发送POST方法的请求
      * @param postData
@@ -76,10 +81,12 @@ public class HttpClientUtil {
                     e.printStackTrace();
                 }
         }
-        System.out.println("+++++++结果+++++++++++++");
-        System.out.println(result);
-        System.out.println("+++++++结果+++++++++++++");
-        if(result!=null){
+        logger.info("+++++++结果+++++++++++++");
+        logger.info(result);
+        logger.info("+++++++结果+++++++++++++");
+        logger.info(result.toString());
+        logger.info("+++++++结果+++++++++++++");
+        if(result!=null&&!"".equals(result.toString())){
             return JSONObject.fromObject(result.toString().trim());
         }else{
             return null;
