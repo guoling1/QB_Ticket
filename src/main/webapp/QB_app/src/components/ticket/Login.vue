@@ -64,8 +64,9 @@
         this.$http.post('/website/addWebSite', this.$data.loginData).then(function (res) {
           this.$router.go(-1);
         },function(err){
+          console.log(err);
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.message
+            text: err.body.message
           })
         });
       }
