@@ -905,7 +905,7 @@ public class AuthenServiceImpl implements AuthenService {
 			bindCard.setCardId(UserBankCardSupporter.encryptCardId(requestData.getString("idNo")));
 			bindCard.setPhone(requestData.getString("phoneNo"));
 			bindCard.setBankCode(requestData.getString("bankCode"));
-			bindCard.setBankCode(requestData.getString("bankName"));
+			bindCard.setBankName(requestData.getString("bankName"));
 			bindCard.setStatus(0);
 			bindCardService.insertBindCard(bindCard);
 			jo.put("result",true);
@@ -925,7 +925,7 @@ public class AuthenServiceImpl implements AuthenService {
 			bindCard.setCardId(UserBankCardSupporter.encryptCardId(requestData.getString("idNo")));
 			bindCard.setPhone(requestData.getString("phoneNo"));
 			bindCard.setBankCode(requestData.getString("bankCode"));
-			bindCard.setBankCode(requestData.getString("bankName"));
+			bindCard.setBankName(requestData.getString("bankName"));
 			bindCard.setStatus(0);
 			bindCardService.insertBindCard(bindCard);
 			jo.put("result",true);
