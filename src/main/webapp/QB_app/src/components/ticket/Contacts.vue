@@ -262,7 +262,7 @@
             })
           } else {
             this.$http.post('/contactInfo/add', JSON.stringify(addPerson)).then(function (res) {
-              addPerson.id = res.data.data;
+              addPerson.id = res.data;
               addPerson.selected = false;
               this.$data.massages.push(addPerson);
               //document.querySelector("#mask").style.display = "none";
