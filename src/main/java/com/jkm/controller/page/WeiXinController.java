@@ -48,7 +48,7 @@ public class WeiXinController extends BaseController {
 
         String appid = ReadProperties.getNotifierConfig().appid();
         String secret = ReadProperties.getNotifierConfig().secret();
-        String redirectUrl = "http://fhcp.jinkaimen.com/ticket/main-menu/reserve";
+        String redirectUrl = "http://hcp.jinkaimen.com/ticket/main-menu/reserve";
         String url = "https://api.weixin.qq.com/sns/oauth2/access_token?" +
                 "appid=" + appid + "&" +
                 "secret=" + secret + "&" +
