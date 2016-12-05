@@ -39,5 +39,4 @@ public class BankCardBinContrller extends BaseController {
         return results;
     }
 
-
 }

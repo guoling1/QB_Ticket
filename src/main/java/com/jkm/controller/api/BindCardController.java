@@ -29,7 +29,7 @@ public class BindCardController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/bind", method = RequestMethod.POST)
-    public ResponseEntityBase<Long> bind(){
+    private ResponseEntityBase<Long> bind(){
         ResponseEntityBase<Long> responseEntityBase = new ResponseEntityBase<Long>();
         try{
             JSONObject requestJson = super.getRequestJsonParams();
