@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Properties;
 
@@ -24,11 +25,11 @@ public class WeiXinController extends BaseController {
     @RequestMapping(value = "wx",method = RequestMethod.GET)
    public void toPredetermine(final HttpServletRequest request, final HttpServletResponse response) throws Exception {
         String appid = ReadProperties.getNotifierConfig().appid();
-        String redirectUrl = "http%3a%2f%2fhcp.jinkaimen.com%2fpredetermine";
+        String redirectUrl = "http://hcp.jinkaimen.com/predetermine";
         String scope = "snsapi_base";
         String url = "https://open.weixin.qq.com/connect/oauth2/authorize?" +
                 "appid=" + appid + "&" +
-                "redirect_uri=" + redirectUrl + "&" +
+                "redirect_uri=" + URLEncoder.encode( redirectUrl,"UTF-8") + "&" +
                 "response_type=code" + "&" +
                 "scope=" + scope + "&" +
                 "state=STATE" + "#wechat_redirect";
@@ -47,7 +48,7 @@ public class WeiXinController extends BaseController {
 
         String appid = ReadProperties.getNotifierConfig().appid();
         String secret = ReadProperties.getNotifierConfig().secret();
-        String redirectUrl = "http%3a%2f%2fhcp.jinkaimen.com%2fticket%2fmain-menu%2freserve";
+        String redirectUrl = "http://fhcp.jinkaimen.com/ticket/main-menu/reserve";
         String url = "https://api.weixin.qq.com/sns/oauth2/access_token?" +
                 "appid=" + appid + "&" +
                 "secret=" + secret + "&" +
