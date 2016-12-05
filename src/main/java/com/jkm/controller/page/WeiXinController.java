@@ -24,7 +24,7 @@ public class WeiXinController extends BaseController {
     @RequestMapping(value = "wx",method = RequestMethod.GET)
    public void toPredetermine(final HttpServletRequest request, final HttpServletResponse response) throws Exception {
         String appid = ReadProperties.getNotifierConfig().appid();
-        String redirectUrl = "http://hcp.jinkaimen.com/predetermine";
+        String redirectUrl = "http%3a%2f%2fhcp.jinkaimen.com%2fpredetermine";
         String scope = "snsapi_base";
         String url = "https://open.weixin.qq.com/connect/oauth2/authorize?" +
                 "appid=" + appid + "&" +
@@ -47,7 +47,7 @@ public class WeiXinController extends BaseController {
 
         String appid = ReadProperties.getNotifierConfig().appid();
         String secret = ReadProperties.getNotifierConfig().secret();
-        String redirectUrl = "http://hcp.jinkaimen.com/ticket/main-menu/reserve";
+        String redirectUrl = "http%3a%2f%2fhcp.jinkaimen.com%2fticket%2fmain-menu%2freserve";
         String url = "https://api.weixin.qq.com/sns/oauth2/access_token?" +
                 "appid=" + appid + "&" +
                 "secret=" + secret + "&" +
