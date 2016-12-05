@@ -28,9 +28,10 @@ public class WeiXinController extends BaseController {
         String scope = "snsapi_base";
         String url = "https://open.weixin.qq.com/connect/oauth2/authorize?" +
                 "appid=" + appid + "&" +
-                "redirect_uri=" + redirectUrl +
-                "response_type=code" +
-                "&scope=" + scope + "&state=STATE" + "#wechat_redirect";
+                "redirect_uri=" + redirectUrl + "&" +
+                "response_type=code" + "&" +
+                "scope=" + scope + "&" +
+                "state=STATE" + "#wechat_redirect";
         response.sendRedirect(url);
     }
 
@@ -50,7 +51,8 @@ public class WeiXinController extends BaseController {
         String url = "https://api.weixin.qq.com/sns/oauth2/access_token?" +
                 "appid=" + appid + "&" +
                 "secret=" + secret + "&" +
-                "code=" + code + "&grant_type=authorization_code";
+                "code=" + code + "&" +
+                "grant_type=authorization_code";
         Map<String, String> map = weiXinUtil.getOpenId(code, url);
         String openId = map.get("openid");
 
