@@ -54,6 +54,9 @@ public class WeiXinController extends BaseController {
                 "secret=" + secret + "&" +
                 "code=" + code + "&" +
                 "grant_type=authorization_code";
+
+
+
         Map<String, String> map = weiXinUtil.getOpenId(code, url);
         String openId = map.get("openid");
 
