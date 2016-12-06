@@ -29,7 +29,7 @@ public class CallBackMsgController {
         final String process = ReadParameter.getProcess(request);
         if (process != null){
             String result = "";
-            int trainNo = 0;
+            int trainNo = 0; //出票有trainNo属性  退票没有
             final String[] arr = process.split("&");
             int len = arr.length;
             for (int i = 0;i < len; i++){

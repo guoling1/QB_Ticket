@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * 读取请求参数
+ * 读取请求参数(POST)
  * Created by lt on 2016/12/6.
  */
 public class ReadParameter {
@@ -34,6 +34,7 @@ public class ReadParameter {
         } finally {
             try {
                 is.close();
+                br.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
