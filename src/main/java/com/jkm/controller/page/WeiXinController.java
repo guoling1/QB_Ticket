@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLEncoder;
@@ -22,14 +23,14 @@ public class WeiXinController extends BaseController {
     /*
     获取code
      */
-    @RequestMapping(value = "wx",method = RequestMethod.GET)
-   public void toPredetermine(final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+    @RequestMapping(value = "wx", method = RequestMethod.GET)
+    public void toPredetermine(final HttpServletRequest request, final HttpServletResponse response) throws Exception {
         String appid = ReadProperties.getNotifierConfig().appid();
         String redirectUrl = "http://hcp.jinkaimen.com/predetermine";
         String scope = "snsapi_base";
         String url = "https://open.weixin.qq.com/connect/oauth2/authorize?" +
                 "appid=" + appid + "&" +
-                "redirect_uri=" + URLEncoder.encode( redirectUrl,"UTF-8") + "&" +
+                "redirect_uri=" + URLEncoder.encode(redirectUrl, "UTF-8") + "&" +
                 "response_type=code" + "&" +
                 "scope=" + scope + "&" +
                 "state=STATE" + "#wechat_redirect";
@@ -39,11 +40,12 @@ public class WeiXinController extends BaseController {
     /*
     根据code获取access_token、refresh_token、openId
      */
-    @RequestMapping(value = "predetermine",method = RequestMethod.GET)
-    public String predetermine(final HttpServletRequest request,final HttpServletResponse response) throws Exception {
+    @RequestMapping(value = "predetermine", method = RequestMethod.GET)
+    public void predetermine(final HttpServletRequest request, final HttpServletResponse response)
+            throws Exception {
         String code = request.getParameter("code");
-        if ("".equals(code) || code == null){
-            return "";
+        if ("".equals(code) || code == null) {
+            return;
         }
 
         String appid = ReadProperties.getNotifierConfig().appid();
@@ -56,13 +58,12 @@ public class WeiXinController extends BaseController {
                 "grant_type=authorization_code";
 
 
-
         Map<String, String> map = weiXinUtil.getOpenId(code, url);
         String openId = map.get("openid");
 
         String hcpAppid = ReadProperties.getNotifierConfig().hcpAppid();
         String hcpSecret = ReadProperties.getNotifierConfig().hcpSecret();  //后期用
-        return redirectUrl + "?appid=" + hcpAppid + "&uid=" + openId;
+        response.sendRedirect(redirectUrl + "?appid=" + hcpAppid + "&uid=" + openId);
     }
 }
 
