@@ -56,9 +56,13 @@
         var obj1={D: true,G: true,Z: true,K: true};
         this.$data.select=!this.$data.select;
         if(this.$data.select){
-          this.$store.state.screen.config.trains=obj;
+          this.$store.commit('SCREEN_SET_TRAINS', {
+            trains: obj
+          });
         }else {
-          this.$store.state.screen.config.trains=obj1;
+          this.$store.commit('SCREEN_SET_TRAINS', {
+            trains: obj1
+          });
         }
       },
       //出发早晚
@@ -68,7 +72,7 @@
           this.$store.state.screen.config.sort=false;
           document.querySelector("#form").innerHTML="历时 短→长"
         }else {
-          this.$store.state.screen.config.sort=true
+          this.$store.state.screen.config.sort=true;
           document.querySelector("#form").innerHTML="出发 早→晚"
         }
       },

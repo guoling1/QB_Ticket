@@ -14,16 +14,6 @@
           <i class="icon-password"></i>
           <input type="password" placeholder="请输入12306密码" v-model="loginData.data.pass">
         </div>
-        <div class="ipt no-border">
-          <i class="icon-remember"></i>
-
-          <div class="option">
-            记住密码
-            <div class="check active">
-              <div class="btn"></div>
-            </div>
-          </div>
-        </div>
       </div>
       <div class="submit" @click="submit">
         <i></i>登录12306
