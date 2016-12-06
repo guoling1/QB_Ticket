@@ -250,9 +250,9 @@
         let start = new Date(this.$data.orderInfo.startDate);
         let arrive = new Date(this.$data.orderInfo.endDate);
         return {
-          passengersNum: a,
+          passengersNum: parseInt(a),
           ticket: b,
-          insurance: c,
+          insurance: parseInt(c),
           runTime: runH + '小时' + runM + '分钟',
           startDate: (start.getMonth() + 1) + '-' + start.getDate() + ' ' + weekWord[start.getDay()],
           arriveDate: (arrive.getMonth() + 1) + '-' + arrive.getDate() + ' ' + weekWord[arrive.getDay()],

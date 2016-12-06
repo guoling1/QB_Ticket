@@ -9,8 +9,16 @@
       </div>
       <span class="next show" @click="after">后一天</span>
     </div>
-    <div class="empty" v-if="stations.empty">没有符合查询条件的车次</div>
-    <ul v-if="!stations.empty">
+    <div class="empty" v-if="isLoading">
+      <div class="loading"></div>
+      <div class="word">正在查询...</div>
+    </div>
+    <div class="empty" v-if="!isLoading && stations.empty">
+      <div class="loading"></div>
+      <div class="word">没有找到符合条件的车次</div>
+      <div class="btn" @click="toIndex($event)">返回首页</div>
+    </div>
+    <ul v-if="!stations.empty && !isLoading">
       <li v-for="station in stations.data" @click="router($event,station)">
         <div class="top">
           <span class="checi">{{station.train_code}}</span>
@@ -70,6 +78,7 @@
     },
     data () {
       return {
+        isLoading: true,
         common: {
           appid: '',
           uid: ''
@@ -98,16 +107,27 @@
         this.$data.only = query.onlyGD;
         this.$data.dateHttp = query.dateHttp;
         this.$data.dateWeek = query.dateWeek;
+        this.$data.isLoading = false;
         if (res.data) {
           this.$data.initStations = res.data;
         } else {
           console.log('暂无查询的车次信息');
         }
       }, function () {
+        this.$data.isLoading = false;
         console.log('获取车次信息失败');
       });
     },
     methods: {
+      toIndex: function (event) {
+        this.$router.push({
+          path: '/ticket/main-menu/reserve',
+          query: {
+            appid: this.$data.common.appid,
+            uid: this.$data.common.uid
+          }
+        })
+      },
       router: function (event, station) {
         // 路由跳转前,查询信息必须被存储在 sessionStorage 存储时注意要转json
         sessionStorage.setItem('preOrder', JSON.stringify(station));
@@ -137,7 +157,7 @@
         }
         let ary = ["日", "一", "二", "三", "四", "五", "六"]
         this.$store.state.date.scope.dateThree.code = dd.getFullYear() + "-" + (dd.getMonth() + 1) + "-" + day;
-        this.$store.state.date.scope.dateThree.time = (dd.getMonth() + 1) + "月" + day+"日 周"+ary[dd.getDay()];
+        this.$store.state.date.scope.dateThree.time = (dd.getMonth() + 1) + "月" + day + "日 周" + ary[dd.getDay()];
         document.querySelector('.first').className = "first";
         document.querySelector('.next').className = "next show"
       },
@@ -151,7 +171,7 @@
         }
         let ary = ["日", "一", "二", "三", "四", "五", "六"]
         this.$store.state.date.scope.dateThree.code = dd.getFullYear() + "-" + (dd.getMonth() + 1) + "-" + day;
-        this.$store.state.date.scope.dateThree.time = (dd.getMonth() + 1) + "月" + day+"日 周"+ary[dd.getDay()];
+        this.$store.state.date.scope.dateThree.time = (dd.getMonth() + 1) + "月" + day + "日 周" + ary[dd.getDay()];
         document.querySelector('.first').className = "first show";
         document.querySelector('.next').className = "next"
       }
@@ -181,7 +201,7 @@
     },
     computed: {
       stations () {
-        if (this.initStations.length>0) {
+        if (this.initStations.length > 0) {
           // 优先筛选条件
           //只看动车
           if (this.$data.only) {
@@ -359,7 +379,28 @@
   }
 
   .empty {
-    margin-top: 20px;
+    margin-top: 80px;
+    .loading {
+      width: 207px;
+      height: 98px;
+      margin: auto;
+      background: url("../../assets/loading.png") no-repeat center;
+      background-size: 207px 98px;
+    }
+    .word {
+      font-size: 18px;
+      color: #4a6286;
+      margin-top: 30px;
+    }
+    .btn {
+      width: 145px;
+      height: 45px;
+      margin: 40px auto 0;
+      line-height: 45px;
+      background-color: #4ab9f1;
+      font-size: 15px;
+      color: #FFF;
+    }
   }
 
   .main {
@@ -386,7 +427,6 @@
 
       .next {
         float: right;
-
       }
 
       .show {
