@@ -6,19 +6,22 @@ import App from '../../App';
 // 应用 火车票 流程组件
 const ticketMainMenu = r => require.ensure([], () => r(require('../../components/ticket/MainMenu')), 'group-ticket');
 const ticketReserve = r => require.ensure([], () => r(require('../../components/ticket/Reserve')), 'group-ticket');
-const ticketRob = r => require.ensure([], () => r(require('../../components/ticket/Rob')), 'group-ticket');
-const ticketRobOrder = r => require.ensure([], () => r(require('../../components/ticket/RobOrder')), 'group-ticket');
-const ticketRobDetail = r => require.ensure([], () => r(require('../../components/ticket/RobDetail')), 'group-ticket');
-const ticketPrivate = r => require.ensure([], () => r(require('../../components/ticket/Private')), 'group-ticket');
-const ticketOrder = r => require.ensure([], () => r(require('../../components/ticket/Order')), 'group-ticket');
-const ticketTrainMenu = r => require.ensure([], () => r(require('../../components/ticket/TrainMenu')), 'group-ticket');
-const ticketTrain = r => require.ensure([], () => r(require('../../components/ticket/Train')), 'group-ticket');
-const ticketSubmitOrder = r => require.ensure([], () => r(require('../../components/ticket/SubmitOrder')), 'group-ticket');
-const ticketSureOrder = r => require.ensure([], () => r(require('../../components/ticket/SureOrder')), 'group-ticket');
-const ticketPayOrder = r => require.ensure([], () => r(require('../../components/ticket/PayOrder')), 'group-ticket');
-const ticketLogin = r => require.ensure([], () => r(require('../../components/ticket/Login')), 'group-ticket');
-const ticketRefundDetail = r => require.ensure([], () => r(require('../../components/ticket/RefundDetail')), 'group-ticket');
-const ticketRefundSuccess = r => require.ensure([], () => r(require('../../components/ticket/RefundSuccess')), 'group-ticket');
+
+const ticketRob = r => require.ensure([], () => r(require('../../components/ticket/Rob')), 'group-rob');
+const ticketRobOrder = r => require.ensure([], () => r(require('../../components/ticket/RobOrder')), 'group-rob-order');
+const ticketRobDetail = r => require.ensure([], () => r(require('../../components/ticket/RobDetail')), 'group-rob-detail');
+const ticketPrivate = r => require.ensure([], () => r(require('../../components/ticket/Private')), 'group-private');
+const ticketOrder = r => require.ensure([], () => r(require('../../components/ticket/Order')), 'group-order');
+
+const ticketTrainMenu = r => require.ensure([], () => r(require('../../components/ticket/TrainMenu')), 'group-train');
+const ticketTrain = r => require.ensure([], () => r(require('../../components/ticket/Train')), 'group-train');
+
+const ticketSubmitOrder = r => require.ensure([], () => r(require('../../components/ticket/SubmitOrder')), 'group-submit-order');
+const ticketSureOrder = r => require.ensure([], () => r(require('../../components/ticket/SureOrder')), 'group-sure-order');
+const ticketPayOrder = r => require.ensure([], () => r(require('../../components/ticket/PayOrder')), 'group-pay-order');
+const ticketLogin = r => require.ensure([], () => r(require('../../components/ticket/Login')), 'group-login');
+const ticketRefundDetail = r => require.ensure([], () => r(require('../../components/ticket/RefundDetail')), 'group-refund-detail');
+const ticketRefundSuccess = r => require.ensure([], () => r(require('../../components/ticket/RefundSuccess')), 'group-refund-success');
 
 export default {
   path: '/ticket',
