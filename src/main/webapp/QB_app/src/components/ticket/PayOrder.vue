@@ -127,7 +127,7 @@
           this.timer(this.$data.orderInfo.expireTime);
         }
       },function(){
-        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+        this.$store.commit('MESSAGE_PROMPT_SHOW', {
           text: '查询订单信息失败'
         })
       });
@@ -146,7 +146,7 @@
           } else if ((res.data.status == 4 ||res.data.status ==  6)) {
             clearInterval(polling);
             this.$data.orderInfo = res.data;
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            this.$store.commit('MESSAGE_PROMPT_SHOW', {
               text: '占座失败'
             });
           } else if (res.data.status == 13) {
@@ -155,7 +155,7 @@
           }
         },function(){
           clearInterval(polling);
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '查询订单信息失败'
           })
         });
@@ -194,15 +194,15 @@
             this.$data.orderInfo = res.data;
             this.$data.payInfo.price = res.data.totalPrice;
           },function(){
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            this.$store.commit('MESSAGE_PROMPT_SHOW', {
               text: '查询订单信息失败'
             })
           });
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '订单取消成功'
           })
         },function(){
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '订单取消失败'
           })
         });

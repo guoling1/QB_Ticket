@@ -7,10 +7,13 @@ const state = {
   message: false,
   delay: false,
   accord: false,
+  prompt: false,
   text: ''
 };
 
 // mutations
+let timer;
+
 const mutations = {
   MESSAGE_DELAY_SHOW (state, obj) {
     state.message = true;
@@ -33,6 +36,14 @@ const mutations = {
   MESSAGE_ACCORD_HIDE (state) {
     state.message = false;
     state.accord = false;
+  },
+  MESSAGE_PROMPT_SHOW (state, obj) {
+    clearTimeout(timer);
+    state.prompt = true;
+    state.text = obj.text;
+    timer = setTimeout(function () {
+      state.prompt = false;
+    }, 1000);
   }
 };
 

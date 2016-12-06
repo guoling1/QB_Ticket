@@ -91,7 +91,7 @@
         this.$data.common.uid = query.uid;
         this.$data.orderInfo = info;
       }, function () {
-        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+        this.$store.commit('MESSAGE_PROMPT_SHOW', {
           text: '查询订单信息失败'
         })
       });
@@ -110,15 +110,15 @@
             info.passengerInfo = JSON.parse(info.passengerInfo);
             this.$data.orderInfo = info;
           }, function () {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            this.$store.commit('MESSAGE_PROMPT_SHOW', {
               text: '查询订单信息失败'
             })
           });
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '订单取消成功'
           });
         }, function () {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '订单取消失败'
           })
         });

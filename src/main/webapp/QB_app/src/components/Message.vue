@@ -11,6 +11,9 @@
         <div class="btn" @click="know">我知道了</div>
       </div>
     </div>
+    <div class="prompt" v-if="$$prompt">
+      {{$$text}}
+    </div>
   </transition>
 </template>
 <script lang="babel">
@@ -38,6 +41,9 @@
       $$accord: function () {
         return this.$store.state.message.accord
       },
+      $$prompt: function () {
+        return this.$store.state.message.prompt
+      },
       $$text: function () {
         return this.$store.state.message.text
       }
@@ -57,11 +63,25 @@
   }
 
   .fade-enter-active, .fade-leave-active {
-    transition: opacity .4s
+    transition: opacity .2s
   }
 
   .fade-enter, .fade-leave-active {
     opacity: 0
+  }
+
+  .prompt {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    z-index: 9999;
+    transform: translate3d(-50%, -50%, 0);
+    padding: 5px 10px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #373737;
+    border-radius: 5px;
+    text-align: center;
   }
 
   .main {

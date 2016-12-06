@@ -150,7 +150,7 @@
         }).then(function (res) {
           this.$data.massages = res.data;
         }, function () {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '查询订单信息失败'
           })
         });
@@ -162,7 +162,7 @@
         }).then(function (res) {
           this.$data.massages = res.data;
         }, function () {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '查询订单信息失败'
           })
         });
@@ -186,7 +186,7 @@
         }).then(function () {
           this.$data.$open = !this.$data.$open;
         }, function () {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '退票失败'
           })
         });

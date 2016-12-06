@@ -55,7 +55,7 @@
           this.$router.go(-1);
         },function(err){
           console.log(err);
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: err.body.message
           })
         });

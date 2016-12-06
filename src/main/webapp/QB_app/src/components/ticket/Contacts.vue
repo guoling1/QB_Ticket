@@ -108,7 +108,7 @@
             }
             this.$data.massages = massages;
           }, function () {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            this.$store.commit('MESSAGE_PROMPT_SHOW', {
               text: '获取联系人列表失败'
             })
           });
@@ -157,7 +157,7 @@
             }
             this.$data.massages = massages;
           }, function () {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            this.$store.commit('MESSAGE_PROMPT_SHOW', {
               text: '获取联系人列表失败'
             })
           });
@@ -227,7 +227,7 @@
           this.$data.massages.splice(index, 1);
           document.querySelector("#mask").style.display = "none";
         }, function () {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '删除联系人失败'
           })
         });
@@ -249,15 +249,15 @@
         if ((typeof idx) !== 'number') {
           addPerson.sex = (addPerson.sex == "男" ? 0 : 1);
           if (document.querySelector('#name').value == "") {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            this.$store.commit('MESSAGE_PROMPT_SHOW', {
               text: '请填写乘客姓名'
             })
           } else if (document.querySelector('#identy').value == '') {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            this.$store.commit('MESSAGE_PROMPT_SHOW', {
               text: '请填写身份证号'
             })
           } else if (document.querySelector('#identy').value != '' && !reg.test(document.querySelector('#identy').value)) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            this.$store.commit('MESSAGE_PROMPT_SHOW', {
               text: '请填写正确的身份证号'
             })
           } else {
@@ -268,7 +268,7 @@
               //document.querySelector("#mask").style.display = "none";
               this.$data.$index = "";
             }, function () {
-              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              this.$store.commit('MESSAGE_PROMPT_SHOW', {
                 text: '添加联系人失败'
               })
             });
@@ -277,15 +277,15 @@
           addPerson.id = this.$data.massages[idx].id;
           addPerson.sex = (addPerson.sex == "男" ? 0 : 1);
           if (document.querySelector('#name').value == "") {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            this.$store.commit('MESSAGE_PROMPT_SHOW', {
               text: '请填写乘客姓名'
             })
           } else if (document.querySelector('#identy').value == '') {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            this.$store.commit('MESSAGE_PROMPT_SHOW', {
               text: '请填写身份证号'
             })
           } else if (document.querySelector('#identy').value != '' && !reg.test(document.querySelector('#identy').value)) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            this.$store.commit('MESSAGE_PROMPT_SHOW', {
               text: '请填写正确的身份证号'
             })
           } else {
@@ -297,7 +297,7 @@
               //document.querySelector("#mask").style.display = "none";
               this.$data.$index = "";
             }, function () {
-              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              this.$store.commit('MESSAGE_PROMPT_SHOW', {
                 text: '修改联系人失败'
               })
             });

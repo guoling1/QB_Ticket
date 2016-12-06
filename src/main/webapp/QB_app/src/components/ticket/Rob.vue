@@ -300,7 +300,7 @@
           this.$data.trains = res.data;
           this.$data.trainsShow = true;
         },function(){
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '查询车次信息失败'
           });
         });
@@ -395,11 +395,11 @@
       submit: function () {
         sessionStorage.setItem('robOrder', JSON.stringify(this.$data.submitInfo));
         if (this.$data.submitInfo.toStationName == "选择城市") {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '请选择到达城市'
           })
         }else if (this.$data.submitInfo.trainCodes == "请选择车次") {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '请指定车次'
           })
         }else{

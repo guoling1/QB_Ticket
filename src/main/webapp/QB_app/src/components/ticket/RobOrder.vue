@@ -256,7 +256,7 @@
       },
       addChild: function () {
         if (this.$data.submitInfo.grabPassengers.length == 0) {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '请先添加随行成人'
           })
         } else {
@@ -274,15 +274,15 @@
         };
         var reg = /^[1-9][0-9]{3}(0[1-9]|1[0-2])([0-2][1-9]|3[0-1])$/;
         if (document.querySelector('#name').value == "") {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '请填写儿童姓名'
           })
         } else if (document.querySelector('#birthday').value == "") {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '请填写出生日期'
           })
         } else if (!reg.test(document.querySelector('#birthday').value)) {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '请填写正确的出生日期'
           })
         } else {
@@ -294,7 +294,7 @@
             newPerson.piaoType = 2;
             this.$data.childs.push(newPerson);
           }, function () {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            this.$store.commit('MESSAGE_PROMPT_SHOW', {
               text: '添加联系人失败'
             })
           });
@@ -342,11 +342,11 @@
         }
         var reg = /^1(3|4|5|7|8)\d{9}$/;
         if (this.$data.submitInfo.grabPassengers == "") {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '请添加乘客'
           })
         } else if (!reg.test(this.$data.submitInfo.phone)) {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '请填写正确的手机号'
           })
         } else {
@@ -359,7 +359,7 @@
               type: 'rob'
             });
           }, function () {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            this.$store.commit('MESSAGE_PROMPT_SHOW', {
               text: '订单提交失败'
             })
           });

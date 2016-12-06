@@ -80,7 +80,7 @@
         this.$data.common.appid = query.appid;
         this.$data.common.uid = query.uid;
       }, function () {
-        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+        this.$store.commit('MESSAGE_PROMPT_SHOW', {
           text: '查询订单信息失败'
         })
       });
@@ -98,13 +98,13 @@
             this.$data.orderInfo = res.data;
           } else if (res.data.status == 8 || res.data.status == 11) {
             clearInterval(polling);
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            this.$store.commit('MESSAGE_PROMPT_SHOW', {
               text: '出票失败'
             });
           }
         }, function () {
           clearInterval(polling);
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '查询订单信息失败'
           })
         });

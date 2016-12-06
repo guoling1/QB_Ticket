@@ -215,7 +215,7 @@
           this.$data.space_ctrl.firstBindSpace = true;
         }
       }, function () {
-        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+        this.$store.commit('MESSAGE_PROMPT_SHOW', {
           text: '获取银行卡列表失败'
         })
       });
@@ -271,7 +271,7 @@
           polling = setInterval(pollFun, 1000);
         }, function () {
           this.$data.valid_code.sending = false;
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '验证码发送失败'
           })
         });
@@ -316,7 +316,7 @@
           })
         }, function () {
           event.disabled = false;
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '付款失败'
           })
         });
@@ -354,7 +354,7 @@
             this.$data.fill_from.bankCode = res.data.shorthand;
             this.$data.fill_from.bankName = res.data.bankName;
           }, function () {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            this.$store.commit('MESSAGE_PROMPT_SHOW', {
               text: '查询银行卡信息失败'
             })
           });

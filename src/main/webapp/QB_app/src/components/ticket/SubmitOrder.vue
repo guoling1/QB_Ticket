@@ -232,7 +232,7 @@
               })
             }
           }, function () {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            this.$store.commit('MESSAGE_PROMPT_SHOW', {
               text: '获取车次信息失败'
             })
           });

@@ -89,7 +89,7 @@
         this.$data.common.uid = query.uid;
         this.$data.preMassages = res.data;
       },function(){
-        this.$store.commit('MESSAGE_ACCORD_SHOW', {
+        this.$store.commit('MESSAGE_PROMPT_SHOW', {
           text: '查询订票单失败'
         })
       });
@@ -152,7 +152,7 @@
               }
               this.$data.robMassages = res.data;
             },function(){
-              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              this.$store.commit('MESSAGE_PROMPT_SHOW', {
                 text: '查询抢票单失败'
               })
             });
