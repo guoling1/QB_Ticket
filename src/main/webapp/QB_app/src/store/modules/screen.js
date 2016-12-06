@@ -37,6 +37,9 @@ const mutations = {
   SCREEN_CLOSE (state, obj) {
     state.ctrl = obj.ctrl;
     state.config = obj.config;
+  },
+  SCREEN_SET_TRAINS (state, obj) {
+    state.config.trains = obj.trains;
   }
 };
 
