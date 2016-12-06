@@ -1,15 +1,30 @@
 <template lang="html">
   <div id="app" class="flex-box-column flexBox">
-    <div class="title">
-      <div class="back" @click='back'></div>
-      <h1>{{$$title}}</h1>
-    </div>
     <router-view></router-view>
   </div>
 </template>
 
 <script lang="babel">
   // 根节点一级路由,负责维护顶部title
+  const router = {
+    'ticketReserve': '车票预定',
+    'ticketRob': '抢票',
+    'ticketRobOrder': '确认订单',
+    'ticketRobDetail': '抢票详情',
+    'ticketPrivate': '私人定制',
+    'ticketOrder': '我的订单',
+    'ticketSubmitOrder': '提交订单',
+    'ticketSureOrder': '确认订单',
+    'ticketPayOrder': '订单详情',
+    'ticketTrain': '北京 → 深圳',
+    'ticketContacts': '常用联系人',
+    'ticketLogin': '12306登录',
+    'firstAdd': '确认订单',
+    'ticketRefundDetail': '订单详情',
+    'secondAdd': '确认订单',
+    'ticketAddChild': '常用联系人',
+    'ticketRefundSuccess': '出票成功'
+  };
   export default {
     name: 'title',
     data: function () {
@@ -19,30 +34,18 @@
     },
     created: function () {
       if (this.$route.name == 'ticketTrain') {
-        this.$store.commit('TITLE_CHANGE', {
-          name: this.$route.name,
-          formName: this.$route.query.formName,
-          toName: this.$route.query.toName
-        });
+        document.title = this.$route.query.formName + ' → ' + this.$route.query.toName;
       } else {
-        this.$store.commit('TITLE_CHANGE', {
-          name: this.$route.name
-        });
+        document.title = router[this.$route.name];
       }
     },
     watch: {
       // 监听路由变化 触发title变更
       $route: function (to) {
         if (to.name == 'ticketTrain') {
-          this.$store.commit('TITLE_CHANGE', {
-            name: to.name,
-            formName: to.query.formName,
-            toName: to.query.toName
-          });
+          document.title = to.query.formName + ' → ' + to.query.toName;
         } else {
-          this.$store.commit('TITLE_CHANGE', {
-            name: to.name
-          });
+          document.title = router[to.name];
         }
       }
     },
