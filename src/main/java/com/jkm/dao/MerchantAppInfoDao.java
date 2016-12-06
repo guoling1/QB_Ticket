@@ -38,5 +38,10 @@ public interface MerchantAppInfoDao{
 	 *
 	 **/
 	MerchantAppInfo selectByOpenId(@Param("openId") String openId);
-
+	/**
+	 *
+	 * 查询SecretKey（根据OpenId查询）
+	 *
+	 **/
+	String selectSecretKeyByOpenId(String openId);
 }

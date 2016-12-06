@@ -33,4 +33,9 @@ public class MerchantAppInfoServiceImpl implements MerchantAppInfoService {
     public MerchantAppInfo selectByOpenId(String openId) {
         return merchantAppInfoDao.selectByOpenId(openId);
     }
+
+    @Override
+    public String selectSecretKeyByOpenId(String openId) {
+        return merchantAppInfoDao.selectSecretKeyByOpenId(openId);
+    }
 }

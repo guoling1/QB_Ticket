@@ -102,4 +102,12 @@
 		FROM qb_merchant_app_info
 		WHERE open_id = #{openId} and status=0
 	</select>
+
+	<!-- 查询SecretKey（根据OpenId查询） -->
+	<select id="selectSecretKeyByOpenId" resultType="java.lang.String" parameterType="java.lang.String">
+		SELECT
+		secret_key
+		FROM qb_merchant_app_info
+		WHERE open_id = #{openId} and status=0
+	</select>
 </mapper>

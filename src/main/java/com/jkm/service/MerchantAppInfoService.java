@@ -32,4 +32,10 @@ public interface MerchantAppInfoService {
      *
      **/
     MerchantAppInfo selectByOpenId(String openId);
+    /**
+     *
+     * 查询Key（根据OpenId查询）
+     *
+     */
+    String selectSecretKeyByOpenId(String openId);
 }
