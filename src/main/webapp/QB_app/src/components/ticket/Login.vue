@@ -51,9 +51,21 @@
     },
     methods: {
       submit: function () {
+        if (!this.loginData.data.trainAccount && this.loginData.data.trainAccount == "") {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
+            text: '请输入12306用户名'
+          });
+          return;
+        }
+        if (!this.loginData.data.pass && this.loginData.data.pass == "") {
+          this.$store.commit('MESSAGE_PROMPT_SHOW', {
+            text: '请输入12306密码'
+          });
+          return;
+        }
         this.$http.post('/website/addWebSite', this.$data.loginData).then(function (res) {
           this.$router.go(-1);
-        },function(err){
+        }, function (err) {
           console.log(err);
           this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: err.body.message

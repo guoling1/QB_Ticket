@@ -41,7 +41,7 @@
                                                                 checked="checked">男</label>
               <label style="margin-left:20px;color:#999"><input type="radio" name="sex" value="女">女</label>
             </li>
-            <li class="typeLi">
+            <li>
               <label for="identyType">证件类型</label>
               <input type="text" name="identyType" id='identyType' readOnly="true" value="二代身份证">
             </li>
@@ -233,7 +233,6 @@
         });
       },
       sev: function (idx) {
-        this.$data.mask = false;
         var addPerson = {
           uid: this.$data.uid,
           appid: this.$data.appid,
@@ -251,17 +250,18 @@
           if (document.querySelector('#name').value == "") {
             this.$store.commit('MESSAGE_PROMPT_SHOW', {
               text: '请填写乘客姓名'
-            })
+            });
           } else if (document.querySelector('#identy').value == '') {
             this.$store.commit('MESSAGE_PROMPT_SHOW', {
               text: '请填写身份证号'
-            })
+            });
           } else if (document.querySelector('#identy').value != '' && !reg.test(document.querySelector('#identy').value)) {
             this.$store.commit('MESSAGE_PROMPT_SHOW', {
               text: '请填写正确的身份证号'
-            })
+            });
           } else {
             this.$http.post('/contactInfo/add', JSON.stringify(addPerson)).then(function (res) {
+              this.$data.mask = false;
               addPerson.id = res.data;
               addPerson.selected = false;
               this.$data.massages.push(addPerson);
@@ -290,6 +290,7 @@
             })
           } else {
             this.$http.post('/contactInfo/update', JSON.stringify(addPerson)).then(function (res) {
+              this.$data.mask = false;
               addPerson.selected = false;
               for (var i in addPerson) {
                 this.$set(this.$data.massages[idx], i, addPerson[i])
@@ -496,14 +497,14 @@
           background: #fff;
           border-bottom: 1px solid #ebebeb;
 
-          &.typeLi {
-            background: url("../../assets/prompt-arrow.png") no-repeat 96%;
-            background-size: 8px 11px;
+          label {
+            color: #111;
           }
 
           input {
             border: none;
-            color: #999;
+            color: #111;
+            padding-left: 5px;
             &:focus {
               outline: none;
             }

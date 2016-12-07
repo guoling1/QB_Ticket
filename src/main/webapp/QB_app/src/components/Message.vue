@@ -8,7 +8,7 @@
       <div class="group accord" v-show="$$accord">
         <div class="prompt">提示</div>
         <div class="text">{{$$text}}</div>
-        <div class="btn" @click="know">我知道了</div>
+        <div class="btn" @click="know">确定</div>
       </div>
     </div>
     <div class="prompt" v-if="$$prompt">
