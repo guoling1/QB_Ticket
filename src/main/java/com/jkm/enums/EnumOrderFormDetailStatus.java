@@ -45,7 +45,7 @@ public enum EnumOrderFormDetailStatus {
     TICKET_RETURN_FAIL(7, "退票失败"),
 
     /**
-     * 订单取消
+     * &#x8ba2;&#x5355;&#x53d6;&#x6d88; (&#x5df2;&#x53d6;&#x6d88;)
      */
     TICKET_ORDER_CANCEL(8, "订单取消");
 

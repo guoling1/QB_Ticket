@@ -34,6 +34,11 @@ public class MerchantAppInfo extends BaseEntity{
 	private String appName;
 
 	/**
+	 * 通知地址
+	 */
+	private String callBackUrl;
+
+	/**
 	*排序
 	*/
 	private Integer sn;

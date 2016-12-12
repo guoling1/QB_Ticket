@@ -138,6 +138,10 @@ public class GrabTicketForm extends BaseEntity {
      * 运行时间
      */
     private String runTime;
+    /**
+     * 抢票成功 做戏名字
+     */
+    private String zwname;
 
     /**
      * 抢票成功车次

@@ -99,6 +99,9 @@ public class TicketServiceImpl implements TicketService {
     @Autowired
     private ConfirmOrderExceptionRecordService confirmOrderExceptionRecordService;
 
+    @Autowired
+    private TicketCallBackService ticketCallBackService;
+
     /**
      * {@inheritDoc}
      *
@@ -402,7 +405,13 @@ public class TicketServiceImpl implements TicketService {
             this.ticketSendMessageService.sendBuyTicketFailMessage(sendBuyTicketFailParam);
 
         }
-
+        //给app推送消息
+        try{
+            log.info("给app推送代购结果信息, 订单id:" + orderForm.getId());
+            this.ticketCallBackService.orderFormCallBack(orderForm);
+        }catch (final Throwable throwable){
+            log.info("给app推送代购结果信息, 异常信息:" + throwable.getMessage());
+        }
     }
 
     /**
@@ -699,6 +708,13 @@ public class TicketServiceImpl implements TicketService {
                 flow.setRemark("线上退票成功");
                 log.info("线上退票结果推送" + flow.getOrderFormDetailId() + "订单退票成功,退款中");
                 this.refundTicketFlowService.update(flow);
+                //给app推送消息
+                try{
+                    log.info("给app推送退票结果信息, 退票单id:" + flow.getId());
+                    this.ticketCallBackService.refundTicketCallBack(flow);
+                }catch (final Throwable throwable){
+                    log.info("给app推送退票结果信息, 异常信息:" + throwable.getMessage());
+                }
                 this.orderFormDetailService.updateStatusById(flow.getOrderFormDetailId(), EnumOrderFormDetailStatus.TICKET_RETURN_SUCCESS);
                 // 给用户退款, 是否有出票套餐, 创建退款单 , 先退保险 , 再退票款 , 抢票套餐不退
                 final String uid;
@@ -854,6 +870,13 @@ public class TicketServiceImpl implements TicketService {
                         flow.setStatus(EnumRefundTicketFlowStatus.REFUND_TICKET_FAIL.getId());
                         flow.setRemark("线上退票失败" + obj.getString("returnfailmsg"));
                         this.refundTicketFlowService.update(flow);
+                        //给app推送消息
+                        try{
+                            log.info("给app推送退票结果信息, 退票单id:" + flow.getId());
+                            this.ticketCallBackService.refundTicketCallBack(flow);
+                        }catch (final Throwable throwable){
+                            log.info("给app推送退票结果信息, 异常信息:" + throwable.getMessage());
+                        }
                         this.orderFormDetailService.updateStatusById(flow.getOrderFormDetailId(), EnumOrderFormDetailStatus.TICKET_RETURN_FAIL);
                     }
         }
@@ -1208,6 +1231,9 @@ public class TicketServiceImpl implements TicketService {
         final Optional<GrabTicketForm> grabTicketFormOptional = this.grabTicketFormService.selectByOrderIdWithLock(jsonParams.getString("orderid"));
         Preconditions.checkArgument(grabTicketFormOptional.isPresent(), "抢票单还未创建");
         final GrabTicketForm grabTicketForm = grabTicketFormOptional.get();
+        if (grabTicketForm.getStatus() != EnumGrabTicketStatus.GRAB_FORM_REQUEST_SUCCESS.getId()){
+            return;//防止重复请求
+        }
         if(jsonParams.getBoolean("success") == true && jsonParams.getInt("code") == 100){
             log.info("hy抢票回调通知" + grabTicketForm.getId() + "抢票单抢票成功");
             //抢票成功,创建小订单, 退差价, 买保险
@@ -1245,10 +1271,18 @@ public class TicketServiceImpl implements TicketService {
                 orderFormDetail.setStatus(EnumOrderFormDetailStatus.TICKET_BUY_SUCCESS.getId());
                 if(obj.getString("piaotype").equals(EnumTrainTicketType.ADULT.getId())){
                     grabTicketForm.setPrice(new BigDecimal(obj.getString("price")));
+                    grabTicketForm.setZwname(obj.getString("zwname"));
                 }
                 this.orderFormDetailService.add(orderFormDetail);
             }
             this.grabTicketFormService.update(grabTicketForm);
+            //给app推送消息
+            try{
+                log.info("给app推送抢票结果信息, 抢票单id:" + grabTicketForm.getId());
+                this.ticketCallBackService.grabFormCallBack(grabTicketForm);
+            }catch (final Throwable throwable){
+                log.info("给app推送抢票结果信息发生异常, 异常信息:" + throwable.getMessage());
+            }
             //退差价
             final BigDecimal subtract = grabTicketForm.getGrabTicketTotalPrice().subtract(grabTicketForm.getTicketTotalPrice());
             if (subtract.compareTo(new BigDecimal(0)) != 0){
@@ -1345,9 +1379,17 @@ public class TicketServiceImpl implements TicketService {
             //抢票时间到期,抢票失败 , 全额退款
             //TODO 更新抢票单状态
             this.grabTicketFormService.updateStatusById(EnumGrabTicketStatus.GRAB_FORM_FAIL, grabTicketForm.getId());
+            //给app推送消息
+            try{
+                log.info("给app推送抢票结果信息, 抢票单id:" + grabTicketForm.getId());
+                this.ticketCallBackService.grabFormCallBack(grabTicketForm);
+            }catch (final Throwable throwable){
+                log.info("给app推送抢票结果信息发生异常, 异常信息:" + throwable.getMessage());
+            }
             //全额退款
             this.returnToGrabFail(grabTicketForm.getId());
         }
+
     }
 
     /**
