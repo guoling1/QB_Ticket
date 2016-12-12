@@ -83,14 +83,14 @@ public class TicketCallBackServiceImpl implements TicketCallBackService{
         if (orderForm.getStatus() == EnumOrderFormStatus.ORDER_FORM_TICKET_SUCCESS.getId()){
             //出票成功
             jsonObject.put("success", true);
-            jsonObject.put("msg", "出票成功");
-            jsonObject.put("type", 1);
+            jsonObject.put("msg", "订票成功");
+            jsonObject.put("type", 5);
 
         }else{
             //出票失败
             jsonObject.put("success", false);
-            jsonObject.put("msg", "出票失败");
-            jsonObject.put("type", 2);
+            jsonObject.put("msg", "订票失败");
+            jsonObject.put("type", 6);
         }
         //回调请求
         try{
