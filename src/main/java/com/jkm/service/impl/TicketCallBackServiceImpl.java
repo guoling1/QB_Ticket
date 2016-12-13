@@ -98,6 +98,7 @@ public class TicketCallBackServiceImpl implements TicketCallBackService{
             final JSONObject resultJsonObject = HttpMethod.httpClient(jsonObject, merchantAppInfo.getCallBackUrl());
             log.info("代购单[" + orderForm.getId() + "]推送给app消息:"+ jsonObject.toString() +",app返回信息:" + resultJsonObject.toString());
         }catch (final Throwable throwable){
+            log.info(">>>>>>>>>>>>>>>"+ merchantAppInfo.getCallBackUrl()+">>>>>>>>..>>>>>>>.");
             log.error("代购单[" + orderForm.getId() + "]推送给app消息异常:" + throwable.getMessage());
         }
 
