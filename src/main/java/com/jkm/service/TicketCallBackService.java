@@ -10,13 +10,13 @@ import com.jkm.entity.RefundTicketFlow;
 public interface TicketCallBackService {
 
     /**
-     * 正常代购回调
+     * 正常代购回调...
      * @param orderForm
      */
     void orderFormCallBack(OrderForm orderForm);
 
     /**
-     * 抢票回调
+     * 抢票回调..
      * @param grabTicketForm
      */
     void grabFormCallBack(GrabTicketForm grabTicketForm);
