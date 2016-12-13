@@ -45,11 +45,12 @@ public class TicketCallBackServiceImpl implements TicketCallBackService{
     @Override
     public void orderFormCallBack(OrderForm orderForm) {
         final String[] split = orderForm.getUid().split("_");
-        final String appId = split[0];
+        final long merchantId = Long.valueOf(split[0]);
         final String uid = split[1];
         final String reqTime = DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss);
         //根据appid查询该应用的相关密钥及url
-        final MerchantAppInfo merchantAppInfo = this.merchantAppInfoService.selectByOpenId(appId);
+        final MerchantAppInfo merchantAppInfo = this.merchantAppInfoService.selectByPrimaryKey(merchantId);
+        final String appId = merchantAppInfo.getOpenId();
         final String key = merchantAppInfo.getSecretKey();
         //返回信息
         final JSONObject jsonObject = new JSONObject();
@@ -110,12 +111,13 @@ public class TicketCallBackServiceImpl implements TicketCallBackService{
     public void grabFormCallBack(GrabTicketForm grabTicketForm) {
 
         final String[] split = grabTicketForm.getUid().split("_");
-        final String appId = split[0];
+        final long merchantId = Long.valueOf(split[0]);
         final String uid = split[1];
         final String reqTime = DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss);
         //根据appid查询该应用的相关密钥及url
-        final MerchantAppInfo merchantAppInfo = this.merchantAppInfoService.selectByOpenId(appId);
+        final MerchantAppInfo merchantAppInfo = this.merchantAppInfoService.selectByPrimaryKey(merchantId);
         final String key = merchantAppInfo.getSecretKey();
+        final String appId = merchantAppInfo.getOpenId();
         //返回信息
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("sign", this.getSign(appId, uid, reqTime, key));
@@ -179,12 +181,13 @@ public class TicketCallBackServiceImpl implements TicketCallBackService{
             //查询大订单,获取appId , uid
             final GrabTicketForm grabTicketForm = this.grabTicketFormService.selectById(refundTicketFlow.getGrabTicketFormId()).get();
             final String[] split = grabTicketForm.getUid().split("_");
-            final String appId = split[0];
+            final long merchantId = Long.valueOf(split[0]);
             final String uid = split[1];
             final String reqTime = DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss);
             //根据appid查询该应用的相关密钥及url
-            final MerchantAppInfo merchantAppInfo = this.merchantAppInfoService.selectByOpenId(appId);
+            final MerchantAppInfo merchantAppInfo = this.merchantAppInfoService.selectByPrimaryKey(merchantId);
             final String key = merchantAppInfo.getSecretKey();
+            final String appId = merchantAppInfo.getOpenId();
             //返回信息
             final JSONObject jsonObject = new JSONObject();
             jsonObject.put("sign", this.getSign(appId, uid, reqTime, key));
