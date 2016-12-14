@@ -113,10 +113,10 @@
               <div>验证码</div>
               <input type="text" placeholder="输入短信验证码" v-model="valid_code.vCode">
             </div>
-            <div class="checkbox" @click="agree">
-              <div class="btn" v-bind:class="{active:fill_from.isAgree==0}"></div>
-              <div class="word">已阅读并同意《支付服务规则》</div>
-            </div>
+            <!--<div class="checkbox" @click="agree">-->
+              <!--<div class="btn" v-bind:class="{active:fill_from.isAgree==0}"></div>-->
+              <!--<div class="word">已阅读并同意《支付服务规则》</div>-->
+            <!--</div>-->
             <button class="submit" @click="pay($event,'by_card')">确认付款 ￥{{from_data.price}}</button>
           </div>
         </div>
