@@ -365,7 +365,7 @@
         } else {
           this.$http.post('/contactInfo/add', JSON.stringify(addPerson)).then(function (res) {
             this.$data.show = !this.$data.show;
-            addPerson.id = res.data.data;
+            addPerson.id = res.data;
             if (addPerson.personType == 2) {
               addPerson.personType = "儿童"
             }
