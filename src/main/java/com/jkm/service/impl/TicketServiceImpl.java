@@ -1491,7 +1491,7 @@ public class TicketServiceImpl implements TicketService {
         jsonObject.put("sign", MD5Util.MD5(HySdkConstans.GRAB_PARTNER_ID + DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss) + MD5Util.MD5(HySdkConstans.GRAB_SIGN_KEY)));
         log.info(grabTicketFormId + "抢票单请求hy取消订单,请求中........");
         final JSONObject jsonResponse = this.hySdkService.cancelGrabTickets(jsonObject);
-        if("success".equals(jsonResponse.getString("isSuccess"))){
+        if("success".equals(jsonResponse.getString("isSuccess")) || EnumGrabTicketStatus.WAIT_FOR_REFUND.getId() == grabTicketForm.getStatus()){
             //发送短信
             final SendCancelGrabTicketParam param = new SendCancelGrabTicketParam();
             param.setUid(grabTicketForm.getUid());
