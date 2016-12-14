@@ -783,10 +783,11 @@ public class TicketServiceImpl implements TicketService {
                 returnMoneyOrder.setOrderFormDetailId(orderFormDetail.getId());
                 returnMoneyOrder.setOrderFormSn(paymentSn);
                 returnMoneyOrder.setRemark("线上退票退款");
+                //保险
+                final PolicyOrder policyOrder = this.policyOrderService.getByOrderFormDetailId(orderFormDetail.getId());
                 //先判断是否有出票套餐,有则退保险 , 无则不退
-                if (buyTicketPackageId != EnumBuyTicketPackageType.TICKET_PACKAGE_FIRST.getId()){
+                if ((buyTicketPackageId != EnumBuyTicketPackageType.TICKET_PACKAGE_FIRST.getId()) && policyOrder.getStatus() == EnumPolicyOrderStatus.POLICY_BUY_SUCCESS.getId()){
                     //先退保险
-                    final PolicyOrder policyOrder = this.policyOrderService.getByOrderFormDetailId(orderFormDetail.getId());
                     final HyCancelPolicyOrderRequest request = new HyCancelPolicyOrderRequest();
                     request.setUsername(HySdkConstans.USERNAME);
                     request.setMethod(EnumHTHYMethodCode.CANCEL_POLICY_ORDER.getCode());
@@ -976,9 +977,10 @@ public class TicketServiceImpl implements TicketService {
                     returnMoneyOrder.setOrderFormDetailId(orderFormDetail.getId());
                     returnMoneyOrder.setOrderFormSn(paymentSn);
                     returnMoneyOrder.setRemark("线下退票退款");
+                    final PolicyOrder policyOrder = this.policyOrderService.getByOrderFormDetailId(orderFormDetail.getId());
                     //先判断是否有出票套餐,有则退保险 , 无则不退
-                    if (buyTicketPackageId != EnumBuyTicketPackageType.TICKET_PACKAGE_FIRST.getId()){
-                        final PolicyOrder policyOrder = this.policyOrderService.getByOrderFormDetailId(orderFormDetail.getId());
+                    if ((buyTicketPackageId != EnumBuyTicketPackageType.TICKET_PACKAGE_FIRST.getId()) && policyOrder.getStatus() == EnumPolicyOrderStatus.POLICY_BUY_SUCCESS.getId()){
+
                         //先退保险
                         final HyCancelPolicyOrderRequest request = new HyCancelPolicyOrderRequest();
                         request.setUsername(HySdkConstans.USERNAME);
@@ -1158,7 +1160,7 @@ public class TicketServiceImpl implements TicketService {
         grabTicketForm.setStatus(EnumGrabTicketStatus.GRAB_FORM_PAY_WAIT.getId());
         //初始化抢票单, 创建收款单收款
         this.grabTicketFormService.init(grabTicketForm);
-
+        log.info("抢票单id:" + grabTicketForm.getId() + ">>>>>>>>>>最高价格为:"+ grabPrice +"<<<<<<<<<<<<<<<<<<<");
         //创建商户收款记录
         final ChargeMoneyOrder chargeMoneyOrder = new ChargeMoneyOrder();
         chargeMoneyOrder.setOrderFormId(0);

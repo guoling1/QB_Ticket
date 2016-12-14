@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -171,6 +172,10 @@ public class TicketController extends BaseController{
             Preconditions.checkState(ValidateUtils.isMobile(requset.getPhone()), "联系手机输入错误");
             logger.info("用户uid=" + requset.getUid() + "下了一个抢票单");
             ResponseGrabTicket responseGrabTicket = this.ticketService.grabTicket(requset);
+            if (responseGrabTicket.getPrice().compareTo(new BigDecimal("0.00")) == 0){
+                result.setCode(-1);
+                result.setMessage("订单受理失败");
+            }
                 result.setCode(1);
                 result.setMessage("订单受理成功");
                 result.setData(responseGrabTicket);
