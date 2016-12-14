@@ -220,12 +220,13 @@ public class TicketCallBackServiceImpl implements TicketCallBackService{
             //查询大订单,获取appId , uid
             final OrderForm orderForm = this.orderFormService.selectById(refundTicketFlow.getOrderFormId()).get();
             final String[] split = orderForm.getUid().split("_");
-            final String appId = split[0];
+            final long merchantId = Long.valueOf(split[0]);
             final String uid = split[1];
             final String reqTime = DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss);
             //根据appid查询该应用的相关密钥及url
-            final MerchantAppInfo merchantAppInfo = this.merchantAppInfoService.selectByOpenId(appId);
+            final MerchantAppInfo merchantAppInfo = this.merchantAppInfoService.selectByPrimaryKey(merchantId);
             final String key = merchantAppInfo.getSecretKey();
+            final String appId = merchantAppInfo.getOpenId();
             //返回信息
             final JSONObject jsonObject = new JSONObject();
             jsonObject.put("sign", this.getSign(appId, uid, reqTime, key));
