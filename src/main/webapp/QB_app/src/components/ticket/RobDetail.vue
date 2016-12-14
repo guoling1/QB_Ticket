@@ -50,10 +50,11 @@
         <div class="small">￥<span>{{$$orderInfo.grabTotalPrice}}</span></div>
       </div>
     </div>
-    <div class="space" v-if="$$orderInfo.status!=4&&$$orderInfo.status!=10&&$$orderInfo.status!=14&&$$orderInfo.status!=15&&$$orderInfo.status!=16">
+    <div class="space"
+         v-if="$$orderInfo.status!=4&&$$orderInfo.status!=10&&$$orderInfo.status!=14&&$$orderInfo.status!=15&&$$orderInfo.status!=16">
       <div class="cancel" @click="cancel">取消抢票</div>
     </div>
-    <router-link class="submit" to="/ticket/train-menu/train">返回</router-link>
+    <div class="submit" @click="back">返回</div>
     <message></message>
   </div>
 </template>
@@ -97,6 +98,15 @@
       });
     },
     methods: {
+      back: function () {
+        this.$router.push({
+          path: '/ticket/main-menu/reserve',
+          query: {
+            appid: this.$data.common.appid,
+            uid: this.$data.common.uid
+          }
+        })
+      },
       cancel: function () {
         this.$http.post('/ticket/cancel/grab', {
           grabTicketFormId: this.$data.orderInfo.grabTicketFormId
