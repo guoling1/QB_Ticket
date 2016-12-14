@@ -13,13 +13,13 @@ public enum EnumGrabTicketPackageType {
 
     TICKET_PACKAGE_FIRST(1, "0元套餐", "0"),
 
-    TICKET_PACKAGE_SECOND(2, "10元套餐", "10"),
+    TICKET_PACKAGE_SECOND(2, "10元套餐", "0.10"),
 
-    TICKET_PACKAGE_THIRD(3, "20元套餐", "20"),
+    TICKET_PACKAGE_THIRD(3, "20元套餐", "0.20"),
 
-    TICKET_PACKAGE_FOUR(4, "30元套餐", "30"),
+    TICKET_PACKAGE_FOUR(4, "30元套餐", "0.30"),
 
-    TICKET_PACKAGE_FIVE(5, "66元套餐", "66");
+    TICKET_PACKAGE_FIVE(5, "66元套餐", "0.66");
 
     @Getter
     private int id;
