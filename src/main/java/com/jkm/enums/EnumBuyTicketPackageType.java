@@ -13,9 +13,9 @@ public enum EnumBuyTicketPackageType {
 
     TICKET_PACKAGE_FIRST(1, "0元套餐", "0"),
 
-    TICKET_PACKAGE_SECOND(2, "20元套餐", "0.20"),
+    TICKET_PACKAGE_SECOND(2, "20元套餐", "20"),
 
-    TICKET_PACKAGE_THIRD(3, "30元套餐", "0.30");
+    TICKET_PACKAGE_THIRD(3, "30元套餐", "30");
 
     @Getter
     private int id;
