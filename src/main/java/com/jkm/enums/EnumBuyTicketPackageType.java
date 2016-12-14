@@ -11,7 +11,7 @@ import lombok.Getter;
  */
 public enum EnumBuyTicketPackageType {
 
-    TICKET_PACKAGE_FIRST(1, "0元套餐", "0.1"),
+    TICKET_PACKAGE_FIRST(1, "0元套餐", "0"),
 
     TICKET_PACKAGE_SECOND(2, "20元套餐", "0.20"),
 
