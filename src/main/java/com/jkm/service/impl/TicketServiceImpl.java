@@ -1479,7 +1479,8 @@ public class TicketServiceImpl implements TicketService {
         final Optional<GrabTicketForm> grabTicketFormOptional = this.grabTicketFormService.selectByIdWithLock(grabTicketFormId);
         Preconditions.checkArgument(grabTicketFormOptional.isPresent(), "抢票单不存在,无法取消");
         final GrabTicketForm grabTicketForm = grabTicketFormOptional.get();
-        if (EnumGrabTicketStatus.GRAB_FORM_REQUEST_SUCCESS.getId() != grabTicketForm.getStatus()){
+        if (EnumGrabTicketStatus.GRAB_FORM_REQUEST_SUCCESS.getId() != grabTicketForm.getStatus() &&
+                EnumGrabTicketStatus.WAIT_FOR_REFUND.getId() != grabTicketForm.getStatus()){
             return Pair.of(false, "此抢票单不能取消");
         }
 

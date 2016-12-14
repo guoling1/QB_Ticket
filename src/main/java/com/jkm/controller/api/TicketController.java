@@ -211,7 +211,7 @@ public class TicketController extends BaseController{
         }catch(final Throwable throwable){
             result.setCode(-1);
             result.setMessage("订单取消失败");
-            logger.error(req.getGrabTicketFormId() + "抢票单取消订单失败,失败原因:"+ throwable.getMessage());
+            logger.info(req.getGrabTicketFormId() + "抢票单取消订单失败,失败原因:"+ throwable.getMessage());
         }
         return result;
     }
