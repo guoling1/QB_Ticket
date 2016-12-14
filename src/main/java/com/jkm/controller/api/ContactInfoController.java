@@ -8,6 +8,7 @@ import com.jkm.entity.TbContactInfo;
 import com.jkm.entity.helper.UserBankCardSupporter;
 import com.jkm.enums.EnumTrainTicketType;
 import com.jkm.service.ContactInfoService;
+import com.jkm.util.DateFormatUtil;
 import com.jkm.util.ValidationUtil;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
@@ -73,6 +74,10 @@ public class ContactInfoController extends BaseController {
             }
             if(requestJson.get("personType")!=null){
                 ti.setPersonType(requestJson.getInt("personType"));
+            }
+            if(requestJson.get("birthday")!=null){
+                ti.setBirthday(DateFormatUtil.format(DateFormatUtil.parse(requestJson.getString("birthday"), DateFormatUtil.yyyyMMdd),
+                        DateFormatUtil.yyyy_MM_dd));
             }
 
             JSONObject jo = contactInfoService.insert(ti);

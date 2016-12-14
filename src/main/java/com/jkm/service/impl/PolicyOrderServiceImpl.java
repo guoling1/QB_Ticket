@@ -190,7 +190,7 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
             }else{
                 log.error("订单orderFromId:" + orderFormId + "小订单:"+ input.getOrderFormDetailId() +
                         "申请购买保险!!!保险购买失败......失败原因:" + jsonObject.getString("resultErrDesc"));
-                input.setPolicyNo(jsonObject.getString("policyNo"));
+               // input.setPolicyNo(jsonObject.getString("policyNo"));
                 input.setRemark(jsonObject.getString("resultErrDesc"));
                 input.setStatus(EnumPolicyOrderStatus.POLICY_BUY_FAIL.getId());
             }
