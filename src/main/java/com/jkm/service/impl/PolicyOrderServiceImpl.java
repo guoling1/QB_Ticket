@@ -117,6 +117,7 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
                     policyOrder.setCardType(9);
                     policyOrder.setCardNo(info.getBirthday());
                     policyOrder.setBirthday(DateFormatUtil.parse(info.getBirthday(), DateFormatUtil.yyyy_MM_dd));
+                    policyOrder.setContractName(info.getName());
                 }else{
                     //成人
                     // 保险产品代码
@@ -128,10 +129,17 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
                     // 如果是身份证, 则截取
                     if(input.getPassportTypeSeId().equals(EnumCertificatesType.SECOND_ID_CARD.getId())){
                         final IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(input.getPassportSeNoPlain());
-                        policyOrder.setGender(idcardInfo.getGender());
+                        if(idcardInfo.getGender().equals("女")){
+                            //女
+                            policyOrder.setGender("F");
+                        }else{
+                            //男
+                            policyOrder.setGender("M");
+                        }
                         policyOrder.setCardType(EnumCardType.SECOND_ID_CARD.getId());
                         policyOrder.setCardNo(input.getPassportSeNoPlain());
                         policyOrder.setBirthday(idcardInfo.getBirthday());
+                        policyOrder.setContractName(input.getPassengerName());
                     }else{
                         //如果是其他证件, 乘客信息取
                         if(info.getSex() == EnumSex.FEMALE.getId()){
@@ -150,7 +158,6 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
                 policyOrder.setFlightDate(orderForm.getStartDate() + " " + orderForm.getStartTime());
                 policyOrder.setFlightNumber(orderForm.getCheci());
                 policyOrder.setSerialNo(SnGenerator.generate());
-                policyOrder.setContractName(input.getPassengerName());
                 //TODO
                 policyOrder.setContractType("1");
                 policyOrder.setPhone(orderForm.getMobile());
@@ -241,6 +248,7 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
                     policyOrder.setCardType(9);
                     policyOrder.setCardNo(info.getBirthday());
                     policyOrder.setBirthday(DateFormatUtil.parse(info.getBirthday(), DateFormatUtil.yyyy_MM_dd));
+                    policyOrder.setContractName(info.getName());
                 }else{
                     //成人
                     // 保险产品代码
@@ -252,10 +260,17 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
                     // 如果是身份证, 则截取
                     if(input.getPassportTypeSeId() .equals( EnumCertificatesType.SECOND_ID_CARD.getId())){
                         final IdcardInfoExtractor idcardInfo=new IdcardInfoExtractor(input.getPassportSeNoPlain());
-                        policyOrder.setGender(idcardInfo.getGender());
+                        if(idcardInfo.getGender().equals("女")){
+                            //女
+                            policyOrder.setGender("F");
+                        }else{
+                            //男
+                            policyOrder.setGender("M");
+                        }
                         policyOrder.setCardType(EnumCardType.SECOND_ID_CARD.getId());
                         policyOrder.setCardNo(input.getPassportSeNoPlain());
                         policyOrder.setBirthday(idcardInfo.getBirthday());
+                        policyOrder.setContractName(input.getPassengerName());
                     }else{
                         //如果是其他证件, 乘客信息取
                         if(info.getSex() == EnumSex.FEMALE.getId()){
@@ -273,7 +288,6 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
                 }
                 policyOrder.setFlightDate(orderForm.getStartDate() + " " + orderForm.getStartTime());
                 policyOrder.setSerialNo(SnGenerator.generate());
-                policyOrder.setContractName(input.getPassengerName());
                 //TODO
                 policyOrder.setContractType("1");
                 policyOrder.setPhone(orderForm.getPhone());
