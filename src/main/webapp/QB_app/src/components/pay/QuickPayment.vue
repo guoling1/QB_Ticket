@@ -314,10 +314,10 @@
               orderid: this.$data.from_data.orderId
             }
           })
-        }, function () {
+        }, function (err) {
           event.disabled = false;
           this.$store.commit('MESSAGE_PROMPT_SHOW', {
-            text: '付款失败'
+            text: err.body.message
           })
         });
       },

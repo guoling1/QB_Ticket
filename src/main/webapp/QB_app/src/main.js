@@ -1,5 +1,3 @@
-import 'babel-polyfill'
-
 import Vue from 'vue'
 // 使用 vuex
 import store from './store'
