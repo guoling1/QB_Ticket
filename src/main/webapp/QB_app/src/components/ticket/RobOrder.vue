@@ -289,7 +289,7 @@
           this.$http.post('/contactInfo/add', JSON.stringify(addPerson)).then(function (res) {
             this.$data.show = !this.$data.show;
             let newPerson = {};
-            newPerson.id = res.data.data;
+            newPerson.id = res.data;
             newPerson.name = document.querySelector('#name').value;
             newPerson.piaoType = 2;
             this.$data.childs.push(newPerson);

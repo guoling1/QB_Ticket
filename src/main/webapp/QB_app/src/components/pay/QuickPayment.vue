@@ -20,7 +20,7 @@
             <button v-show="!$$valid_code.sending" @click="send($event,'by_cid')">获取验证码</button>
             <button v-show="$$valid_code.sending">{{$$valid_code.timer}}</button>
           </div>
-          <div class="btn" @click="pay($event,'by_cid')">确认付款 ￥{{from_data.price}}</div>
+          <button class="btn" @click="pay($event,'by_cid')">确认付款 ￥{{from_data.price}}</button>
         </div>
       </div>
       <!-- 卡列表 选择支付卡 -->
@@ -40,7 +40,7 @@
             </li>
           </ul>
           <div class="new" @click="newCard">使用新卡支付</div>
-          <div class="btn" @click="goDetail">确认付款 ￥{{from_data.price}}</div>
+          <button class="btn" @click="goDetail">确认付款 ￥{{from_data.price}}</button>
         </div>
       </div>
       <!-- 首次绑卡 首次支付 -->
@@ -80,7 +80,7 @@
               <div class="btn" v-bind:class="{active:fill_from.isAgree==0}"></div>
               <div class="word">已阅读并同意《支付服务规则》</div>
             </div>
-            <div class="submit" @click="pay($event,'by_card')">确认付款 ￥{{from_data.price}}</div>
+            <button class="submit" @click="pay($event,'by_card')">确认付款 ￥{{from_data.price}}</button>
           </div>
         </div>
       </div>
@@ -117,7 +117,7 @@
               <div class="btn" v-bind:class="{active:fill_from.isAgree==0}"></div>
               <div class="word">已阅读并同意《支付服务规则》</div>
             </div>
-            <div class="submit" @click="pay($event,'by_card')">确认付款 ￥{{from_data.price}}</div>
+            <button class="submit" @click="pay($event,'by_card')">确认付款 ￥{{from_data.price}}</button>
           </div>
         </div>
       </div>
