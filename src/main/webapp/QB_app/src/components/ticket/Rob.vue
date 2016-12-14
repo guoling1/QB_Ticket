@@ -118,13 +118,17 @@
             <div class="word">选择抢票时效</div>
           </div>
           <ul>
-            <li @click="timerHide(1)" v-if="$canGrabTimeType>=1" v-bind:class="{active:submitInfo.grabTimeType==1}"><span>抢至发车前3小时</span>
+            <li @click="timerHide(1)" v-if="$canGrabTimeType>=1" v-bind:class="{active:submitInfo.grabTimeType==1}">
+              <span>抢至发车前3小时</span>
             </li>
-            <li @click="timerHide(2)" v-if="$canGrabTimeType>=2" v-bind:class="{active:submitInfo.grabTimeType==2}"><span>抢至发车前6小时</span>
+            <li @click="timerHide(2)" v-if="$canGrabTimeType>=2" v-bind:class="{active:submitInfo.grabTimeType==2}">
+              <span>抢至发车前6小时</span>
             </li>
-            <li @click="timerHide(3)" v-if="$canGrabTimeType>=3" v-bind:class="{active:submitInfo.grabTimeType==3}"><span>抢至发车前一天</span>
+            <li @click="timerHide(3)" v-if="$canGrabTimeType>=3" v-bind:class="{active:submitInfo.grabTimeType==3}">
+              <span>抢至发车前一天</span>
             </li>
-            <li @click="timerHide(4)" v-if="$canGrabTimeType>=4" v-bind:class="{active:submitInfo.grabTimeType==4}"><span>抢至发车前三天</span>
+            <li @click="timerHide(4)" v-if="$canGrabTimeType>=4" v-bind:class="{active:submitInfo.grabTimeType==4}">
+              <span>抢至发车前三天</span>
             </li>
           </ul>
         </div>
@@ -170,7 +174,8 @@
             <li> 我们通过铁路官网或授权代销点为客户提供火车票代购服务。</li>
             <li> 您可以自由选择出票套餐和抢票套餐，也可以只选择火车票代购服务。</li>
             <li> 因受全国各铁路局的不同规定与要求，<span class="red">无法承诺百分之百代购成功</span>，我司预先收取您的票款，如果代购失败，退款会退至您支付时使用的银行卡。</li>
-            <li> 我们提供的是火车票代购服务，您接受本协议，意味着您同意我们使用您填写的乘客信息进行代购，包括但不限于授权我们使用您的乘客信息进行注册，代购，退票等操作，同时您必须遵守12306的购票规定的服务条款。</li>
+            <li> 我们提供的是火车票代购服务，您接受本协议，意味着您同意我们使用您填写的乘客信息进行代购，包括但不限于授权我们使用您的乘客信息进行注册，代购，退票等操作，同时您必须遵守12306的购票规定的服务条款。
+            </li>
           </ol>
           <h4>取票说明</h4>
 
@@ -271,7 +276,7 @@
       let query = this.$route.query;
       this.$data.submitInfo.appId = query.appid;
       this.$data.submitInfo.uid = query.uid;
-      if(query.to_name){
+      if (query.to_name) {
         this.$store.state.station.scope.stationTHREE.station = query.from_name;
         this.$store.state.station.scope.stationTHREE.code = query.from_code;
         this.$store.state.station.scope.stationFOUR.station = query.to_name;
@@ -280,6 +285,11 @@
         this.$data.submitInfo.seatTypes = query.table;
         this.$data.submitInfo.firstStartTime = query.firstStartTime;
       }
+      this.$store.commit('TIME_SET', {
+        name: 'dateTWO',
+        code: query.code,
+        time: query.time
+      });
     },
     methods: {
       trainsShowFun: function () {
@@ -292,14 +302,14 @@
           to_station_name: this.$store.state.station.scope.stationFOUR.station,
           train_date: this.$store.state.date.scope.dateTWO.code
         }).then(function (res) {
-          if(res.data){
+          if (res.data) {
             for (let i = 0; i < res.data.length; i++) {
               res.data[i].select = false;
             }
           }
           this.$data.trains = res.data;
           this.$data.trainsShow = true;
-        },function(){
+        }, function () {
           this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '查询车次信息失败'
           });
@@ -398,11 +408,11 @@
           this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '请选择到达城市'
           })
-        }else if (this.$data.submitInfo.trainCodes == "请选择车次") {
+        } else if (this.$data.submitInfo.trainCodes == "请选择车次") {
           this.$store.commit('MESSAGE_PROMPT_SHOW', {
             text: '请指定车次'
           })
-        }else{
+        } else {
           this.$router.push({
             path: '/ticket/rob-order',
             query: {appid: this.$data.submitInfo.appId, uid: this.$data.submitInfo.uid}
@@ -707,7 +717,7 @@
         height: 100%;
         overflow: auto;
         padding-bottom: 50px;
-        .emptyInfo{
+        .emptyInfo {
           margin-top: 15px;
         }
         .top {
@@ -798,7 +808,7 @@
     }
   }
 
-  .pack,.timer,.seat {
+  .pack, .timer, .seat {
     position: fixed;
     top: 0;
     left: 0;

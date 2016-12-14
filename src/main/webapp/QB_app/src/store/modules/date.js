@@ -49,6 +49,10 @@ const mutations = {
       state.scope[state.now].code = obj.code;
       state.scope[state.now].time = obj.time;
     }
+  },
+  TIME_SET (state, obj){
+    state.scope[obj.name].code = obj.code;
+    state.scope[obj.name].time = obj.time;
   }
 };
 

@@ -7,6 +7,7 @@ module.exports = {
     index: path.resolve(__dirname, '../../WEB-INF/view/index.html'),
     assetsRoot: path.resolve(__dirname, '../../'),
     assetsSubDirectory: 'static',
+    //assetsPublicPath: '/',
     assetsPublicPath: 'http://img.jinkaimen.cn/hcp/',
     productionSourceMap: true,
     // Gzip off by default as many popular static hosts such as
