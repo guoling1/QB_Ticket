@@ -131,6 +131,9 @@
       close: function (year, month, day) {
         let week = (new Date(year, month - 1, day)).getDay();
         let weekWord = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+        if (month < 10) {
+          month = '0' + month;
+        }
         if (day < 10) {
           day = '0' + day;
         }
