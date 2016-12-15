@@ -240,7 +240,6 @@ public class TicketServiceImpl implements TicketService {
             Preconditions.checkState(!passengers.isEmpty(), "乘客列表为空了");
             log.info("订单[" + orderForm.getId() + "]回调处理成功---占座成功");
             orderForm.setTicketTotalPrice(new BigDecimal(jsonObject.getString("orderamount")));
-            orderForm.setTicketTotalPrice(new BigDecimal(jsonObject.getString("orderamount")));
             orderForm.setTotalPrice(orderForm.getTicketTotalPrice().add(orderForm.getBuyTicketPackagePrice()).add(orderForm.getGrabTicketPackagePrice()));
             orderForm.setOutOrderId(jsonObject.getString("transactionid"));
             orderForm.setExpireTime(new DateTime(new Date()).plusMinutes(PAYMENT_MINUTE).toDate());
