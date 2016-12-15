@@ -176,7 +176,7 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
             request.setFlightNumber(input.getFlightNumber());
             request.setSerialNo(input.getSerialNo());
             request.setContractName(input.getContractName());
-            request.setContractType(String.valueOf(input.getCardType()));
+            request.setContractType(String.valueOf(input.getContractType()));
             request.setGender(input.getGender());
             request.setCardType(input.getCardType());
             request.setCardNo(input.getCardNo());
@@ -306,7 +306,7 @@ public class PolicyOrderServiceImpl implements PolicyOrderService {
             request.setFlightNumber(input.getFlightNumber());
             request.setSerialNo(input.getSerialNo());
             request.setContractName(input.getContractName());
-            request.setContractType(String.valueOf(input.getCardType()));
+            request.setContractType(String.valueOf(input.getContractType()));
             request.setGender(input.getGender());
             request.setCardType(input.getCardType());
             request.setCardNo(input.getCardNo());
