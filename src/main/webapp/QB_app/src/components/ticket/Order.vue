@@ -13,14 +13,17 @@
             class="checi">{{massage.checi}}</span>
           </div>
           <div class="bottom">
-            <div>
+            <div class="group">
               <span class="form">{{massage.fromStationName}}</span>
               <img src="../../assets/jiantou.png" alt=""/>
               <span class="to">{{massage.toStationName}}</span>
+              <span class="price">￥{{massage.price}}</span>
             </div>
-            <span class="name" v-for="passenger in massage.passengers">{{passenger.name}}</span>
-            <span class="price" v-for="passenger in massage.passengers">￥{{passenger.price}}</span>
-            <p class="static" v-for="passenger in massage.passengers">{{orderStatus[massage.status]}}</p>
+            <div class="group" style="overflow:visible">
+              <span class="name" v-for="passenger in massage.passengers">{{passenger.name}}</span>
+
+              <p class="static">{{orderStatus[massage.status]}}</p>
+            </div>
           </div>
         </li>
       </ul>
@@ -43,7 +46,8 @@
               <span class="price" v-if="massage.isGrab==1">￥{{massage.totalPrice}}</span>
             </div>
             <div class="group" style="overflow:visible">
-              <span class="name" v-for="passenger in massage.passengerInfo">{{passenger.name}}</span>
+              <span class="name" v-if="massage.isGrab==0" v-for="passenger in massage.passengerInfo">{{passenger.name}}</span>
+              <span class="name" v-if="massage.isGrab==1" v-for="passenger in massage.passengers">{{passenger.name}}</span>
 
               <p class="static">{{robOrderStatus[massage.status]}}</p>
             </div>
@@ -75,7 +79,7 @@
         robMassages: false,
         robShow: false,
         orderStatus: ["", "出票失败", "占座中", "待支付", "出票失败", "出票失败", "出票中", "支付失败", "出票失败", "出票中", "出票成功", "出票失败", "订单取消", "订单取消", "订单取消", "订单取消", "订单取消"],
-        robOrderStatus: ["", "", "待支付", "抢票中", "未支付", "抢票中", "抢票中", "抢票中", "抢票失败", "抢票成功", "已取消", "抢票中", "", "", "已取消", "已取消", "已取消", "", "待支付", "待支付"]
+        robOrderStatus: ["", "", "待支付", "抢票中", "未支付", "抢票中", "抢票中", "抢票中", "抢票失败", "抢票成功", "已取消", "抢票中", "", "", "已取消", "已取消", "已取消", "已退票", "待支付", "待支付"]
       }
     },
     beforeCreate:function () {
