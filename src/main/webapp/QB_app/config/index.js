@@ -6,7 +6,7 @@ module.exports = {
     env: require('./prod.env'),
     index: path.resolve(__dirname, '../../WEB-INF/view/index.html'),
     assetsRoot: path.resolve(__dirname, '../../'),
-    assetsSubDirectory: 'static',
+    assetsSubDirectory: 'static.0.1.96',
     //assetsPublicPath: '/',
     assetsPublicPath: 'http://img.jinkaimen.cn/hcp/',
     productionSourceMap: true,

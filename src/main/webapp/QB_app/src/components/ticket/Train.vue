@@ -151,13 +151,17 @@
         var time = this.$data.dateHttp;
         time = new Date(time);
         var dd = new Date((time / 1000 + 86400) * 1000);
+        let month = dd.getMonth() + 1;
         let day = dd.getDate();
+        if (month < 10) {
+          month = '0' + month;
+        }
         if (day < 10) {
           day = '0' + day;
         }
         let ary = ["日", "一", "二", "三", "四", "五", "六"]
-        this.$store.state.date.scope.dateThree.code = dd.getFullYear() + "-" + (dd.getMonth() + 1) + "-" + day;
-        this.$store.state.date.scope.dateThree.time = (dd.getMonth() + 1) + "月" + day + "日 周" + ary[dd.getDay()];
+        this.$store.state.date.scope.dateThree.code = dd.getFullYear() + "-" + month + "-" + day;
+        this.$store.state.date.scope.dateThree.time = month + "月" + day + "日 周" + ary[dd.getDay()];
         document.querySelector('.first').className = "first";
         document.querySelector('.next').className = "next show"
       },
@@ -165,13 +169,17 @@
         var time = this.$data.dateHttp;
         time = new Date(time);
         var dd = new Date((time / 1000 - 86400) * 1000);
+        let month = dd.getMonth() + 1;
         let day = dd.getDate();
+        if (month < 10) {
+          month = '0' + month;
+        }
         if (day < 10) {
           day = '0' + day;
         }
         let ary = ["日", "一", "二", "三", "四", "五", "六"]
-        this.$store.state.date.scope.dateThree.code = dd.getFullYear() + "-" + (dd.getMonth() + 1) + "-" + day;
-        this.$store.state.date.scope.dateThree.time = (dd.getMonth() + 1) + "月" + day + "日 周" + ary[dd.getDay()];
+        this.$store.state.date.scope.dateThree.code = dd.getFullYear() + "-" + month + "-" + day;
+        this.$store.state.date.scope.dateThree.time = month + "月" + day + "日 周" + ary[dd.getDay()];
         document.querySelector('.first').className = "first show";
         document.querySelector('.next').className = "next"
       }
