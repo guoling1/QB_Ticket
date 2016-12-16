@@ -19,7 +19,7 @@ public enum EnumGrabTicketPackageType {
 
     TICKET_PACKAGE_FOUR(4, "30元套餐", "30"),
 
-    TICKET_PACKAGE_FIVE(5, "66元套餐", "0.06");
+    TICKET_PACKAGE_FIVE(5, "66元套餐", "66");
 
     @Getter
     private int id;
