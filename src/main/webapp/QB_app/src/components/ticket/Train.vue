@@ -217,8 +217,10 @@
               if (this.initStations[i].train_type == ("G" || "D")) {
                 this.$store.state.screen.config.trains.D = false;
                 this.$store.state.screen.config.trains.G = false;
+                this.$store.state.screen.config.trains.C = false;
                 this.$store.state.screen.config.trains.Z = true;
                 this.$store.state.screen.config.trains.K = true;
+                this.$store.state.screen.config.trains.T = true;
               } else {
               }
             }

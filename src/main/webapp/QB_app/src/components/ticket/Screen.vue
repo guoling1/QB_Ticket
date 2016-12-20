@@ -72,8 +72,10 @@
           trains: {
             D: true,
             G: true,
+            C: true,
             Z: true,
-            K: true
+            K: true,
+            T: true
           },
           // 用 0,1,2,3,4分别表示5个时间段,0表示全部
           startTime: '0',
@@ -114,8 +116,10 @@
           trains: {
             D: true,
             G: true,
+            C: true,
             Z: true,
-            K: true
+            K: true,
+            T: true
           },
           // 用 0,1,2,3,4分别表示5个时间段,0表示全部
           startTime: '0',
@@ -140,6 +144,12 @@
       selectA:function (msg) {
         for (var i in this.$data.pageConfig.trains){
           if(msg==i){
+            if(msg=="G"){
+              this.$data.pageConfig.trains.C=!this.$data.pageConfig.trains.C;
+            }
+            if(msg=="K"){
+              this.$data.pageConfig.trains.K=!this.$data.pageConfig.trains.K;
+            }
             this.$data.pageConfig.trains[i]=!this.$data.pageConfig.trains[i];
             break;
           }
