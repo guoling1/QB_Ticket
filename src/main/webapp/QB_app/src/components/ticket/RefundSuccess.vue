@@ -87,11 +87,11 @@
     },
     created: function () {
       // 这里 轮询 等待回调
+        let query = this.$route.query;
       let polling = '';
       const pollFun = ()=>{
         this.$http.post('/order/queryById', {
-          appid: this.$data.common.appid,
-          uid: this.$data.common.uid
+            orderFormId: query.orderid
         }).then(function (res) {
           if (res.data.status == 10) {
             clearInterval(polling);

@@ -439,10 +439,6 @@
         background: url("../../assets/bank/CMB.png") no-repeat center;
         background-size: 25px 25px;
       }
-      &.CMB {
-        background: url("../../assets/bank/CMB.png") no-repeat center;
-        background-size: 25px 25px;
-      }
       &.BANKCOMM {
         background: url("../../assets/bank/BANKCOMM.png") no-repeat center;
         background-size: 25px 25px;
