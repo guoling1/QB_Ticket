@@ -90,6 +90,11 @@ public class OrderFormController extends BaseController {
     public ResponseEntityBase<ResponseQueryOrderForm> queryById(@RequestBody final RequestQueryOrderForm request) {
         final ResponseEntityBase<ResponseQueryOrderForm> results = new ResponseEntityBase<>();
         final Optional<OrderForm> orderFormOptional = this.orderFormService.selectById(request.getOrderFormId());
+        if (!orderFormOptional.isPresent()) {
+            results.setCode(-1);
+            results.setMessage("订单不存在");
+            return results;
+        }
         final OrderForm orderForm = orderFormOptional.get();
         final List<OrderFormDetail> orderFormDetails = this.orderFormDetailService.selectByOrderFormId(request.getOrderFormId());
         results.setData(this.getResponse(orderForm, orderFormDetails));
