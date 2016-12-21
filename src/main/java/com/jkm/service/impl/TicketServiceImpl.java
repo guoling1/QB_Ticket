@@ -1314,7 +1314,7 @@ public class TicketServiceImpl implements TicketService {
                 param.setMobile(grabTicketForm.getPhone());
                 param.setStartStation(grabTicketForm.getFromStationName());
                 param.setEndStation(grabTicketForm.getToStationName());
-                param.setTicketNo(grabTicketForm.getCheci());
+                param.setTrainNo(grabTicketForm.getCheci());
                 param.setStartDate(grabTicketForm.getStartDate());
                 param.setStartTime(grabTicketForm.getStartTime());
                 param.setTicketNo(grabTicketForm.getOrderNumber());
