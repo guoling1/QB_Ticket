@@ -1195,7 +1195,7 @@ public class TicketServiceImpl implements TicketService {
 
         final ResponseGrabTicket responseGrabTicket = new ResponseGrabTicket();
         responseGrabTicket.setGrabTicketFormId(grabTicketForm.getId());
-        if (new BigDecimal("0").compareTo(grabTicketForm.getGrabTotalPrice()) == 0){
+        if (new BigDecimal("0").compareTo(new BigDecimal(grabPrice)) == 0){
             responseGrabTicket.setPrice(new BigDecimal("0"));
         }else{
             responseGrabTicket.setPrice(grabTicketForm.getGrabTotalPrice());
